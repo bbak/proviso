@@ -1,0 +1,8 @@
+# Unix-style line endings everywhere, enforced by the repo rather than by each
+# developer's core.autocrlf. Text files are stored and checked out with LF.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF: PowerShell tolerates LF, but .cmd/.bat files
+# can misbehave with it.
+*.cmd text eol=crlf
+*.bat text eol=crlf

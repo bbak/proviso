@@ -1,0 +1,14 @@
+# Reference material, never versioned here: notes on other systems and
+# the proof-of-concept authoring skill, which will be rewritten.
+.input/
+
+# Local environment
+.env
+*.local
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
