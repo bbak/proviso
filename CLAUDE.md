@@ -1,8 +1,6 @@
 # Proviso
 
-Tooling for a specification model built on Guarded Gherkin and a glossary:
-one living spec tree per system, with derived deltas, impact sets and
-independent test and coding agents.
+@proviso/system.md
 
 - The model, and with it the requirements for this tooling:
   [model/IMPROVEMENTS.md](model/IMPROVEMENTS.md)

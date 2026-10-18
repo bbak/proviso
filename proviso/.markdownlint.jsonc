@@ -1,0 +1,4 @@
+{
+  "MD033": { "allowed_elements": ["a"] },
+  "MD024": { "siblings_only": true }
+}
