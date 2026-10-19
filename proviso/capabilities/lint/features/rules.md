@@ -22,7 +22,7 @@ error here, not a question.
 ```guarded
 When      lint reads the [rule] <rule>, holding <count> [rule blocks]
 Provided  <count> is 1
-Then      lint checks that rule block
+Then      lint checks that [rule block]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.rule-block-count` at <rule>
   And     lint goes on with the rest of the [spec tree]
@@ -67,7 +67,7 @@ Provided  <keywords> follow the order Given, When, Provided, Then, Otherwise
   And     no And comes first
 Then      lint reports nothing about their order
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.keyword-order` at the first keyword out of order
+Otherwise lint reports the [error] `findings.keyword-order` at the first [keyword] out of order
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -85,9 +85,9 @@ Otherwise lint reports the [error] `findings.keyword-order` at the first keyword
 When      lint reads the [keywords] <keywords> of a [rule block]
 Provided  When and Then each appear exactly once in <keywords>
   And     Provided and Otherwise each appear at most once
-Then      lint reports nothing about how often keywords appear
+Then      lint reports nothing about how often [keywords] appear
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.keyword-count` at the block, naming each keyword
+Otherwise lint reports the [error] `findings.keyword-count` at the block, naming each [keyword]
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -160,7 +160,7 @@ Otherwise lint reports the [error] `findings.and-missing` at <step>
 ## <a id="lint.rules.given"></a> Rule: A Given does not refer to the event
 
 ```guarded
-When      lint reads the Given [step] <given> of a [rule block] whose When step uses the [placeholders] <introduced>
+When      lint reads the Given [step] <given> of a [rule block] whose When [step] uses the [placeholders] <introduced>
 Provided  <given> uses none of <introduced>
 Then      lint reports nothing about <given>
   And     lint goes on with the rest of the [spec tree]
@@ -183,7 +183,7 @@ of it, so it may be state that belongs in a Given. Whether it is takes
 judgement, so lint asks rather than refuses.
 
 ```guarded
-When      lint reads the Provided [step] <guard>, with its And lines, of a [rule block] whose When step uses the [placeholders] <introduced>
+When      lint reads the Provided [step] <guard>, with its And lines, of a [rule block] whose When [step] uses the [placeholders] <introduced>
 Provided  <guard> uses at least one of <introduced>
 Then      lint reports nothing about <guard>
   And     lint goes on with the rest of the [spec tree]
@@ -200,7 +200,7 @@ Otherwise lint reports the [ask] `findings.provided-without-event` at <guard>
 ## <a id="lint.rules.bound"></a> Rule: Every placeholder is introduced
 
 ```guarded
-When      lint reads the [placeholder] <placeholder> in a [rule block] whose When and Given steps use the [placeholders] <introduced>
+When      lint reads the [placeholder] <placeholder> in a [rule block] whose When and Given [steps] use the [placeholders] <introduced>
 Provided  <placeholder> is among <introduced>
 Then      lint reports nothing about <placeholder>
   And     lint goes on with the rest of the [spec tree]

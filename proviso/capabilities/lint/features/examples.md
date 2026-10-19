@@ -22,7 +22,7 @@ judgement, and is left to review.
 ```guarded
 When      lint has read the [rule] <rule>
 Provided  <rule> holds a table after its [rule block]
-Then      lint reads that table as the rule's [Examples table]
+Then      lint reads that table as the [rule]'s [Examples table]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.examples-missing` at <rule>
   And     lint goes on with the rest of the [spec tree]
@@ -54,7 +54,7 @@ Otherwise lint reports the [error] `findings.placeholder-reserved` at <placehold
 ## <a id="lint.examples.columns"></a> Rule: Every placeholder and the outcome have a column
 
 ```guarded
-When      lint reads the columns <columns> of the [Examples table] of a rule with the [placeholders] <placeholders>
+When      lint reads the columns <columns> of the [Examples table] of a [rule] with the [placeholders] <placeholders>
 Provided  <columns> hold a column named after each of <placeholders>
   And     <columns> hold "outcome"
 Then      lint reports nothing about missing columns
@@ -74,7 +74,7 @@ Otherwise lint reports the [error] `findings.examples-column-missing` at the tab
 ## <a id="lint.examples.provided-column"></a> Rule: A guarded rule, and only a guarded rule, has a provided column
 
 ```guarded
-When      lint reads the columns <columns> of the [Examples table] of a rule; <guarded> says whether it has a [guard]
+When      lint reads the columns <columns> of the [Examples table] of a [rule]; <guarded> says whether it has a [guard]
 Provided  <columns> hold "provided" exactly when <guarded> is "yes"
 Then      lint reports nothing about the "provided" column
   And     lint goes on with the rest of the [spec tree]
@@ -98,7 +98,7 @@ ones holds information the testing agent cannot place: an input it is
 not told about, or an outcome under another name.
 
 ```guarded
-When      lint reads the column <column> of the [Examples table] of a rule with the [placeholders] <placeholders>
+When      lint reads the column <column> of the [Examples table] of a [rule] with the [placeholders] <placeholders>
 Provided  <column> is named after one of <placeholders>, or is "provided", "outcome" or "why"
 Then      lint reports nothing about <column>
   And     lint goes on with the rest of the [spec tree]
@@ -116,7 +116,7 @@ Otherwise lint reports the [error] `findings.examples-column-unknown` at <column
 ## <a id="lint.examples.rows"></a> Rule: An Examples table has rows
 
 ```guarded
-When      lint reads the [Examples table] of a rule, with <count> rows
+When      lint reads the [Examples table] of a [rule], with <count> rows
 Provided  <count> is at least 1
 Then      lint checks each row
   And     lint goes on with the rest of the [spec tree]
@@ -153,7 +153,7 @@ Otherwise lint reports the [error] `findings.examples-row-incomplete` at <row>
 ```guarded
 When      lint reads the "provided" cell <value> of a row
 Provided  <value> is "yes", "no", "no (<part>)" or "?"
-Then      lint reads it as the guard's truth value for that row
+Then      lint reads it as the [guard]'s truth value for that row
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.provided-value-unknown` at <value>
   And     lint goes on with the rest of the [spec tree]
@@ -196,7 +196,7 @@ parts at once does not show which one decides, so each part needs a row
 of its own.
 
 ```guarded
-When      lint reads the "provided" column <values> of the [Examples table] of a rule whose [guard] has <parts> parts
+When      lint reads the "provided" column <values> of the [Examples table] of a [rule] whose [guard] has <parts> parts
 Provided  <values> hold at least <parts> rows that are "no" or "no (<part>)"
 Then      lint reports nothing about the parts of the [guard]
   And     lint goes on with the rest of the [spec tree]

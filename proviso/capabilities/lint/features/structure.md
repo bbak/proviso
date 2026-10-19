@@ -20,7 +20,7 @@ element half-specified. Each of these is silent unless lint reports it.
 ```guarded
 When      lint reads the heading <heading> of an [element] in the file <file>
 Provided  `tree_layout` gives an [element type] for <heading> in <file>
-Then      the element is of that type
+Then      the [element] is of that [element type]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.element-unplaced` at <heading>
   And     lint goes on with the rest of the [spec tree]
@@ -41,7 +41,7 @@ Otherwise lint reports the [error] `findings.element-unplaced` at <heading>
 ```guarded
 When      lint reads a heading <heading> without an [anchor], other than a file's title, within an [element] of the [element type] <type>
 Provided  `section_names` lists <heading> for <type>
-Then      <heading> opens a [section] of that element
+Then      <heading> opens a [section] of that [element]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.heading-unknown` at <heading>
   And     lint goes on with the rest of the [spec tree]
@@ -59,11 +59,11 @@ Otherwise lint reports the [error] `findings.heading-unknown` at <heading>
 ## <a id="lint.structure.required"></a> Rule: An element has its required sections
 
 ```guarded
-When      lint has read an [element] <element> of the [element type] <type>, with the sections <sections>
-Provided  <sections> include every section `section_names` requires for <type>
-Then      lint reports nothing about the sections of <element>
+When      lint has read an [element] <element> of the [element type] <type>, with the [sections] <sections>
+Provided  <sections> include every [section] `section_names` requires for <type>
+Then      lint reports nothing about the [sections] of <element>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.section-missing` at <element>, naming each missing section
+Otherwise lint reports the [error] `findings.section-missing` at <element>, naming each missing [section]
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -77,9 +77,9 @@ Otherwise lint reports the [error] `findings.section-missing` at <element>, nami
 ## <a id="lint.structure.once"></a> Rule: A section appears once per element
 
 ```guarded
-When      lint has read an [element] <element> with the sections <sections>
-Provided  no section name appears twice in <sections>
-Then      lint reports nothing about repeated sections of <element>
+When      lint has read an [element] <element> with the [sections] <sections>
+Provided  no [section] name appears twice in <sections>
+Then      lint reports nothing about repeated [sections] of <element>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.section-repeated` at the second occurrence
   And     lint goes on with the rest of the [spec tree]

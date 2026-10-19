@@ -57,7 +57,7 @@
   the start of its heading. No two elements in a spec tree share one.
 - Contact: Bruno Baketarić
 - Status: defined
-- Aliases: identifiers, id
+- Aliases: identifiers
 
 ## <a id="system.section"></a> section
 
@@ -149,6 +149,14 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: contract elements
+
+## <a id="system.member"></a> member
+
+- Definition: A part of a top-level contract element, such as `id` in
+  `customer.id`, written as a heading below it with an anchor of its own.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: members
 
 ## <a id="system.parameter"></a> parameter
 

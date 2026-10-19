@@ -26,9 +26,9 @@ file.
 ```guarded
 When      someone runs `lint` in the directory <directory>
 Provided  <directory> or a directory above it holds a [spec root]
-Then      lint checks the [spec tree] of the spec root nearest to <directory>
+Then      lint checks the [spec tree] of the [spec root] nearest to <directory>
   And     lint reports what it finds there
-Otherwise lint writes to standard error that no spec root was found
+Otherwise lint writes to "stderr" that no [spec root] was found
   And     lint exits with `lint.exit-status` 2
 ```
 
@@ -61,8 +61,8 @@ When      lint reads the files of its [spec tree], among them <unreadable>
 Provided  <unreadable> is empty
 Then      lint checks the whole [spec tree]
   And     lint reports what it finds
-Otherwise lint writes every file in <unreadable> to standard error
-  And     lint exits with `lint.exit-status` 2, reporting no findings
+Otherwise lint writes every file in <unreadable> to "stderr"
+  And     lint exits with `lint.exit-status` 2, reporting no [findings]
 ```
 
 | unreadable | provided | outcome | why |
@@ -80,10 +80,10 @@ Otherwise lint writes every file in <unreadable> to standard error
 Given     lint has checked a [spec tree] and found the [findings] <findings>
 When      lint reports them, run with the options <options>
 Provided  <options> include `lint.json`
-Then      lint writes the `report` of <findings> to standard output
-  And     nothing else goes to standard output
-Otherwise lint writes <findings> to standard output as text, one per line
-  And     nothing else goes to standard output
+Then      lint writes the `report` of <findings> to "stdout"
+  And     nothing else goes to "stdout"
+Otherwise lint writes <findings> to "stdout" as text, one per line
+  And     nothing else goes to "stdout"
 ```
 
 | findings | options | provided | outcome | why |

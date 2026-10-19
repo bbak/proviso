@@ -138,3 +138,31 @@ A guard never shown holding, or never shown failing.
 ### <a id="lint.findings.examples-part-missing"></a> examples-part-missing
 
 A part of a guard never shown failing on its own.
+
+### <a id="lint.findings.term-unresolved"></a> term-unresolved
+
+A term mark that names no visible glossary entry.
+
+### <a id="lint.findings.term-unmarked"></a> term-unmarked
+
+A term used in a rule block without its mark.
+
+### <a id="lint.findings.term-ambiguous"></a> term-ambiguous
+
+A term name or alias that names more than one visible entry.
+
+### <a id="lint.findings.hand-over-unresolved"></a> hand-over-unresolved
+
+A hand-over to something other than a rule.
+
+### <a id="lint.findings.hand-over-cycle"></a> hand-over-cycle
+
+A chain of hand-overs that returns to a rule it has passed.
+
+### <a id="lint.findings.reference-unresolved"></a> reference-unresolved
+
+A backtick reference that names no contract element or parameter.
+
+### <a id="lint.findings.reference-ambiguous"></a> reference-ambiguous
+
+A contract or parameter name that names more than one visible element.

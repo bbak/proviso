@@ -21,7 +21,7 @@ the manifest, not here.
 ```guarded
 When      lint reads an [anchor] <anchor>
 Provided  <anchor> starts the text of a heading
-Then      that heading opens an [element], identified by the anchor's id
+Then      that heading opens an [element], with the [anchor]'s id as its [identifier]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.anchor-misplaced` at <anchor>
   And     lint goes on with the rest of the [spec tree]
@@ -66,7 +66,7 @@ Otherwise lint reports the [error] `findings.identifier-malformed` at <id>
 ## <a id="lint.identifiers.unique"></a> Rule: An identifier is unique
 
 ```guarded
-Given     the [spec tree] has other [elements] with the identifiers <others>
+Given     the [spec tree] has other [elements] with the [identifiers] <others>
 When      lint reads the [identifier] <id> of an [element]
 Provided  <id> is not among <others>
 Then      lint reports nothing about the uniqueness of <id>

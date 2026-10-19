@@ -25,6 +25,14 @@
 - Status: defined
 - Aliases: asks
 
+## <a id="lint.heading-level"></a> heading level
+
+- Definition: The number of `#` signs that open a Markdown heading: 1
+  for `#`, 2 for `##`, and so on.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: heading levels
+
 ## <a id="lint.keyword"></a> keyword
 
 - Definition: One of the words that start the lines of a rule block:
@@ -42,6 +50,14 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: steps, outcome step
+
+## <a id="lint.top-level-element"></a> top-level element
+
+- Definition: A contract element that is not a member of another, such
+  as `customer` for `customer.id`. A reference is qualified from it.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: top-level elements
 
 ## <a id="lint.well-formed"></a> well-formed
 
