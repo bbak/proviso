@@ -69,8 +69,9 @@
 
 ## <a id="system.field"></a> field
 
-- Definition: A list item of the form `- Key: value` that belongs to the
-  element above it.
+- Definition: An item of the form `- Key: value` in the list directly
+  below an element's heading. Lists further down are prose, even where
+  an item looks the same.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: fields
@@ -157,6 +158,15 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: members
+
+## <a id="system.reference"></a> reference
+
+- Definition: An element of a `references.md`: an external standard,
+  with its version and a link to it, that glossary entries may be
+  defined by.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: references
 
 ## <a id="system.parameter"></a> parameter
 

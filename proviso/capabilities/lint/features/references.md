@@ -124,10 +124,10 @@ Otherwise lint reports the [error] `findings.hand-over-cycle` at the first [rule
 ## <a id="lint.references.reference"></a> Rule: A backtick reference resolves
 
 ```guarded
-When      lint reads the reference <reference> in a [rule block] of the capability <capability>
+When      lint reads the [backtick reference] <reference> in a [rule block] of the capability <capability>
 Provided  the first segment of <reference> names a [top-level element] or a [parameter] of <capability> or of the system
   And     each further segment names a [member] of the one before
-Then      the reference refers to that [element]
+Then      the [backtick reference] refers to that [element]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.reference-unresolved` at <reference>
   And     lint goes on with the rest of the [spec tree]

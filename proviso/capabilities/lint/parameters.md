@@ -40,3 +40,19 @@
 | invariant | Rationale, Ranges over, Property | all |
 | constraint | Rationale, Property | all |
 | glossary entry, parameter, reference, contract element | none | none |
+
+## <a id="lint.field-names"></a> field_names
+
+- Configurable: no
+- Rationale: a fixed set of fields per element type lets lint tell a
+  misspelt key from a field of another type, and keeps out fields the
+  model left out on purpose, such as a glossary entry's `Source`.
+
+| element type | fields | required |
+| --- | --- | --- |
+| feature | Contact | Contact |
+| glossary entry | Definition, Defined by, Deviations, Contact, Status, Aliases, Question | Contact, Status |
+| parameter | Value, Unit, Configurable, Rationale | Configurable, Rationale |
+| reference | Version, Link, Contact | Version, Link, Contact |
+| contract element | Represents | none |
+| system, capability, rule, invariant, constraint | none | none |

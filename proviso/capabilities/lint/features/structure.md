@@ -91,20 +91,57 @@ Otherwise lint reports the [error] `findings.section-repeated` at the second occ
 | `lint.run` | Goal, Rationale, Goal | no | error at the second Goal | |
 | `lint.run`, with a rule that has a Rationale | Goal, Rationale | yes | nothing reported | the rule's Rationale belongs to the rule |
 
-## <a id="lint.structure.contact"></a> Rule: A feature names a contact
+## <a id="lint.structure.field-known"></a> Rule: A field is known for its element type
 
 ```guarded
-When      lint has read a feature <feature> with the [fields] <fields>
-Provided  <fields> include "Contact" with a value
-Then      lint reports nothing about the contact of <feature>
+When      lint reads the [field] <field> of an [element] of the [element type] <type>
+Provided  `field_names` lists the key of <field> for <type>
+Then      lint reads <field> as part of that [element]
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.contact-missing` at <feature>
+Otherwise lint reports the [error] `findings.field-unknown` at <field>
   And     lint goes on with the rest of the [spec tree]
 ```
 
-| feature | fields | provided | outcome | why |
+| field | type | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| `lint.run` | `- Contact: Bruno Baketarić` | yes | nothing reported | |
-| `lint.run` | `- Contact: ?` | yes | nothing reported | undecided, reported as an ask elsewhere |
-| `lint.run` | none | no | error | |
-| `lint.run` | `- Contact:` | no | error | an empty value |
+| `- Contact: Bruno Baketarić` | feature | yes | read | |
+| `- Represents: [finding]` | contract element | yes | read | |
+| `- Source: Maria Keller` | glossary entry | no | error | left out on purpose: traceability is deferred |
+| `- Owner: Search team` | feature | no | error | the tree names contacts, not owners |
+| `- contact: Bruno Baketarić` | feature | no | error | keys are matched exactly |
+
+## <a id="lint.structure.field-required"></a> Rule: An element has its required fields
+
+```guarded
+When      lint has read an [element] <element> of the [element type] <type>, with the [fields] <fields>
+Provided  <fields> include every [field] `field_names` requires for <type>, each with a value
+Then      lint reports nothing about missing [fields] of <element>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.field-missing` at <element>, naming each missing [field]
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| element | type | fields | provided | outcome | why |
+| --- | --- | --- | --- | --- | --- |
+| `lint.run` | feature | Contact | yes | nothing reported | |
+| `lint.run` | feature | `- Contact: ?` | yes | nothing reported | undecided, reported as an ask elsewhere |
+| `lint.run` | feature | none | no | error, naming Contact | |
+| `lint.run` | feature | `- Contact:` | no | error, naming Contact | an empty value |
+| `lint.tree-layout` | parameter | Configurable, Rationale | yes | nothing reported | a table-valued parameter needs no Value |
+| `lint.finding` | glossary entry | Definition, Contact | no | error, naming Status | |
+
+## <a id="lint.structure.field-once"></a> Rule: A field appears once per element
+
+```guarded
+When      lint has read an [element] <element> with the [fields] <fields>
+Provided  no key appears twice in <fields>
+Then      lint reports nothing about repeated [fields] of <element>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.field-repeated` at the second occurrence
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| element | fields | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| `lint.finding` | Definition, Contact, Status, Aliases | yes | nothing reported | |
+| `lint.finding` | Definition, Contact, Contact, Status | no | error at the second Contact | |

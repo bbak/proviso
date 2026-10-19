@@ -51,10 +51,6 @@ An element without a section its type requires.
 
 A section that appears twice in one element.
 
-### <a id="lint.findings.contact-missing"></a> contact-missing
-
-A feature without a contact.
-
 ### <a id="lint.findings.sibling-empty"></a> sibling-empty
 
 A file of a sibling with nothing but its title.
@@ -166,3 +162,39 @@ A backtick reference that names no contract element or parameter.
 ### <a id="lint.findings.reference-ambiguous"></a> reference-ambiguous
 
 A contract or parameter name that names more than one visible element.
+
+### <a id="lint.findings.field-unknown"></a> field-unknown
+
+A field whose key its element type does not have.
+
+### <a id="lint.findings.field-missing"></a> field-missing
+
+An element without a field its type requires, or with that field empty.
+
+### <a id="lint.findings.field-repeated"></a> field-repeated
+
+A field that appears twice in one element.
+
+### <a id="lint.findings.status-unknown"></a> status-unknown
+
+A glossary entry whose status is neither `defined` nor `open`.
+
+### <a id="lint.findings.open-entry-incomplete"></a> open-entry-incomplete
+
+An open glossary entry without its question, or with a definition.
+
+### <a id="lint.findings.defined-entry-open"></a> defined-entry-open
+
+A defined glossary entry with a question left, or an undecided definition.
+
+### <a id="lint.findings.definition-count"></a> definition-count
+
+A glossary entry with both or neither of `Definition` and `Defined by`.
+
+### <a id="lint.findings.defined-by-unresolved"></a> defined-by-unresolved
+
+A `Defined by` field whose link reaches no visible reference.
+
+### <a id="lint.findings.deviations-without-reference"></a> deviations-without-reference
+
+`Deviations` on a glossary entry not defined by a reference.
