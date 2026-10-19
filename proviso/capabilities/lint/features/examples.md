@@ -163,7 +163,7 @@ Otherwise lint reports the [error] `findings.provided-value-unknown` at <value>
 | --- | --- | --- | --- |
 | yes | yes | holds | |
 | no (level 1) | yes | fails, in the named part | |
-| ? | yes | undecided | reported as an ask elsewhere |
+| `?` | yes | undecided | reported as an ask elsewhere |
 | true | no | error | |
 | Yes | no | error | values are matched exactly |
 

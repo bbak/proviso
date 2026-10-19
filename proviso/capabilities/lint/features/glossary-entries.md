@@ -31,7 +31,7 @@ Otherwise lint reports the [error] `findings.status-unknown` at <status>
 | --- | --- | --- | --- |
 | defined | yes | defined | |
 | open | yes | open | |
-| ? | no | error | "open" already says that the meaning is undecided |
+| `?` | no | error | "open" already says that the meaning is undecided |
 | draft | no | error | a request's status, not a term's |
 | Defined | no | error | values are matched exactly |
 
@@ -40,7 +40,7 @@ Otherwise lint reports the [error] `findings.status-unknown` at <status>
 ```guarded
 When      lint reads an open [glossary entry] <entry>
 Provided  <entry> has a "Question" [field] with a value
-  And     the "Definition" of <entry> is "?"
+  And     the "Definition" of <entry> is [undecided]
 Then      lint reads <entry> as [undecided]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.open-entry-incomplete` at <entry>
@@ -59,7 +59,7 @@ Otherwise lint reports the [error] `findings.open-entry-incomplete` at <entry>
 ```guarded
 When      lint reads a defined [glossary entry] <entry>
 Provided  <entry> has no "Question" [field]
-  And     the "Definition" of <entry> is not "?"
+  And     the "Definition" of <entry> is not [undecided]
 Then      lint reports nothing about the status of <entry>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.defined-entry-open` at <entry>

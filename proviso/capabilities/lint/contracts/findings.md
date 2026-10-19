@@ -198,3 +198,7 @@ A `Defined by` field whose link reaches no visible reference.
 ### <a id="lint.findings.deviations-without-reference"></a> deviations-without-reference
 
 `Deviations` on a glossary entry not defined by a reference.
+
+### <a id="lint.findings.undecided"></a> undecided
+
+A place the tree leaves undecided: a `?` where the structure puts one, or a rule using an open term.

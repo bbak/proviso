@@ -179,9 +179,9 @@
 
 ## <a id="system.undecided"></a> undecided
 
-- Definition: Marked `?` in a whole field value, a whole Examples cell, a
-  whole section body, or as a token in a rule block. Nothing is specified
-  there yet.
+- Definition: Marked `?` as the first word of a field value, of an
+  Examples cell or of a section body, or as a word of its own in a rule
+  block. Nothing is specified there yet.
 - Contact: Bruno Baketarić
 - Status: defined
 
