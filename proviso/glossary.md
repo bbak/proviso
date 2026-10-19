@@ -159,12 +159,11 @@
 - Contact: Bruno Baketarić
 - Status: defined
 
-## <a id="system.finding"></a> finding
+## <a id="system.anchor"></a> anchor
 
-- Definition: Something lint reports about the spec tree, with where it
-  is: an error, a violation of the notation that the tree must not keep
-  and that cannot be overridden; or an ask, which asks an author to look,
-  such as at a `?`.
+- Definition: The HTML element `<a id="…"></a>`: an `a` element with an
+  `id` attribute and no content. Inside a code span or a fenced block it
+  is text, not an anchor.
 - Contact: Bruno Baketarić
 - Status: defined
-- Aliases: findings
+- Aliases: anchors
