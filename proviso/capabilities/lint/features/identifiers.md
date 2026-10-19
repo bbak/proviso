@@ -23,7 +23,7 @@ When      lint reads an [anchor] <anchor>
 Provided  <anchor> starts the text of a heading
 Then      that heading opens an [element], identified by the anchor's id
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `finding.anchor-misplaced` at <anchor>
+Otherwise lint reports the [error] `findings.anchor-misplaced` at <anchor>
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -48,7 +48,7 @@ When      lint reads the [identifier] <id> of an [element]
 Provided  <id> is [well-formed]
 Then      lint reports nothing about the form of <id>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `finding.identifier-malformed` at <id>
+Otherwise lint reports the [error] `findings.identifier-malformed` at <id>
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -71,7 +71,7 @@ When      lint reads the [identifier] <id> of an [element]
 Provided  <id> is not among <others>
 Then      lint reports nothing about the uniqueness of <id>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `finding.identifier-duplicate` at <id>, naming where else it is used
+Otherwise lint reports the [error] `findings.identifier-duplicate` at <id>, naming where else it is used
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -95,7 +95,7 @@ When      lint reads the [identifier] <id> of the system
 Provided  <id> is `system`
 Then      lint reports nothing about <id>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `finding.system-identifier` at <id>
+Otherwise lint reports the [error] `findings.system-identifier` at <id>
   And     lint goes on with the rest of the [spec tree]
 ```
 

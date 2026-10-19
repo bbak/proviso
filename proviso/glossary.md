@@ -11,8 +11,7 @@
 ## <a id="system.spec-root"></a> spec root
 
 - Definition: The folder holding a spec tree, named `proviso/` and marked
-  by the `system.md` in it. The spec root of a working directory is the
-  nearest one above it.
+  by the `system.md` in it.
 - Contact: Bruno Baketarić
 - Status: defined
 

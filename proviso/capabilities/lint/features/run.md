@@ -1,0 +1,148 @@
+# <a id="lint.run"></a> Running lint
+
+- Contact: Bruno Baketarić
+
+## Goal
+
+Running lint checks the right spec tree, reports its findings in a form
+people and agents can rely on, and tells by its exit status whether the
+tree may be kept as it is.
+
+## Rationale
+
+Agents call lint for every mechanical step and act on what it returns,
+so its output must be the same for the same tree, wherever and however
+it was run. A random order of findings, such as a map's iteration order,
+is exactly the kind of default nobody chose, so the order is specified.
+
+## <a id="lint.run.root"></a> Rule: Lint finds the nearest spec root
+
+### Rationale
+
+Searching upwards, as git does for `.git`, lets lint run from any folder
+of the repository, including from inside the tree, without a config
+file.
+
+```guarded
+When      someone runs `lint` in the directory <directory>
+Provided  <directory> or a directory above it holds a [spec root]
+Then      lint checks the [spec tree] of the spec root nearest to <directory>
+  And     lint reports what it finds there
+Otherwise lint writes to standard error that no spec root was found
+  And     lint exits with `lint.exit-status` 2
+```
+
+| directory | provided | outcome | why |
+| --- | --- | --- | --- |
+| `repo/`, holding `proviso/system.md` | yes | checks `repo/proviso/` | |
+| `repo/cmd/proviso/`, below that `repo/` | yes | checks `repo/proviso/` | found upwards |
+| `repo/proviso/capabilities/lint/`, inside the tree | yes | checks `repo/proviso/` | found from inside the tree |
+| `repo/a/`, where `repo/a/proviso/system.md` and `repo/proviso/system.md` both exist | yes | checks `repo/a/proviso/` | the nearest wins |
+| `repo/`, holding `proviso/` without `system.md` | no | exit status 2 | a folder named `proviso/` is not yet a spec root |
+| `repo/`, holding `system.md` but no `proviso/` | no | exit status 2 | the file alone does not mark a spec root |
+| `other/`, with no spec root up to the file system's root | no | exit status 2 | |
+
+## <a id="lint.run.unreadable"></a> Rule: Lint checks only a tree it can read completely
+
+### Rationale
+
+A file that cannot be read does not look missing to whatever reads the
+tree next: every element in it looks removed. Nothing is derived from a
+partial tree, so lint stops rather than reporting on part of it. This is
+not an error finding: the notation is not at fault, lint could not run.
+
+Lint reads only regular files and folders. It never follows a symbolic
+link, which could loop, read a file twice or reach outside the tree, so
+a link counts as unreadable too, and the tree stays self-contained.
+
+```guarded
+Given     lint has found the [spec root] for the run
+When      lint reads the files of its [spec tree], among them <unreadable>
+Provided  <unreadable> is empty
+Then      lint checks the whole [spec tree]
+  And     lint reports what it finds
+Otherwise lint writes every file in <unreadable> to standard error
+  And     lint exits with `lint.exit-status` 2, reporting no findings
+```
+
+| unreadable | provided | outcome | why |
+| --- | --- | --- | --- |
+| none | yes | the tree is checked | |
+| `glossary.md`, without read permission | no | exit status 2, naming `glossary.md` | |
+| `a.md`, not valid UTF-8 | no | exit status 2, naming `a.md` | text that cannot be decoded cannot be read |
+| `shared/`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared/` | a link is never followed |
+| `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
+| `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
+
+## <a id="lint.run.output"></a> Rule: Lint writes text or a report
+
+```guarded
+Given     lint has checked a [spec tree] and found the [findings] <findings>
+When      lint reports them, run with the options <options>
+Provided  <options> include `lint.json`
+Then      lint writes the `report` of <findings> to standard output
+  And     nothing else goes to standard output
+Otherwise lint writes <findings> to standard output as text, one per line
+  And     nothing else goes to standard output
+```
+
+| findings | options | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| one error | `--json` | yes | a `report` with one finding | |
+| none | `--json` | yes | a `report` with no findings | an empty list, not an empty output |
+| one error | none | no | one line of text | |
+| none | none | no | nothing written | silence when there is nothing to say |
+
+## <a id="lint.run.order"></a> Rule: Findings are ordered
+
+### Rationale
+
+A fixed order makes two runs on the same tree produce the same output,
+so tests can compare it and a person can diff it.
+
+```guarded
+When      lint reports the [findings] <findings>
+Then      they appear ordered by file path, compared byte by byte, then line, then kind
+  And     the order does not depend on the order in which files were read
+```
+
+| findings, as found | outcome |
+| --- | --- |
+| `b.md:3`, `a.md:9`, `a.md:2` | `a.md:2`, `a.md:9`, `b.md:3` |
+| `a.md:4 identifier-duplicate`, `a.md:4 anchor-misplaced` | `a.md:4 anchor-misplaced`, then `a.md:4 identifier-duplicate` |
+| `b.md:1`, `B.md:1` | `B.md:1`, then `b.md:1` |
+
+## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
+
+```guarded
+Given     lint has checked a [spec tree] and found the [findings] <findings>
+When      lint exits
+Provided  none of <findings> is an [error]
+Then      lint exits with `lint.exit-status` 0
+  And     nothing else changes
+Otherwise lint exits with `lint.exit-status` 1
+  And     nothing else changes
+```
+
+| findings | provided | outcome | why |
+| --- | --- | --- | --- |
+| none | yes | 0 | |
+| one ask | yes | 0 | an ask never fails a run |
+| one error | no | 1 | |
+| one error and one ask | no | 1 | the ask does not soften the error |
+
+## <a id="lint.run.read-only"></a> Invariant: Lint never writes the tree
+
+### Rationale
+
+Lint is a check. A check that changes what it checks hides what it
+found, and would make two runs on the same tree differ.
+
+### Ranges over
+
+Every run of `lint`, whatever it finds and however it ends.
+
+### Property
+
+Every file and folder under the [spec root] is byte for byte and entry
+for entry as it was before the run.
