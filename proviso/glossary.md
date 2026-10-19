@@ -27,7 +27,7 @@
 
 - Definition: A file or folder beside a level's own file that holds
   elements of that level: `glossary.md`, `parameters.md`,
-  `references.md`, `questions.md`, `invariants/`, `constraints/` or
+  `references.md`, `questions.md`, `invariants.md`, `constraints.md` or
   `contracts/`.
 - Contact: Bruno Baketarić
 - Status: defined
@@ -41,6 +41,15 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: elements
+
+## <a id="system.element-type"></a> element type
+
+- Definition: Which of system, capability, feature, rule, invariant,
+  constraint, glossary entry, parameter, reference or contract element an
+  element is.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: element types
 
 ## <a id="system.identifier"></a> identifier
 
