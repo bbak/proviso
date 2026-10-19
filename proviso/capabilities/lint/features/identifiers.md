@@ -92,7 +92,7 @@ element from having it, so reserving it needs no rule of its own.
 
 ```guarded
 When      lint reads the [identifier] <id> of the system
-Provided  <id> is `system`
+Provided  <id> is "system"
 Then      lint reports nothing about <id>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.system-identifier` at <id>

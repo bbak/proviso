@@ -26,7 +26,7 @@ exception is the tree's own markdownlint settings.
 ```guarded
 When      lint finds the file or folder <entry> in the [spec tree]
 Provided  the name of <entry> starts with a dot
-  And     <entry> is not `.markdownlint.jsonc` in the [spec root]
+  And     <entry> is not ".markdownlint.jsonc" in the [spec root]
 Then      lint skips <entry> and everything in it
   And     lint reports nothing about it
 Otherwise → lint.layout.file
@@ -64,7 +64,7 @@ Otherwise lint reports the [error] `findings.file-unknown` at <file>
 
 ```guarded
 When      lint finds the capability folder <folder>
-Provided  <folder> holds `capability.md`
+Provided  <folder> holds "capability.md"
 Then      lint reads the capability from it
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.capability-file-missing` at <folder>

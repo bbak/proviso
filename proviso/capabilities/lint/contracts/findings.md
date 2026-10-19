@@ -58,3 +58,83 @@ A feature without a contact.
 ### <a id="lint.findings.sibling-empty"></a> sibling-empty
 
 A file of a sibling with nothing but its title.
+
+### <a id="lint.findings.rule-block-count"></a> rule-block-count
+
+A rule without exactly one rule block.
+
+### <a id="lint.findings.keyword-unknown"></a> keyword-unknown
+
+A line of a rule block that does not start with a keyword.
+
+### <a id="lint.findings.keyword-order"></a> keyword-order
+
+A keyword out of its order.
+
+### <a id="lint.findings.keyword-count"></a> keyword-count
+
+A keyword that appears too often, or not at all.
+
+### <a id="lint.findings.guard-incomplete"></a> guard-incomplete
+
+A guard without its Otherwise, or an Otherwise without a guard.
+
+### <a id="lint.findings.hand-over-and"></a> hand-over-and
+
+An And line after a hand-over.
+
+### <a id="lint.findings.and-missing"></a> and-missing
+
+An outcome step without an And line.
+
+### <a id="lint.findings.given-refers-to-event"></a> given-refers-to-event
+
+A Given that uses a placeholder of the When.
+
+### <a id="lint.findings.provided-without-event"></a> provided-without-event
+
+A guard that uses no placeholder of the When.
+
+### <a id="lint.findings.placeholder-unbound"></a> placeholder-unbound
+
+A placeholder that neither the When nor a Given introduces.
+
+### <a id="lint.findings.examples-missing"></a> examples-missing
+
+A rule without an Examples table.
+
+### <a id="lint.findings.placeholder-reserved"></a> placeholder-reserved
+
+A placeholder named like a reserved column.
+
+### <a id="lint.findings.examples-column-missing"></a> examples-column-missing
+
+An Examples table without a column it needs.
+
+### <a id="lint.findings.provided-column"></a> provided-column
+
+A `provided` column on a rule without a guard, or none on a rule with one.
+
+### <a id="lint.findings.examples-column-unknown"></a> examples-column-unknown
+
+A column that is neither a placeholder nor reserved.
+
+### <a id="lint.findings.examples-empty"></a> examples-empty
+
+An Examples table without rows.
+
+### <a id="lint.findings.examples-row-incomplete"></a> examples-row-incomplete
+
+A row with a cell missing or empty.
+
+### <a id="lint.findings.provided-value-unknown"></a> provided-value-unknown
+
+A `provided` cell that is not `yes`, `no`, `no (<part>)` or `?`.
+
+### <a id="lint.findings.examples-side-missing"></a> examples-side-missing
+
+A guard never shown holding, or never shown failing.
+
+### <a id="lint.findings.examples-part-missing"></a> examples-part-missing
+
+A part of a guard never shown failing on its own.

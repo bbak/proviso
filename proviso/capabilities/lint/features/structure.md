@@ -95,7 +95,7 @@ Otherwise lint reports the [error] `findings.section-repeated` at the second occ
 
 ```guarded
 When      lint has read a feature <feature> with the [fields] <fields>
-Provided  <fields> include `Contact` with a value
+Provided  <fields> include "Contact" with a value
 Then      lint reports nothing about the contact of <feature>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.contact-missing` at <feature>

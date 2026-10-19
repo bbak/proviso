@@ -25,6 +25,24 @@
 - Status: defined
 - Aliases: asks
 
+## <a id="lint.keyword"></a> keyword
+
+- Definition: One of the words that start the lines of a rule block:
+  `Given`, `When`, `Provided`, `Then`, `Otherwise` and `And`, matched
+  exactly.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: keywords
+
+## <a id="lint.step"></a> step
+
+- Definition: A line of a rule block that starts with a keyword other
+  than `And`, together with the `And` lines that follow it. An outcome
+  step is a `Then` or `Otherwise` step.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: steps, outcome step
+
 ## <a id="lint.well-formed"></a> well-formed
 
 - Definition: An identifier is well-formed if it consists of one or more

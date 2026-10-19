@@ -106,7 +106,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
   And     the order does not depend on the order in which files were read
 ```
 
-| findings, as found | outcome |
+| findings | outcome |
 | --- | --- |
 | `b.md:3`, `a.md:9`, `a.md:2` | `a.md:2`, `a.md:9`, `b.md:3` |
 | `a.md:4 identifier-duplicate`, `a.md:4 anchor-misplaced` | `a.md:4 anchor-misplaced`, then `a.md:4 identifier-duplicate` |
@@ -115,8 +115,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 
 ```guarded
-Given     lint has checked a [spec tree] and found the [findings] <findings>
-When      lint exits
+When      lint exits, having found the [findings] <findings>
 Provided  none of <findings> is an [error]
 Then      lint exits with `lint.exit-status` 0
   And     nothing else changes
