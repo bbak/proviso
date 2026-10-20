@@ -62,17 +62,20 @@ no other lowercase form, so the letters of a script without case count
 too. Windows refuses characters such as `:` or `?` and a name ending in
 a dot, and a space would have to be wrapped in every Markdown link, so
 a name holds lowercase letters with their marks, digits, hyphens and
-dots, and nothing else.
+dots, and nothing else. Digits, like letters, may come from any script.
 
 A letter such as `ü` can be stored as one character or as `u` followed
 by a mark, and file systems differ in which form they keep. Lint reads
 every name in the composed form, Unicode's NFC, so the same tree gives
-the same paths on every platform.
+the same paths on every platform. Two names in one folder that are the
+same in that form would be one file on macOS and two on Linux, as with
+case.
 
 ```guarded
 When      lint finds the file or folder <entry> in the [spec tree], not skipped as hidden
 Provided  the name of <entry> holds only lowercase letters, marks, digits, hyphens and dots
   And     the name of <entry> does not end with a dot
+  And     no other entry in the folder of <entry> has the same name in NFC
 Then      lint reports nothing about the name of <entry>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.name-malformed` at <entry>
@@ -92,6 +95,8 @@ Otherwise lint reports the [error] `findings.name-malformed` at <entry>
 | `capabilities/lint/features/my run.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | a space |
 | `capabilities/lint/features/run_old.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | an underscore |
 | `capabilities/lint/features/run.md.` | no (does not end with a dot) | error | Windows drops a trailing dot |
+| `capabilities/lint/features/übersicht.md`, once composed and once as `u` followed by a mark | no (no other entry has the same name in NFC) | error, at both | one file on macOS, two on Linux |
+| `capabilities/lint/features/run٢.md` | yes | nothing reported | a digit from another script |
 
 ## <a id="lint.layout.line-ending"></a> Rule: Lines end with a line feed only
 
