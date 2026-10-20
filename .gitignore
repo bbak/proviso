@@ -2,6 +2,14 @@
 # the proof-of-concept authoring skill, which will be rewritten.
 .input/
 
+# Local build (task build). Never the root: proviso/ is the spec tree.
+bin/
+
+# Test artifacts
+*.test
+*.out
+coverage.*
+
 # Local environment
 .env
 *.local

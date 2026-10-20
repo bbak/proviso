@@ -4,9 +4,9 @@
 
 - The model, and with it the requirements for this tooling:
   [model/IMPROVEMENTS.md](model/IMPROVEMENTS.md)
-- Where things stand and what is next: [HANDOVER.md](HANDOVER.md). Read it
-  first in a new session.
 - Docs, specs and code comments: English
+- Build and test with Task: `task build` (into `bin/`), `task test`,
+  `task acceptance`, `task check` before every push
 
 ## User Preferences
 

@@ -1,0 +1,55 @@
+version: '3'
+
+vars:
+  BINARY: proviso
+  # No tags exist before the first release, so `--always` falls back to the
+  # commit. A VERSION file and goreleaser come with the first release.
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo unknown
+
+env:
+  CGO_ENABLED: '0'
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+    silent: true
+
+  build:
+    desc: Build the binary into bin/ (never into the root, where proviso/ is the spec tree)
+    cmds:
+      - go build -trimpath -ldflags "-s -w -X main.version={{.VERSION}}" -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
+
+  test:
+    desc: Run the coding agent's unit tests
+    cmds:
+      - go test ./cmd/... ./internal/... {{.CLI_ARGS}}
+
+  acceptance:
+    desc: Run the testing agent's acceptance tests (they build the binary themselves)
+    cmds:
+      - go test ./acceptance/... {{.CLI_ARGS}}
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  fmt:
+    desc: Format all Go source
+    cmds:
+      - go fmt ./...
+
+  tidy:
+    desc: Tidy go.mod
+    cmds:
+      - go mod tidy
+
+  check:
+    desc: Local quality gate, run before every push
+    cmds:
+      - task: vet
+      - task: test
+      - task: acceptance
