@@ -196,7 +196,7 @@ parts at once does not show which one decides, so each part needs a row
 of its own.
 
 ```guarded
-When      lint reads the "provided" column <values> of the [Examples table] of a [rule] whose [guard] has <parts> parts
+When      lint reads the "provided" column <values> of the [Examples table] of a [rule] whose [guard] has two or more parts, <parts> of them
 Provided  <values> hold at least <parts> rows that are "no" or "no (<part>)"
 Then      lint reports nothing about the parts of the [guard]
   And     lint goes on with the rest of the [spec tree]
@@ -206,6 +206,5 @@ Otherwise lint reports the [error] `findings.examples-part-missing` at the table
 
 | values | parts | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| yes, no | 1 | yes | nothing reported | |
 | yes, no (level 1), no (no anchor) | 2 | yes | nothing reported | |
 | yes, no (level 1) | 2 | no | error | the second part is never shown failing |

@@ -53,8 +53,9 @@ Otherwise lint reports the [error] `findings.term-unmarked` at each such word
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Unmarked text is what remains of a line once term marks, placeholders,
-references, literals and the target of a hand-over are taken out.
+Unmarked text is what remains of a line once its keyword, term marks,
+placeholders, references, literals and the target of a hand-over are
+taken out.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -111,7 +112,7 @@ When      lint follows the [hand-overs] from a [rule] through the [rules] <chain
 Provided  no [rule] appears twice in <chain>
 Then      lint reports nothing about the chain
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.hand-over-cycle` at the first [rule] that appears twice
+Otherwise lint reports the [error] `findings.hand-over-cycle` at the heading of the first [rule] that appears twice, naming the other [rules] of the cycle
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -119,7 +120,7 @@ Otherwise lint reports the [error] `findings.hand-over-cycle` at the first [rule
 | --- | --- | --- | --- |
 | `lint.layout.hidden`, `lint.layout.file` | yes | nothing reported | ends in an outcome |
 | `a`, `a` | no | error at `a` | a rule handing over to itself |
-| `a`, `b`, `a` | no | error at `a` | |
+| `a`, `b`, `a` | no | error at `a` | reported once per cycle, with `b` in `related` |
 
 ## <a id="lint.references.reference"></a> Rule: A backtick reference resolves
 

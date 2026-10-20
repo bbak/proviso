@@ -26,8 +26,10 @@ enum: [0, 1, 2]
 ## <a id="lint.cli.report"></a> report
 
 What `lint --json` writes: the spec root that was linted, and every
-finding. Paths are relative to the directory holding the spec root, so
-they read the same from wherever lint was run.
+finding. The paths of findings are relative to the directory holding
+the spec root, so they read the same from wherever lint was run. Every
+path uses `/` as its separator, on every platform, so that the order
+of findings is the same everywhere.
 
 ```yaml
 type: object
@@ -65,6 +67,8 @@ properties:
                 minimum: 1
 ```
 
+- `root` is the absolute path of the spec root that was linted, so it
+  shows which tree was checked when several are nested.
 - `kind` names one of the members of `findings`.
 - `message` is for people and not part of the contract: tests check
   `kind`, never the wording.

@@ -15,6 +15,31 @@ the wrong type is read as something it is not, a forgotten anchor turns
 an element into an unknown section, and a missing section leaves an
 element half-specified. Each of these is silent unless lint reports it.
 
+## <a id="lint.structure.element"></a> Rule: A file of a level opens with its element
+
+### Rationale
+
+`system.md`, `capability.md` and a feature file each exist to hold one
+element. Without its heading, the file's content belongs to nothing,
+and a tree without its system would pass as clean.
+
+```guarded
+When      lint reads the file <file> that holds the system, a capability or a feature
+Provided  the first heading of <file> has the [heading level] 1
+  And     it starts with an [anchor]
+Then      lint reads the [element] from that heading
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.element-missing` at <file>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| file | provided | outcome | why |
+| --- | --- | --- | --- |
+| `system.md`, opening with `# <a id="system"></a> Proviso` | yes | read | |
+| `system.md`, with no heading at all | no (heading level 1) | error | a tree without its system |
+| `capabilities/lint/capability.md`, opening with `## <a id="lint"></a> Lint` | no (heading level 1) | error | |
+| `capabilities/lint/features/run.md`, opening with `# Running lint` | no (an anchor) | error | a forgotten anchor |
+
 ## <a id="lint.structure.type"></a> Rule: An element's type follows from where it stands
 
 ```guarded

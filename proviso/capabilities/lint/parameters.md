@@ -49,8 +49,8 @@ place.
 
 - Configurable: no
 - Rationale: a fixed set of fields per element type lets lint tell a
-  misspelt key from a field of another type, and keeps out fields the
-  model left out on purpose, such as a glossary entry's `Source`.
+  misspelt key from a field of another type, and keeps out fields that
+  do not belong, such as an owner, which the tree never names.
 
 | element type | fields | required |
 | --- | --- | --- |
