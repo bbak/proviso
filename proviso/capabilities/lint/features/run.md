@@ -40,6 +40,7 @@ Otherwise lint writes to "stderr" that no [spec root] was found
 | `repo/proviso/capabilities/lint/`, inside the tree | yes | checks `repo/proviso/` | found from inside the tree |
 | `repo/a/`, where `repo/a/proviso/system.md` and `repo/proviso/system.md` both exist | yes | checks `repo/a/proviso/` | the nearest wins |
 | `repo/`, holding `proviso/` without `system.md` | no | exit status 2 | a folder named `proviso/` is not yet a spec root |
+| `repo/`, holding `Proviso/System.md` | no | exit status 2 | names are matched exactly, case included, on every platform |
 | `repo/`, holding `system.md` but no `proviso/` | no | exit status 2 | the file alone does not mark a spec root |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
 
@@ -55,10 +56,11 @@ not an error finding: the notation is not at fault, lint could not run.
 Lint reads only regular files and folders. It never follows a symbolic
 link, which could loop, read a file twice or reach outside the tree, so
 a link counts as unreadable wherever it stands and whatever its name,
-unless a hidden name has it skipped, which loses nothing, and the tree
-stays self-contained. A file the layout does not list is never
-read at all: it is reported as unknown, and leaves no part of the tree
-unread.
+and so does a Windows junction or any other entry that is neither a
+regular file nor a folder, unless a hidden name has it skipped, which
+loses nothing, and the tree stays self-contained. A file the layout
+does not list is never read at all: it is reported as unknown, and
+leaves no part of the tree unread.
 
 ```guarded
 Given     lint has found the [spec root] for the run

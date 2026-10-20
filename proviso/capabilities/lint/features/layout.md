@@ -151,6 +151,7 @@ Otherwise lint reports the [error] `findings.capability-file-missing` at <folder
 | --- | --- | --- | --- |
 | `capabilities/lint/`, holding `capability.md` | yes | read | |
 | `capabilities/lint/`, holding only `glossary.md` | no | error | a capability's Goal is required |
+| `capabilities/lint/`, holding `Capability.md` | no | error | names are matched exactly, case included |
 
 ## <a id="lint.layout.title"></a> Rule: A sibling file opens with a title
 

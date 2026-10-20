@@ -118,7 +118,7 @@ Otherwise lint reports the [error] `findings.defined-by-unresolved` at <field>
 | `CommonMark §6.3` | capability `links` | no (a link to a references.md) | error | no link to follow |
 | `[CommonMark](../../glossary.md#system.ref.commonmark)` | capability `links` | no (a link to a references.md) | error | |
 | `[CommonMark](../search/references.md#search.ref.x)` | capability `links` | no (a link to a references.md) | error | another capability's references are not visible |
-| `[CommonMark](..\..\references.md#system.ref.commonmark)` | capability `links` | no (a link to a references.md) | error | `\` is not a separator |
+| `[CommonMark](../..\references.md#system.ref.commonmark)` | capability `links` | no (a link to a references.md) | error | `\` is not a separator |
 | `[CommonMark](../../references.md#system.ref.commonmar)` | capability `links` | no (an identifier of a reference) | error | no such identifier |
 
 ## <a id="lint.glossary.deviations"></a> Rule: Deviations come only with a reference
