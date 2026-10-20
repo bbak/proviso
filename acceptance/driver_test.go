@@ -99,6 +99,8 @@ var severities = map[string]string{
 	"defined-by-unresolved":        "error",
 	"deviations-without-reference": "error",
 	"undecided":                    "ask",
+	"element-missing":              "error",
+	"section-level":                "error",
 }
 
 // ---------------------------------------------------------------------------
@@ -312,7 +314,35 @@ func execLint(t *testing.T, cwd string, args ...string) run {
 func check(t *testing.T, tr tree) outcome {
 	t.Helper()
 	dir := tr.write(t)
-	return lintIn(t, dir, dir, nil)
+	o := lintIn(t, dir, dir, nil)
+	if o.json.exit != 2 {
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
+	}
+	return o
+}
+
+// checkRoot asserts that the report's root is the absolute path of the spec
+// root want. The separator of root is not asserted (see the report).
+func checkRoot(t *testing.T, o outcome, want string) {
+	t.Helper()
+	got := filepath.FromSlash(o.report.Root)
+	if !filepath.IsAbs(got) {
+		t.Errorf("lint.cli.report: root %q is not an absolute path", o.report.Root)
+		return
+	}
+	canon := func(p string) string {
+		if r, err := filepath.EvalSymlinks(p); err == nil {
+			p = r
+		}
+		p = filepath.Clean(p)
+		if runtime.GOOS == "windows" {
+			p = strings.ToLower(p)
+		}
+		return p
+	}
+	if canon(got) != canon(want) {
+		t.Errorf("lint.cli.report: root %q, want the spec root %q", o.report.Root, want)
+	}
 }
 
 // sentinels are files the layout does not list, one sorting before and one
@@ -365,9 +395,27 @@ func checkRun(t *testing.T, o *outcome) {
 		}
 	}
 	if o.json.exit == 2 {
+		// lint.run.root, lint.run.unreadable: nothing on stdout, not
+		// even an empty report.
+		for _, r := range []run{o.json, o.text} {
+			if r.stdout != "" {
+				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
+			}
+		}
 		return
 	}
 	o.report = parseReport(t, o.json.stdout)
+	for _, f := range o.report.Findings {
+		paths := []string{f.File}
+		for _, r := range f.Related {
+			paths = append(paths, r.File)
+		}
+		for _, p := range paths {
+			if strings.Contains(p, `\`) {
+				t.Errorf("lint.cli.report: path %q does not use / as its separator", p)
+			}
+		}
+	}
 	checkOrder(t, o.report.Findings)
 	errorsFound := false
 	for _, f := range o.report.Findings {
@@ -543,8 +591,18 @@ func checkReadOnly(t *testing.T, before, after map[string]string) {
 // ---------------------------------------------------------------------------
 // Assertions on findings
 
+// norm drops a trailing slash, which a folder's path may or may not carry.
 func norm(p string) string {
-	return strings.TrimSuffix(strings.ReplaceAll(p, `\`, "/"), "/")
+	return strings.TrimSuffix(p, "/")
+}
+
+func isSentinel(p string) bool {
+	for _, s := range sentinels {
+		if p == s {
+			return true
+		}
+	}
+	return false
 }
 
 func dump(list []finding) string {
@@ -585,14 +643,15 @@ func where(file string, lines []int) string {
 func (o outcome) find(kind, file string, lines []int) []finding {
 	var found []finding
 	for _, f := range o.report.Findings {
-		if f.Kind == kind && (file == "" || norm(f.File) == file) && at(f.Line, lines) {
+		inFile := norm(f.File) == file || (file == "" && !isSentinel(f.File))
+		if f.Kind == kind && inFile && at(f.Line, lines) {
 			found = append(found, f)
 		}
 	}
 	return found
 }
 
-// has asserts a finding of kind in file (any file if empty) at lines, and
+// has asserts a finding of kind in file (any but the sentinels if empty) at lines, and
 // returns it.
 func (o outcome) has(t *testing.T, kind, file string, lines ...int) finding {
 	t.Helper()
@@ -607,7 +666,8 @@ func (o outcome) has(t *testing.T, kind, file string, lines ...int) finding {
 	return found[0]
 }
 
-// lacks asserts no finding of kind in file (anywhere if empty) at lines.
+// lacks asserts no finding of kind in file (anywhere but in the sentinels
+// if empty) at lines.
 func (o outcome) lacks(t *testing.T, kind, file string, lines ...int) {
 	t.Helper()
 	if o.json.exit == 2 {
@@ -659,7 +719,7 @@ func rows(t *testing.T, kind string, rs []row) {
 		t.Run(r.name, func(t *testing.T) {
 			o := checkGoesOn(t, r.tree)
 			if r.holds {
-				o.lacks(t, kind, "")
+				o.lacks(t, kind, r.file, r.lines...)
 			} else {
 				o.has(t, kind, r.file, r.lines...)
 			}

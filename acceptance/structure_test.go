@@ -2,7 +2,10 @@ package acceptance
 
 // Feature lint.structure: proviso/capabilities/lint/features/structure.md
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 const invariantMD = `
 ## <a id="cart.add.bounded"></a> Invariant: The cart never holds too much
@@ -28,6 +31,8 @@ func TestLintStructureType(t *testing.T) {
 	nested := appendFeature("\n### <a id=\"cart.add.y\"></a> Rule: Nested\n\nA paragraph.\n")
 	inGlossary := baseline().appendTo(glossaryPath, "\n## <a id=\"cart.rule-like\"></a> Rule: A rule in a glossary\n\nA paragraph.\n")
 	inCapability := baseline().appendTo(capPath, "\n## <a id=\"cart.extra\"></a> Extra\n\nA paragraph.\n")
+	invariantPrefix := baseline().with("proviso/invariants.md", strings.Replace(invariantsMD, "</a> The shop", "</a> Invariant: The shop", 1))
+	rulePrefix := baseline().with("proviso/constraints.md", strings.Replace(constraintsMD, "</a> The shop", "</a> Rule: The shop", 1))
 	deeper := baseline().appendTo(glossaryPath, "\n### <a id=\"cart.item.kind\"></a> kind\n\nA paragraph.\n")
 	rows(t, "element-unplaced", []row{
 		{name: "row1 a rule", tree: baseline(), holds: true},
@@ -38,11 +43,12 @@ func TestLintStructureType(t *testing.T) {
 			file: featurePath, lines: lines(something.line(featurePath, `id="cart.add.x"`))},
 		{name: "row6 a rule at level 3", tree: nested,
 			file: featurePath, lines: lines(nested.line(featurePath, `id="cart.add.y"`))},
-		// The Examples row says error; tree_layout lists any level 2
-		// heading with an anchor in glossary.md as a glossary entry. See
-		// the report: the test follows the Examples row.
-		{name: "row7 no rules in a glossary (conflicts with tree_layout)", tree: inGlossary,
+		{name: "row7 no rules in a glossary", tree: inGlossary,
 			file: glossaryPath, lines: lines(inGlossary.line(glossaryPath, `id="cart.rule-like"`))},
+		{name: "derived: a prefix outside a feature file, in invariants.md", tree: invariantPrefix,
+			file: "proviso/invariants.md", lines: lines(invariantPrefix.line("proviso/invariants.md", `id="system.read-only"`))},
+		{name: "derived: a prefix outside a feature file, in constraints.md", tree: rulePrefix,
+			file: "proviso/constraints.md", lines: lines(rulePrefix.line("proviso/constraints.md", `id="system.web"`))},
 		{name: "derived: level 2 in capability.md", tree: inCapability,
 			file: capPath, lines: lines(inCapability.line(capPath, `id="cart.extra"`))},
 		{name: "derived: level 3 in glossary.md", tree: deeper,
@@ -154,5 +160,42 @@ func TestLintStructureFieldOnce(t *testing.T) {
 		{name: "row1 Definition, Contact, Status, Aliases", tree: baseline(), holds: true},
 		{name: "row2 Definition, Contact, Contact, Status", tree: twice,
 			file: glossaryPath, lines: lines(twice.lineN(glossaryPath, "- Contact:", 2))},
+	})
+}
+
+func TestLintStructureElement(t *testing.T) {
+	rows(t, "element-missing", []row{
+		{name: "row1 system.md opening with its element", tree: baseline(), holds: true},
+		{name: "row2 system.md with no heading at all", tree: baseline().with(systemPath, "The shop sells goods.\n"),
+			file: systemPath, lines: lines(1)},
+		{name: "row3 capability.md opening at level 2", tree: baseline().edit(capPath, `# <a id="cart"></a> Cart`, `## <a id="cart"></a> Cart`),
+			file: capPath, lines: lines(1)},
+		{name: "row4 a feature with a forgotten anchor", tree: baseline().edit(featurePath, `# <a id="cart.add"></a> Adding`, `# Adding`),
+			file: featurePath, lines: lines(1)},
+	})
+}
+
+func TestLintStructureSectionLevel(t *testing.T) {
+	ruleRationale := func(heading string) tree {
+		return baseline().edit(featurePath, limitHeading+"\n", limitHeading+"\n\n"+heading+"\n\nShelves are small.\n")
+	}
+	after := appendFeature("\n## Rationale\n\nThe feature's reason, misplaced.\n")
+	deep := ruleRationale("#### Rationale")
+	top := baseline().edit(featurePath, "would empty the shelves.\n", "would empty the shelves.\n\n# Goal\n\nMore goals.\n")
+	property := appendFeature(strings.Replace(invariantMD, "### Property", "## Property", 1))
+	rows(t, "section-level", []row{
+		{name: "row1 ## Goal under a feature", tree: baseline(), holds: true},
+		{name: "row2 ### Rationale under a rule", tree: ruleRationale("### Rationale"), holds: true},
+		{name: "row3 the feature's rationale after one of its rules", tree: after,
+			file: featurePath, lines: lines(after.lineN(featurePath, "## Rationale", 2))},
+		{name: "row4 two levels below", tree: deep,
+			file: featurePath, lines: lines(deep.line(featurePath, "#### Rationale"))},
+		{name: "row5 at the element's own level", tree: top,
+			file: featurePath, lines: lines(top.lineN(featurePath, "# Goal", 2))}, // the first is "## Goal"
+		{name: "derived: an invariant's Property at its own level", tree: property,
+			file: featurePath, lines: lines(property.line(featurePath, "## Property"))},
+	})
+	t.Run("row2 nothing reported", func(t *testing.T) {
+		check(t, ruleRationale("### Rationale")).clean(t)
 	})
 }

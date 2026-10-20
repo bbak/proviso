@@ -53,6 +53,7 @@ Otherwise → cart.add.empty`
 		{name: "row1 Given", tree: ok, holds: true},
 		{name: "row2 And may be indented", tree: ok, holds: true},
 		{name: "row3 a hand-over", tree: ok, holds: true},
+		{name: "derived: a tab before the keyword", tree: withRule(strings.Replace(good, "  And     nothing", "\tAnd     nothing", 1), table), holds: true},
 		{name: "row4 But is not a keyword here", tree: but, file: xPath, lines: lines(but.line(xPath, "But       the cart"))},
 		{name: "row5 keywords are matched exactly", tree: lower, file: xPath, lines: lines(lower.line(xPath, "given     the shop"))},
 		{name: "row6 a step continued on a new line", tree: continued, file: xPath, lines: lines(continued.line(xPath, "and keeps it"))},
@@ -99,6 +100,34 @@ func TestLintRulesCount(t *testing.T) {
 		bad("derived: no Then", "When", "Provided", "Otherwise", "And"),
 		bad("derived: two Otherwise", "When", "Provided", "Then", "And", "Otherwise", "And", "Otherwise", "And"),
 	})
+	// lint.rules Rationale: a block without exactly one When is reported
+	// only for how often its keywords appear, not by the checks that take
+	// the When as their reference.
+	for _, c := range []struct{ name, block string }{
+		{"rows3-4 no When: no checks on Given, guard or placeholders", `Given     the shop has <product>
+Provided  the shop is open
+Then      the cart holds <other>
+  And     nothing else changes
+Otherwise the cart refuses <product>
+  And     nothing else changes`},
+		{"rows3-4 two Whens: no checks on Given, guard or placeholders", `Given     the shop has <product>
+When      a buyer adds <product>
+When      a buyer pays for <product>
+Provided  the shop is open
+Then      the cart holds <other>
+  And     nothing else changes
+Otherwise the cart refuses <product>
+  And     nothing else changes`},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			tr := withRule(c.block, "| product | other | provided | outcome |\n| --- | --- | --- | --- |\n| apple | pear | yes | added |\n| apple | pear | no | refused |\n")
+			o := checkGoesOn(t, tr)
+			o.has(t, "keyword-count", xPath, blockLines(tr)...)
+			for _, k := range []string{"given-refers-to-event", "provided-without-event", "placeholder-unbound"} {
+				o.lacks(t, k, "")
+			}
+		})
+	}
 }
 
 func TestLintRulesGuard(t *testing.T) {

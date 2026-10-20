@@ -71,6 +71,8 @@ func TestLintReferencesMarked(t *testing.T) {
 		upper,
 		{name: "derived: only whole words", tree: withThenAnd(baseline(), "the bill stays itemized"), holds: true},
 		{name: "derived: a literal is not a use", tree: withThenAnd(baseline(), `the cart shows "item"`), holds: true},
+		{name: "derived: the keyword is taken out", tree: baseline().appendTo(glossaryPath,
+			"\n## <a id=\"cart.then\"></a> then\n\n- Definition: The time after paying.\n- Contact: Dana Reyes\n- Status: defined\n"), holds: true},
 	})
 }
 
@@ -90,13 +92,15 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 	})
 	t.Run("row3 the same glossary", func(t *testing.T) {
 		o := checkGoesOn(t, list)
-		o.has(t, "term-ambiguous", glossaryPath, list.line(glossaryPath, `id="cart.item"`))
-		o.has(t, "term-ambiguous", glossaryPath, list.line(glossaryPath, `id="cart.item-list"`))
+		item, other := list.line(glossaryPath, `id="cart.item"`), list.line(glossaryPath, `id="cart.item-list"`)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, item), glossaryPath, other)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, other), glossaryPath, item)
 	})
 	t.Run("row4 a capability may not redefine a system term", func(t *testing.T) {
 		o := checkGoesOn(t, redefined)
-		o.has(t, "term-ambiguous", glossaryPath, redefined.line(glossaryPath, `id="cart.spec-tree"`))
-		o.has(t, "term-ambiguous", "proviso/glossary.md", redefined.line("proviso/glossary.md", `id="system.spec-tree"`))
+		own, sys := redefined.line(glossaryPath, `id="cart.spec-tree"`), redefined.line("proviso/glossary.md", `id="system.spec-tree"`)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, own), "proviso/glossary.md", sys)
+		relates(t, o.has(t, "term-ambiguous", "proviso/glossary.md", sys), glossaryPath, own)
 	})
 }
 
@@ -123,17 +127,19 @@ Otherwise → `+target, handOverTable)
 func TestLintReferencesChain(t *testing.T) {
 	self := withX(chainRule("cart.x.a", "cart.x.a"))
 	loop := withX(chainRule("cart.x.a", "cart.x.b") + chainRule("cart.x.b", "cart.x.a"))
-	// The place of rule a: its heading, up to the end of its table.
-	ruleA := func(tr tree) []int {
-		first := tr.line(xPath, `id="cart.x.a"`)
-		_, close := tr.fence(xPath, 1)
-		_, last := tr.table(xPath, close)
-		return lines(first, last)
-	}
+	ruleA := func(tr tree) []int { return lines(tr.line(xPath, `id="cart.x.a"`)) }
 	rows(t, "hand-over-cycle", []row{
 		{name: "row1 ends in an outcome", tree: withX(chainRule("cart.x.a", "cart.x.b") + chainRule("cart.x.b", "cart.add.empty")), holds: true},
 		{name: "row2 a rule handing over to itself", tree: self, file: xPath, lines: ruleA(self)},
 		{name: "row3 a, b, a", tree: loop, file: xPath, lines: ruleA(loop)},
+	})
+	t.Run("row3 reported once per cycle, with b in related", func(t *testing.T) {
+		o := check(t, loop)
+		found := o.find("hand-over-cycle", xPath, nil)
+		if len(found) != 1 {
+			t.Fatalf("want one hand-over-cycle, got:\n%s", dump(o.report.Findings))
+		}
+		relates(t, found[0], xPath, loop.line(xPath, `id="cart.x.b"`))
 	})
 }
 
@@ -184,12 +190,14 @@ func TestLintReferencesReferenceAmbiguous(t *testing.T) {
 	})
 	t.Run("row2 contracts and parameters share one namespace", func(t *testing.T) {
 		o := checkGoesOn(t, sameLevel)
-		o.has(t, "reference-ambiguous", contract, sameLevel.line(contract, `id="cart.report"`))
-		o.has(t, "reference-ambiguous", paramsPath, sameLevel.line(paramsPath, `id="cart.report-size"`))
+		c, p := sameLevel.line(contract, `id="cart.report"`), sameLevel.line(paramsPath, `id="cart.report-size"`)
+		relates(t, o.has(t, "reference-ambiguous", contract, c), paramsPath, p)
+		relates(t, o.has(t, "reference-ambiguous", paramsPath, p), contract, c)
 	})
 	t.Run("row3 no shadowing", func(t *testing.T) {
 		o := checkGoesOn(t, levels)
-		o.has(t, "reference-ambiguous", contract, levels.line(contract, `id="cart.report"`))
-		o.has(t, "reference-ambiguous", "proviso/contracts/report.md", levels.line("proviso/contracts/report.md", `id="system.report"`))
+		c, s := levels.line(contract, `id="cart.report"`), levels.line("proviso/contracts/report.md", `id="system.report"`)
+		relates(t, o.has(t, "reference-ambiguous", contract, c), "proviso/contracts/report.md", s)
+		relates(t, o.has(t, "reference-ambiguous", "proviso/contracts/report.md", s), contract, c)
 	})
 }
