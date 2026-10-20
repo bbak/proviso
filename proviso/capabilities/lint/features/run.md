@@ -76,7 +76,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | none | yes | the tree is checked | |
 | `glossary.md`, without read permission | no | exit status 2, naming `glossary.md` | |
 | `a.md`, not valid UTF-8 | no | exit status 2, naming `a.md` | text that cannot be decoded cannot be read |
-| `shared/`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared/` | a link is never followed |
+| `shared`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared` | a link is never followed |
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
