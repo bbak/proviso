@@ -10,7 +10,7 @@ where tooling and links expect it.
 ## Rationale
 
 Identifiers are what everything else refers to: links, hand-overs, the
-manifest, impact sets and the logical diff. An anchor in the wrong place
+manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
 reference to it ambiguous. Whether an identifier is permanent and never
 reused can only be checked against a baseline, so that check comes with

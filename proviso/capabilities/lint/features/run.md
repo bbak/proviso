@@ -129,9 +129,9 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 When      lint exits, having found the [findings] <findings>
 Provided  none of <findings> is an [error]
 Then      lint exits with `lint.exit-status` 0
-  And     nothing else changes
+  And     everything else stays as it was
 Otherwise lint exits with `lint.exit-status` 1
-  And     nothing else changes
+  And     everything else stays as it was
 ```
 
 | findings | provided | outcome | why |

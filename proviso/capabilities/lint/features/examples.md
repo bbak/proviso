@@ -14,8 +14,8 @@ The testing agent derives its cases from the rows: the placeholder
 values are its inputs, the `outcome` column its expectation, and the
 `provided` column the guard's truth value, so it can write guard tests
 as well as outcome tests. A missing column or side leaves a test to the
-agent's interpretation. Whether the rows also cover the boundaries takes
-judgement, and is left to review.
+agent's interpretation. Whether the rows also cover the boundaries is for
+a person to weigh, and is left to review.
 
 ## <a id="lint.examples.present"></a> Rule: A rule has an Examples table
 

@@ -20,7 +20,7 @@ line. Proviso is those mechanics.
 ## Scope
 
 - Checking a spec tree against the model's notation.
-- A baseline of element fingerprints, and the logical diff against it.
+- A baseline of element fingerprints, and the element diff against it.
 - Impact sets for a change.
 - Context packs for the testing and coding agents.
 - Acceptance checks.

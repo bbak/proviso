@@ -55,7 +55,7 @@ Otherwise lint reports the [error] `findings.keyword-unknown` at <line>
 | line | provided | outcome | why |
 | --- | --- | --- | --- |
 | `Given     the spec tree has …` | yes | read | |
-| `  And     nothing else changes` | yes | read | `And` may be indented |
+| `  And     everything else stays as it was` | yes | read | `And` may be indented |
 | `Otherwise → lint.layout.file` | yes | read | a hand-over |
 | `But       nothing is reported` | no | error | not a keyword here |
 | `given     the spec tree has …` | no | error | keywords are matched exactly |
@@ -137,7 +137,7 @@ Otherwise → lint.rules.and
 | step | ands | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | `Otherwise → lint.layout.file` | none | yes | nothing reported | |
-| `Otherwise → lint.layout.file` | `And nothing else changes` | yes | error at that line | |
+| `Otherwise → lint.layout.file` | `And everything else stays as it was` | yes | error at that line | |
 | `Otherwise lint reports …` | `And lint goes on …` | no | handed over | not a hand-over |
 
 ## <a id="lint.rules.and"></a> Rule: An outcome says what else happens
@@ -154,7 +154,7 @@ Otherwise lint reports the [error] `findings.and-missing` at <step>
 | step | ands | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | `Then lint reads <file>` | `And lint goes on …` | yes | nothing reported | |
-| `Then lint exits with …` | `And nothing else changes` | yes | nothing reported | "nothing else" is a statement too |
+| `Then lint exits with …` | `And everything else stays as it was` | yes | nothing reported | "everything else" is a statement too |
 | `Otherwise lint reports …` | `And ?` | yes | nothing reported | undecided, reported as an ask elsewhere |
 | `Then lint reads <file>` | none | no | error | |
 | `Otherwise lint reports …` | none | no | error | |
@@ -181,8 +181,8 @@ Otherwise lint reports the [error] `findings.given-refers-to-event` at <given>
 ### Rationale
 
 A condition that says nothing about the event holds or fails regardless
-of it, so it may be state that belongs in a Given. Whether it is takes
-judgement, so lint asks rather than refuses.
+of it, so it may be state that belongs in a Given. Only a person can
+weigh whether it is, so lint asks rather than refuses.
 
 ```guarded
 When      lint reads the Provided [step] <guard>, with its And lines, of a [rule block] whose When [step] uses the [placeholders] <introduced>
