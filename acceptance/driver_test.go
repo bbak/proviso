@@ -55,6 +55,8 @@ var severities = map[string]string{
 	"identifier-duplicate":         "error",
 	"system-identifier":            "error",
 	"file-unknown":                 "error",
+	"name-uppercase":               "error",
+	"line-ending":                  "error",
 	"capability-file-missing":      "error",
 	"title-missing":                "error",
 	"element-unplaced":             "error",
@@ -322,11 +324,15 @@ func check(t *testing.T, tr tree) outcome {
 }
 
 // checkRoot asserts that the report's root is the absolute path of the spec
-// root want, written with / as its separator.
+// root want, written with / as its separator and, on Windows, its drive
+// first, as in C:/repo/proviso.
 func checkRoot(t *testing.T, o outcome, want string) {
 	t.Helper()
 	if strings.Contains(o.report.Root, `\`) {
 		t.Errorf("lint.cli.report: root %q does not use / as its separator", o.report.Root)
+	}
+	if runtime.GOOS == "windows" && len(filepath.VolumeName(want)) == 2 && !hasDrive(o.report.Root) {
+		t.Errorf("lint.cli.report: root %q does not start with its drive, as in C:/repo/proviso", o.report.Root)
 	}
 	got := filepath.FromSlash(o.report.Root)
 	if !filepath.IsAbs(got) {
@@ -346,6 +352,15 @@ func checkRoot(t *testing.T, o outcome, want string) {
 	if canon(got) != canon(want) {
 		t.Errorf("lint.cli.report: root %q, want the spec root %q", o.report.Root, want)
 	}
+}
+
+// hasDrive tells whether p starts with a drive letter, a colon and a /.
+func hasDrive(p string) bool {
+	if len(p) < 3 || p[1] != ':' || p[2] != '/' {
+		return false
+	}
+	c := p[0] | 0x20
+	return c >= 'a' && c <= 'z'
 }
 
 // sentinels are files the layout does not list, one sorting before and one
