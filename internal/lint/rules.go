@@ -105,7 +105,9 @@ func (l *linter) checkBlock(r *rule) {
 		}
 	}
 
-	// Placeholders.
+	// Placeholders. The checks that take the block's one When as their
+	// reference are left out when there is not exactly one.
+	oneWhen := counts[guarded.When] == 1
 	event := map[string]bool{}
 	for _, s := range b.StepsOf(guarded.When) {
 		for p := range s.Placeholders() {
@@ -115,7 +117,7 @@ func (l *linter) checkBlock(r *rule) {
 	introduced := maps.Clone(event)
 	for _, s := range b.StepsOf(guarded.Given) {
 		for _, p := range slices.Sorted(maps.Keys(s.Placeholders())) {
-			if event[p] {
+			if oneWhen && event[p] {
 				l.report(Error, "given-refers-to-event", l.at(r, s.Head.N), "the Given uses <%s>, a placeholder of the When", p)
 				break
 			}
@@ -129,7 +131,7 @@ func (l *linter) checkBlock(r *rule) {
 		for p := range s.Placeholders() {
 			uses = uses || event[p]
 		}
-		if !uses {
+		if oneWhen && !uses {
 			l.report(Ask, "provided-without-event", l.at(r, s.Head.N), "the guard uses no placeholder of the When: is it state for a Given?")
 		}
 	}
@@ -141,7 +143,7 @@ func (l *linter) checkBlock(r *rule) {
 				if slices.Contains(reserved, sp.Value) {
 					l.report(Error, "placeholder-reserved", pos, "the placeholder <%s> is named like a reserved column", sp.Value).col = sp.Start
 				}
-				if !introduced[sp.Value] {
+				if oneWhen && !introduced[sp.Value] {
 					l.report(Error, "placeholder-unbound", pos, "the placeholder <%s> is introduced by neither the When nor a Given", sp.Value).col = sp.Start
 				}
 			case guarded.Mark:
@@ -149,7 +151,8 @@ func (l *linter) checkBlock(r *rule) {
 				if e == nil {
 					l.report(Error, "term-unresolved", pos, "the term [%s] names no visible glossary entry", sp.Value).col = sp.Start
 				} else if st, _ := e.field("Status"); st.value != "defined" {
-					l.report(Ask, "undecided", pos, "the term [%s] resolves to %q, which is not defined", sp.Value, e.id).col = sp.Start
+					f := l.report(Ask, "undecided", pos, "the term [%s] resolves to %q, which is not defined", sp.Value, e.id)
+					f.col, f.Related = sp.Start, []Pos{e.pos()}
 				}
 			case guarded.Code:
 				if !l.resolveReference(r.cap, sp.Value) {
@@ -219,6 +222,10 @@ func (l *linter) resolveReference(cap, ref string) bool {
 // names overlap, the longest match at a place wins.
 func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	text := ln.Without(true, guarded.Literal, guarded.Code, guarded.Mark, guarded.Placeholder)
+	if ln.Keyword != "" {
+		i := strings.Index(text, ln.Keyword) // the first word, after leading white space
+		text = text[:i] + string(rune(0)) + text[i+len(ln.Keyword):]
+	}
 	words := splitWords(text)
 	var phrases [][]string
 	for _, lv := range visible(r.cap) {

@@ -227,7 +227,24 @@ func TestFindings(t *testing.T) {
 			[]string{"examples-part-missing@capabilities/c/features/f.md:29", "provided-value-unknown@capabilities/c/features/f.md:32"}},
 		{"no failing side", withRule("When      lint reads <id>\nProvided  <id> is 1\nThen      x\n  And     y\nOtherwise z\n  And     w\n",
 			"| id | provided | outcome |\n| --- | --- | --- |\n| a | yes | x |\n"),
-			[]string{"examples-part-missing@capabilities/c/features/f.md:28", "examples-side-missing@capabilities/c/features/f.md:28"}},
+			[]string{"examples-side-missing@capabilities/c/features/f.md:28"}}, // one part: no part check
+		{"two whens skip event checks", withRule("When      lint reads <id>\nWhen      <x>\nProvided  the sky\nThen      <y>\n  And     z\nOtherwise w\n  And     v\n", "| id | x | y | provided | outcome |\n| --- | --- | --- | --- | --- |\n| a | b | c | yes | d |\n| a | b | c | no | d |\n"),
+			[]string{"keyword-count@capabilities/c/features/f.md:19"}},
+		{"keyword is not unmarked text", func() map[string]string {
+			f := withRule("When      lint reads <id>\nThen      x\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n")
+			f["capabilities/c/glossary.md"] += "\n## <a id=\"c.then\"></a> then\n\n- Definition: x\n- Contact: x\n- Status: defined\n"
+			return f
+		}(), nil},
+		{"level files and section levels", map[string]string{
+			"system.md":                    "Nothing here.\n",
+			"capabilities/c/capability.md": "## <a id=\"c\"></a> C\n",
+			"capabilities/c/features/f.md": "# F\n\n# <a id=\"c.f\"></a> F\n\n- Contact: x\n\n# Goal\n\ng\n\n## <a id=\"c.f.r\"></a> Rule: R\n\n## Rationale\n\nr\n",
+			"glossary.md":                  "# Glossary\n\n## <a id=\"system.r\"></a> Rule: r\n",
+		}, []string{
+			"element-missing@system.md:1", "element-missing@capabilities/c/capability.md:1", "element-unplaced@capabilities/c/capability.md:1",
+			"element-missing@capabilities/c/features/f.md:1", "section-level@capabilities/c/features/f.md:7", "section-missing@capabilities/c/features/f.md:3",
+			"section-level@capabilities/c/features/f.md:13", "rule-block-count@capabilities/c/features/f.md:11", "element-unplaced@glossary.md:3",
+		}},
 		{"two blocks", withRule("When      lint reads <id>\nThen      x\n  And     y\n```\n\n```guarded\nWhen x\n", "| id | outcome |\n| --- | --- |\n| a | x |\n"),
 			[]string{"rule-block-count@capabilities/c/features/f.md:13"}},
 		{"structure", map[string]string{

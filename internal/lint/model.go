@@ -110,6 +110,11 @@ func (l *linter) build(f *file) {
 	if sibling {
 		l.checkTitle(f, first)
 	}
+	if f.Kind == tree.System || f.Kind == tree.Capability || f.Kind == tree.Feature {
+		if first < 0 || doc.Blocks[first].Heading.Level != 1 || !doc.Blocks[first].Heading.HasID {
+			l.report(Error, "element-missing", Pos{f.path, 1}, "the file does not open with its element: a level 1 heading with an anchor")
+		}
+	}
 	var cur *element
 	var stack []*element // open contract elements, by heading level
 	for i, b := range doc.Blocks {
@@ -156,6 +161,9 @@ func (l *linter) build(f *file) {
 			l.report(Error, "heading-unknown", Pos{f.path, b.Line}, "%q is no section of a %s", h.Text, cur.typ)
 			continue
 		}
+		if h.Level != cur.level+1 {
+			l.report(Error, "section-level", Pos{f.path, b.Line}, "the section %q is at heading level %d, not one below its element's %d", h.Text, h.Level, cur.level)
+		}
 		s := section{name: h.Text, line: b.Line}
 		if i+1 < len(doc.Blocks) && doc.Blocks[i+1].Heading == nil {
 			s.firstWord = doc.Blocks[i+1].FirstWord
@@ -184,6 +192,9 @@ func isTitle(h *markdown.Heading) bool { return h.Level == 1 && !h.HasID }
 // placeType is the parameter tree_layout: the element type a heading with an
 // anchor has in a file of the kind k, or "" if it has none.
 func placeType(k tree.Kind, h *markdown.Heading) string {
+	if k != tree.Feature && (strings.HasPrefix(h.Text, "Rule:") || strings.HasPrefix(h.Text, "Invariant:")) {
+		return ""
+	}
 	switch k {
 	case tree.System:
 		if h.Level == 1 {
