@@ -3,7 +3,9 @@ package acceptance
 // Feature lint.layout: proviso/capabilities/lint/features/layout.md
 
 import (
+	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -68,31 +70,90 @@ func (tr tree) moved(from, to string) tree {
 	return c
 }
 
-func TestLintLayoutLowercase(t *testing.T) {
+func TestLintLayoutName(t *testing.T) {
 	features := "proviso/capabilities/cart/features/"
 	upperCart := baseline().moved("proviso/capabilities/cart", "proviso/capabilities/Cart")
 	uebersicht := strings.ReplaceAll(featureMD, "cart.add", "cart.uebersicht")
-	rows(t, "name-uppercase", []row{
+	// ü as one character (NFC), as u followed by a mark (NFD), and Ü.
+	composed, decomposed, upper := "übersicht.md", "übersicht.md", "Übersicht.md"
+	rows(t, "name-malformed", []row{
 		{name: "row1 capabilities/cart/features/add.md", tree: baseline(), holds: true},
-		{name: "row2 capabilities/cart/features/Add.md", tree: baseline().moved(featurePath, features+"Add.md"),
+		{name: "row2 übersicht.md, a letter outside ASCII", tree: baseline().with(features+composed, uebersicht), holds: true},
+	})
+	t.Run("row3 übersicht.md, stored as u followed by a mark", func(t *testing.T) {
+		// Without a Contact the feature has a finding on its first line,
+		// so that its path is reported.
+		o := checkGoesOnAfter(t, baseline().with(features+decomposed, featureWith("cart.uebersicht", "", "")), func(dir string) {
+			if !hasEntry(filepath.Join(dir, filepath.FromSlash(features)), decomposed) {
+				t.Skip("the file system does not keep the name as u followed by a mark")
+			}
+		})
+		o.lacks(t, "name-malformed", "")
+		o.has(t, "field-missing", features+composed, 1)
+		for _, f := range o.report.Findings {
+			if strings.Contains(f.File, decomposed) {
+				t.Errorf("lint.cli.report: path %q is not in the composed form", f.File)
+			}
+		}
+	})
+	rows(t, "name-malformed", []row{
+		{name: "row4 検索.md, a script without case", tree: baseline().with(features+"検索.md", strings.ReplaceAll(featureMD, "cart.add", "cart.search")), holds: true},
+		{name: "row5 .markdownlint.jsonc in the spec root", tree: baseline().with("proviso/.markdownlint.jsonc", "{}\n"), holds: true},
+		{name: "row6 capabilities/cart/features/Add.md", tree: baseline().moved(featurePath, features+"Add.md"),
 			file: features + "Add.md", lines: lines(1)},
-		{name: "row3 capabilities/Cart/, a folder", tree: upperCart,
+		{name: "row7 capabilities/Cart, a folder", tree: upperCart,
 			file: "proviso/capabilities/Cart", lines: lines(1)},
-		{name: "row4 übersicht.md, a lowercase letter outside ASCII", tree: baseline().with(features+"übersicht.md", uebersicht), holds: true},
-		{name: "row5 Übersicht.md, an uppercase letter outside ASCII", tree: baseline().with(features+"Übersicht.md", uebersicht),
-			file: features + "Übersicht.md", lines: lines(1)},
+		{name: "row8 Übersicht.md, an uppercase letter outside ASCII", tree: baseline().with(features+upper, uebersicht),
+			file: features + upper, lines: lines(1)},
+		{name: "row9 my add.md, a space", tree: baseline().moved(featurePath, features+"my add.md"),
+			file: features + "my add.md", lines: lines(1)},
+		{name: "row10 add_old.md, an underscore", tree: baseline().moved(featurePath, features+"add_old.md"),
+			file: features + "add_old.md", lines: lines(1)},
+	})
+	t.Run("row11 add.md., ending with a dot", func(t *testing.T) {
+		o := checkGoesOnAfter(t, baseline(), func(dir string) {
+			folder := filepath.Join(dir, filepath.FromSlash(features))
+			name := filepath.Join(folder, "add.md") + "."
+			if runtime.GOOS == "windows" {
+				// Windows drops a trailing dot unless the path is passed
+				// on as it is.
+				name = `\\?\` + name
+			}
+			if err := os.WriteFile(name, []byte("# Notes\n"), 0o644); err != nil {
+				t.Skipf("cannot create a name ending with a dot here: %v", err)
+			}
+			// Runs before the temporary directory is removed.
+			t.Cleanup(func() { os.Remove(name) })
+			if !hasEntry(folder, "add.md.") {
+				t.Skip("the file system does not keep a name ending with a dot")
+			}
+		})
+		o.has(t, "name-malformed", features+"add.md.", 1)
+	})
+	rows(t, "name-malformed", []row{
 		{name: "derived: .DS_Store, skipped as hidden", tree: baseline().with("proviso/.DS_Store", "\x00\x01"), holds: true},
-		{name: "derived: uppercase names in a hidden folder", tree: baseline().with("proviso/.Trash/Notes.md", "# Notes\n"), holds: true},
+		{name: "derived: malformed names in a hidden folder", tree: baseline().with("proviso/.Trash/My Notes.md", "# Notes\n"), holds: true},
 		{name: "derived: README.md, a file the layout does not list", tree: baseline().with("proviso/capabilities/cart/README.md", "# Cart\n"),
 			file: "proviso/capabilities/cart/README.md", lines: lines(1)},
 	})
 	t.Run("derived: the folder's name only, not the names in it", func(t *testing.T) {
 		o := checkGoesOn(t, upperCart)
-		o.has(t, "name-uppercase", "proviso/capabilities/Cart", 1)
-		if n := len(o.find("name-uppercase", "", nil)); n != 1 {
-			t.Errorf("want name-uppercase once, at the folder, got:\n%s", dump(o.report.Findings))
+		o.has(t, "name-malformed", "proviso/capabilities/Cart", 1)
+		if n := len(o.find("name-malformed", "", nil)); n != 1 {
+			t.Errorf("want name-malformed once, at the folder, got:\n%s", dump(o.report.Findings))
 		}
 	})
+}
+
+// hasEntry tells whether the folder dir holds an entry named exactly name.
+func hasEntry(dir, name string) bool {
+	entries, _ := os.ReadDir(dir)
+	for _, e := range entries {
+		if e.Name() == name {
+			return true
+		}
+	}
+	return false
 }
 
 // crlf ends the given (1-based) lines of s in a carriage return and a line
@@ -138,6 +199,17 @@ func TestLintLayoutLineEnding(t *testing.T) {
 			file: settings, lines: lines(1)},
 		{name: "derived: a file the layout does not list is never read", tree: baseline().with("proviso/notes.md", crlf("# Notes\n\nSome notes.\n")), holds: true},
 		{name: "derived: a hidden file is skipped", tree: baseline().with("proviso/.notes.md", crlf("# Notes\n")), holds: true},
+	})
+	t.Run("derived: a lone carriage return does not end a line", func(t *testing.T) {
+		// lint.cli.report counts lines by line feeds only, so a finding
+		// after the carriage return stands on the line a line feed count
+		// gives.
+		b := "proviso/capabilities/cart/features/b.md"
+		tr := baseline().with(b, featureWith("cart.b", "- Contact: Dana Reyes\n\n", "\n## Scope\n\nAll of it.\n"))
+		tr[b] = strings.Replace(tr[b], "Something.", "Some\rthing.", 1)
+		o := check(t, tr)
+		o.has(t, "line-ending", b, tr.line(b, "thing."))
+		o.has(t, "heading-unknown", b, tr.line(b, "## Scope"))
 	})
 	t.Run("derived: a feature in CR LF throughout", func(t *testing.T) {
 		tr := baseline()
@@ -186,6 +258,8 @@ func TestLintLayoutCapability(t *testing.T) {
 - Contact: Dana Reyes
 - Status: defined
 `), file: "proviso/capabilities/billing", lines: lines(1)},
+		{name: "row3 holding Capability.md", tree: baseline().moved(capPath, "proviso/capabilities/cart/Capability.md"),
+			file: "proviso/capabilities/cart", lines: lines(1)},
 	})
 }
 
