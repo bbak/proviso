@@ -27,9 +27,10 @@ A system whose identifier is not `system`.
 
 A file in the spec tree that the layout does not list.
 
-### <a id="lint.findings.name-uppercase"></a> name-uppercase
+### <a id="lint.findings.name-malformed"></a> name-malformed
 
-A file or folder in the spec tree whose name holds an uppercase letter.
+A file or folder in the spec tree whose name does not read the same on
+every platform.
 
 ### <a id="lint.findings.line-ending"></a> line-ending
 

@@ -41,8 +41,8 @@ func Run(t *tree.Tree) []Finding {
 			l.report(Error, "capability-file-missing", Pos{reportPath(c.Rel), 1}, "the capability folder holds no capability.md")
 		}
 	}
-	for _, rel := range t.Uppercase {
-		l.report(Error, "name-uppercase", Pos{reportPath(rel), 1}, "the name holds an uppercase letter")
+	for _, rel := range t.Malformed {
+		l.report(Error, "name-malformed", Pos{reportPath(rel), 1}, "the name holds something other than lowercase letters, marks, digits, hyphens and dots, or ends with a dot")
 	}
 	for _, tf := range t.Files {
 		if i := bytes.IndexByte(tf.Data, '\r'); i >= 0 {
