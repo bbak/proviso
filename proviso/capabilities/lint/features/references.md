@@ -53,8 +53,9 @@ Otherwise lint reports the [error] `findings.term-unmarked` at each such word
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Unmarked text is what remains of a line once term marks, placeholders,
-references, literals and the target of a hand-over are taken out.
+Unmarked text is what remains of a line once its keyword, term marks,
+placeholders, references, literals and the target of a hand-over are
+taken out.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -79,8 +80,8 @@ Otherwise lint reports the [error] `findings.term-ambiguous` at <entry>, naming 
 | --- | --- | --- | --- | --- |
 | finding | `lint.finding` | yes | nothing reported | |
 | keyword | `lint.keyword`, and `diff.keyword` in another capability | yes | nothing reported | capabilities do not see each other's terms |
-| findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | |
-| element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term |
+| findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | reported at each of the two |
+| element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term; reported at each of the two |
 
 ## <a id="lint.references.hand-over"></a> Rule: A hand-over reaches a rule
 
@@ -111,7 +112,7 @@ When      lint follows the [hand-overs] from a [rule] through the [rules] <chain
 Provided  no [rule] appears twice in <chain>
 Then      lint reports nothing about the chain
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.hand-over-cycle` at the first [rule] that appears twice
+Otherwise lint reports the [error] `findings.hand-over-cycle` at the heading of the first [rule] that appears twice, naming the other [rules] of the cycle
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -119,7 +120,7 @@ Otherwise lint reports the [error] `findings.hand-over-cycle` at the first [rule
 | --- | --- | --- | --- |
 | `lint.layout.hidden`, `lint.layout.file` | yes | nothing reported | ends in an outcome |
 | `a`, `a` | no | error at `a` | a rule handing over to itself |
-| `a`, `b`, `a` | no | error at `a` | |
+| `a`, `b`, `a` | no | error at `a` | reported once per cycle, with `b` in `related` |
 
 ## <a id="lint.references.reference"></a> Rule: A backtick reference resolves
 
@@ -158,5 +159,5 @@ Otherwise lint reports the [error] `findings.reference-ambiguous` at <element>, 
 | name | element | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | findings | `lint.findings` | yes | nothing reported | |
-| report | `lint.cli.report`, and a parameter report in lint | no (same level) | error | contracts and parameters share one namespace |
-| report | `lint.cli.report`, and a contract report at system level | no (level above or below) | error | no shadowing |
+| report | `lint.cli.report`, and a parameter report in lint | no (same level) | error | contracts and parameters share one namespace; reported at each of the two |
+| report | `lint.cli.report`, and a contract report at system level | no (level above or below) | error | no shadowing; reported at each of the two |
