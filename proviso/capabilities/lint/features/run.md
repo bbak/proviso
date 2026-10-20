@@ -64,7 +64,7 @@ leaves no part of the tree unread.
 
 ```guarded
 Given     lint has found the [spec root] for the run
-When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links that are not skipped as hidden, among them <unreadable>
+When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links and other entries that are neither a regular file nor a folder, not skipped as hidden, among them <unreadable>
 Provided  <unreadable> is empty
 Then      lint checks the whole [spec tree]
   And     lint reports what it finds
@@ -79,6 +79,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `glossary.md`, without read permission | no | exit status 2, naming `glossary.md` | |
 | `a.md`, not valid UTF-8 | no | exit status 2, naming `a.md` | text that cannot be decoded cannot be read |
 | `shared`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared` | a link is never followed |
+| `shared`, a Windows junction to a folder outside the tree | no | exit status 2, naming `shared` | neither a regular file nor a folder |
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
