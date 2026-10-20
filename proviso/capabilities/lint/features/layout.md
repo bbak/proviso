@@ -4,8 +4,9 @@
 
 ## Goal
 
-Every file of the spec tree stands where the layout expects it, and the
-files the layout requires exist and hold something.
+Every file of the spec tree stands where the layout expects it, under a
+name and with line endings that read the same on every platform, and
+the files the layout requires exist and hold something.
 
 ## Rationale
 
@@ -13,6 +14,8 @@ Tooling finds the tree's content by where it stands. A file in an
 unexpected place is never read, a missing `capability.md` leaves a
 capability without its Goal, and an empty file says there is something
 where there is nothing. Each of these is silent unless lint reports it.
+The same holds for a name or a line ending that one platform reads
+differently from another.
 
 ## <a id="lint.layout.hidden"></a> Rule: Hidden files are not part of the tree
 
@@ -22,6 +25,12 @@ Operating systems and editors leave files such as `.DS_Store` behind. A
 name starting with a dot never holds spec content, because the layout
 lists only `.md` files, so skipping such files loses nothing. The one
 exception is the tree's own markdownlint settings.
+
+Hidden means a name starting with a dot, on every platform. A file
+system's own mark, such as the hidden attribute of Windows, does not
+travel with the tree through version control: a file hidden on one
+machine would be found on the next, and lint would pass on one and fail
+on the other.
 
 ```guarded
 When      lint finds the file or folder <entry> in the [spec tree]
@@ -39,6 +48,57 @@ Otherwise → lint.layout.file
 | `.markdownlint.jsonc`, in the spec root | no (is the tree's settings) | handed over | the tree's own settings |
 | `capabilities/lint/.markdownlint.jsonc` | yes | skipped | only the spec root's settings belong to the tree |
 | `glossary.md` | no (no dot) | handed over | |
+| `notes.md`, marked hidden by Windows | no (no dot) | handed over | the mark does not travel with the tree |
+
+## <a id="lint.layout.lowercase"></a> Rule: Names are lowercase
+
+### Rationale
+
+Windows and macOS do not tell `Glossary.md` from `glossary.md` by
+default, Linux does. The names the layout gives are lowercase, and so
+are identifiers. A name with an uppercase letter would be one file on
+one machine and two on the next; lowercase only keeps the tree one tree
+everywhere.
+
+```guarded
+When      lint finds the file or folder <entry> in the [spec tree], not skipped as hidden
+Provided  the name of <entry> holds no uppercase letter
+Then      lint reports nothing about the name of <entry>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.name-uppercase` at <entry>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| entry | provided | outcome | why |
+| --- | --- | --- | --- |
+| `capabilities/lint/features/run.md` | yes | nothing reported | |
+| `capabilities/lint/features/Run.md` | no | error | |
+| `capabilities/Lint/` | no | error | a folder, too |
+| `capabilities/lint/features/übersicht.md` | yes | nothing reported | a lowercase letter outside ASCII |
+| `capabilities/lint/features/Übersicht.md` | no | error | an uppercase letter outside ASCII |
+
+## <a id="lint.layout.line-ending"></a> Rule: Lines end with a line feed only
+
+### Rationale
+
+Windows' line ending, a carriage return before the line feed, changes
+every line of a file without changing what it says. The tree uses the
+line feed alone, which every current editor keeps.
+
+```guarded
+When      lint reads the file <file> of the [spec tree]
+Provided  <file> holds no carriage return
+Then      lint reports nothing about the line endings of <file>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.line-ending` at the first line of <file> that holds a carriage return
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| file | provided | outcome | why |
+| --- | --- | --- | --- |
+| `glossary.md`, every line ending in a line feed | yes | nothing reported | |
+| `glossary.md`, lines 3 and 7 ending in a carriage return and a line feed | no | error at line 3 | once per file, at the first |
+| `.markdownlint.jsonc`, ending its lines in a carriage return and a line feed | no | error at line 1 | every file lint reads |
 
 ## <a id="lint.layout.file"></a> Rule: Every file belongs to the layout
 
