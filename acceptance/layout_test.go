@@ -2,7 +2,11 @@ package acceptance
 
 // Feature lint.layout: proviso/capabilities/lint/features/layout.md
 
-import "testing"
+import (
+	"path/filepath"
+	"strings"
+	"testing"
+)
 
 func TestLintLayoutHidden(t *testing.T) {
 	// A skipped entry holds content that lint would report or could not
@@ -29,6 +33,18 @@ func TestLintLayoutHidden(t *testing.T) {
 			check(t, c.tree).clean(t)
 		})
 	}
+	t.Run("row6 notes.md, marked hidden by Windows", func(t *testing.T) {
+		// Hidden means a name starting with a dot: the mark does not
+		// travel with the tree, so notes.md is handed over to
+		// lint.layout.file, which reports it.
+		dir := baseline().with("proviso/notes.md", "# Notes\n").write(t)
+		if err := markHidden(filepath.Join(dir, "proviso", "notes.md")); err != nil {
+			t.Skipf("cannot mark a file hidden here: %v", err)
+		}
+		o := lintIn(t, dir, dir, nil)
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
+		o.has(t, "file-unknown", "proviso/notes.md", 1)
+	})
 	t.Run("derived: the spec root's settings are read, not skipped", func(t *testing.T) {
 		// Handed over to lint.layout.file, which reads the file: a file
 		// that cannot be decoded stops lint (lint.run.unreadable).
@@ -36,6 +52,100 @@ func TestLintLayoutHidden(t *testing.T) {
 		o := lintIn(t, dir, dir, nil)
 		if o.json.exit != 2 {
 			t.Errorf("want exit status 2, got %d:\n%s", o.json.exit, dump(o.report.Findings))
+		}
+	})
+}
+
+// moved moves the file from, or every file below the folder from, to to.
+func (tr tree) moved(from, to string) tree {
+	c := tree{}
+	for k, v := range tr {
+		if k == from || strings.HasPrefix(k, from+"/") {
+			k = to + k[len(from):]
+		}
+		c[k] = v
+	}
+	return c
+}
+
+func TestLintLayoutLowercase(t *testing.T) {
+	features := "proviso/capabilities/cart/features/"
+	upperCart := baseline().moved("proviso/capabilities/cart", "proviso/capabilities/Cart")
+	uebersicht := strings.ReplaceAll(featureMD, "cart.add", "cart.uebersicht")
+	rows(t, "name-uppercase", []row{
+		{name: "row1 capabilities/cart/features/add.md", tree: baseline(), holds: true},
+		{name: "row2 capabilities/cart/features/Add.md", tree: baseline().moved(featurePath, features+"Add.md"),
+			file: features + "Add.md", lines: lines(1)},
+		{name: "row3 capabilities/Cart/, a folder", tree: upperCart,
+			file: "proviso/capabilities/Cart", lines: lines(1)},
+		{name: "row4 übersicht.md, a lowercase letter outside ASCII", tree: baseline().with(features+"übersicht.md", uebersicht), holds: true},
+		{name: "row5 Übersicht.md, an uppercase letter outside ASCII", tree: baseline().with(features+"Übersicht.md", uebersicht),
+			file: features + "Übersicht.md", lines: lines(1)},
+		{name: "derived: .DS_Store, skipped as hidden", tree: baseline().with("proviso/.DS_Store", "\x00\x01"), holds: true},
+		{name: "derived: uppercase names in a hidden folder", tree: baseline().with("proviso/.Trash/Notes.md", "# Notes\n"), holds: true},
+		{name: "derived: README.md, a file the layout does not list", tree: baseline().with("proviso/capabilities/cart/README.md", "# Cart\n"),
+			file: "proviso/capabilities/cart/README.md", lines: lines(1)},
+	})
+	t.Run("derived: the folder's name only, not the names in it", func(t *testing.T) {
+		o := checkGoesOn(t, upperCart)
+		o.has(t, "name-uppercase", "proviso/capabilities/Cart", 1)
+		if n := len(o.find("name-uppercase", "", nil)); n != 1 {
+			t.Errorf("want name-uppercase once, at the folder, got:\n%s", dump(o.report.Findings))
+		}
+	})
+}
+
+// crlf ends the given (1-based) lines of s in a carriage return and a line
+// feed, or every line if none are given.
+func crlf(s string, at ...int) string {
+	ls := strings.SplitAfter(s, "\n")
+	for i, l := range ls {
+		hit := len(at) == 0
+		for _, n := range at {
+			hit = hit || n == i+1
+		}
+		if hit && strings.HasSuffix(l, "\n") {
+			ls[i] = strings.TrimSuffix(l, "\n") + "\r\n"
+		}
+	}
+	return strings.Join(ls, "")
+}
+
+func TestLintLayoutLineEnding(t *testing.T) {
+	settings := "proviso/.markdownlint.jsonc"
+	rows(t, "line-ending", []row{
+		{name: "row1 glossary.md, every line ending in a line feed", tree: baseline(), holds: true},
+	})
+	t.Run("row2 glossary.md, lines 3 and 7 ending in CR LF", func(t *testing.T) {
+		tr := baseline()
+		tr[glossaryPath] = crlf(glossaryMD, 3, 7)
+		o := checkGoesOn(t, tr)
+		o.has(t, "line-ending", glossaryPath, 3)
+		// Once per file, at the first; and the line endings change
+		// nothing else that lint reads in the file.
+		if n := len(o.find("line-ending", glossaryPath, nil)); n != 1 {
+			t.Errorf("want line-ending once in %s, got:\n%s", glossaryPath, dump(o.report.Findings))
+		}
+		for _, f := range o.report.Findings {
+			if f.File == glossaryPath && f.Kind != "line-ending" {
+				t.Errorf("want only line-ending in %s, got:\n%s", glossaryPath, dump(o.report.Findings))
+				break
+			}
+		}
+	})
+	rows(t, "line-ending", []row{
+		{name: "row3 .markdownlint.jsonc ending its lines in CR LF", tree: baseline().with(settings, crlf("{\n  \"MD013\": false\n}\n")),
+			file: settings, lines: lines(1)},
+		{name: "derived: a file the layout does not list is never read", tree: baseline().with("proviso/notes.md", crlf("# Notes\n\nSome notes.\n")), holds: true},
+		{name: "derived: a hidden file is skipped", tree: baseline().with("proviso/.notes.md", crlf("# Notes\n")), holds: true},
+	})
+	t.Run("derived: a feature in CR LF throughout", func(t *testing.T) {
+		tr := baseline()
+		tr[featurePath] = crlf(tr[featurePath])
+		o := check(t, tr)
+		o.has(t, "line-ending", featurePath, 1)
+		if len(o.report.Findings) != 1 {
+			t.Errorf("want only line-ending in %s, got:\n%s", featurePath, dump(o.report.Findings))
 		}
 	})
 }

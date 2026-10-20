@@ -135,7 +135,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		dir := marked.with(aPath, invalid).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md")
 	})
-	t.Run("row4 shared/ a link to a folder outside the tree", func(t *testing.T) {
+	t.Run("row4 shared, a link to a folder outside the tree", func(t *testing.T) {
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		link := filepath.Join(dir, "proviso", "shared")
 		if err := os.Symlink(filepath.Join(dir, "outside"), link); err != nil {
@@ -191,7 +191,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	})
 	hidden := []struct{ name, link, target string }{
 		{"row8 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
-		{"derived: .shared/ a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
+		{"derived: .shared, a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
 	}
 	for _, c := range hidden {
 		t.Run(c.name, func(t *testing.T) {
