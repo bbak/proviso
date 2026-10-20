@@ -10,8 +10,8 @@ author sees what is still open, and nothing else is mistaken for it.
 ## Rationale
 
 An undecided place is a stop for whoever builds from it, and the tree
-may hold one only while a change is in progress. Lint reports each as an
-ask, never as an error: during a change, undecided places are expected,
+may hold one only while an amendment is in progress. Lint reports each as an
+ask, never as an error: during an amendment, undecided places are expected,
 and only the acceptance gate refuses them. A `?` counts only where the
 structure puts it, so a real question in prose, a `?` in a code span or
 a rule about `?` raises no false alarm.

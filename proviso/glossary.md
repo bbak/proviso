@@ -200,24 +200,24 @@
 ## <a id="system.request"></a> request
 
 - Definition: What the business wants changed in a system, written as a
-  document that can be checked. It is the input to a change and never
+  document that can be checked. It is the input to an amendment and never
   becomes part of the spec tree.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: requests
 
-## <a id="system.change"></a> change
+## <a id="system.amendment"></a> amendment
 
 - Definition: The edit of the spec tree that brings in one request, made
   on one branch and ending when it is accepted.
 - Contact: Bruno Baketarić
 - Status: defined
-- Aliases: changes
+- Aliases: amendments
 
 ## <a id="system.baseline"></a> baseline
 
-- Definition: The spec tree as it was last accepted, against which a
-  change is compared.
+- Definition: The spec tree as it was last accepted, against which an
+  amendment is compared.
 - Contact: Bruno Baketarić
 - Status: defined
 
@@ -230,19 +230,18 @@
 
 ## <a id="system.element-diff"></a> element diff
 
-- Definition: What a change did to the spec tree, element by element:
+- Definition: What an amendment did to the spec tree, element by element:
   the elements added, those changed with the parts that changed, those
   removed, and those changed by a term whose definition changed. It is
-  derived mechanically from the baseline and the tree, so a change in
-  wording that leaves every element's normalised text the same is no
-  change.
+  derived mechanically from the baseline and the tree, so rewording
+  that leaves every element's normalised text the same shows nothing.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: element diffs
 
 ## <a id="system.impact-set"></a> impact set
 
-- Definition: The existing elements a change may affect, each with its
+- Definition: The existing elements an amendment may affect, each with its
   judgement. Its candidates are found mechanically; judging them takes
   an agent and the engineer.
 - Contact: Bruno Baketarić
@@ -252,14 +251,14 @@
 ## <a id="system.judgement"></a> judgement
 
 - Definition: The decision on one candidate of an impact set: changed by
-  the change, or untouched, with the reason why.
+  the amendment, or untouched, with the reason why.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: judgements
 
 ## <a id="system.context-pack"></a> context pack
 
-- Definition: What an agent receives for a change: the element diff and
+- Definition: What an agent receives for an amendment: the element diff and
   everything needed to read it, such as the glossary entries,
   invariants, constraints and parameters it uses and `system.md`, and
   nothing else of the spec tree.
