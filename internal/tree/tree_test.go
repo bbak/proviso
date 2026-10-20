@@ -124,3 +124,35 @@ func TestLoadLinks(t *testing.T) {
 		t.Errorf("unknown %v", tr.Unknown)
 	}
 }
+
+func TestFindRootMatchesCase(t *testing.T) {
+	for _, rel := range []string{"Proviso/system.md", "proviso/System.md"} {
+		repo := t.TempDir()
+		write(t, repo, map[string]string{rel: ""})
+		if _, err := FindRoot(repo); err != ErrNoRoot {
+			t.Errorf("%s: %v, want no root", rel, err)
+		}
+	}
+}
+
+func TestLoadNames(t *testing.T) {
+	root := t.TempDir()
+	write(t, root, map[string]string{
+		"system.md":                            "# x",
+		".Hidden/X.md":                         "",
+		"capabilities/Lint/glossary.md":        "# G",
+		"capabilities/c/Capability.md":         "# c",
+		"capabilities/d/features/übersicht.md": "# u",
+		"capabilities/c/features/Übersicht.md": "# U", // in another folder than übersicht.md, which Windows would take for the same name
+	})
+	tr := Load(root)
+	want := []string{"capabilities/Lint", "capabilities/c/Capability.md", "capabilities/c/features/Übersicht.md"}
+	if !slices.Equal(tr.Uppercase, want) {
+		t.Errorf("uppercase %v, want %v", tr.Uppercase, want)
+	}
+	for _, c := range tr.CapFolders {
+		if c.HasCapability {
+			t.Errorf("%s: Capability.md is not capability.md", c.Rel)
+		}
+	}
+}

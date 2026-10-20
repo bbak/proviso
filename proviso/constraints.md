@@ -16,6 +16,26 @@ Proviso is written in Go and builds with `CGO_ENABLED=0` into one
 statically linked binary named `proviso`, which needs nothing else
 installed to run.
 
+## <a id="system.platforms"></a> Proviso is written for Windows and Unix-like systems
+
+### Rationale
+
+Engineers keep spec trees on Windows, macOS and Linux, and a tree must
+give the same result wherever it is checked. Proviso is developed and
+tested on Windows only, so its portability rests on how it is written:
+Go's standard library hides most differences between the platforms, and
+those that still show, such as path separators, drive letters, line
+endings and case in file names, are decided in the tree, where a test
+can name them, rather than left to whichever platform the code met
+first.
+
+### Property
+
+Proviso builds for Windows, macOS and Linux, and its code assumes no
+one platform's path separator, line ending or rules for file names. A
+difference between platforms that shows in what Proviso reports or
+writes is decided in the spec tree, never by the code alone.
+
 ## <a id="system.binary-source"></a> The binary is built from `cmd/proviso/` only
 
 ### Rationale

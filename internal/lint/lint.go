@@ -3,6 +3,7 @@
 package lint
 
 import (
+	"bytes"
 	"fmt"
 	"path"
 	"regexp"
@@ -40,7 +41,14 @@ func Run(t *tree.Tree) []Finding {
 			l.report(Error, "capability-file-missing", Pos{reportPath(c.Rel), 1}, "the capability folder holds no capability.md")
 		}
 	}
+	for _, rel := range t.Uppercase {
+		l.report(Error, "name-uppercase", Pos{reportPath(rel), 1}, "the name holds an uppercase letter")
+	}
 	for _, tf := range t.Files {
+		if i := bytes.IndexByte(tf.Data, '\r'); i >= 0 {
+			line := bytes.Count(tf.Data[:i], []byte("\n")) + 1
+			l.report(Error, "line-ending", Pos{reportPath(tf.Rel), line}, "the line ends with a carriage return; the tree ends lines with a line feed only")
+		}
 		if tf.Kind == tree.Settings {
 			continue
 		}

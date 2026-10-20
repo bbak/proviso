@@ -27,6 +27,14 @@ A system whose identifier is not `system`.
 
 A file in the spec tree that the layout does not list.
 
+### <a id="lint.findings.name-uppercase"></a> name-uppercase
+
+A file or folder in the spec tree whose name holds an uppercase letter.
+
+### <a id="lint.findings.line-ending"></a> line-ending
+
+A file in the spec tree whose lines end with a carriage return.
+
 ### <a id="lint.findings.capability-file-missing"></a> capability-file-missing
 
 A capability folder without `capability.md`.

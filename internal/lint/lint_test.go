@@ -352,3 +352,53 @@ func TestRelatedAtHeading(t *testing.T) {
 	}
 	t.Error("no identifier-duplicate in f.md")
 }
+
+func TestLineEnding(t *testing.T) {
+	f := base()
+	for rel, s := range f {
+		f[rel] = strings.ReplaceAll(s, "\n", "\r\n")
+	}
+	f[".markdownlint.jsonc"] = "{\r\n}\r\n"
+	// Only the line endings are reported: everything else reads as before.
+	var want []string
+	for rel := range f {
+		want = append(want, "line-ending@"+rel+":1")
+	}
+	slices.Sort(want)
+	if got := kinds(lintFiles(f)); !slices.Equal(got, want) {
+		t.Errorf("got  %v\nwant %v", got, want)
+	}
+
+	f = base()
+	lines := strings.SplitAfter(f["glossary.md"], "\n")
+	lines[2] = strings.TrimSuffix(lines[2], "\n") + "\r\n"
+	lines[6] = strings.TrimSuffix(lines[6], "\n") + "\r\n"
+	f["glossary.md"] = strings.Join(lines, "")
+	if got, want := kinds(lintFiles(f)), []string{"line-ending@glossary.md:3"}; !slices.Equal(got, want) {
+		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+func TestNameUppercase(t *testing.T) {
+	tr := &tree.Tree{Root: "proviso", Uppercase: []string{"capabilities/Lint", "capabilities/c/features/Übersicht.md"}}
+	got := kinds(Run(tr))
+	want := []string{"name-uppercase@capabilities/Lint:1", "name-uppercase@capabilities/c/features/Übersicht.md:1"}
+	if !slices.Equal(got, want) {
+		t.Errorf("got %v, want %v", got, want)
+	}
+}
+
+func TestDefinedByBackslash(t *testing.T) {
+	f := base()
+	f["references.md"] = "# References\n\n## <a id=\"system.ref.commonmark\"></a> CommonMark\n\n- Version: 0.31\n- Link: https://spec.commonmark.org\n- Contact: Ann\n"
+	entry := "\n## <a id=\"c.dest\"></a> destination\n\n- Defined by: [CommonMark](%s#system.ref.commonmark)\n- Contact: Ann\n- Status: defined\n"
+	glossary := f["capabilities/c/glossary.md"]
+	f["capabilities/c/glossary.md"] = glossary + strings.Replace(entry, "%s", "../../references.md", 1)
+	if got := kinds(lintFiles(f)); len(got) != 0 {
+		t.Errorf("a / link: %v", got)
+	}
+	f["capabilities/c/glossary.md"] = glossary + strings.Replace(entry, "%s", `..\..\references.md`, 1)
+	if got, want := kinds(lintFiles(f)), []string{"defined-by-unresolved@capabilities/c/glossary.md:12"}; !slices.Equal(got, want) {
+		t.Errorf("a backslash link: got %v, want %v", got, want)
+	}
+}

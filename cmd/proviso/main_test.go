@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -38,6 +39,8 @@ func TestRun(t *testing.T) {
 		{"clean json", map[string]string{"proviso/system.md": system}, []string{"lint", "--json"}, 0, `"findings": []`},
 		{"error text", map[string]string{"proviso/system.md": system, "proviso/notes.md": "x"}, []string{"lint"}, 1, "proviso/notes.md:1: error file-unknown: "},
 		{"ask only", map[string]string{"proviso/system.md": strings.Replace(system, "\ng\n", "\n?\n", 1)}, []string{"lint"}, 0, "ask undecided"},
+		{"uppercase name", map[string]string{"proviso/system.md": system, "proviso/Glossary.md": "x"}, []string{"lint"}, 1, "proviso/Glossary.md:1: error name-uppercase: "},
+		{"carriage return", map[string]string{"proviso/system.md": strings.ReplaceAll(system, "\n", "\r\n")}, []string{"lint"}, 1, "proviso/system.md:1: error line-ending: "},
 		{"no root", map[string]string{"system.md": system}, []string{"lint"}, 2, ""},
 		{"unreadable", map[string]string{"proviso/system.md": system, "proviso/glossary.md": "\xff"}, []string{"lint", "--json"}, 2, ""},
 		{"bad option", map[string]string{"proviso/system.md": system}, []string{"lint", "--yaml"}, 2, ""},
@@ -80,5 +83,24 @@ func TestJSONReport(t *testing.T) {
 	}
 	if _, ok := f["related"]; ok {
 		t.Error("an empty related is left out")
+	}
+}
+
+func TestReportRoot(t *testing.T) {
+	if runtime.GOOS != "windows" {
+		if got := reportRoot("/repo/proviso"); got != "/repo/proviso" {
+			t.Errorf("got %q", got)
+		}
+		return
+	}
+	cases := map[string]string{
+		`c:\repo\proviso`:        "C:/repo/proviso",
+		`C:\repo\proviso`:        "C:/repo/proviso",
+		`\\server\share\proviso`: "//server/share/proviso",
+	}
+	for in, want := range cases {
+		if got := reportRoot(in); got != want {
+			t.Errorf("%s: got %q, want %q", in, got, want)
+		}
 	}
 }

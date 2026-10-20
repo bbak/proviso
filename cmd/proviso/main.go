@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/bbak/proviso/internal/lint"
 	"github.com/bbak/proviso/internal/report"
@@ -53,13 +55,13 @@ func run(args []string, stdout, stderr io.Writer) int {
 	if len(t.Unreadable) > 0 {
 		fmt.Fprintf(stderr, "proviso lint: cannot read the whole spec tree at %s:\n", root)
 		for _, rel := range t.Unreadable {
-			fmt.Fprintf(stderr, "  %s\n", filepath.ToSlash(filepath.Join(tree.RootName, rel)))
+			fmt.Fprintf(stderr, "  %s\n", path.Join(tree.RootName, rel))
 		}
 		return exitCantRun
 	}
 	findings := lint.Run(t)
 	if asJSON {
-		err = report.JSON(stdout, filepath.ToSlash(root), findings)
+		err = report.JSON(stdout, reportRoot(root), findings)
 	} else {
 		err = report.Text(stdout, findings)
 	}
@@ -71,4 +73,15 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return exitErrors
 	}
 	return exitClean
+}
+
+// reportRoot writes the absolute path of the spec root with "/" as its
+// separator and, on Windows, its drive letter in uppercase, whichever case
+// the working directory was given in.
+func reportRoot(root string) string {
+	vol := filepath.VolumeName(root)
+	if len(vol) == 2 && vol[1] == ':' {
+		root = strings.ToUpper(vol) + root[2:]
+	}
+	return filepath.ToSlash(root)
 }
