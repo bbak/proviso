@@ -322,9 +322,12 @@ func check(t *testing.T, tr tree) outcome {
 }
 
 // checkRoot asserts that the report's root is the absolute path of the spec
-// root want. The separator of root is not asserted (see the report).
+// root want, written with / as its separator.
 func checkRoot(t *testing.T, o outcome, want string) {
 	t.Helper()
+	if strings.Contains(o.report.Root, `\`) {
+		t.Errorf("lint.cli.report: root %q does not use / as its separator", o.report.Root)
+	}
 	got := filepath.FromSlash(o.report.Root)
 	if !filepath.IsAbs(got) {
 		t.Errorf("lint.cli.report: root %q is not an absolute path", o.report.Root)
@@ -413,6 +416,9 @@ func checkRun(t *testing.T, o *outcome) {
 		for _, p := range paths {
 			if strings.Contains(p, `\`) {
 				t.Errorf("lint.cli.report: path %q does not use / as its separator", p)
+			}
+			if strings.HasSuffix(p, "/") {
+				t.Errorf("lint.cli.report: path %q of a folder has a trailing /", p)
 			}
 		}
 	}
@@ -591,11 +597,6 @@ func checkReadOnly(t *testing.T, before, after map[string]string) {
 // ---------------------------------------------------------------------------
 // Assertions on findings
 
-// norm drops a trailing slash, which a folder's path may or may not carry.
-func norm(p string) string {
-	return strings.TrimSuffix(p, "/")
-}
-
 func isSentinel(p string) bool {
 	for _, s := range sentinels {
 		if p == s {
@@ -643,7 +644,7 @@ func where(file string, lines []int) string {
 func (o outcome) find(kind, file string, lines []int) []finding {
 	var found []finding
 	for _, f := range o.report.Findings {
-		inFile := norm(f.File) == file || (file == "" && !isSentinel(f.File))
+		inFile := f.File == file || (file == "" && !isSentinel(f.File))
 		if f.Kind == kind && inFile && at(f.Line, lines) {
 			found = append(found, f)
 		}
@@ -690,7 +691,7 @@ func (o outcome) clean(t *testing.T) {
 func relates(t *testing.T, f finding, file string, line int) {
 	t.Helper()
 	for _, r := range f.Related {
-		if norm(r.File) == file && r.Line == line {
+		if r.File == file && r.Line == line {
 			return
 		}
 	}

@@ -100,9 +100,9 @@ func TestLintRulesCount(t *testing.T) {
 		bad("derived: no Then", "When", "Provided", "Otherwise", "And"),
 		bad("derived: two Otherwise", "When", "Provided", "Then", "And", "Otherwise", "And", "Otherwise", "And"),
 	})
-	// lint.rules Rationale: a block without exactly one When is reported
-	// only for how often its keywords appear, not by the checks that take
-	// the When as their reference.
+	// lint.rules Rationale: in a block without exactly one When, the checks
+	// on Given, guard and placeholders, which take the When as their
+	// reference, are skipped.
 	for _, c := range []struct{ name, block string }{
 		{"rows3-4 no When: no checks on Given, guard or placeholders", `Given     the shop has <product>
 Provided  the shop is open
@@ -128,6 +128,30 @@ Otherwise the cart refuses <product>
 			}
 		})
 	}
+	// lint.rules Rationale: every other check still applies to such a block.
+	t.Run("rows3-4 no When: the other checks still apply", func(t *testing.T) {
+		tr := withRule(`Given     the shop has <product>
+Then      the cart holds <product>
+Provided  <product> is in stock
+Otherwise the cart refuses <product>
+  And     nothing else changes`, "| product | provided | outcome |\n| --- | --- | --- |\n| apple | yes | added |\n| pear | no | refused |\n")
+		o := checkGoesOn(t, tr)
+		o.has(t, "keyword-count", xPath, blockLines(tr)...)
+		o.has(t, "keyword-order", xPath, tr.line(xPath, "Provided  <product>"))
+		o.has(t, "and-missing", xPath, tr.line(xPath, "Then      the cart"))
+	})
+	t.Run("rows3-4 two Whens: the other checks still apply", func(t *testing.T) {
+		tr := withRule(`When      a buyer adds <product>
+When      a buyer pays for <product>
+Provided  <product> is in stock
+Then      the cart holds <product>
+  And     nothing else changes
+  But     the shelf stays full`, "| product | provided | outcome |\n| --- | --- | --- |\n| apple | yes | added |\n| pear | no | refused |\n")
+		o := checkGoesOn(t, tr)
+		o.has(t, "keyword-count", xPath, blockLines(tr)...)
+		o.has(t, "guard-incomplete", xPath, blockLines(tr)...)
+		o.has(t, "keyword-unknown", xPath, tr.line(xPath, "But     the shelf"))
+	})
 }
 
 func TestLintRulesGuard(t *testing.T) {
