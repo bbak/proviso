@@ -50,32 +50,48 @@ Otherwise → lint.layout.file
 | `glossary.md` | no (no dot) | handed over | |
 | `notes.md`, marked hidden by Windows | no (no dot) | handed over | the mark does not travel with the tree |
 
-## <a id="lint.layout.lowercase"></a> Rule: Names are lowercase
+## <a id="lint.layout.name"></a> Rule: Names read the same on every platform
 
 ### Rationale
 
 Windows and macOS do not tell `Glossary.md` from `glossary.md` by
-default, Linux does. The names the layout gives are lowercase, and so
-are identifiers. A name with an uppercase letter would be one file on
-one machine and two on the next; lowercase only keeps the tree one tree
-everywhere.
+default, Linux does. A name with an uppercase letter would be one file
+on one machine and two on the next, so names are lowercase, as the names
+the layout gives already are. A letter counts as lowercase when it has
+no other lowercase form, so the letters of a script without case count
+too. Windows refuses characters such as `:` or `?` and a name ending in
+a dot, and a space would have to be wrapped in every Markdown link, so
+a name holds lowercase letters with their marks, digits, hyphens and
+dots, and nothing else.
+
+A letter such as `ü` can be stored as one character or as `u` followed
+by a mark, and file systems differ in which form they keep. Lint reads
+every name in the composed form, Unicode's NFC, so the same tree gives
+the same paths on every platform.
 
 ```guarded
 When      lint finds the file or folder <entry> in the [spec tree], not skipped as hidden
-Provided  the name of <entry> holds no uppercase letter
+Provided  the name of <entry> holds only lowercase letters, marks, digits, hyphens and dots
+  And     the name of <entry> does not end with a dot
 Then      lint reports nothing about the name of <entry>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.name-uppercase` at <entry>
+Otherwise lint reports the [error] `findings.name-malformed` at <entry>
   And     lint goes on with the rest of the [spec tree]
 ```
 
 | entry | provided | outcome | why |
 | --- | --- | --- | --- |
 | `capabilities/lint/features/run.md` | yes | nothing reported | |
-| `capabilities/lint/features/Run.md` | no | error | |
-| `capabilities/Lint/` | no | error | a folder, too |
-| `capabilities/lint/features/übersicht.md` | yes | nothing reported | a lowercase letter outside ASCII |
-| `capabilities/lint/features/Übersicht.md` | no | error | an uppercase letter outside ASCII |
+| `capabilities/lint/features/übersicht.md` | yes | nothing reported | a letter outside ASCII |
+| `capabilities/lint/features/übersicht.md`, stored as `u` followed by a mark | yes | nothing reported, and its path is reported in the composed form | read as NFC |
+| `capabilities/lint/features/検索.md` | yes | nothing reported | a script without case |
+| `.markdownlint.jsonc`, in the spec root | yes | nothing reported | dots are allowed |
+| `capabilities/lint/features/Run.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | |
+| `capabilities/Lint`, a folder | no (only lowercase letters, marks, digits, hyphens and dots) | error | a folder, too |
+| `capabilities/lint/features/Übersicht.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | an uppercase letter outside ASCII |
+| `capabilities/lint/features/my run.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | a space |
+| `capabilities/lint/features/run_old.md` | no (only lowercase letters, marks, digits, hyphens and dots) | error | an underscore |
+| `capabilities/lint/features/run.md.` | no (does not end with a dot) | error | Windows drops a trailing dot |
 
 ## <a id="lint.layout.line-ending"></a> Rule: Lines end with a line feed only
 

@@ -118,7 +118,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 | --- | --- |
 | `b.md:3`, `a.md:9`, `a.md:2` | `a.md:2`, `a.md:9`, `b.md:3` |
 | `a.md:4 identifier-duplicate`, `a.md:4 anchor-misplaced` | `a.md:4 anchor-misplaced`, then `a.md:4 identifier-duplicate` |
-| `b.md:1`, `B.md:1` | `B.md:1`, then `b.md:1` |
+| `a.md:1`, `a-b.md:1` | `a-b.md:1`, then `a.md:1` |
 
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 

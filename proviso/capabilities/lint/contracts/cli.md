@@ -28,8 +28,9 @@ enum: [0, 1, 2]
 What `lint --json` writes: the spec root that was linted, and every
 finding. The paths of findings are relative to the directory holding
 the spec root, so they read the same from wherever lint was run. Every
-path uses `/` as its separator, on every platform, so that the order
-of findings is the same everywhere.
+path uses `/` as its separator, and every name in it is in Unicode's
+composed form, NFC, on every platform, so that the order of findings is
+the same everywhere.
 
 ```yaml
 type: object
