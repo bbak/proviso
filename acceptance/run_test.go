@@ -3,7 +3,6 @@ package acceptance
 // Feature lint.run: proviso/capabilities/lint/features/run.md
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -31,11 +30,13 @@ func TestLintRunRoot(t *testing.T) {
 		dir := marked.write(t)
 		o := lintIn(t, dir, dir, nil)
 		o.has(t, "file-unknown", "proviso/notes.md")
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row2 repo/cmd/proviso found upwards", func(t *testing.T) {
 		dir := marked.with("cmd/proviso/main.go", "package main\n").write(t)
 		o := lintIn(t, dir, filepath.Join(dir, "cmd", "proviso"), nil)
 		o.has(t, "file-unknown", "proviso/notes.md")
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row3 found from inside the tree", func(t *testing.T) {
 		dir := marked.write(t)
@@ -43,6 +44,7 @@ func TestLintRunRoot(t *testing.T) {
 		// Paths are relative to the directory holding the spec root,
 		// wherever lint was run.
 		o.has(t, "file-unknown", "proviso/notes.md")
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row4 the nearest wins", func(t *testing.T) {
 		tr := baseline().with("proviso/outer.md", "# Outer\n")
@@ -53,6 +55,7 @@ func TestLintRunRoot(t *testing.T) {
 		o := lintIn(t, dir, filepath.Join(dir, "a"), nil)
 		o.has(t, "file-unknown", "proviso/inner.md")
 		o.lacks(t, "file-unknown", "proviso/outer.md")
+		checkRoot(t, o, filepath.Join(dir, "a", "proviso"))
 		if len(o.report.Findings) != 1 {
 			t.Errorf("want only the nearest tree checked, got:\n%s", dump(o.report.Findings))
 		}
@@ -92,7 +95,8 @@ func TestLintRunUnreadable(t *testing.T) {
 	aPath := "proviso/capabilities/cart/features/a.md"
 	bPath := "proviso/capabilities/cart/features/b.md"
 
-	// stopped checks exit status 2, the names on stderr, and no findings.
+	// stopped checks exit status 2 and the names on stderr. That nothing
+	// goes to stdout is checked for every run with exit status 2.
 	stopped := func(t *testing.T, o outcome, names ...string) {
 		t.Helper()
 		for _, r := range []run{o.json, o.text} {
@@ -103,15 +107,6 @@ func TestLintRunUnreadable(t *testing.T) {
 				if !strings.Contains(r.stderr, n) {
 					t.Errorf("want stderr to name %s, got: %s", n, r.stderr)
 				}
-			}
-		}
-		if o.text.stdout != "" {
-			t.Errorf("want no findings reported, got text: %s", o.text.stdout)
-		}
-		if strings.TrimSpace(o.json.stdout) != "" {
-			var rep report
-			if err := json.Unmarshal([]byte(o.json.stdout), &rep); err != nil || len(rep.Findings) != 0 {
-				t.Errorf("want no findings reported, got: %s", o.json.stdout)
 			}
 		}
 	}
@@ -160,6 +155,45 @@ func TestLintRunUnreadable(t *testing.T) {
 		dir := marked.with(aPath, invalid, bPath, strings.Replace(invalid, "cart.bad", "cart.worse", 1)).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md", "b.md")
 	})
+	t.Run("row7 notes.md, not in the layout, without read permission", func(t *testing.T) {
+		dir := marked.write(t)
+		path := filepath.Join(dir, "proviso", "notes.md")
+		undo, err := makeUnreadable(path)
+		if err != nil {
+			t.Skipf("cannot make a file unreadable here: %v", err)
+		}
+		undo()
+		o := lintIn(t, dir, dir, func() func() {
+			undo, err := makeUnreadable(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return undo
+		})
+		if o.json.exit == 2 {
+			t.Fatalf("want the tree checked, but lint could not run:\n%s", o.json.stderr)
+		}
+		o.has(t, "file-unknown", "proviso/notes.md", 1)
+		if len(o.report.Findings) != 1 {
+			t.Errorf("want only notes.md reported, got:\n%s", dump(o.report.Findings))
+		}
+	})
+	// A link counts as unreadable wherever it stands, whatever its name.
+	links := []struct{ name, link string }{
+		{"derived: a link the layout does not list", "proviso/notes.md"},
+		{"derived: a link with a hidden name", "proviso/.shared.md"},
+	}
+	for _, c := range links {
+		t.Run(c.name, func(t *testing.T) {
+			dir := marked.write(t)
+			link := filepath.Join(dir, filepath.FromSlash(c.link))
+			os.Remove(link)
+			if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
+				t.Skipf("cannot create a symbolic link here: %v", err)
+			}
+			stopped(t, lintIn(t, dir, dir, nil), filepath.Base(link))
+		})
+	}
 }
 
 func TestLintRunOutput(t *testing.T) {

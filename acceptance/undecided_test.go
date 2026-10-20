@@ -16,6 +16,7 @@ func TestLintUndecidedField(t *testing.T) {
 		contactRow("row4 Contact: ?", " ?"),
 		contactRow("row5 a note after the mark", " ? (Cash Operations or Treasury)"),
 		contactRow("row6 surrounding whitespace does not matter", "   ?   "),
+		{name: "derived: a word is what whitespace separates", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?(Treasury)"), holds: true},
 	})
 	t.Run("row2 a question mark ending a sentence", func(t *testing.T) {
 		o := checkGoesOn(t, open)
@@ -98,6 +99,11 @@ func TestLintUndecidedTerm(t *testing.T) {
 	rows(t, "undecided", []row{
 		{name: "row1 a defined term", tree: defined, holds: true},
 		{name: "row2 the rule waits for the term's meaning", tree: open, file: featurePath, lines: lines(open.line(featurePath, "[daily limit]"))},
+	})
+	t.Run("row2 naming the entry in related", func(t *testing.T) {
+		o := check(t, open)
+		f := o.has(t, "undecided", featurePath, open.line(featurePath, "[daily limit]"))
+		relates(t, f, glossaryPath, open.line(glossaryPath, `id="cart.daily-limit"`))
 	})
 	t.Run("row1 nothing reported", func(t *testing.T) {
 		check(t, defined).clean(t)

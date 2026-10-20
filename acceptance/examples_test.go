@@ -180,7 +180,7 @@ Otherwise the shop shows nothing
 	}
 	missing := twoParts("yes", "no (level 1)")
 	rows(t, "examples-part-missing", []row{
-		{name: "row1 one part, one no", tree: withValues("yes", "no"), holds: true},
+		{name: "derived: a guard of one part is not checked here", tree: withValues("yes", "yes"), holds: true},
 		{name: "row2 two parts, two no", tree: twoParts("yes", "no (level 1)", "no (no anchor)"), holds: true},
 		{name: "row3 the second part never shown failing", tree: missing, file: xPath, lines: tableLines(missing)},
 	})
