@@ -139,10 +139,10 @@ func TestLintLayoutName(t *testing.T) {
 				t.Skip("the file system does not keep both names as two files")
 			}
 		})
-		// Both paths read the same in the report, in NFC: an error at
-		// both is two findings at that path.
-		if n := len(o.find("name-malformed", features+composed, lines(1))); n != 2 {
-			t.Errorf("want name-malformed at both entries, twice at %s:1, got:\n%s", features+composed, dump(o.report.Findings))
+		// Both paths read the same in the report, in NFC: the error is
+		// reported once, at the name both share.
+		if n := len(o.find("name-malformed", features+composed, lines(1))); n != 1 {
+			t.Errorf("want name-malformed once, at %s:1, got:\n%s", features+composed, dump(o.report.Findings))
 		}
 	})
 	rows(t, "name-malformed", []row{
