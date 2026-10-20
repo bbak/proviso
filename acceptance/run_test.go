@@ -178,20 +178,37 @@ func TestLintRunUnreadable(t *testing.T) {
 			t.Errorf("want only notes.md reported, got:\n%s", dump(o.report.Findings))
 		}
 	})
-	// A link counts as unreadable wherever it stands, whatever its name.
-	links := []struct{ name, link string }{
-		{"derived: a link the layout does not list", "proviso/notes.md"},
-		{"derived: a link with a hidden name", "proviso/.shared.md"},
+	// A link counts as unreadable wherever it stands, whatever its name,
+	// unless a hidden name has it skipped.
+	t.Run("derived: a link the layout does not list", func(t *testing.T) {
+		dir := marked.write(t)
+		link := filepath.Join(dir, "proviso", "notes.md")
+		os.Remove(link)
+		if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
+			t.Skipf("cannot create a symbolic link here: %v", err)
+		}
+		stopped(t, lintIn(t, dir, dir, nil), "notes.md")
+	})
+	hidden := []struct{ name, link, target string }{
+		{"row8 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
+		{"derived: .shared/ a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
 	}
-	for _, c := range links {
+	for _, c := range hidden {
 		t.Run(c.name, func(t *testing.T) {
-			dir := marked.write(t)
+			dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 			link := filepath.Join(dir, filepath.FromSlash(c.link))
-			os.Remove(link)
-			if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
+			if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(c.target)), link); err != nil {
 				t.Skipf("cannot create a symbolic link here: %v", err)
 			}
-			stopped(t, lintIn(t, dir, dir, nil), filepath.Base(link))
+			o := lintIn(t, dir, dir, nil)
+			if o.json.exit == 2 {
+				t.Fatalf("want the tree checked and the link skipped, but lint could not run:\n%s", o.json.stderr)
+			}
+			// The tree is checked: notes.md is reported, and nothing else.
+			o.has(t, "file-unknown", "proviso/notes.md", 1)
+			if len(o.report.Findings) != 1 {
+				t.Errorf("want only notes.md reported, got:\n%s", dump(o.report.Findings))
+			}
 		})
 	}
 }
@@ -277,7 +294,7 @@ func TestLintRunOrder(t *testing.T) {
 		o.has(t, "identifier-duplicate", xPath, line)
 		var kinds []string
 		for _, f := range o.report.Findings {
-			if norm(f.File) == xPath && f.Line == line {
+			if f.File == xPath && f.Line == line {
 				kinds = append(kinds, f.Kind)
 			}
 		}
@@ -306,7 +323,7 @@ func TestLintRunOrder(t *testing.T) {
 		var got []string
 		for _, f := range o.report.Findings {
 			if f.Kind == "field-missing" {
-				got = append(got, filepath.Base(norm(f.File)))
+				got = append(got, filepath.Base(f.File))
 			}
 		}
 		if strings.Join(got, ",") != strings.Join(names, ",") {
