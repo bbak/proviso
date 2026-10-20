@@ -130,6 +130,27 @@ func TestLintLayoutName(t *testing.T) {
 		})
 		o.has(t, "name-malformed", features+"add.md.", 1)
 	})
+	t.Run("row12 übersicht.md, once composed and once as u followed by a mark", func(t *testing.T) {
+		tr := baseline().with(features+composed, uebersicht,
+			features+decomposed, strings.ReplaceAll(featureMD, "cart.add", "cart.overview"))
+		o := checkGoesOnAfter(t, tr, func(dir string) {
+			folder := filepath.Join(dir, filepath.FromSlash(features))
+			if !hasEntry(folder, composed) || !hasEntry(folder, decomposed) {
+				t.Skip("the file system does not keep both names as two files")
+			}
+		})
+		// Both paths read the same in the report, in NFC: an error at
+		// both is two findings at that path.
+		if n := len(o.find("name-malformed", features+composed, lines(1))); n != 2 {
+			t.Errorf("want name-malformed at both entries, twice at %s:1, got:\n%s", features+composed, dump(o.report.Findings))
+		}
+	})
+	rows(t, "name-malformed", []row{
+		{name: "row13 add٢.md, a digit from another script", tree: baseline().with(features+"add٢.md", strings.ReplaceAll(featureMD, "cart.add", "cart.add2")), holds: true},
+		// The names must be the same in the folder of <entry>: the same
+		// name in NFC in another folder is not the same entry.
+		{name: "derived: übersicht.md composed in one folder and decomposed in another", tree: baseline().with(features+composed, uebersicht, "proviso/"+decomposed, "# Notes\n"), holds: true},
+	})
 	rows(t, "name-malformed", []row{
 		{name: "derived: .DS_Store, skipped as hidden", tree: baseline().with("proviso/.DS_Store", "\x00\x01"), holds: true},
 		{name: "derived: malformed names in a hidden folder", tree: baseline().with("proviso/.Trash/My Notes.md", "# Notes\n"), holds: true},
