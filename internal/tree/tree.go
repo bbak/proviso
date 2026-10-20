@@ -125,7 +125,7 @@ type Tree struct {
 	Unknown    []string // files the layout does not list, relative to the spec root
 	CapFolders []CapFolder
 	Unreadable []string // relative to the spec root
-	Malformed  []string // files and folders whose name does not read the same on every platform, relative to the spec root
+	Malformed  []string // files and folders whose name does not read the same on every platform, or that share their name in NFC with another entry of their folder, relative to the spec root
 }
 
 // Classify places a slash-separated path, relative to the spec root, in the
@@ -220,13 +220,17 @@ func (t *Tree) walk(dir, disk string) {
 		t.Unreadable = append(t.Unreadable, dirName(dir))
 		return
 	}
+	seen := map[string]int{}
+	for _, e := range entries {
+		seen[norm.NFC.String(e.Name())]++
+	}
 	for _, e := range entries {
 		name := norm.NFC.String(e.Name())
 		rel := path.Join(dir, name)
 		if hidden(rel) {
 			continue
 		}
-		if !wellNamed(name) {
+		if !wellNamed(name) || seen[name] > 1 {
 			t.Malformed = append(t.Malformed, rel)
 		}
 		mode := e.Type()
