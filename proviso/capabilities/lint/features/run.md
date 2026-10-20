@@ -30,6 +30,7 @@ Then      lint checks the [spec tree] of the [spec root] nearest to <directory>
   And     lint reports what it finds there
 Otherwise lint writes to "stderr" that no [spec root] was found
   And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
 ```
 
 | directory | provided | outcome | why |
@@ -65,7 +66,8 @@ Provided  <unreadable> is empty
 Then      lint checks the whole [spec tree]
   And     lint reports what it finds
 Otherwise lint writes every file in <unreadable> to "stderr"
-  And     lint exits with `lint.exit-status` 2, reporting no [findings]
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
 ```
 
 | unreadable | provided | outcome | why |

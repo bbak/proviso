@@ -56,6 +56,32 @@ Otherwise lint reports the [error] `findings.heading-unknown` at <heading>
 | `## goal` | feature | no | error | section names are matched exactly |
 | `## Rule: Something` | feature | no | error | a forgotten anchor |
 
+## <a id="lint.structure.section-level"></a> Rule: A section sits one heading level below its element
+
+### Rationale
+
+A section belongs to the nearest element above it, whatever the levels
+say, so that no level arithmetic decides where a section belongs. The
+level is checked instead: a feature's Rationale placed after one of its
+rules would otherwise silently become that rule's rationale.
+
+```guarded
+When      lint reads the heading <heading> of a [section] of an [element] whose heading has the [heading level] <level>
+Provided  the [heading level] of <heading> is one more than <level>
+Then      lint reports nothing about the [heading level] of <heading>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.section-level` at <heading>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| heading | level | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| `## Goal`, under a feature | 1 | yes | nothing reported | |
+| `### Rationale`, under a rule | 2 | yes | nothing reported | |
+| `## Rationale`, after a rule | 2 | no | error | the feature's rationale, placed after one of its rules |
+| `#### Rationale`, under a rule | 2 | no | error | two levels below |
+| `# Goal`, under a feature | 1 | no | error | at the element's own level |
+
 ## <a id="lint.structure.required"></a> Rule: An element has its required sections
 
 ```guarded

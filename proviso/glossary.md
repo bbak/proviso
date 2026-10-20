@@ -61,8 +61,9 @@
 
 ## <a id="system.section"></a> section
 
-- Definition: A heading without an identifier, with the text under it up
-  to the next heading. It belongs to the element above it.
+- Definition: A heading without an identifier, written one heading level
+  below the element above it, with the text under it up to the next
+  heading. It belongs to the nearest element above it.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: sections
