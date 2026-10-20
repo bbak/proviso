@@ -62,8 +62,10 @@ one is therefore a decision of its own, taken before code relies on it.
 
 Proviso uses the Go standard library and, beyond it, only
 `github.com/yuin/goldmark`, for reading Markdown as CommonMark with
-source positions and GitHub's tables. Any further module is added here
-before code uses it.
+source positions and GitHub's tables, and the package
+`golang.org/x/text/unicode/norm`, for reading names in the same Unicode
+form on every platform. Any further module is added here before code
+uses it.
 
 ## <a id="system.acceptance-tests"></a> Acceptance tests belong to the testing agent
 
