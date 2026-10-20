@@ -71,7 +71,7 @@ func TestJSONReport(t *testing.T) {
 	if err := json.Unmarshal(out.Bytes(), &r); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.HasSuffix(r.Root, "/proviso") || len(r.Findings) != 1 {
+	if !strings.HasSuffix(r.Root, "/proviso") || strings.Contains(r.Root, "\\") || len(r.Findings) != 1 {
 		t.Fatalf("%+v", r)
 	}
 	f := r.Findings[0]
