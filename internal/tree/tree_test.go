@@ -172,6 +172,7 @@ func TestWellNamed(t *testing.T) {
 		"検索.md":               true,
 		".markdownlint.jsonc": true,
 		"a-b2.md":             true,
+		"run٢.md":             true, // a digit from another script
 		"Run.md":              false,
 		"Übersicht.md":        false,
 		"\u01c5.md":           false, // a titlecase letter has a lowercase form
@@ -184,5 +185,27 @@ func TestWellNamed(t *testing.T) {
 		if got := wellNamed(name); got != want {
 			t.Errorf("%q: %v, want %v", name, got, want)
 		}
+	}
+}
+
+// Two names in one folder that are the same in NFC are one file on macOS
+// and two on Linux: both are reported.
+func TestLoadNamesSameInNFC(t *testing.T) {
+	root := t.TempDir()
+	write(t, root, map[string]string{
+		"system.md":                            "# x",
+		"capabilities/c/features/übersicht.md": "# a",
+		"capabilities/d/features/übersicht.md": "# a",
+	})
+	if err := os.WriteFile(filepath.Join(root, "capabilities", "c", "features", "übersicht.md"), []byte("# b"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if entries, _ := os.ReadDir(filepath.Join(root, "capabilities", "c", "features")); len(entries) != 2 {
+		t.Skip("the file system keeps one name per NFC form")
+	}
+	tr := Load(root)
+	want := []string{"capabilities/c/features/übersicht.md", "capabilities/c/features/übersicht.md"}
+	if !slices.Equal(tr.Malformed, want) {
+		t.Errorf("malformed %q, want %q", tr.Malformed, want)
 	}
 }

@@ -42,7 +42,7 @@ func Run(t *tree.Tree) []Finding {
 		}
 	}
 	for _, rel := range t.Malformed {
-		l.report(Error, "name-malformed", Pos{reportPath(rel), 1}, "the name holds something other than lowercase letters, marks, digits, hyphens and dots, or ends with a dot")
+		l.report(Error, "name-malformed", Pos{reportPath(rel), 1}, "the name holds something other than lowercase letters, marks, digits, hyphens and dots, or ends with a dot, or another entry in its folder has the same name in NFC")
 	}
 	for _, tf := range t.Files {
 		if i := bytes.IndexByte(tf.Data, '\r'); i >= 0 {
