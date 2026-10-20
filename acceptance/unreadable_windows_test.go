@@ -2,7 +2,12 @@
 
 package acceptance
 
-import "syscall"
+import (
+	"fmt"
+	"os/exec"
+	"path/filepath"
+	"syscall"
+)
 
 // makeUnreadable keeps path open without sharing it, so that no other
 // process can read it until the returned function is called. Windows has no
@@ -17,4 +22,16 @@ func makeUnreadable(path string) (func(), error) {
 		return nil, err
 	}
 	return func() { syscall.CloseHandle(h) }, nil
+}
+
+// makeSpecial makes, in the tree written to dir, an entry that is neither a
+// regular file nor a folder, and returns its name: here proviso/shared, a
+// junction to the folder outside.
+func makeSpecial(dir string) (string, error) {
+	link := filepath.Join(dir, "proviso", "shared")
+	out, err := exec.Command("cmd", "/c", "mklink", "/J", link, filepath.Join(dir, "outside")).CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("%v: %s", err, out)
+	}
+	return "shared", nil
 }

@@ -55,7 +55,7 @@ var severities = map[string]string{
 	"identifier-duplicate":         "error",
 	"system-identifier":            "error",
 	"file-unknown":                 "error",
-	"name-uppercase":               "error",
+	"name-malformed":               "error",
 	"line-ending":                  "error",
 	"capability-file-missing":      "error",
 	"title-missing":                "error",
@@ -325,14 +325,14 @@ func check(t *testing.T, tr tree) outcome {
 
 // checkRoot asserts that the report's root is the absolute path of the spec
 // root want, written with / as its separator and, on Windows, its drive
-// first, as in C:/repo/proviso.
+// first, as an uppercase letter, as in C:/repo/proviso.
 func checkRoot(t *testing.T, o outcome, want string) {
 	t.Helper()
 	if strings.Contains(o.report.Root, `\`) {
 		t.Errorf("lint.cli.report: root %q does not use / as its separator", o.report.Root)
 	}
 	if runtime.GOOS == "windows" && len(filepath.VolumeName(want)) == 2 && !hasDrive(o.report.Root) {
-		t.Errorf("lint.cli.report: root %q does not start with its drive, as in C:/repo/proviso", o.report.Root)
+		t.Errorf("lint.cli.report: root %q does not start with its drive, as an uppercase letter, as in C:/repo/proviso", o.report.Root)
 	}
 	got := filepath.FromSlash(o.report.Root)
 	if !filepath.IsAbs(got) {
@@ -354,13 +354,13 @@ func checkRoot(t *testing.T, o outcome, want string) {
 	}
 }
 
-// hasDrive tells whether p starts with a drive letter, a colon and a /.
+// hasDrive tells whether p starts with an uppercase drive letter, a colon and
+// a /.
 func hasDrive(p string) bool {
 	if len(p) < 3 || p[1] != ':' || p[2] != '/' {
 		return false
 	}
-	c := p[0] | 0x20
-	return c >= 'a' && c <= 'z'
+	return p[0] >= 'A' && p[0] <= 'Z'
 }
 
 // sentinels are files the layout does not list, one sorting before and one
@@ -370,7 +370,21 @@ var sentinels = []string{"proviso/0-sentinel.md", "proviso/zz-sentinel.md"}
 
 func checkGoesOn(t *testing.T, tr tree) outcome {
 	t.Helper()
-	o := check(t, tr.with(sentinels[0], "# Sentinel\n", sentinels[1], "# Sentinel\n"))
+	return checkGoesOnAfter(t, tr, nil)
+}
+
+// checkGoesOnAfter is checkGoesOn, with setup, if given, run on the directory
+// the tree was written to before lint runs.
+func checkGoesOnAfter(t *testing.T, tr tree, setup func(dir string)) outcome {
+	t.Helper()
+	dir := tr.with(sentinels[0], "# Sentinel\n", sentinels[1], "# Sentinel\n").write(t)
+	if setup != nil {
+		setup(dir)
+	}
+	o := lintIn(t, dir, dir, nil)
+	if o.json.exit != 2 {
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
+	}
 	for _, s := range sentinels {
 		o.has(t, "file-unknown", s)
 	}
@@ -579,6 +593,9 @@ func snapshot(t *testing.T, base string) map[string]string {
 				snap[rel] = "link: " + target
 			case d.IsDir():
 				snap[rel] = "folder"
+			case !d.Type().IsRegular():
+				// Such as a named pipe, which reading could block.
+				snap[rel] = "special: " + d.Type().String()
 			default:
 				b, err := os.ReadFile(p)
 				if err != nil {

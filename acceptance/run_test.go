@@ -4,6 +4,7 @@ package acceptance
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -67,8 +68,9 @@ func TestLintRunRoot(t *testing.T) {
 		cwd  string
 	}{
 		{"row5 proviso/ without system.md", tree{"proviso/glossary.md": glossaryMD}, ""},
-		{"row6 system.md but no proviso/", tree{"system.md": systemMD}, ""},
-		{"row7 no spec root up to the file system's root", tree{"other/readme.txt": "nothing here\n"}, "other"},
+		{"row6 Proviso/System.md, names matched exactly", tree{"Proviso/System.md": systemMD}, ""},
+		{"row7 system.md but no proviso/", tree{"system.md": systemMD}, ""},
+		{"row8 no spec root up to the file system's root", tree{"other/readme.txt": "nothing here\n"}, "other"},
 	}
 	for _, c := range noRoot {
 		t.Run(c.name, func(t *testing.T) {
@@ -189,6 +191,16 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stopped(t, lintIn(t, dir, dir, nil), "notes.md")
 	})
+	// Rationale: a Windows junction or any other entry that is neither a
+	// regular file nor a folder counts as unreadable, as a link does.
+	t.Run("derived: neither a regular file nor a folder (a junction on Windows, a named pipe elsewhere)", func(t *testing.T) {
+		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
+		name, err := makeSpecial(dir)
+		if err != nil {
+			t.Skipf("cannot create such an entry here: %v", err)
+		}
+		stopped(t, lintIn(t, dir, dir, nil), name)
+	})
 	hidden := []struct{ name, link, target string }{
 		{"row8 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
 		{"derived: .shared, a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
@@ -305,31 +317,33 @@ func TestLintRunOrder(t *testing.T) {
 		}
 	})
 
-	t.Run("row3 byte by byte: uppercase first", func(t *testing.T) {
-		// Without a Contact, each feature has a finding on its first line.
-		tr := baseline().with(
-			features+"alpha.md", featureWith("cart.alpha", "", ""),
-			features+"Zeta.md", featureWith("cart.zeta", "", ""),
-		)
-		names := []string{"Zeta.md", "alpha.md"}
-		if caseSensitive(t) {
-			tr = tr.with(
-				features+"b.md", featureWith("cart.b", "", ""),
-				features+"B.md", featureWith("cart.upper-b", "", ""),
-			)
-			names = []string{"B.md", "Zeta.md", "alpha.md", "b.md"}
-		}
-		o := check(t, tr)
-		var got []string
-		for _, f := range o.report.Findings {
-			if f.Kind == "field-missing" {
-				got = append(got, filepath.Base(f.File))
+	// Without a Contact, each feature has a finding on its first line.
+	byteOrder := []struct {
+		name  string
+		files []string // in the order the findings must appear
+	}{
+		{"row3 a.md:1, a-b.md:1", []string{"a-b.md", "a.md"}},
+		// The composed ä is 0xC3 0xA4, after every ASCII byte.
+		{"derived: a letter outside ASCII after z", []string{"z.md", "ä.md"}},
+	}
+	for _, c := range byteOrder {
+		t.Run(c.name, func(t *testing.T) {
+			tr := baseline()
+			for i, f := range c.files {
+				tr = tr.with(features+f, featureWith([]string{"cart.first", "cart.second"}[i], "", ""))
 			}
-		}
-		if strings.Join(got, ",") != strings.Join(names, ",") {
-			t.Errorf("want field-missing in %v in that order, got %v", names, got)
-		}
-	})
+			o := check(t, tr)
+			var got []string
+			for _, f := range o.report.Findings {
+				if f.Kind == "field-missing" {
+					got = append(got, path.Base(f.File))
+				}
+			}
+			if strings.Join(got, ",") != strings.Join(c.files, ",") {
+				t.Errorf("want field-missing in %v in that order, got %v", c.files, got)
+			}
+		})
+	}
 
 	t.Run("not depending on the order files were read", func(t *testing.T) {
 		tr := baseline().with(
@@ -355,16 +369,6 @@ func TestLintRunOrder(t *testing.T) {
 			t.Errorf("want several findings to order, got:\n%s", dump(a.report.Findings))
 		}
 	})
-}
-
-// caseSensitive tells whether the file system of the test directories tells
-// b.md from B.md.
-func caseSensitive(t *testing.T) bool {
-	dir := t.TempDir()
-	os.WriteFile(filepath.Join(dir, "b"), []byte("b"), 0o644)
-	os.WriteFile(filepath.Join(dir, "B"), []byte("B"), 0o644)
-	entries, _ := os.ReadDir(dir)
-	return len(entries) == 2
 }
 
 func TestLintRunExit(t *testing.T) {

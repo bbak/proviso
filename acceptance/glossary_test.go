@@ -91,13 +91,12 @@ func TestLintGlossaryDefinedBy(t *testing.T) {
 		field("row3 no link to follow", "CommonMark §6.3", false),
 		field("row4 a link to a glossary", "[CommonMark](../../glossary.md#system.ref.commonmark)", false),
 		field("row5 another capability's references", "[CommonMark](../search/references.md#search.ref.x)", false, search...),
-		field("row6 \\ is not a separator", `[CommonMark](..\..\references.md#system.ref.commonmark)`, false),
-		field("row7 no such identifier", "[CommonMark](../../references.md#system.ref.commonmar)", false),
-		field("derived: the capability's own references", "[X](references.md#cart.ref.x)", true, own...),
 		// A \ before a letter is no escape in CommonMark, so these paths
 		// hold a \ that only Windows could take for a separator.
+		field("row6 \\ is not a separator", `[CommonMark](../..\references.md#system.ref.commonmark)`, false),
+		field("row7 no such identifier", "[CommonMark](../../references.md#system.ref.commonmar)", false),
+		field("derived: the capability's own references", "[X](references.md#cart.ref.x)", true, own...),
 		field("derived: .\\references.md, \\ before a letter", `[X](.\references.md#cart.ref.x)`, false, own...),
-		field("derived: ../..\\references.md, \\ before a letter", `[CommonMark](../..\references.md#system.ref.commonmark)`, false),
 	})
 }
 
