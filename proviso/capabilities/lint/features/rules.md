@@ -13,9 +13,11 @@ happens.
 The rule block is what the testing agent turns into tests: the guard
 into guard tests, each outcome into an outcome test, and each `And` line
 into a frame test. A block of the wrong shape leaves the agent to guess
-which is which. The shape follows the authoring skill's checker, made
-strict where the model says *must*: a `Then` without an `And` line is an
-error here, not a question.
+which is which. The checks are strict: a `Then` without an `And` line
+is an error, not a question, because its frame test needs that line.
+The checks on a block's Given, guard and placeholders take its one
+`When` as their reference; a block without exactly one `When` is
+reported only for how often its keywords appear.
 
 ## <a id="lint.rules.block"></a> Rule: A rule holds exactly one rule block
 
@@ -43,7 +45,7 @@ guard, and belongs in `Provided` and `Otherwise`.
 
 ```guarded
 When      lint reads the non-blank line <line> of a [rule block]
-Provided  <line> starts with a [keyword], after any spaces
+Provided  <line> starts with a [keyword], after any spaces or tabs
 Then      lint reads <line> as part of a [step]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.keyword-unknown` at <line>
@@ -114,7 +116,7 @@ Otherwise lint reports the [error] `findings.guard-incomplete` at the block
 | --- | --- | --- | --- |
 | When, Provided, Then, And, Otherwise, And | yes | nothing reported | |
 | When, Then, And | yes | nothing reported | a rule that always applies |
-| When, Provided, Then, And | no | error | what happens otherwise is undecided: write `Otherwise ?` |
+| When, Provided, Then, And | no | error | what happens otherwise is undecided: write `Otherwise ?` with `And ?` |
 | When, Then, And, Otherwise, And | no | error | an Otherwise of nothing |
 
 ## <a id="lint.rules.hand-over"></a> Rule: A hand-over has no And lines

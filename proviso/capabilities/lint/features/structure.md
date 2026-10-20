@@ -15,6 +15,31 @@ the wrong type is read as something it is not, a forgotten anchor turns
 an element into an unknown section, and a missing section leaves an
 element half-specified. Each of these is silent unless lint reports it.
 
+## <a id="lint.structure.element"></a> Rule: A file of a level opens with its element
+
+### Rationale
+
+`system.md`, `capability.md` and a feature file each exist to hold one
+element. Without its heading, the file's content belongs to nothing,
+and a tree without its system would pass as clean.
+
+```guarded
+When      lint reads the file <file> that holds the system, a capability or a feature
+Provided  the first heading of <file> has the [heading level] 1
+  And     it starts with an [anchor]
+Then      lint reads the [element] from that heading
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.element-missing` at <file>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| file | provided | outcome | why |
+| --- | --- | --- | --- |
+| `system.md`, opening with `# <a id="system"></a> Proviso` | yes | read | |
+| `system.md`, with no heading at all | no (heading level 1) | error | a tree without its system |
+| `capabilities/lint/capability.md`, opening with `## <a id="lint"></a> Lint` | no (heading level 1) | error | |
+| `capabilities/lint/features/run.md`, opening with `# Running lint` | no (an anchor) | error | a forgotten anchor |
+
 ## <a id="lint.structure.type"></a> Rule: An element's type follows from where it stands
 
 ```guarded
@@ -55,6 +80,32 @@ Otherwise lint reports the [error] `findings.heading-unknown` at <heading>
 | `### Goal` | rule | no | error | a rule has only a rationale |
 | `## goal` | feature | no | error | section names are matched exactly |
 | `## Rule: Something` | feature | no | error | a forgotten anchor |
+
+## <a id="lint.structure.section-level"></a> Rule: A section sits one heading level below its element
+
+### Rationale
+
+A section belongs to the nearest element above it, whatever the levels
+say, so that no level arithmetic decides where a section belongs. The
+level is checked instead: a feature's Rationale placed after one of its
+rules would otherwise silently become that rule's rationale.
+
+```guarded
+When      lint reads the heading <heading> of a [section] of an [element] whose heading has the [heading level] <level>
+Provided  the [heading level] of <heading> is one more than <level>
+Then      lint reports nothing about the [heading level] of <heading>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.section-level` at <heading>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| heading | level | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| `## Goal`, under a feature | 1 | yes | nothing reported | |
+| `### Rationale`, under a rule | 2 | yes | nothing reported | |
+| `## Rationale`, after a rule | 2 | no | error | the feature's rationale, placed after one of its rules |
+| `#### Rationale`, under a rule | 2 | no | error | two levels below |
+| `# Goal`, under a feature | 1 | no | error | at the element's own level |
 
 ## <a id="lint.structure.required"></a> Rule: An element has its required sections
 

@@ -61,8 +61,9 @@
 
 ## <a id="system.section"></a> section
 
-- Definition: A heading without an identifier, with the text under it up
-  to the next heading. It belongs to the element above it.
+- Definition: A heading without an identifier, written one heading level
+  below the element above it, with the text under it up to the next
+  heading. It belongs to the nearest element above it.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: sections
@@ -181,7 +182,9 @@
 
 - Definition: Marked `?` as the first word of a field value, of an
   Examples cell or of a section body, or as a word of its own in a rule
-  block. Nothing is specified there yet.
+  block. A word is what whitespace separates, so a note after the mark,
+  as in `? (ask Treasury)`, leaves the place undecided. Nothing is
+  specified there yet.
 - Contact: Bruno Baketarić
 - Status: defined
 

@@ -35,6 +35,11 @@ A capability folder without `capability.md`.
 
 A file of a sibling whose first heading is not a title.
 
+### <a id="lint.findings.element-missing"></a> element-missing
+
+A file of the system, a capability or a feature that does not open with
+its element.
+
 ### <a id="lint.findings.element-unplaced"></a> element-unplaced
 
 An element whose heading and file give no element type.
@@ -42,6 +47,10 @@ An element whose heading and file give no element type.
 ### <a id="lint.findings.heading-unknown"></a> heading-unknown
 
 A heading without an anchor that is no section of its element.
+
+### <a id="lint.findings.section-level"></a> section-level
+
+A section heading that is not one heading level below its element.
 
 ### <a id="lint.findings.section-missing"></a> section-missing
 
@@ -201,4 +210,5 @@ A `Defined by` field whose link reaches no visible reference.
 
 ### <a id="lint.findings.undecided"></a> undecided
 
-A place the tree leaves undecided: a `?` where the structure puts one, or a rule using an open term.
+A place the tree leaves undecided: a `?` where the structure puts one,
+or a rule using an open term.
