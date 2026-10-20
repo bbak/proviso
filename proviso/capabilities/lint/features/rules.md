@@ -16,8 +16,8 @@ into a frame test. A block of the wrong shape leaves the agent to guess
 which is which. The checks are strict: a `Then` without an `And` line
 is an error, not a question, because its frame test needs that line.
 The checks on a block's Given, guard and placeholders take its one
-`When` as their reference; a block without exactly one `When` is
-reported only for how often its keywords appear.
+`When` as their reference, so in a block without exactly one `When`
+those three are skipped; every other check still applies.
 
 ## <a id="lint.rules.block"></a> Rule: A rule holds exactly one rule block
 

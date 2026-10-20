@@ -54,14 +54,15 @@ not an error finding: the notation is not at fault, lint could not run.
 
 Lint reads only regular files and folders. It never follows a symbolic
 link, which could loop, read a file twice or reach outside the tree, so
-a link counts as unreadable wherever it stands, whatever its name, and
-the tree stays self-contained. A file the layout does not list is never
+a link counts as unreadable wherever it stands and whatever its name,
+unless a hidden name has it skipped, which loses nothing, and the tree
+stays self-contained. A file the layout does not list is never
 read at all: it is reported as unknown, and leaves no part of the tree
 unread.
 
 ```guarded
 Given     lint has found the [spec root] for the run
-When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links, among them <unreadable>
+When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links that are not skipped as hidden, among them <unreadable>
 Provided  <unreadable> is empty
 Then      lint checks the whole [spec tree]
   And     lint reports what it finds
@@ -79,6 +80,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
+| none, while `.shared.md` is a symbolic link with a hidden name | yes | the tree is checked, and the link is skipped | a hidden entry never holds spec content |
 
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
 
