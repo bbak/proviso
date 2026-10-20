@@ -70,8 +70,8 @@ properties:
 
 - `root` is the absolute path of the spec root that was linted, with
   `/` as well and, on Windows, its drive first, as an uppercase letter,
-  as in `C:/repo/proviso`, so it shows which tree was checked when
-  several are nested.
+  as in `C:/repo/proviso`, and every name in NFC, so it shows which tree
+  was checked when several are nested.
 - `kind` names one of the members of `findings`.
 - `message` is for people and not part of the contract: tests check
   `kind`, never the wording.
