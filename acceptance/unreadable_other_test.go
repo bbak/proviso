@@ -34,3 +34,8 @@ func makeSpecial(dir string) (string, error) {
 	}
 	return "glossary.md", syscall.Mkfifo(path, 0o644)
 }
+
+// makeJunction fails: junctions exist only on Windows.
+func makeJunction(link, target string) error {
+	return errors.New("junctions exist only on Windows")
+}

@@ -62,6 +62,21 @@ func TestLintRunRoot(t *testing.T) {
 		}
 	})
 
+	// lint.cli.report: every name in root is in NFC, also when the folder
+	// above the spec root is stored as u followed by a mark.
+	t.Run("derived: root in NFC", func(t *testing.T) {
+		composed, decomposed := "repo-ü", "repo-ü"
+		dir := marked.prefixed(decomposed).write(t)
+		if !hasEntry(dir, decomposed) {
+			t.Skip("the file system does not keep the name as u followed by a mark")
+		}
+		o := lintIn(t, dir, filepath.Join(dir, decomposed), nil)
+		o.has(t, "file-unknown", "proviso/notes.md")
+		if strings.Contains(o.report.Root, decomposed) || !strings.HasSuffix(o.report.Root, "/"+composed+"/proviso") {
+			t.Errorf("lint.cli.report: root %q, want it to end in /%s/proviso, in NFC", o.report.Root, composed)
+		}
+	})
+
 	noRoot := []struct {
 		name string
 		tree tree
@@ -145,7 +160,14 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stopped(t, lintIn(t, dir, dir, nil), "shared")
 	})
-	t.Run("row5 x.md a link to another feature in the tree", func(t *testing.T) {
+	t.Run("row5 shared, a Windows junction to a folder outside the tree", func(t *testing.T) {
+		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
+		if err := makeJunction(filepath.Join(dir, "proviso", "shared"), filepath.Join(dir, "outside")); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		stopped(t, lintIn(t, dir, dir, nil), "shared")
+	})
+	t.Run("row6 x.md a link to another feature in the tree", func(t *testing.T) {
 		dir := marked.write(t)
 		link := filepath.Join(dir, filepath.FromSlash(xPath))
 		if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
@@ -153,11 +175,11 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stopped(t, lintIn(t, dir, dir, nil), "x.md")
 	})
-	t.Run("row6 a.md and b.md both unreadable", func(t *testing.T) {
+	t.Run("row7 a.md and b.md both unreadable", func(t *testing.T) {
 		dir := marked.with(aPath, invalid, bPath, strings.Replace(invalid, "cart.bad", "cart.worse", 1)).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md", "b.md")
 	})
-	t.Run("row7 notes.md, not in the layout, without read permission", func(t *testing.T) {
+	t.Run("row8 notes.md, not in the layout, without read permission", func(t *testing.T) {
 		dir := marked.write(t)
 		path := filepath.Join(dir, "proviso", "notes.md")
 		undo, err := makeUnreadable(path)
@@ -191,9 +213,9 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stopped(t, lintIn(t, dir, dir, nil), "notes.md")
 	})
-	// Rationale: a Windows junction or any other entry that is neither a
-	// regular file nor a folder counts as unreadable, as a link does.
-	t.Run("derived: neither a regular file nor a folder (a junction on Windows, a named pipe elsewhere)", func(t *testing.T) {
+	// Any other entry that is neither a regular file nor a folder counts as
+	// unreadable, as a link or a junction does.
+	t.Run("derived: neither a regular file nor a folder (a named pipe)", func(t *testing.T) {
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		name, err := makeSpecial(dir)
 		if err != nil {
@@ -201,8 +223,22 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stopped(t, lintIn(t, dir, dir, nil), name)
 	})
+	t.Run("derived: .shared, a junction with a hidden name", func(t *testing.T) {
+		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
+		if err := makeJunction(filepath.Join(dir, "proviso", ".shared"), filepath.Join(dir, "outside")); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		o := lintIn(t, dir, dir, nil)
+		if o.json.exit == 2 {
+			t.Fatalf("want the tree checked and the junction skipped, but lint could not run:\n%s", o.json.stderr)
+		}
+		o.has(t, "file-unknown", "proviso/notes.md", 1)
+		if len(o.report.Findings) != 1 {
+			t.Errorf("want only notes.md reported, got:\n%s", dump(o.report.Findings))
+		}
+	})
 	hidden := []struct{ name, link, target string }{
-		{"row8 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
+		{"row9 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
 		{"derived: .shared, a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
 	}
 	for _, c := range hidden {
