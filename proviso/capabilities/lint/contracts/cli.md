@@ -68,5 +68,8 @@ properties:
 - `kind` names one of the members of `findings`.
 - `message` is for people and not part of the contract: tests check
   `kind`, never the wording.
-- `related` lists other places the finding concerns, such as where else a
-  duplicate identifier is used.
+- `line` is the line the finding stands on. A finding about a whole file
+  or folder has line 1.
+- `related` lists the other places the finding concerns. Wherever a rule
+  says a finding names where else something is used, or names another
+  element, those places are listed here.

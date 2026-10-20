@@ -79,8 +79,8 @@ Otherwise lint reports the [error] `findings.term-ambiguous` at <entry>, naming 
 | --- | --- | --- | --- | --- |
 | finding | `lint.finding` | yes | nothing reported | |
 | keyword | `lint.keyword`, and `diff.keyword` in another capability | yes | nothing reported | capabilities do not see each other's terms |
-| findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | |
-| element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term |
+| findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | reported at each of the two |
+| element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term; reported at each of the two |
 
 ## <a id="lint.references.hand-over"></a> Rule: A hand-over reaches a rule
 
@@ -158,5 +158,5 @@ Otherwise lint reports the [error] `findings.reference-ambiguous` at <element>, 
 | name | element | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | findings | `lint.findings` | yes | nothing reported | |
-| report | `lint.cli.report`, and a parameter report in lint | no (same level) | error | contracts and parameters share one namespace |
-| report | `lint.cli.report`, and a contract report at system level | no (level above or below) | error | no shadowing |
+| report | `lint.cli.report`, and a parameter report in lint | no (same level) | error | contracts and parameters share one namespace; reported at each of the two |
+| report | `lint.cli.report`, and a contract report at system level | no (level above or below) | error | no shadowing; reported at each of the two |

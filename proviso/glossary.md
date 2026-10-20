@@ -182,7 +182,9 @@
 
 - Definition: Marked `?` as the first word of a field value, of an
   Examples cell or of a section body, or as a word of its own in a rule
-  block. Nothing is specified there yet.
+  block. A word is what whitespace separates, so a note after the mark,
+  as in `? (ask Treasury)`, leaves the place undecided. Nothing is
+  specified there yet.
 - Contact: Bruno Baketarić
 - Status: defined
 
