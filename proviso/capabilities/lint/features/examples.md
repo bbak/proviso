@@ -65,11 +65,11 @@ Otherwise lint reports the [error] `findings.examples-column-missing` at the tab
 
 | columns | placeholders | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| id, provided, outcome, why | `<id>` | yes | nothing reported | |
-| others, id, provided, outcome, why | `<others>`, `<id>` | yes | nothing reported | a Given's placeholder too |
-| provided, outcome, why | `<id>` | no (a column per placeholder) | error, naming id | |
-| findings, as found, outcome | `<findings>` | no (a column per placeholder) | error, naming findings | a column is named exactly as its placeholder |
-| id, provided, why | `<id>` | no (outcome) | error, naming outcome | |
+| `id`, `provided`, `outcome`, `why` | `<id>` | yes | nothing reported | |
+| `others`, `id`, `provided`, `outcome`, `why` | `<others>`, `<id>` | yes | nothing reported | a Given's placeholder too |
+| `provided`, `outcome`, `why` | `<id>` | no (a column per placeholder) | error, naming id | |
+| `findings, as found`, `outcome` | `<findings>` | no (a column per placeholder) | error, naming findings | a column is named exactly as its placeholder |
+| `id`, `provided`, `why` | `<id>` | no (outcome) | error, naming outcome | |
 
 ## <a id="lint.examples.provided-column"></a> Rule: A guarded rule, and only a guarded rule, has a provided column
 
@@ -84,10 +84,10 @@ Otherwise lint reports the [error] `findings.provided-column` at the table
 
 | columns | guarded | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| id, provided, outcome | yes | yes | nothing reported | |
-| findings, outcome | no | yes | nothing reported | a rule that always applies |
-| id, outcome | yes | no | error | the guard's truth value is missing |
-| findings, provided, outcome | no | no | error | there is no guard to be true or false |
+| `id`, `provided`, `outcome` | yes | yes | nothing reported | |
+| `findings`, `outcome` | no | yes | nothing reported | a rule that always applies |
+| `id`, `outcome` | yes | no | error | the guard's truth value is missing |
+| `findings`, `provided`, `outcome` | no | no | error | there is no guard to be true or false |
 
 ## <a id="lint.examples.unknown-column"></a> Rule: Every column has a purpose
 
@@ -143,10 +143,10 @@ Otherwise lint reports the [error] `findings.examples-row-incomplete` at <row>
 
 | row | columns | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| `system`, yes, nothing reported, (empty) | id, provided, outcome, why | yes | nothing reported | `why` may stay empty |
-| `system`, yes, `?`, (empty) | id, provided, outcome, why | yes | nothing reported | undecided, reported as an ask elsewhere |
-| `system`, yes, nothing reported | id, provided, outcome, why | no (one cell per column) | error | a cell short |
-| `system`, yes, (empty), (empty) | id, provided, outcome, why | no (a value in every cell) | error | an outcome left empty: write `?` |
+| `system`, yes, nothing reported, (empty) | `id`, `provided`, `outcome`, `why` | yes | nothing reported | `why` may stay empty |
+| `system`, yes, `?`, (empty) | `id`, `provided`, `outcome`, `why` | yes | nothing reported | undecided, reported as an ask elsewhere |
+| `system`, yes, nothing reported | `id`, `provided`, `outcome`, `why` | no (one cell per column) | error | a cell short |
+| `system`, yes, (empty), (empty) | `id`, `provided`, `outcome`, `why` | no (a value in every cell) | error | an outcome left empty: write `?` |
 
 ## <a id="lint.examples.provided-value"></a> Rule: A provided cell says whether the guard holds
 

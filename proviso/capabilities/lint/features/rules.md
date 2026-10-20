@@ -114,7 +114,7 @@ Otherwise lint reports the [error] `findings.guard-incomplete` at the block
 | --- | --- | --- | --- |
 | When, Provided, Then, And, Otherwise, And | yes | nothing reported | |
 | When, Then, And | yes | nothing reported | a rule that always applies |
-| When, Provided, Then, And | no | error | what happens otherwise is undecided: write `Otherwise ?` |
+| When, Provided, Then, And | no | error | what happens otherwise is undecided: write `Otherwise ?` with `And ?` |
 | When, Then, And, Otherwise, And | no | error | an Otherwise of nothing |
 
 ## <a id="lint.rules.hand-over"></a> Rule: A hand-over has no And lines

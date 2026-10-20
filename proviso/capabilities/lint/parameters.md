@@ -6,7 +6,11 @@
 - Rationale: the Proviso Model fixes where each type of element stands,
   so that tooling and readers find it without a config file.
 
-"At any level" means in the spec root or in a capability's folder.
+"At any level" means in the spec root or in a capability's folder. A
+heading whose text starts with `Rule:` or `Invariant:` gives an element
+type only in a feature file; anywhere else it gives none, because a
+prefix outside a file that mixes types marks an element in the wrong
+place.
 
 | path | heading | element type |
 | --- | --- | --- |
