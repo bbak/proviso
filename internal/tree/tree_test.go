@@ -189,7 +189,7 @@ func TestWellNamed(t *testing.T) {
 }
 
 // Two names in one folder that are the same in NFC are one file on macOS
-// and two on Linux: both are reported.
+// and two on Linux: they are reported once, at the name they share.
 func TestLoadNamesSameInNFC(t *testing.T) {
 	root := t.TempDir()
 	write(t, root, map[string]string{
@@ -204,7 +204,7 @@ func TestLoadNamesSameInNFC(t *testing.T) {
 		t.Skip("the file system keeps one name per NFC form")
 	}
 	tr := Load(root)
-	want := []string{"capabilities/c/features/übersicht.md", "capabilities/c/features/übersicht.md"}
+	want := []string{"capabilities/c/features/übersicht.md"}
 	if !slices.Equal(tr.Malformed, want) {
 		t.Errorf("malformed %q, want %q", tr.Malformed, want)
 	}
