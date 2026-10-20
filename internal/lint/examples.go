@@ -103,7 +103,7 @@ func (l *linter) checkExamples(r *rule) {
 	if len(sides) > 0 {
 		l.report(Error, "examples-side-missing", tablePos, "no row shows %s", strings.Join(sides, " or "))
 	}
-	if parts := 1 + len(guard[0].Ands); no < parts {
+	if parts := 1 + len(guard[0].Ands); parts >= 2 && no < parts {
 		l.report(Error, "examples-part-missing", tablePos, "the guard has %d parts but only %d rows show it failing", parts, no)
 	}
 }

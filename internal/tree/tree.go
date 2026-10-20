@@ -174,7 +174,7 @@ func (t *Tree) walk(dir string) {
 		}
 		mode := e.Type()
 		switch {
-		case mode&fs.ModeSymlink != 0 || mode&^fs.ModeDir != 0:
+		case mode&fs.ModeSymlink != 0:
 			t.Unreadable = append(t.Unreadable, rel)
 		case mode.IsDir():
 			if dir == "capabilities" {
@@ -182,7 +182,7 @@ func (t *Tree) walk(dir string) {
 			}
 			t.walk(rel)
 		default:
-			t.read(rel)
+			t.read(rel, mode.IsRegular())
 		}
 	}
 }
@@ -199,10 +199,17 @@ func (t *Tree) holdsFile(dir, name string) bool {
 	return err == nil && !fi.IsDir()
 }
 
-func (t *Tree) read(rel string) {
+// read reads a file the layout lists; a file it does not list is never
+// opened. A listed entry that is not a regular file, such as a pipe, is
+// unreadable.
+func (t *Tree) read(rel string, regular bool) {
 	kind, cap := Classify(rel)
 	if kind == Unknown {
 		t.Unknown = append(t.Unknown, rel)
+		return
+	}
+	if !regular {
+		t.Unreadable = append(t.Unreadable, rel)
 		return
 	}
 	data, err := os.ReadFile(filepath.Join(t.Root, filepath.FromSlash(rel)))
