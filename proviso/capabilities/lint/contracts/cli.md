@@ -28,8 +28,9 @@ enum: [0, 1, 2]
 What `lint --json` writes: the spec root that was linted, and every
 finding. The paths of findings are relative to the directory holding
 the spec root, so they read the same from wherever lint was run. Every
-path uses `/` as its separator, on every platform, so that the order
-of findings is the same everywhere.
+path uses `/` as its separator, and every name in it is in Unicode's
+composed form, NFC, on every platform, so that the order of findings is
+the same everywhere.
 
 ```yaml
 type: object
@@ -68,13 +69,15 @@ properties:
 ```
 
 - `root` is the absolute path of the spec root that was linted, with
-  `/` as well and, on Windows, its drive first, as in `C:/repo/proviso`,
-  so it shows which tree was checked when several are nested.
+  `/` as well and, on Windows, its drive first, as an uppercase letter,
+  as in `C:/repo/proviso`, so it shows which tree was checked when
+  several are nested.
 - `kind` names one of the members of `findings`.
 - `message` is for people and not part of the contract: tests check
   `kind`, never the wording.
-- `line` is the line the finding stands on. A finding about a whole file
-  or folder has line 1, and a folder's path has no trailing `/`.
+- `line` is the line the finding stands on, counting lines by line
+  feeds only. A finding about a whole file or folder has line 1, and a
+  folder's path has no trailing `/`.
 - `related` lists the other places the finding concerns. Wherever a rule
   says a finding names where else something is used, or names another
   element, those places are listed here, an element at the line of its
