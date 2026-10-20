@@ -8,7 +8,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -19,7 +21,8 @@ const RootName = "proviso"
 var ErrNoRoot = errors.New("no spec root found")
 
 // FindRoot returns the nearest spec root at or above dir: a folder named
-// proviso/ holding system.md.
+// proviso/ holding system.md. Names match exactly, case included, on every
+// platform.
 func FindRoot(dir string) (string, error) {
 	dir, err := filepath.Abs(dir)
 	if err != nil {
@@ -27,10 +30,8 @@ func FindRoot(dir string) (string, error) {
 	}
 	for {
 		root := filepath.Join(dir, RootName)
-		if fi, err := os.Lstat(root); err == nil && fi.IsDir() {
-			if fi, err := os.Lstat(filepath.Join(root, "system.md")); err == nil && !fi.IsDir() {
-				return root, nil
-			}
+		if holds(dir, RootName, true) && holds(root, "system.md", false) {
+			return root, nil
 		}
 		parent := filepath.Dir(dir)
 		if parent == dir {
@@ -86,6 +87,29 @@ type File struct {
 	Data []byte
 }
 
+// holds reports whether the folder dir holds an entry named exactly name,
+// a folder if folder is true, and anything else if not. Lstat alone would
+// ignore case where the file system does, as on Windows and macOS; the
+// folder's listing gives the name as it is stored.
+func holds(dir, name string, folder bool) bool {
+	if _, err := os.Lstat(filepath.Join(dir, name)); err != nil {
+		return false
+	}
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return false
+	}
+	return hasEntry(entries, name, folder)
+}
+
+// hasEntry reports whether entries hold one named exactly name, a plain
+// folder if folder is true, and anything but a folder if not.
+func hasEntry(entries []os.DirEntry, name string, folder bool) bool {
+	return slices.ContainsFunc(entries, func(e os.DirEntry) bool {
+		return e.Name() == name && (e.Type() == fs.ModeDir) == folder
+	})
+}
+
 // CapFolder is a folder in capabilities/.
 type CapFolder struct {
 	Rel           string // slash-separated, relative to the spec root
@@ -99,6 +123,7 @@ type Tree struct {
 	Unknown    []string // files the layout does not list, relative to the spec root
 	CapFolders []CapFolder
 	Unreadable []string // relative to the spec root
+	Uppercase  []string // files and folders whose name holds an uppercase letter, relative to the spec root
 }
 
 // Classify places a slash-separated path, relative to the spec root, in the
@@ -152,9 +177,21 @@ func hidden(rel string) bool {
 	return strings.HasPrefix(path.Base(rel), ".") && rel != ".markdownlint.jsonc"
 }
 
-// Load reads the spec tree at root. It never follows a symbolic link: a link,
-// like any other entry that is neither a regular file nor a folder, is
-// unreadable.
+// hasUpper reports whether name holds an uppercase letter (Unicode's Lu).
+func hasUpper(name string) bool {
+	return strings.ContainsFunc(name, unicode.IsUpper)
+}
+
+// isLink reports whether an entry of the type mode is a link: a symbolic
+// link, or, on Windows, a junction or another reparse point, which Go
+// reports as irregular.
+func isLink(mode fs.FileMode) bool {
+	return mode&(fs.ModeSymlink|fs.ModeIrregular) != 0
+}
+
+// Load reads the spec tree at root. It never follows a link: a link is
+// unreadable wherever it stands, and so is any other entry the layout lists
+// that is neither a regular file nor a folder.
 func Load(root string) *Tree {
 	t := &Tree{Root: root}
 	t.walk("")
@@ -163,6 +200,9 @@ func Load(root string) *Tree {
 
 func (t *Tree) walk(dir string) {
 	entries, err := os.ReadDir(filepath.Join(t.Root, filepath.FromSlash(dir)))
+	if path.Dir(dir) == "capabilities" {
+		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(entries, "capability.md", false)})
+	}
 	if err != nil {
 		t.Unreadable = append(t.Unreadable, dirName(dir))
 		return
@@ -172,14 +212,14 @@ func (t *Tree) walk(dir string) {
 		if hidden(rel) {
 			continue
 		}
+		if hasUpper(e.Name()) {
+			t.Uppercase = append(t.Uppercase, rel)
+		}
 		mode := e.Type()
 		switch {
-		case mode&fs.ModeSymlink != 0:
+		case isLink(mode):
 			t.Unreadable = append(t.Unreadable, rel)
 		case mode.IsDir():
-			if dir == "capabilities" {
-				t.CapFolders = append(t.CapFolders, CapFolder{Rel: rel, HasCapability: t.holdsFile(rel, "capability.md")})
-			}
 			t.walk(rel)
 		default:
 			t.read(rel, mode.IsRegular())
@@ -192,11 +232,6 @@ func dirName(dir string) string {
 		return "."
 	}
 	return dir
-}
-
-func (t *Tree) holdsFile(dir, name string) bool {
-	fi, err := os.Lstat(filepath.Join(t.Root, filepath.FromSlash(dir), name))
-	return err == nil && !fi.IsDir()
 }
 
 // read reads a file the layout lists; a file it does not list is never
