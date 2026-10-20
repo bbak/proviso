@@ -39,7 +39,8 @@ func TestRun(t *testing.T) {
 		{"clean json", map[string]string{"proviso/system.md": system}, []string{"lint", "--json"}, 0, `"findings": []`},
 		{"error text", map[string]string{"proviso/system.md": system, "proviso/notes.md": "x"}, []string{"lint"}, 1, "proviso/notes.md:1: error file-unknown: "},
 		{"ask only", map[string]string{"proviso/system.md": strings.Replace(system, "\ng\n", "\n?\n", 1)}, []string{"lint"}, 0, "ask undecided"},
-		{"uppercase name", map[string]string{"proviso/system.md": system, "proviso/Glossary.md": "x"}, []string{"lint"}, 1, "proviso/Glossary.md:1: error name-uppercase: "},
+		{"uppercase name", map[string]string{"proviso/system.md": system, "proviso/Glossary.md": "x"}, []string{"lint"}, 1, "proviso/Glossary.md:1: error name-malformed: "},
+		{"decomposed name", map[string]string{"proviso/system.md": system, "proviso/ü.md": "x"}, []string{"lint"}, 1, "proviso/ü.md:1: error file-unknown: "},
 		{"carriage return", map[string]string{"proviso/system.md": strings.ReplaceAll(system, "\n", "\r\n")}, []string{"lint"}, 1, "proviso/system.md:1: error line-ending: "},
 		{"no root", map[string]string{"system.md": system}, []string{"lint"}, 2, ""},
 		{"unreadable", map[string]string{"proviso/system.md": system, "proviso/glossary.md": "\xff"}, []string{"lint", "--json"}, 2, ""},
@@ -91,12 +92,16 @@ func TestReportRoot(t *testing.T) {
 		if got := reportRoot("/repo/proviso"); got != "/repo/proviso" {
 			t.Errorf("got %q", got)
 		}
+		if got := reportRoot("/ü/proviso"); got != "/ü/proviso" {
+			t.Errorf("a decomposed name: got %q", got)
+		}
 		return
 	}
 	cases := map[string]string{
 		`c:\repo\proviso`:        "C:/repo/proviso",
 		`C:\repo\proviso`:        "C:/repo/proviso",
 		`\\server\share\proviso`: "//server/share/proviso",
+		"c:\\u\u0308\\proviso":   "C:/\u00fc/proviso",
 	}
 	for in, want := range cases {
 		if got := reportRoot(in); got != want {

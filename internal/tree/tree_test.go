@@ -138,21 +138,51 @@ func TestFindRootMatchesCase(t *testing.T) {
 func TestLoadNames(t *testing.T) {
 	root := t.TempDir()
 	write(t, root, map[string]string{
-		"system.md":                            "# x",
-		".Hidden/X.md":                         "",
-		"capabilities/Lint/glossary.md":        "# G",
-		"capabilities/c/Capability.md":         "# c",
-		"capabilities/d/features/übersicht.md": "# u",
-		"capabilities/c/features/Übersicht.md": "# U", // in another folder than übersicht.md, which Windows would take for the same name
+		"system.md":                             "# x",
+		".Hidden/X.md":                          "",
+		"capabilities/Lint/glossary.md":         "# G",
+		"capabilities/c/Capability.md":          "# c",
+		"capabilities/d/features/übersicht.md":  "# u",
+		"capabilities/c/features/Übersicht.md":  "# U", // in another folder than übersicht.md, which Windows would take for the same name
+		"capabilities/d/features/検索.md":         "# k",
+		"capabilities/d/features/my run.md":     "# m",
+		"capabilities/d/features/run_old.md":    "# r",
+		"capabilities/e/features/u\u0308ber.md": "# u", // stored decomposed
 	})
 	tr := Load(root)
-	want := []string{"capabilities/Lint", "capabilities/c/Capability.md", "capabilities/c/features/Übersicht.md"}
-	if !slices.Equal(tr.Uppercase, want) {
-		t.Errorf("uppercase %v, want %v", tr.Uppercase, want)
+	want := []string{"capabilities/Lint", "capabilities/c/Capability.md", "capabilities/c/features/Übersicht.md", "capabilities/d/features/my run.md", "capabilities/d/features/run_old.md"}
+	if !slices.Equal(tr.Malformed, want) {
+		t.Errorf("malformed %v, want %v", tr.Malformed, want)
+	}
+	if !slices.ContainsFunc(tr.Files, func(f *File) bool { return f.Rel == "capabilities/e/features/\u00fcber.md" && string(f.Data) == "# u" }) {
+		t.Error("a decomposed name is not read in NFC")
 	}
 	for _, c := range tr.CapFolders {
 		if c.HasCapability {
 			t.Errorf("%s: Capability.md is not capability.md", c.Rel)
+		}
+	}
+}
+
+func TestWellNamed(t *testing.T) {
+	cases := map[string]bool{
+		"run.md":              true,
+		"übersicht.md":        true,
+		"u\u0308bersicht.md":  true, // a letter followed by a mark
+		"検索.md":               true,
+		".markdownlint.jsonc": true,
+		"a-b2.md":             true,
+		"Run.md":              false,
+		"Übersicht.md":        false,
+		"\u01c5.md":           false, // a titlecase letter has a lowercase form
+		"my run.md":           false,
+		"run_old.md":          false,
+		"run.md.":             false,
+		"a:b.md":              false,
+	}
+	for name, want := range cases {
+		if got := wellNamed(name); got != want {
+			t.Errorf("%q: %v, want %v", name, got, want)
 		}
 	}
 }

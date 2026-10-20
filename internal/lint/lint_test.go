@@ -325,14 +325,14 @@ func TestOrder(t *testing.T) {
 	fs := []Finding{
 		{Kind: "x", File: "b.md", Line: 3}, {Kind: "x", File: "a.md", Line: 9}, {Kind: "x", File: "a.md", Line: 2},
 		{Kind: "identifier-duplicate", File: "a.md", Line: 4}, {Kind: "anchor-misplaced", File: "a.md", Line: 4},
-		{Kind: "x", File: "B.md", Line: 1},
+		{Kind: "x", File: "a.md", Line: 1}, {Kind: "x", File: "a-b.md", Line: 1},
 	}
 	Sort(fs)
 	var got []string
 	for _, f := range fs {
 		got = append(got, f.File+":"+strconv.Itoa(f.Line)+" "+f.Kind)
 	}
-	want := []string{"B.md:1 x", "a.md:2 x", "a.md:4 anchor-misplaced", "a.md:4 identifier-duplicate", "a.md:9 x", "b.md:3 x"}
+	want := []string{"a-b.md:1 x", "a.md:1 x", "a.md:2 x", "a.md:4 anchor-misplaced", "a.md:4 identifier-duplicate", "a.md:9 x", "b.md:3 x"}
 	if !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}
@@ -379,10 +379,10 @@ func TestLineEnding(t *testing.T) {
 	}
 }
 
-func TestNameUppercase(t *testing.T) {
-	tr := &tree.Tree{Root: "proviso", Uppercase: []string{"capabilities/Lint", "capabilities/c/features/Übersicht.md"}}
+func TestNameMalformed(t *testing.T) {
+	tr := &tree.Tree{Root: "proviso", Malformed: []string{"capabilities/Lint", "capabilities/c/features/Übersicht.md"}}
 	got := kinds(Run(tr))
-	want := []string{"name-uppercase@capabilities/Lint:1", "name-uppercase@capabilities/c/features/Übersicht.md:1"}
+	want := []string{"name-malformed@capabilities/Lint:1", "name-malformed@capabilities/c/features/Übersicht.md:1"}
 	if !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}
@@ -397,8 +397,10 @@ func TestDefinedByBackslash(t *testing.T) {
 	if got := kinds(lintFiles(f)); len(got) != 0 {
 		t.Errorf("a / link: %v", got)
 	}
-	f["capabilities/c/glossary.md"] = glossary + strings.Replace(entry, "%s", `..\..\references.md`, 1)
-	if got, want := kinds(lintFiles(f)), []string{"defined-by-unresolved@capabilities/c/glossary.md:12"}; !slices.Equal(got, want) {
-		t.Errorf("a backslash link: got %v, want %v", got, want)
+	for _, link := range []string{`..\..\references.md`, `../..\references.md`} {
+		f["capabilities/c/glossary.md"] = glossary + strings.Replace(entry, "%s", link, 1)
+		if got, want := kinds(lintFiles(f)), []string{"defined-by-unresolved@capabilities/c/glossary.md:12"}; !slices.Equal(got, want) {
+			t.Errorf("%s: got %v, want %v", link, got, want)
+		}
 	}
 }

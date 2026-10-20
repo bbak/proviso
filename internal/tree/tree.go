@@ -12,6 +12,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 // RootName is the name of the folder that holds a spec tree.
@@ -102,11 +104,11 @@ func holds(dir, name string, folder bool) bool {
 	return hasEntry(entries, name, folder)
 }
 
-// hasEntry reports whether entries hold one named exactly name, a plain
-// folder if folder is true, and anything but a folder if not.
+// hasEntry reports whether entries hold one named exactly name, read in
+// NFC, a plain folder if folder is true, and anything but a folder if not.
 func hasEntry(entries []os.DirEntry, name string, folder bool) bool {
 	return slices.ContainsFunc(entries, func(e os.DirEntry) bool {
-		return e.Name() == name && (e.Type() == fs.ModeDir) == folder
+		return norm.NFC.String(e.Name()) == name && (e.Type() == fs.ModeDir) == folder
 	})
 }
 
@@ -123,7 +125,7 @@ type Tree struct {
 	Unknown    []string // files the layout does not list, relative to the spec root
 	CapFolders []CapFolder
 	Unreadable []string // relative to the spec root
-	Uppercase  []string // files and folders whose name holds an uppercase letter, relative to the spec root
+	Malformed  []string // files and folders whose name does not read the same on every platform, relative to the spec root
 }
 
 // Classify places a slash-separated path, relative to the spec root, in the
@@ -177,29 +179,40 @@ func hidden(rel string) bool {
 	return strings.HasPrefix(path.Base(rel), ".") && rel != ".markdownlint.jsonc"
 }
 
-// hasUpper reports whether name holds an uppercase letter (Unicode's Lu).
-func hasUpper(name string) bool {
-	return strings.ContainsFunc(name, unicode.IsUpper)
+// wellNamed reports whether name, read in NFC, holds only lowercase
+// letters, marks, digits, hyphens and dots, and does not end with a dot. A
+// letter is lowercase when it has no other lowercase form, so letters of a
+// script without case count; a digit is a decimal digit of any script
+// (Unicode's Nd).
+func wellNamed(name string) bool {
+	if strings.HasSuffix(name, ".") {
+		return false
+	}
+	for _, r := range name {
+		switch {
+		case r == '-', r == '.', unicode.IsMark(r), unicode.IsDigit(r):
+		case unicode.IsLetter(r) && unicode.ToLower(r) == r:
+		default:
+			return false
+		}
+	}
+	return true
 }
 
-// isLink reports whether an entry of the type mode is a link: a symbolic
-// link, or, on Windows, a junction or another reparse point, which Go
-// reports as irregular.
-func isLink(mode fs.FileMode) bool {
-	return mode&(fs.ModeSymlink|fs.ModeIrregular) != 0
-}
-
-// Load reads the spec tree at root. It never follows a link: a link is
-// unreadable wherever it stands, and so is any other entry the layout lists
-// that is neither a regular file nor a folder.
+// Load reads the spec tree at root, every name read in NFC. It never
+// follows a link: a symbolic link, a Windows junction or any other entry
+// that is neither a regular file nor a folder is unreadable wherever it
+// stands.
 func Load(root string) *Tree {
 	t := &Tree{Root: root}
-	t.walk("")
+	t.walk("", t.Root)
 	return t
 }
 
-func (t *Tree) walk(dir string) {
-	entries, err := os.ReadDir(filepath.Join(t.Root, filepath.FromSlash(dir)))
+// walk reads the folder disk, whose path relative to the spec root, read
+// in NFC, is dir.
+func (t *Tree) walk(dir, disk string) {
+	entries, err := os.ReadDir(disk)
 	if path.Dir(dir) == "capabilities" {
 		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(entries, "capability.md", false)})
 	}
@@ -208,21 +221,22 @@ func (t *Tree) walk(dir string) {
 		return
 	}
 	for _, e := range entries {
-		rel := path.Join(dir, e.Name())
+		name := norm.NFC.String(e.Name())
+		rel := path.Join(dir, name)
 		if hidden(rel) {
 			continue
 		}
-		if hasUpper(e.Name()) {
-			t.Uppercase = append(t.Uppercase, rel)
+		if !wellNamed(name) {
+			t.Malformed = append(t.Malformed, rel)
 		}
 		mode := e.Type()
 		switch {
-		case isLink(mode):
-			t.Unreadable = append(t.Unreadable, rel)
-		case mode.IsDir():
-			t.walk(rel)
+		case mode == fs.ModeDir:
+			t.walk(rel, filepath.Join(disk, e.Name()))
+		case mode.IsRegular():
+			t.read(rel, filepath.Join(disk, e.Name()))
 		default:
-			t.read(rel, mode.IsRegular())
+			t.Unreadable = append(t.Unreadable, rel)
 		}
 	}
 }
@@ -234,20 +248,15 @@ func dirName(dir string) string {
 	return dir
 }
 
-// read reads a file the layout lists; a file it does not list is never
-// opened. A listed entry that is not a regular file, such as a pipe, is
-// unreadable.
-func (t *Tree) read(rel string, regular bool) {
+// read reads the regular file disk, at rel, if the layout lists it; a file
+// it does not list is never opened.
+func (t *Tree) read(rel, disk string) {
 	kind, cap := Classify(rel)
 	if kind == Unknown {
 		t.Unknown = append(t.Unknown, rel)
 		return
 	}
-	if !regular {
-		t.Unreadable = append(t.Unreadable, rel)
-		return
-	}
-	data, err := os.ReadFile(filepath.Join(t.Root, filepath.FromSlash(rel)))
+	data, err := os.ReadFile(disk)
 	if err != nil || !utf8.Valid(data) {
 		t.Unreadable = append(t.Unreadable, rel)
 		return

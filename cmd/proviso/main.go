@@ -13,6 +13,7 @@ import (
 	"github.com/bbak/proviso/internal/lint"
 	"github.com/bbak/proviso/internal/report"
 	"github.com/bbak/proviso/internal/tree"
+	"golang.org/x/text/unicode/norm"
 )
 
 // The exit statuses of the contract lint.cli.lint.exit-status.
@@ -76,12 +77,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 
 // reportRoot writes the absolute path of the spec root with "/" as its
-// separator and, on Windows, its drive letter in uppercase, whichever case
-// the working directory was given in.
+// separator, every name in NFC and, on Windows, its drive letter in
+// uppercase, whichever case the working directory was given in.
 func reportRoot(root string) string {
 	vol := filepath.VolumeName(root)
 	if len(vol) == 2 && vol[1] == ':' {
 		root = strings.ToUpper(vol) + root[2:]
 	}
-	return filepath.ToSlash(root)
+	return norm.NFC.String(filepath.ToSlash(root))
 }
