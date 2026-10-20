@@ -99,3 +99,28 @@ func TestClassify(t *testing.T) {
 		}
 	}
 }
+
+func TestLoadLinks(t *testing.T) {
+	root := t.TempDir()
+	write(t, root, map[string]string{
+		"system.md":                    "# x",
+		"capabilities/c/capability.md": "# c",
+		"capabilities/c/features/f.md": "# f",
+	})
+	for link, target := range map[string]string{
+		".shared.md":                   "system.md",
+		"glossary.md":                  "system.md",
+		"capabilities/c/features/x.md": "f.md",
+	} {
+		if err := os.Symlink(target, filepath.Join(root, filepath.FromSlash(link))); err != nil {
+			t.Skipf("cannot create symbolic links here: %v", err)
+		}
+	}
+	tr := Load(root)
+	if want := []string{"capabilities/c/features/x.md", "glossary.md"}; !slices.Equal(tr.Unreadable, want) {
+		t.Errorf("unreadable %v, want %v", tr.Unreadable, want)
+	}
+	if len(tr.Unknown) != 0 {
+		t.Errorf("unknown %v", tr.Unknown)
+	}
+}

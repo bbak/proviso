@@ -230,6 +230,8 @@ func TestFindings(t *testing.T) {
 			[]string{"examples-side-missing@capabilities/c/features/f.md:28"}}, // one part: no part check
 		{"two whens skip event checks", withRule("When      lint reads <id>\nWhen      <x>\nProvided  the sky\nThen      <y>\n  And     z\nOtherwise w\n  And     v\n", "| id | x | y | provided | outcome |\n| --- | --- | --- | --- | --- |\n| a | b | c | yes | d |\n| a | b | c | no | d |\n"),
 			[]string{"keyword-count@capabilities/c/features/f.md:19"}},
+		{"two whens keep the other checks", withRule("When      lint reads <id>\nWhen      <x> [nope]\nThen      y\n", "| id | x | outcome |\n| --- | --- | --- |\n| a | b | d |\n"),
+			[]string{"and-missing@capabilities/c/features/f.md:22", "keyword-count@capabilities/c/features/f.md:19", "term-unresolved@capabilities/c/features/f.md:21"}},
 		{"keyword is not unmarked text", func() map[string]string {
 			f := withRule("When      lint reads <id>\nThen      x\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n")
 			f["capabilities/c/glossary.md"] += "\n## <a id=\"c.then\"></a> then\n\n- Definition: x\n- Contact: x\n- Status: defined\n"
@@ -334,4 +336,19 @@ func TestOrder(t *testing.T) {
 	if !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}
+}
+
+func TestRelatedAtHeading(t *testing.T) {
+	f := base()
+	f["capabilities/c/glossary.md"] += "\n## <a id=\"c.f\"></a> other\n\n- Definition: x\n- Contact: x\n- Status: defined\n"
+	for _, fd := range lintFiles(f) {
+		if fd.Kind != "identifier-duplicate" || fd.File != "proviso/capabilities/c/features/f.md" {
+			continue
+		}
+		if want := []Pos{{"proviso/capabilities/c/glossary.md", 10}}; !slices.Equal(fd.Related, want) {
+			t.Errorf("related %v, want %v", fd.Related, want)
+		}
+		return
+	}
+	t.Error("no identifier-duplicate in f.md")
 }
