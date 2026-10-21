@@ -345,3 +345,13 @@ Every visit.
 
 A cart is there on the next visit.
 `
+
+// TestLintTreeLayoutManifest checks the row of tree_layout for manifest.sum:
+// in the spec root it belongs to the layout, anywhere else it does not.
+func TestLintTreeLayoutManifest(t *testing.T) {
+	rows(t, "file-unknown", []row{
+		{name: "manifest.sum in the spec root", tree: baseline().with("proviso/manifest.sum", "model 0\n"), holds: true, file: "proviso/manifest.sum"},
+		{name: "manifest.sum in a capability's folder", tree: baseline().with("proviso/capabilities/cart/manifest.sum", "model 0\n"), file: "proviso/capabilities/cart/manifest.sum"},
+		{name: "Manifest.sum in the spec root, names matched exactly", tree: baseline().with("proviso/Manifest.sum", "model 0\n"), file: "proviso/Manifest.sum"},
+	})
+}

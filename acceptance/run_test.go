@@ -457,3 +457,38 @@ func TestLintRunReadOnly(t *testing.T) {
 		})
 	}
 }
+
+func TestLintRunModel(t *testing.T) {
+	// stopped checks exit status 2 and that stderr says something; that
+	// nothing goes to stdout is checked for every run with exit status 2.
+	stopped := func(t *testing.T, o outcome) {
+		t.Helper()
+		for _, r := range []run{o.json, o.text} {
+			if r.exit != 2 {
+				t.Errorf("want exit status 2, got %d\nstdout: %s", r.exit, r.stdout)
+			}
+		}
+	}
+	t.Run("row1 without manifest.sum", func(t *testing.T) {
+		check(t, baseline()).clean(t)
+	})
+	t.Run("row2 manifest.sum starting with model 0", func(t *testing.T) {
+		check(t, baseline().with("proviso/manifest.sum", "model 0\n")).clean(t)
+	})
+	t.Run("row3 manifest.sum starting with model 1", func(t *testing.T) {
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n")))
+	})
+	t.Run("row4 manifest.sum empty", func(t *testing.T) {
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "")))
+	})
+	// Lint reads nothing else of the manifest: what follows the first line
+	// is never checked.
+	t.Run("derived: model 0, then lines that are no manifest's", func(t *testing.T) {
+		check(t, baseline().with("proviso/manifest.sum", "model 0\nnot a line of a manifest\n<<<<<<< HEAD\n")).clean(t)
+	})
+	// The model version a tree needs is checked before the tree: a tree
+	// with an error gives exit status 2, not 1, and no report.
+	t.Run("derived: model 1 and a tree with an error", func(t *testing.T) {
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n", "proviso/notes.md", "# Notes\n")))
+	})
+}
