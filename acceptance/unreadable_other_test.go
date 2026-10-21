@@ -39,3 +39,25 @@ func makeSpecial(dir string) (string, error) {
 func makeJunction(link, target string) error {
 	return errors.New("junctions exist only on Windows")
 }
+
+// makeUnwritable takes the write permission from the spec root root and its
+// manifest.sum until the returned function is called.
+func makeUnwritable(root string) (func(), error) {
+	manifest := filepath.Join(root, "manifest.sum")
+	if err := os.Chmod(manifest, 0o444); err != nil {
+		return nil, err
+	}
+	if err := os.Chmod(root, 0o555); err != nil {
+		os.Chmod(manifest, 0o644)
+		return nil, err
+	}
+	restore := func() { os.Chmod(root, 0o755); os.Chmod(manifest, 0o644) }
+	probe := filepath.Join(root, "probe")
+	if f, err := os.Create(probe); err == nil {
+		f.Close()
+		os.Remove(probe)
+		restore()
+		return nil, errors.New("the folder stays writable without permission (running as root?)")
+	}
+	return restore, nil
+}
