@@ -8,9 +8,10 @@
 
 A part's text is what follows its key: a heading's text after its
 anchor, a field's value, a section's body, a step's lines with its `And`
-lines, a row's line. An element's parts are its own: an element below
-it, such as a feature's rule or a contract element's member, has parts
-of its own.
+lines, a row's line. The header and separator rows of an Examples table
+belong to no part; `body` is a part only where it holds text. An
+element's parts are its own: an element below it, such as a feature's
+rule or a contract element's member, has parts of its own.
 
 | part | key | written as |
 | --- | --- | --- |

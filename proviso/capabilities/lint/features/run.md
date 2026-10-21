@@ -98,9 +98,9 @@ binary's own version.
 
 ```guarded
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
-Provided  <root> holds no `manifest_file`, or its first line names `model_version`
+Provided  <root> holds no `manifest_file`, or its first line, without its line ending, names `model_version`
 Then      lint checks the [spec tree]
-  And     lint reads nothing else of `manifest_file`
+  And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
 Otherwise lint writes to "stderr" the model version the [spec tree] needs and the one lint reads
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
@@ -110,6 +110,7 @@ Otherwise lint writes to "stderr" the model version the [spec tree] needs and th
 | --- | --- | --- | --- |
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
 | `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | exit status 2 | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | exit status 2 | no version is named |
 

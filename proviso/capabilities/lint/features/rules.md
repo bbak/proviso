@@ -76,7 +76,7 @@ Otherwise lint reports the [error] `findings.keyword-order` at the first [keywor
 | keywords | provided | outcome | why |
 | --- | --- | --- | --- |
 | When, Then, And | yes | nothing reported | the shortest rule |
-| Given, Given, When, Provided, And, Then, And, Otherwise, And | yes | nothing reported | several Givens, a guard in two parts |
+| Given, And, When, Provided, And, Then, And, Otherwise, And | yes | nothing reported | state in two parts, a guard in two parts |
 | When, Given, Then, And | no (order) | error at Given | |
 | Given, When, Then, And, Provided | no (order) | error at Provided | the guard after the outcome |
 | And, When, Then, And | no (And first) | error at the first And | |
@@ -86,7 +86,7 @@ Otherwise lint reports the [error] `findings.keyword-order` at the first [keywor
 ```guarded
 When      lint reads the [keywords] <keywords> of a [rule block]
 Provided  When and Then each appear exactly once in <keywords>
-  And     Provided and Otherwise each appear at most once
+  And     Given, Provided and Otherwise each appear at most once
 Then      lint reports nothing about how often [keywords] appear
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.keyword-count` at the block, naming each [keyword]
@@ -99,7 +99,8 @@ Otherwise lint reports the [error] `findings.keyword-count` at the block, naming
 | Given, When, Provided, Then, And, Otherwise, And | yes | nothing reported | |
 | Given, Then, And | no (When and Then once) | error, naming When | no event |
 | When, When, Then, And | no (When and Then once) | error, naming When | two events make two rules |
-| When, Provided, Provided, Then, And, Otherwise, And | no (Provided and Otherwise at most once) | error, naming Provided | parts of one condition are `And` lines |
+| When, Provided, Provided, Then, And, Otherwise, And | no (Given, Provided and Otherwise at most once) | error, naming Provided | parts of one condition are `And` lines |
+| Given, Given, When, Then, And | no (Given, Provided and Otherwise at most once) | error, naming Given | more state is an `And` line |
 
 ## <a id="lint.rules.guard"></a> Rule: A guard comes with its Otherwise
 
