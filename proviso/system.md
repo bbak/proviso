@@ -48,6 +48,7 @@ line. Proviso is those mechanics.
 ## Design boundary
 
 - An agent host that runs the skills, Claude Code first.
-- A version control system with branches, which isolates amendments.
+- Git, which isolates amendments on branches and keeps the former text
+  of the tree.
 - The specified system's repository, which holds the tree beside its
   code.

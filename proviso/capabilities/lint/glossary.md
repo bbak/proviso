@@ -41,24 +41,6 @@
 - Status: defined
 - Aliases: heading levels
 
-## <a id="lint.keyword"></a> keyword
-
-- Definition: One of the words that start the lines of a rule block:
-  `Given`, `When`, `Provided`, `Then`, `Otherwise` and `And`, matched
-  exactly.
-- Contact: Bruno Baketarić
-- Status: defined
-- Aliases: keywords
-
-## <a id="lint.step"></a> step
-
-- Definition: A line of a rule block that starts with a keyword other
-  than `And`, together with the `And` lines that follow it. An outcome
-  step is a `Then` or `Otherwise` step.
-- Contact: Bruno Baketarić
-- Status: defined
-- Aliases: steps, outcome step
-
 ## <a id="lint.top-level-element"></a> top-level element
 
 - Definition: A contract element that is not a member of another, such

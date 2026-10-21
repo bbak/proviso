@@ -67,6 +67,22 @@ source positions and GitHub's tables, and the package
 form on every platform. Any further module is added here before code
 uses it.
 
+## <a id="system.git"></a> Git is reached through its command line
+
+### Rationale
+
+Proviso needs git only for history: which revision holds the baseline,
+and what a file held there. The `git` command line is installed wherever
+engineers work with the tree, and calling it adds no dependency. Asking
+only those questions keeps every git call in one place, so that another
+version control system could answer them later.
+
+### Property
+
+Proviso reads from git only by running the `git` command line, never
+through a Go library, and only to find a revision and to read the files
+of the spec tree at that revision. It never writes to git.
+
 ## <a id="system.acceptance-tests"></a> Acceptance tests belong to the testing agent
 
 ### Rationale
