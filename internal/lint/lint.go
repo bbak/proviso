@@ -26,7 +26,11 @@ type linter struct {
 }
 
 // Run checks a tree read completely and returns its findings, ordered.
-func Run(t *tree.Tree) []Finding {
+func Run(t *tree.Tree) []Finding { return Check(t).Findings }
+
+// Check checks a tree read completely and returns its findings, ordered,
+// with the elements it read.
+func Check(t *tree.Tree) *Result {
 	l := &linter{
 		ids:      map[string][]*element{},
 		glossary: map[string][]*element{},
@@ -45,6 +49,9 @@ func Run(t *tree.Tree) []Finding {
 		l.report(Error, "name-malformed", Pos{reportPath(rel), 1}, "the name holds something other than lowercase letters, marks, digits, hyphens and dots, or ends with a dot, or another entry in its folder has the same name in NFC")
 	}
 	for _, tf := range t.Files {
+		if tf.Kind == tree.Manifest {
+			continue // lint reads only its first line, before the run: lint.run.model
+		}
 		if i := bytes.IndexByte(tf.Data, '\r'); i >= 0 {
 			line := bytes.Count(tf.Data[:i], []byte("\n")) + 1
 			l.report(Error, "line-ending", Pos{reportPath(tf.Rel), line}, "the line ends with a carriage return; the tree ends lines with a line feed only")
@@ -74,7 +81,7 @@ func Run(t *tree.Tree) []Finding {
 	if l.findings == nil {
 		l.findings = []Finding{}
 	}
-	return l.findings
+	return &Result{Findings: l.findings, Elements: l.export()}
 }
 
 func reportPath(rel string) string { return path.Join(tree.RootName, rel) }
@@ -221,7 +228,10 @@ func (l *linter) checkEntry(e *element) {
 	if hasDef == hasBy {
 		l.report(Error, "definition-count", e.pos(), "the entry %q needs exactly one of Definition and Defined by", e.id)
 	}
-	if hasBy && !l.definedByResolves(e, by) {
+	if hasBy {
+		e.definedBy = l.definedByResolves(e, by)
+	}
+	if hasBy && e.definedBy == "" {
 		l.report(Error, "defined-by-unresolved", Pos{e.file.path, by.line}, "the Defined by of %q has no link to a visible reference", e.id)
 	}
 	if _, ok := e.field("Deviations"); ok && !hasBy {
@@ -229,7 +239,9 @@ func (l *linter) checkEntry(e *element) {
 	}
 }
 
-func (l *linter) definedByResolves(e *element, by field) bool {
+// definedByResolves returns the identifier of the visible reference a
+// Defined by links to, or "" if it links to none.
+func (l *linter) definedByResolves(e *element, by field) string {
 	dir := path.Dir(e.file.Rel)
 	allowed := []string{"references.md"}
 	if e.cap != "" {
@@ -242,10 +254,10 @@ func (l *linter) definedByResolves(e *element, by field) bool {
 		}
 		target := path.Join(dir, p)
 		if slices.Contains(allowed, target) && l.refsIn[target][frag] {
-			return true
+			return frag
 		}
 	}
-	return false
+	return ""
 }
 
 // checkAmbiguity reports term names and contract or parameter names that

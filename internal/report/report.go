@@ -1,5 +1,6 @@
-// Package report writes lint's findings: as text for people, or as the
-// JSON report of the contract lint.cli.report.
+// Package report writes what the commands found: lint's findings and the
+// element diff, each as text for people or as the JSON of its contract,
+// lint.cli.report and system.cli.element-diff.
 package report
 
 import (

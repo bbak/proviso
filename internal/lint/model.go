@@ -76,6 +76,13 @@ type element struct {
 	fields   []field
 	sections []section
 	region   []markdown.Block // the blocks after the heading, up to the next element
+
+	// What the commands that build on lint read of the element.
+	raw        string   // the heading's source text after its anchor
+	fieldsLine int      // the line of its field list; 0 if it has none
+	rule       *rule    // its rule block and Examples table, for a rule
+	marks      []string // the glossary entries its rule block marks
+	definedBy  string   // the reference its Defined by links to
 }
 
 func (e *element) pos() Pos { return Pos{e.file.path, e.line} }
@@ -130,7 +137,7 @@ func (l *linter) build(f *file) {
 			continue
 		}
 		if h.HasID {
-			e := &element{id: h.ID, typ: placeType(f.Kind, h), file: f, line: b.Line, level: h.Level, name: h.Text, cap: f.Cap, members: map[string][]*element{}}
+			e := &element{id: h.ID, typ: placeType(f.Kind, h), file: f, line: b.Line, level: h.Level, name: h.Text, cap: f.Cap, members: map[string][]*element{}, raw: h.Raw}
 			if e.typ == "" {
 				l.report(Error, "element-unplaced", e.pos(), "the heading of %q gives no element type in this file", e.id)
 			}
@@ -147,6 +154,7 @@ func (l *linter) build(f *file) {
 			if i+1 < len(doc.Blocks) {
 				if lst := doc.Blocks[i+1].List; lst != nil && lst.Bullet {
 					e.fields = readFields(lst)
+					e.fieldsLine = doc.Blocks[i+1].Line
 				}
 			}
 			l.elements = append(l.elements, e)

@@ -109,3 +109,65 @@ func TestReportRoot(t *testing.T) {
 		}
 	}
 }
+
+func TestModelVersion(t *testing.T) {
+	for manifest, status := range map[string]int{"model 0\n": 0, "model 1\n": 2, "": 2} {
+		inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": manifest})
+		var out, errOut bytes.Buffer
+		if got := run([]string{"lint", "--json"}, &out, &errOut); got != status || status == 2 && (out.Len() > 0 || errOut.Len() == 0) {
+			t.Errorf("%q: status %d, stdout %q, stderr %q", manifest, got, out.String(), errOut.String())
+		}
+	}
+}
+
+func TestBaselineCommands(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system})
+	call := func(args ...string) (int, string, string) {
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	if status, out, _ := call("diff", "--json"); status != 1 || !strings.Contains(out, `"revision": null`) || !strings.Contains(out, `"change": "added"`) {
+		t.Errorf("without a manifest: %d %s", status, out)
+	}
+	if status, out, errOut := call("manifest"); status != 0 || out != "" || errOut != "" {
+		t.Fatalf("manifest: %d %q %q", status, out, errOut)
+	}
+	data, err := os.ReadFile(filepath.Join("proviso", "manifest.sum"))
+	if err != nil || !strings.HasPrefix(string(data), "model 0\nsystem\theading\th1:") {
+		t.Fatalf("%q %v", data, err)
+	}
+	if status, out, _ := call("diff"); status != 0 || out != "" {
+		t.Errorf("unchanged, text: %d %q", status, out)
+	}
+	if status, out, _ := call("diff", "--json"); status != 0 || !strings.Contains(out, `"elements": []`) {
+		t.Errorf("unchanged, json: %d %q", status, out)
+	}
+	if status, _, _ := call("manifest", "--json"); status != 2 {
+		t.Error("manifest takes no --json")
+	}
+
+	// A changed part needs former text, which a tree in no git repository
+	// cannot give.
+	os.WriteFile(filepath.Join("proviso", "system.md"), []byte(strings.Replace(system, "\ng\n", "\nh\n", 1)), 0o644)
+	if status, out, errOut := call("diff", "--json"); status != 2 || out != "" || errOut == "" {
+		t.Errorf("no former text: %d %q %q", status, out, errOut)
+	}
+
+	os.WriteFile(filepath.Join("proviso", "manifest.sum"), append(data, "<<<<<<< HEAD\n"...), 0o644)
+	if status, out, errOut := call("diff"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
+		t.Errorf("malformed: %d %q %q", status, out, errOut)
+	}
+
+	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	for _, cmd := range []string{"manifest", "diff"} {
+		status, out, errOut := call(cmd)
+		if status != 2 || out != "" || !strings.Contains(errOut, "error file-unknown") {
+			t.Errorf("%s on a tree with an error: %d %q %q", cmd, status, out, errOut)
+		}
+	}
+	after, _ := os.ReadFile(filepath.Join("proviso", "manifest.sum"))
+	if !bytes.Equal(after, append(data, "<<<<<<< HEAD\n"...)) {
+		t.Error("a refused manifest changed the former one")
+	}
+}
