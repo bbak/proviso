@@ -122,6 +122,7 @@ Otherwise lint reports the [error] `findings.line-ending` at the first line of <
 | `glossary.md`, every line ending in a line feed | yes | nothing reported | |
 | `glossary.md`, lines 3 and 7 ending in a carriage return and a line feed | no | error at line 3 | once per file, at the first |
 | `.markdownlint.jsonc`, ending its lines in a carriage return and a line feed | no | error at line 1 | every file lint reads |
+| `manifest.sum`, ending its lines in a carriage return and a line feed | no | error at line 1 | as checked out with `core.autocrlf` |
 
 ## <a id="lint.layout.file"></a> Rule: Every file belongs to the layout
 
