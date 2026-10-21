@@ -66,7 +66,7 @@ Otherwise → cart.add.empty`
 func TestLintRulesOrder(t *testing.T) {
 	rs := []row{
 		{name: "row1 the shortest rule", tree: kwTree("When", "Then", "And"), holds: true},
-		{name: "row2 several Givens, a guard in two parts", tree: kwTree("Given", "Given", "When", "Provided", "And", "Then", "And", "Otherwise", "And"), holds: true},
+		{name: "row2 state in two parts, a guard in two parts", tree: kwTree("Given", "And", "When", "Provided", "And", "Then", "And", "Otherwise", "And"), holds: true},
 	}
 	for _, c := range []struct {
 		name     string
@@ -82,7 +82,7 @@ func TestLintRulesOrder(t *testing.T) {
 	}
 	rows(t, "keyword-order", rs)
 	t.Run("row2 is a well-formed rule", func(t *testing.T) {
-		check(t, kwTree("Given", "Given", "When", "Provided", "And", "Then", "And", "Otherwise", "And")).clean(t)
+		check(t, kwTree("Given", "And", "When", "Provided", "And", "Then", "And", "Otherwise", "And")).clean(t)
 	})
 }
 
@@ -97,6 +97,7 @@ func TestLintRulesCount(t *testing.T) {
 		bad("row3 no event", "Given", "Then", "And"),
 		bad("row4 two events", "When", "When", "Then", "And"),
 		bad("row5 two Provided", "When", "Provided", "Provided", "Then", "And", "Otherwise", "And"),
+		bad("row6 two Given", "Given", "Given", "When", "Then", "And"),
 		bad("derived: no Then", "When", "Provided", "Otherwise", "And"),
 		bad("derived: two Otherwise", "When", "Provided", "Then", "And", "Otherwise", "And", "Otherwise", "And"),
 	})

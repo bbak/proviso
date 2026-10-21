@@ -218,6 +218,8 @@ func TestLintLayoutLineEnding(t *testing.T) {
 	rows(t, "line-ending", []row{
 		{name: "row3 .markdownlint.jsonc ending its lines in CR LF", tree: baseline().with(settings, crlf("{\n  \"MD013\": false\n}\n")),
 			file: settings, lines: lines(1)},
+		{name: "row4 manifest.sum ending its lines in CR LF", tree: baseline().with("proviso/manifest.sum", crlf("model 0\nsystem\theading\th1:"+strings.Repeat("0", 64)+"\n")),
+			file: "proviso/manifest.sum", lines: lines(1)},
 		{name: "derived: a file the layout does not list is never read", tree: baseline().with("proviso/notes.md", crlf("# Notes\n\nSome notes.\n")), holds: true},
 		{name: "derived: a hidden file is skipped", tree: baseline().with("proviso/.notes.md", crlf("# Notes\n")), holds: true},
 	})
