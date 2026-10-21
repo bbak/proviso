@@ -208,8 +208,9 @@
 
 ## <a id="system.amendment"></a> amendment
 
-- Definition: The edit of the spec tree that brings in one request, made
-  on one branch and ending when it is accepted.
+- Definition: An edit of the spec tree on one branch, usually bringing in
+  one request, that ends when it is accepted. Edits made by hand, by a
+  decision found while building or by a merge belong to it as well.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: amendments
@@ -256,12 +257,31 @@
 - Status: defined
 - Aliases: judgements
 
+## <a id="system.coherence-check"></a> coherence check
+
+- Definition: The check by an agent that an amendment keeps the spec tree
+  sane in meaning: every candidate of its impact set has a judgement, and
+  no contradiction, gap or ignored term, invariant or constraint is left.
+  It reads the amendment against its capability and the system level,
+  never the whole spec tree, and runs again after every later edit.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: coherence checks
+
 ## <a id="system.context-pack"></a> context pack
 
-- Definition: What an agent receives for an amendment: the element diff and
-  everything needed to read it, such as the glossary entries,
-  invariants, constraints and parameters it uses and `system.md`, and
-  nothing else of the spec tree.
+- Definition: What an implementing agent receives for an amendment: the
+  element diff and everything needed to read it, such as the glossary
+  entries, invariants, constraints and parameters it uses and
+  `system.md`, and nothing else of the spec tree.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: context packs
+
+## <a id="system.implementing-agent"></a> implementing agent
+
+- Definition: The testing agent or the coding agent: the agents that build
+  from a context pack, kept apart from each other.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: implementing agents
