@@ -156,11 +156,13 @@ Rows are told apart by their placeholder values: they are the testing
 agent's inputs, and what tells one row from another when a rule changes.
 Two rows with the same values list one case twice: with the same outcome
 it is noise, with another outcome a contradiction. The other columns do
-not tell rows apart, so a different `why` makes no new case.
+not tell rows apart, so a different `why` makes no new case. An undecided
+cell holds no value yet: two of them may become two cases once decided,
+and each is already reported as an ask.
 
 ```guarded
 When      lint reads the row <row> of an [Examples table], below the rows <earlier>
-Provided  no row of <earlier> holds the same value as <row> in every column named after a [placeholder]
+Provided  no row of <earlier> holds the same value as <row> in every column named after a [placeholder], an [undecided] cell being the same as no other cell
 Then      lint reports nothing about repeated rows
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.examples-row-repeated` at <row>
@@ -172,6 +174,7 @@ Otherwise lint reports the [error] `findings.examples-row-repeated` at <row>
 | `id` "a", `outcome` "error" | `id` "b", `outcome` "error" | yes | nothing reported | |
 | `id` "a", `outcome` "error" | `id` "a", `outcome` "error" | no | error | the same case twice |
 | `id` "a", `outcome` "error" | `id` "a", `outcome` "nothing reported" | no | error | one case, two outcomes |
+| `id` "?", `outcome` "error" | `id` "?", `outcome` "error" | yes | nothing reported | an undecided cell is not a value yet |
 | `id` "a", `why` "a boundary" | `id` "a", `why` empty | no | error | only the placeholder columns tell rows apart |
 | a second row of a rule without placeholders | its first row | no | error | such a rule has a single case |
 
