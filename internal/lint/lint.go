@@ -49,14 +49,11 @@ func Check(t *tree.Tree) *Result {
 		l.report(Error, "name-malformed", Pos{reportPath(rel), 1}, "the name holds something other than lowercase letters, marks, digits, hyphens and dots, or ends with a dot, or another entry in its folder has the same name in NFC")
 	}
 	for _, tf := range t.Files {
-		if tf.Kind == tree.Manifest {
-			continue // lint reads only its first line, before the run: lint.run.model
-		}
 		if i := bytes.IndexByte(tf.Data, '\r'); i >= 0 {
 			line := bytes.Count(tf.Data[:i], []byte("\n")) + 1
 			l.report(Error, "line-ending", Pos{reportPath(tf.Rel), line}, "the line ends with a carriage return; the tree ends lines with a line feed only")
 		}
-		if tf.Kind == tree.Settings {
+		if tf.Kind == tree.Settings || tf.Kind == tree.Manifest {
 			continue
 		}
 		f := &file{File: tf, path: reportPath(tf.Rel), doc: markdown.Parse(tf.Data)}

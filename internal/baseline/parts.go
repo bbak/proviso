@@ -42,19 +42,17 @@ func Parts(e lint.Element) []Part {
 	for _, s := range e.Sections {
 		out = append(out, part("section "+s.Name, s.Body))
 	}
+	for _, s := range e.Steps {
+		out = append(out, part("step "+s.Keyword, s.Text))
+	}
 	seen := map[string]int{}
-	numbered := func(key string) string {
+	for _, r := range e.Rows {
+		key := "row " + rowKey(e, r)
 		seen[key]++
 		if n := seen[key]; n > 1 {
-			return fmt.Sprintf("%s #%d", key, n)
+			key = fmt.Sprintf("%s #%d", key, n)
 		}
-		return key
-	}
-	for _, s := range e.Steps {
-		out = append(out, part(numbered("step "+s.Keyword), s.Text))
-	}
-	for _, r := range e.Rows {
-		out = append(out, part(numbered("row "+rowKey(e, r)), r.Text))
+		out = append(out, part(key, r.Text))
 	}
 	if Normalize(e.Body) != "" {
 		out = append(out, part("body", e.Body))

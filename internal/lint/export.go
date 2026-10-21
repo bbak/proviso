@@ -90,8 +90,8 @@ func (l *linter) export() []Element {
 
 // split places the blocks of an element: its field list, its sections, its
 // rule block and Examples table, and everything else, its body. A section
-// runs to the next heading, but the rule block and the Examples table in it
-// are pieces of their own.
+// runs to the next heading or, in a rule, to its rule block. The Examples
+// table's header and separator rows belong to no piece.
 func (l *linter) split(e *element, x *Element) {
 	doc := e.file.doc
 	var body []string
@@ -109,6 +109,7 @@ func (l *linter) split(e *element, x *Element) {
 			x.Sections = append(x.Sections, Section{Name: b.Heading.Text, Line: b.Line})
 			cur = &x.Sections[len(x.Sections)-1]
 		case e.rule != nil && b.Line == e.rule.fenceLine:
+			cur = nil // in a rule, a section ends at its rule block
 		case e.rule != nil && e.rule.table != nil && b.Table == e.rule.table:
 		case b.Line == e.fieldsLine && b.List != nil:
 			for _, it := range b.List.Items {
