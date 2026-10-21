@@ -80,8 +80,8 @@ version control system could answer them later.
 ### Property
 
 Proviso reads from git only by running the `git` command line, never
-through a Go library, and only to find a revision and to read the files
-of the spec tree at that revision. It never writes to git.
+through a Go library, and only to find a revision and to list and read
+the files of the spec tree at that revision. It never writes to git.
 
 ## <a id="system.acceptance-tests"></a> Acceptance tests belong to the testing agent
 
