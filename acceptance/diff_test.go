@@ -22,15 +22,16 @@ func (tr tree) apply(cs ...change) tree {
 }
 
 var (
-	limitThen      = change{featurePath, "Then      the cart holds <quantity> more of <product>", "Then      the cart holds <quantity> more pieces of <product>"}
-	limitProvided  = change{featurePath, "Provided  <quantity> is at most ´max_quantity´", "Provided  <quantity> is below ´max_quantity´"}
-	limitOutcome   = change{featurePath, "| 1 | apple | yes | added | |", "| 1 | apple | yes | put in the cart | |"}
-	limitNewRow    = change{featurePath, "| 1 | apple | yes | added | |\n", "| 1 | apple | yes | added | |\n| 5 | pear | yes | added | |\n"}
-	limitNoRatio   = change{featurePath, limitRationale, ""}
-	itemDefinition = change{glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product a buyer placed in the cart."}
-	itemAlias      = change{glossaryPath, "- Aliases: items", "- Aliases: items, cart item"}
-	itemContact    = change{glossaryPath, "- Contact: Dana Reyes\n- Status: defined\n- Aliases: items", "- Contact: Bruno Baketarić\n- Status: defined\n- Aliases: items"}
-	xThen          = change{xPath, "Then      the shop shows <id>", "Then      the shop lists <id>"}
+	limitThen       = change{featurePath, "Then      the cart holds <quantity> more of <product>", "Then      the cart holds <quantity> more pieces of <product>"}
+	limitProvided   = change{featurePath, "Provided  <quantity> is at most ´max_quantity´", "Provided  <quantity> is below ´max_quantity´"}
+	limitOutcome    = change{featurePath, "| 1 | apple | yes | added | |", "| 1 | apple | yes | put in the cart | |"}
+	limitNewRow     = change{featurePath, "| 1 | apple | yes | added | |\n", "| 1 | apple | yes | added | |\n| 5 | pear | yes | added | |\n"}
+	limitNoRatio    = change{featurePath, limitRationale, ""}
+	itemDefinition  = change{glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product a buyer placed in the cart."}
+	itemAlias       = change{glossaryPath, "- Aliases: items", "- Aliases: items, cart item"}
+	itemContact     = change{glossaryPath, "- Contact: Dana Reyes\n- Status: defined\n- Aliases: items", "- Contact: Bruno Baketarić\n- Status: defined\n- Aliases: items"}
+	xThen           = change{xPath, "Then      the shop shows <id>", "Then      the shop lists <id>"}
+	breakDefinition = change{glossaryPath, "- Defined by: [CommonMark §4.1](../../references.md#system.ref.commonmark)", "- Definition: A line across the receipt."}
 )
 
 const extraRule = `
@@ -179,9 +180,10 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		names(t, o, "<<<<<<< HEAD", 3)
 	})
 	t.Run("row3 spaces for tabs", func(t *testing.T) {
-		o := diffWith(t, replaced("cart heading h1:5b0d"))
+		line := "cart heading " + fp("Cart")
+		o := diffWith(t, replaced(line))
 		o.stopped(t)
-		names(t, o, "cart heading h1:5b0d", headingLine+1)
+		names(t, o, line, headingLine+1)
 	})
 	derived := []struct{ name, line string }{
 		{"derived: a short fingerprint", "cart\theading\th1:5b0d"},
@@ -581,10 +583,24 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.set(diffTree().apply(limitThen, limitProvided))
 		r.diff().stopped(t)
 	})
+	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+		r := newRepo(t, diffTree())
+		r.manifest()
+		r.set(diffTree().apply(limitProvided))
+		r.commit("a1b2")
+		r.set(diffTree().apply(limitProvided, limitThen))
+		r.diff().stopped(t)
+	})
 	t.Run("derived: the spec root in a folder of the repository", func(t *testing.T) {
-		r, base := accepted(t, diffTree().prefixed("svc"))
-		r.set(diffTree().apply(limitThen).prefixed("svc"))
+		// The spec root is found upwards from where a command runs
+		// (lint.run.root), so both run inside svc/.
+		r := newRepo(t, diffTree().prefixed("svc"))
 		svc := filepath.Join(r.dir, "svc")
+		if m := manifestIn(t, r.dir, svc, filepath.Join(svc, "proviso"), nil); m.exit != 0 {
+			t.Fatalf("want manifest to exit with 0, got %d\nstderr: %s", m.exit, m.stderr)
+		}
+		base := r.commit("accept")
+		r.set(diffTree().apply(limitThen).prefixed("svc"))
 		o := diffIn(t, r.dir, svc, filepath.Join(svc, "proviso"))
 		o.only(t, "cart.add.limit:changed")
 		e := o.elem(t, "cart.add.limit")
@@ -689,9 +705,13 @@ func TestBaselineDiffExit(t *testing.T) {
 		r.set(diffTree().edit(featurePath, text, ""))
 		exit(t, r.diff(), 1)
 	})
-	t.Run("row3 changed by a term", func(t *testing.T) {
+	t.Run("row3 a glossary entry with a new Definition, and one rule changed by a term", func(t *testing.T) {
 		r, _ := accepted(t, diffTree())
-		r.set(diffTree().apply(itemDefinition))
-		exit(t, r.diff(), 1)
+		// thematic break, marked by cart.x.line alone, gets a Definition
+		// in place of its reference.
+		r.set(diffTree().apply(breakDefinition))
+		o := r.diff()
+		o.only(t, "cart.thematic-break:changed", "cart.x.line:changed-by-term")
+		exit(t, o, 1)
 	})
 }

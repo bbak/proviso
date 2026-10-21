@@ -111,6 +111,12 @@ func TestBaselinePartsFingerprint(t *testing.T) {
 			t.Errorf("want different fingerprints, got %s for both", a)
 		}
 	})
+	// system.section: in a rule, a section ends at its rule block.
+	t.Run("derived: a rule's Rationale ends at its rule block", func(t *testing.T) {
+		if got, want := fpOf(t, richTree(), "cart.x.open", "section Rationale"), fp("Closed shops sell nothing."); got != want {
+			t.Errorf("want the fingerprint %s of the Rationale's text alone, got %s", want, got)
+		}
+	})
 	t.Run("derived: tabs and trailing spaces are whitespace", func(t *testing.T) {
 		a := fpOf(t, plainTree(), "cart.item", "field Contact")
 		b := fpOf(t, plainTree().edit(glossaryPath, "- Contact: Bruno Baketarić", "- Contact: Bruno\tBaketarić   "), "cart.item", "field Contact")
