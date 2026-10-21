@@ -148,8 +148,9 @@ func TestLintExamplesRowRepeated(t *testing.T) {
 		{name: "row1 another id", tree: withRows("| b | yes | error | |", "| a | yes | error | |"), holds: true},
 		{name: "row2 the same case twice", tree: same, file: xPath, lines: rowAt(same, "a", 2)},
 		{name: "row3 one case, two outcomes", tree: outcomes, file: xPath, lines: rowAt(outcomes, "a", 2)},
-		{name: "row4 only the placeholder columns tell rows apart", tree: why, file: xPath, lines: rowAt(why, "a", 2)},
-		{name: "row5 such a rule has a single case", tree: noPlaceholders, file: xPath, lines: lines(noPlaceholders.line(xPath, "| full |"))},
+		{name: "row4 an undecided cell is not a value yet", tree: withRows("| ? | yes | error | |", "| ? | yes | error | |"), holds: true},
+		{name: "row5 only the placeholder columns tell rows apart", tree: why, file: xPath, lines: rowAt(why, "a", 2)},
+		{name: "row6 such a rule has a single case", tree: noPlaceholders, file: xPath, lines: lines(noPlaceholders.line(xPath, "| full |"))},
 		{name: "derived: the provided column does not tell rows apart", tree: provided, file: xPath, lines: rowAt(provided, "a", 2)},
 		{name: "derived: a row below an earlier one that is not next to it", tree: apart, file: xPath, lines: rowAt(apart, "a", 2)},
 		{name: "derived: every placeholder column must match", tree: withRule(`When      a buyer adds <count> of the product <id>
