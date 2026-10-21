@@ -50,6 +50,7 @@ func (l *linter) checkRules() {
 				break
 			}
 		}
+		e.rule = r
 		rules = append(rules, r)
 		l.checkBlock(r)
 		l.checkExamples(r)
@@ -73,9 +74,9 @@ func (l *linter) checkBlock(r *rule) {
 		counts[s.Head.Keyword]++
 	}
 	var wrong []string
-	for _, kw := range []string{guarded.When, guarded.Provided, guarded.Then, guarded.Otherwise} {
+	for _, kw := range []string{guarded.Given, guarded.When, guarded.Provided, guarded.Then, guarded.Otherwise} {
 		n := counts[kw]
-		if (kw == guarded.When || kw == guarded.Then) && n != 1 || (kw == guarded.Provided || kw == guarded.Otherwise) && n > 1 {
+		if (kw == guarded.When || kw == guarded.Then) && n != 1 || (kw == guarded.Given || kw == guarded.Provided || kw == guarded.Otherwise) && n > 1 {
 			wrong = append(wrong, fmt.Sprintf("%s (%d)", kw, n))
 		}
 	}
@@ -150,9 +151,14 @@ func (l *linter) checkBlock(r *rule) {
 				e := l.resolveTerm(r.cap, sp.Value)
 				if e == nil {
 					l.report(Error, "term-unresolved", pos, "the term [%s] names no visible glossary entry", sp.Value).col = sp.Start
-				} else if st, _ := e.field("Status"); st.value != "defined" {
-					f := l.report(Ask, "undecided", pos, "the term [%s] resolves to %q, which is not defined", sp.Value, e.id)
-					f.col, f.Related = sp.Start, []Pos{e.pos()}
+				} else {
+					if !slices.Contains(r.marks, e.id) {
+						r.marks = append(r.marks, e.id)
+					}
+					if st, _ := e.field("Status"); st.value != "defined" {
+						f := l.report(Ask, "undecided", pos, "the term [%s] resolves to %q, which is not defined", sp.Value, e.id)
+						f.col, f.Related = sp.Start, []Pos{e.pos()}
+					}
 				}
 			case guarded.Code:
 				if !l.resolveReference(r.cap, sp.Value) {

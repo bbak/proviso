@@ -83,3 +83,11 @@ func makeJunction(link, target string) error {
 func makeSpecial(dir string) (string, error) {
 	return "", errors.New("Windows has no such entry besides links and junctions, which their own subtests cover")
 }
+
+// makeUnwritable keeps the manifest.sum of the spec root root open without
+// sharing it, so that no other process can write, replace or remove it until
+// the returned function is called. Windows has no write permission bit on a
+// folder that a test could take away.
+func makeUnwritable(root string) (func(), error) {
+	return makeUnreadable(filepath.Join(root, "manifest.sum"))
+}

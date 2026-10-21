@@ -5,6 +5,7 @@ package tree
 import (
 	"errors"
 	"io/fs"
+	"maps"
 	"os"
 	"path"
 	"path/filepath"
@@ -15,6 +16,9 @@ import (
 
 	"golang.org/x/text/unicode/norm"
 )
+
+// ManifestName is the name of the manifest in the spec root.
+const ManifestName = "manifest.sum"
 
 // RootName is the name of the folder that holds a spec tree.
 const RootName = "proviso"
@@ -60,6 +64,7 @@ const (
 	Questions
 	Contract
 	Settings
+	Manifest
 )
 
 var siblings = map[string]Kind{
@@ -139,6 +144,8 @@ func Classify(rel string) (Kind, string) {
 		switch parts[0] {
 		case "system.md":
 			return System, ""
+		case ManifestName:
+			return Manifest, ""
 		case ".markdownlint.jsonc":
 			return Settings, ""
 		}
@@ -269,4 +276,36 @@ func (t *Tree) read(rel, disk string) {
 		return
 	}
 	t.Files = append(t.Files, &File{Rel: rel, Kind: kind, Cap: cap, Data: data})
+}
+
+// Manifest returns the bytes of the spec root's manifest.sum, and whether
+// the tree holds one.
+func (t *Tree) Manifest() ([]byte, bool) {
+	for _, f := range t.Files {
+		if f.Kind == Manifest {
+			return f.Data, true
+		}
+	}
+	return nil, false
+}
+
+// FromFiles places files given by their slash-separated paths relative to
+// the spec root, such as a former revision's, in the layout, as Load would
+// read them from disk. Paths the layout does not list, hidden ones and the
+// manifest are left out; names are read in NFC.
+func FromFiles(root string, files map[string][]byte) *Tree {
+	t := &Tree{Root: root}
+	rels := slices.Sorted(maps.Keys(files))
+	for _, rel := range rels {
+		name := norm.NFC.String(rel)
+		if slices.ContainsFunc(strings.Split(name, "/"), func(s string) bool { return strings.HasPrefix(s, ".") }) && name != ".markdownlint.jsonc" {
+			continue
+		}
+		kind, cap := Classify(name)
+		if kind == Unknown || kind == Manifest {
+			continue
+		}
+		t.Files = append(t.Files, &File{Rel: name, Kind: kind, Cap: cap, Data: files[rel]})
+	}
+	return t
 }

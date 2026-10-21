@@ -196,6 +196,8 @@ func TestFindings(t *testing.T) {
 			[]string{"keyword-order@capabilities/c/features/f.md:21"}},
 		{"and first", withRule("  And     a\nWhen      lint reads <id>\nThen      x\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n"),
 			[]string{"keyword-order@capabilities/c/features/f.md:20"}},
+		{"two givens", withRule("Given     a\nGiven     b\nWhen      lint reads <id>\nThen      x\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n"),
+			[]string{"keyword-count@capabilities/c/features/f.md:19"}},
 		{"two whens", withRule("When      lint reads <id>\nWhen      again\nThen      x\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n"),
 			[]string{"keyword-count@capabilities/c/features/f.md:19"}},
 		{"guard without otherwise", withRule("When      lint reads <id>\nProvided  <id> is 1\nThen      x\n  And     y\n", okTable),

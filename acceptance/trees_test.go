@@ -196,6 +196,8 @@ func kwBlock(keywords ...string) (string, string) {
 			switch {
 			case i == 0:
 				b = append(b, "  And     the shop is open")
+			case step == "Given":
+				b = append(b, "  And     the shop is lit")
 			case step == "Provided":
 				parts++
 				b = append(b, "  And     <product> is cheap")

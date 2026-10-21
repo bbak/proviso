@@ -22,6 +22,7 @@ import (
 type Doc struct {
 	Blocks       []Block
 	StrayAnchors []Anchor
+	src          []byte
 	lines        []int // byte offset of the start of each line
 }
 
@@ -29,6 +30,7 @@ type Doc struct {
 // set; a block that lint does not look into has none set.
 type Block struct {
 	Line      int
+	End       int    // the last line before the next block, or the file's last line
 	FirstWord string // the first whitespace-separated word of the block's source
 	Heading   *Heading
 	List      *List
@@ -45,6 +47,9 @@ type Heading struct {
 	HasID bool
 	// Text is the heading's plain text, without the starting anchor, trimmed.
 	Text string
+	// Raw is the heading's source text after the starting anchor, as
+	// written, trimmed.
+	Raw string
 }
 
 // List is a document-level list.
@@ -91,7 +96,7 @@ var md = goldmark.New(goldmark.WithExtensions(extension.Table))
 // Parse reads src. A leading byte order mark is ignored.
 func Parse(src []byte) *Doc {
 	src = bytes.TrimPrefix(src, []byte("\xef\xbb\xbf"))
-	d := &Doc{lines: lineStarts(src)}
+	d := &Doc{src: src, lines: lineStarts(src)}
 	root := md.Parser().Parse(text.NewReader(src))
 	for n := root.FirstChild(); n != nil; n = n.NextSibling() {
 		b := Block{Line: d.line(n.Pos()), FirstWord: firstWord(src[max(n.Pos(), 0):])}
@@ -116,8 +121,29 @@ func Parse(src []byte) *Doc {
 		}
 		d.Blocks = append(d.Blocks, b)
 	}
+	for i := range d.Blocks {
+		if i+1 < len(d.Blocks) {
+			d.Blocks[i].End = max(d.Blocks[i+1].Line-1, d.Blocks[i].Line)
+		} else {
+			d.Blocks[i].End = len(d.lines)
+		}
+	}
 	return d
 }
+
+// Source returns the lines from..to (1-based, inclusive) as written, each
+// ended by a line feed, without the blank lines at their end.
+func (d *Doc) Source(from, to int) string {
+	var sb strings.Builder
+	for n := from; n <= to && n <= len(d.lines); n++ {
+		sb.WriteString(d.sourceLine(d.src, n))
+		sb.WriteByte('\n')
+	}
+	return strings.TrimRight(sb.String(), " \t\n") + "\n"
+}
+
+// LineCount returns the number of lines of the file.
+func (d *Doc) LineCount() int { return len(d.lines) }
 
 // sourceLine returns line n (1-based) of src without its line ending.
 func (d *Doc) sourceLine(src []byte, n int) string {
@@ -168,7 +194,21 @@ func (d *Doc) heading(h *ast.Heading, src []byte) *Heading {
 	first := h.FirstChild()
 	if id, ok := anchorAt(first, src); ok {
 		out.ID, out.HasID = id, true
-		first = first.NextSibling().NextSibling()
+		closing := first.NextSibling().(*ast.RawHTML)
+		first = closing.NextSibling()
+		if lines := h.Lines(); lines.Len() > 0 {
+			var sb strings.Builder
+			from := closing.Segments.At(closing.Segments.Len() - 1).Stop
+			for i := 0; i < lines.Len(); i++ {
+				seg := lines.At(i)
+				if seg.Stop <= from {
+					continue
+				}
+				sb.Write(src[max(seg.Start, from):seg.Stop])
+				sb.WriteByte('\n')
+			}
+			out.Raw = strings.TrimSpace(sb.String())
+		}
 	}
 	var sb strings.Builder
 	for c := first; c != nil; c = c.NextSibling() {
