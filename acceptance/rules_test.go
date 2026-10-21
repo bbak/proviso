@@ -42,18 +42,18 @@ func TestLintRulesKeyword(t *testing.T) {
 When      a buyer adds <product>
 Provided  <product> is in stock
 Then      the cart holds <product>
-  And     nothing else changes
+  And     everything else stays as it was
 Otherwise → cart.add.empty`
 	table := "| product | provided | outcome |\n| --- | --- | --- |\n| apple | yes | added |\n| pear | no | handed over |\n"
 	ok := withRule(good, table)
-	but := withRule(strings.Replace(good, "  And     nothing else changes\n", "  And     nothing else changes\nBut       the cart stays as it was\n", 1), table)
+	but := withRule(strings.Replace(good, "  And     everything else stays as it was\n", "  And     everything else stays as it was\nBut       the cart stays as it was\n", 1), table)
 	lower := withRule(strings.Replace(good, "Given     the shop", "given     the shop", 1), table)
 	continued := withRule(strings.Replace(good, "Then      the cart holds <product>\n", "Then      the cart holds <product>\n          and keeps it\n", 1), table)
 	rows(t, "keyword-unknown", []row{
 		{name: "row1 Given", tree: ok, holds: true},
 		{name: "row2 And may be indented", tree: ok, holds: true},
 		{name: "row3 a hand-over", tree: ok, holds: true},
-		{name: "derived: a tab before the keyword", tree: withRule(strings.Replace(good, "  And     nothing", "\tAnd     nothing", 1), table), holds: true},
+		{name: "derived: a tab before the keyword", tree: withRule(strings.Replace(good, "  And     everything", "\tAnd     everything", 1), table), holds: true},
 		{name: "row4 But is not a keyword here", tree: but, file: xPath, lines: lines(but.line(xPath, "But       the cart"))},
 		{name: "row5 keywords are matched exactly", tree: lower, file: xPath, lines: lines(lower.line(xPath, "given     the shop"))},
 		{name: "row6 a step continued on a new line", tree: continued, file: xPath, lines: lines(continued.line(xPath, "and keeps it"))},
@@ -120,7 +120,7 @@ Otherwise the cart refuses <product>
   And     nothing else changes`},
 	} {
 		t.Run(c.name, func(t *testing.T) {
-			tr := withRule(c.block, "| product | other | provided | outcome |\n| --- | --- | --- | --- |\n| apple | pear | yes | added |\n| apple | pear | no | refused |\n")
+			tr := withRule(c.block, "| product | other | provided | outcome |\n| --- | --- | --- | --- |\n| apple | pear | yes | added |\n| kiwi | pear | no | refused |\n")
 			o := checkGoesOn(t, tr)
 			o.has(t, "keyword-count", xPath, blockLines(tr)...)
 			for _, k := range []string{"given-refers-to-event", "provided-without-event", "placeholder-unbound"} {
@@ -180,7 +180,7 @@ Then      the cart holds <product>
 
 func TestLintRulesHandOver(t *testing.T) {
 	bare := handOver("Otherwise → cart.add.empty")
-	one := handOver("Otherwise → cart.add.empty\n  And     nothing else changes")
+	one := handOver("Otherwise → cart.add.empty\n  And     everything else stays as it was")
 	two := handOver("Otherwise → cart.add.empty\n  And     nothing else changes\n  And     the cart stays as it was")
 	stated := handOver("Otherwise the cart refuses <product>\n  And     the cart stays as it was")
 	otherwise := func(tr tree) int { return tr.line(xPath, "Otherwise") }
@@ -202,9 +202,10 @@ func TestLintRulesHandOver(t *testing.T) {
 func TestLintRulesAnd(t *testing.T) {
 	noThenAnd := withRule("When      a buyer opens the new cart <cart>\nThen      <cart> is empty", "| cart | outcome |\n| --- | --- |\n| the first cart | empty |\n")
 	noOtherwiseAnd := handOver("Otherwise the cart refuses <product>")
+	everything := withRule("When      a buyer opens the new cart <cart>\nThen      <cart> is empty\n  And     everything else stays as it was", "| cart | outcome |\n| --- | --- |\n| the first cart | empty |\n")
 	rows(t, "and-missing", []row{
 		{name: "row1 Then with And", tree: baseline(), holds: true},
-		{name: "row2 nothing else is a statement too", tree: baseline(), holds: true},
+		{name: "row2 everything else is a statement too", tree: everything, holds: true},
 		{name: "row3 And ? is undecided, not missing", tree: handOver("Otherwise the cart refuses <product>\n  And     ?"), holds: true},
 		{name: "row4 Then without And", tree: noThenAnd, file: xPath, lines: lines(noThenAnd.line(xPath, "Then      <cart> is empty"))},
 		{name: "row5 Otherwise without And", tree: noOtherwiseAnd, file: xPath, lines: lines(noOtherwiseAnd.line(xPath, "Otherwise the cart refuses"))},

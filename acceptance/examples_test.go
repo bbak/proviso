@@ -126,6 +126,57 @@ func TestLintExamplesCells(t *testing.T) {
 	})
 }
 
+// withRows is the rule on <id> with the rows under test, then a failing row
+// of its own, so that the guard is shown on both sides.
+func withRows(cells ...string) tree {
+	return withRule(idBlock, "| id | provided | outcome | why |\n| --- | --- | --- | --- |\n"+
+		strings.Join(cells, "\n")+"\n| pear | no | nothing shown | |\n")
+}
+
+func TestLintExamplesRowRepeated(t *testing.T) {
+	// The n-th (1-based) row of x.md that starts with the id cell.
+	rowAt := func(tr tree, id string, n int) []int { return lines(tr.lineN(xPath, "| "+id+" |", n)) }
+	same := withRows("| a | yes | error | |", "| a | yes | error | |")
+	outcomes := withRows("| a | yes | error | |", "| a | yes | nothing reported | |")
+	why := withRows("| a | yes | shown | |", "| a | yes | shown | a boundary |")
+	noPlaceholders := withRule("When      a buyer opens the cart\nThen      the cart is empty\n  And     nothing else changes",
+		"| outcome | why |\n| --- | --- |\n| empty | |\n| full | |\n")
+	thrice := withRows("| a | yes | shown | |", "| a | yes | shown | |", "| a | yes | shown | |")
+	apart := withRows("| a | yes | shown | |", "| b | yes | shown | |", "| a | yes | shown | |")
+	provided := withRows("| a | yes | shown | |", "| a | no | nothing shown | |")
+	rows(t, "examples-row-repeated", []row{
+		{name: "row1 another id", tree: withRows("| b | yes | error | |", "| a | yes | error | |"), holds: true},
+		{name: "row2 the same case twice", tree: same, file: xPath, lines: rowAt(same, "a", 2)},
+		{name: "row3 one case, two outcomes", tree: outcomes, file: xPath, lines: rowAt(outcomes, "a", 2)},
+		{name: "row4 only the placeholder columns tell rows apart", tree: why, file: xPath, lines: rowAt(why, "a", 2)},
+		{name: "row5 such a rule has a single case", tree: noPlaceholders, file: xPath, lines: lines(noPlaceholders.line(xPath, "| full |"))},
+		{name: "derived: the provided column does not tell rows apart", tree: provided, file: xPath, lines: rowAt(provided, "a", 2)},
+		{name: "derived: a row below an earlier one that is not next to it", tree: apart, file: xPath, lines: rowAt(apart, "a", 2)},
+		{name: "derived: every placeholder column must match", tree: withRule(`When      a buyer adds <count> of the product <id>
+Provided  <count> is 1
+Then      the cart holds <id>
+  And     nothing else changes
+Otherwise the cart refuses <id>
+  And     nothing else changes`, "| id | count | provided | outcome |\n| --- | --- | --- | --- |\n| apple | 1 | yes | added |\n| apple | 2 | no | refused |\n"), holds: true},
+		{name: "derived: rows of another rule's table are not earlier rows", tree: withX(
+			ruleMD("cart.x.r", "Under test", idBlock, idTable) + ruleMD("cart.x.s", "Again", idBlock, idTable)), holds: true},
+	})
+	t.Run("row2 reported at the later row, not at the earlier one", func(t *testing.T) {
+		o := checkGoesOn(t, same)
+		o.has(t, "examples-row-repeated", xPath, rowAt(same, "a", 2)...)
+		o.lacks(t, "examples-row-repeated", xPath, rowAt(same, "a", 1)...)
+	})
+	t.Run("derived: each repeating row is reported", func(t *testing.T) {
+		o := checkGoesOn(t, thrice)
+		o.lacks(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 1)...)
+		o.has(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 2)...)
+		o.has(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 3)...)
+	})
+	t.Run("row1 is a well-formed rule", func(t *testing.T) {
+		check(t, withRows("| b | yes | error | |", "| a | yes | error | |")).clean(t)
+	})
+}
+
 func TestLintExamplesProvidedValue(t *testing.T) {
 	value := func(v string) tree { return withRow("| system | " + v + " | shown | |") }
 	at := func(tr tree) []int { return lines(tr.line(xPath, "| system |")) }
