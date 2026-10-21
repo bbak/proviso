@@ -74,9 +74,9 @@ func (l *linter) checkBlock(r *rule) {
 		counts[s.Head.Keyword]++
 	}
 	var wrong []string
-	for _, kw := range []string{guarded.When, guarded.Provided, guarded.Then, guarded.Otherwise} {
+	for _, kw := range []string{guarded.Given, guarded.When, guarded.Provided, guarded.Then, guarded.Otherwise} {
 		n := counts[kw]
-		if (kw == guarded.When || kw == guarded.Then) && n != 1 || (kw == guarded.Provided || kw == guarded.Otherwise) && n > 1 {
+		if (kw == guarded.When || kw == guarded.Then) && n != 1 || (kw == guarded.Given || kw == guarded.Provided || kw == guarded.Otherwise) && n > 1 {
 			wrong = append(wrong, fmt.Sprintf("%s (%d)", kw, n))
 		}
 	}

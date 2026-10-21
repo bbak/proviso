@@ -17,8 +17,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// ManifestName is the name of the manifest in the spec root. Its bytes
-// are read as they are: only the commands that use it decode them.
+// ManifestName is the name of the manifest in the spec root.
 const ManifestName = "manifest.sum"
 
 // RootName is the name of the folder that holds a spec tree.
@@ -272,7 +271,7 @@ func (t *Tree) read(rel, disk string) {
 		return
 	}
 	data, err := os.ReadFile(disk)
-	if err != nil || kind != Manifest && !utf8.Valid(data) {
+	if err != nil || !utf8.Valid(data) {
 		t.Unreadable = append(t.Unreadable, rel)
 		return
 	}

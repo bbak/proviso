@@ -111,7 +111,7 @@ func TestReportRoot(t *testing.T) {
 }
 
 func TestModelVersion(t *testing.T) {
-	for manifest, status := range map[string]int{"model 0\n": 0, "model 1\n": 2, "": 2} {
+	for manifest, status := range map[string]int{"model 0\n": 0, "model 1\n": 2, "": 2, "model 0\r\n": 1, "model 0\n\xff\n": 2} {
 		inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": manifest})
 		var out, errOut bytes.Buffer
 		if got := run([]string{"lint", "--json"}, &out, &errOut); got != status || status == 2 && (out.Len() > 0 || errOut.Len() == 0) {

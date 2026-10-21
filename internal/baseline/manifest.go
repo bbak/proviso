@@ -17,9 +17,11 @@ const ModelVersion = 0
 var modelLine = fmt.Sprintf("model %d", ModelVersion)
 
 // CheckModel reports whether the first line of a manifest names the model
-// version this binary reads. It reads nothing else of the manifest.
+// version this binary reads, its line ending left out. It checks nothing
+// else of the manifest.
 func CheckModel(data []byte) error {
 	first, _, _ := bytes.Cut(data, []byte("\n"))
+	first = bytes.TrimSuffix(first, []byte("\r"))
 	if string(first) == modelLine {
 		return nil
 	}
@@ -54,7 +56,7 @@ type Baseline map[string]map[string]string
 var (
 	hash       = `h1:[0-9a-f]{64}`
 	manifestID = regexp.MustCompile(`^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$`)
-	partKey    = regexp.MustCompile(`^(heading|body|field [^\t\n]+|section [^\t\n]+|step (Given|When|Provided|Then|Otherwise)( #[1-9][0-9]*)?|row ` + hash + `( #[1-9][0-9]*)?)$`)
+	partKey    = regexp.MustCompile(`^(heading|body|field [^\t\n]+|section [^\t\n]+|step (Given|When|Provided|Then|Otherwise)|row ` + hash + `( #[1-9][0-9]*)?)$`)
 	fpValue    = regexp.MustCompile(`^` + hash + `$`)
 )
 

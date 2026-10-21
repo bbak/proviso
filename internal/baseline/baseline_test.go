@@ -127,6 +127,13 @@ func TestParts(t *testing.T) {
 	if ps[0].Text != "Rule: R" || ps[1].Text != "why\n" || ps[4].Text != "it is read\n  And     everything else stays as it was" {
 		t.Errorf("%q", ps[:5])
 	}
+
+	// In a rule, a section ends at its rule block: prose after it is body.
+	after := strings.Replace(feature, "```\n\n|", "```\n\nmore prose\n\n|", 1)
+	r = element(t, files(func(m map[string]string) { m["capabilities/c/features/f.md"] = after }), "c.f.r")
+	if r.Sections[0].Body != "why\n" || r.Body != "more prose\n" || Parts(r)[len(Parts(r))-1].Key != "body" {
+		t.Errorf("%+v %q", r.Sections, r.Body)
+	}
 }
 
 func TestRowKey(t *testing.T) {
@@ -193,7 +200,7 @@ func TestManifest(t *testing.T) {
 }
 
 func TestCheckModel(t *testing.T) {
-	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 1\n": false, "": false, "model 0 \n": false, "model\n": false} {
+	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 0\r\nx": true, "model 1\n": false, "": false, "model 0 \n": false, "model\n": false} {
 		if err := CheckModel([]byte(in)); (err == nil) != ok {
 			t.Errorf("%q: %v", in, err)
 		}
