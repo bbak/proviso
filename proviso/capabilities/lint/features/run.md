@@ -85,6 +85,34 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
 | none, while `.shared.md` is a symbolic link with a hidden name | yes | the tree is checked, and the link is skipped | a hidden entry never holds spec content |
 
+## <a id="lint.run.model"></a> Rule: Lint checks only a tree of its own model version
+
+### Rationale
+
+The notation changes between versions of the model, and a tree read
+with another version's notation is misread without any sign of it. The
+manifest records the version a tree was last accepted under, where no
+author has to keep it. A tree without a manifest has not been accepted
+yet and has nothing to be compatible with, so it is read with the
+binary's own version.
+
+```guarded
+When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
+Provided  <root> holds no `manifest_file`, or its first line names `model_version`
+Then      lint checks the [spec tree]
+  And     lint reads nothing else of `manifest_file`
+Otherwise lint writes to "stderr" the model version the [spec tree] needs and the one lint reads
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
+```
+
+| root | provided | outcome | why |
+| --- | --- | --- | --- |
+| `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | |
+| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | exit status 2 | a notation this lint does not know |
+| `repo/proviso/`, its `manifest.sum` empty | no | exit status 2 | no version is named |
+
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
 
 ```guarded

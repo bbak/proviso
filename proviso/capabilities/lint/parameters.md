@@ -28,6 +28,7 @@ place.
 | `contracts/<name>.md`, at any level | level 2 or deeper, with an anchor | contract element |
 | `questions.md`, at any level | none | none |
 | `.markdownlint.jsonc`, in the spec root | none | none |
+| `manifest.sum`, in the spec root | none | none |
 
 ## <a id="lint.section-names"></a> section_names
 

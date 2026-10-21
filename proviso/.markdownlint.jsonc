@@ -2,5 +2,6 @@
 	"MD033": { "allowed_elements": ["a"] },
 	"MD024": { "siblings_only": true },
 	"MD013": { "tables": false, "code_blocks": false, "headings": false },
-	"MD038": false
+	"MD038": false,
+	"MD010": { "code_blocks": false }
 }
