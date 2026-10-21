@@ -125,11 +125,12 @@ func (l *linter) checkExamples(r *rule) {
 
 // rowKey joins the cells of a row in the placeholder columns, which tell
 // one case from another. A row that lacks one of those cells is not
-// compared: it is reported incomplete, and its case cannot be told.
+// compared: it is reported incomplete, and its case cannot be told. Nor
+// is a row with an undecided placeholder cell, which equals no other cell.
 func rowKey(cells []string, keyCols []int) (string, bool) {
 	var key []string
 	for _, i := range keyCols {
-		if i >= len(cells) {
+		if i >= len(cells) || firstWord(cells[i]) == "?" {
 			return "", false
 		}
 		key = append(key, cells[i])

@@ -229,6 +229,8 @@ func TestFindings(t *testing.T) {
 			"| id | provided | outcome | why |\n| --- | --- | --- | --- |\n| a | yes | x | |\n| b | no | y | |\n| a | no | y | other |\n| `a` | no | y | |\n| a | yes | x | |\n| b |\n"),
 			// The last row is incomplete, but has its placeholder cell, so it is compared too.
 			[]string{"examples-row-incomplete@capabilities/c/features/f.md:35", "examples-row-repeated@capabilities/c/features/f.md:32", "examples-row-repeated@capabilities/c/features/f.md:34", "examples-row-repeated@capabilities/c/features/f.md:35"}},
+		{"undecided rows are not repeated", withRule("When      lint reads <id> and <x>\nThen      x\n  And     y\n", "| id | x | outcome |\n| --- | --- | --- |\n| ? | a | x |\n| ? | a | x |\n| ? (ask) | b | x |\n| ? (ask) | b | x |\n"),
+			[]string{"undecided@capabilities/c/features/f.md:27", "undecided@capabilities/c/features/f.md:28", "undecided@capabilities/c/features/f.md:29", "undecided@capabilities/c/features/f.md:30"}},
 		{"rows repeated without placeholders", withRule("When      lint runs\nThen      x\n  And     y\n", "| outcome |\n| --- |\n| x |\n| y |\n"),
 			[]string{"examples-row-repeated@capabilities/c/features/f.md:28"}},
 		{"no failing side", withRule("When      lint reads <id>\nProvided  <id> is 1\nThen      x\n  And     y\nOtherwise z\n  And     w\n",
