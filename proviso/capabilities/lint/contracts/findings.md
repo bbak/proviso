@@ -141,6 +141,10 @@ An Examples table without rows.
 
 A row with a cell missing or empty.
 
+### <a id="lint.findings.examples-row-repeated"></a> examples-row-repeated
+
+A row with the same placeholder values as a row above it.
+
 ### <a id="lint.findings.provided-value-unknown"></a> provided-value-unknown
 
 A `provided` cell that is not `yes`, `no`, `no (<part>)` or `?`.

@@ -148,6 +148,33 @@ Otherwise lint reports the [error] `findings.examples-row-incomplete` at <row>
 | `system`, yes, nothing reported | `id`, `provided`, `outcome`, `why` | no (one cell per column) | error | a cell short |
 | `system`, yes, (empty), (empty) | `id`, `provided`, `outcome`, `why` | no (a value in every cell) | error | an outcome left empty: write `?` |
 
+## <a id="lint.examples.row-repeated"></a> Rule: Each row is a case of its own
+
+### Rationale
+
+Rows are told apart by their placeholder values: they are the testing
+agent's inputs, and what tells one row from another when a rule changes.
+Two rows with the same values list one case twice: with the same outcome
+it is noise, with another outcome a contradiction. The other columns do
+not tell rows apart, so a different `why` makes no new case.
+
+```guarded
+When      lint reads the row <row> of an [Examples table], below the rows <earlier>
+Provided  no row of <earlier> holds the same value as <row> in every column named after a [placeholder]
+Then      lint reports nothing about repeated rows
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.examples-row-repeated` at <row>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| row | earlier | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| `id` "a", `outcome` "error" | `id` "b", `outcome` "error" | yes | nothing reported | |
+| `id` "a", `outcome` "error" | `id` "a", `outcome` "error" | no | error | the same case twice |
+| `id` "a", `outcome` "error" | `id` "a", `outcome` "nothing reported" | no | error | one case, two outcomes |
+| `id` "a", `why` "a boundary" | `id` "a", `why` empty | no | error | only the placeholder columns tell rows apart |
+| a second row of a rule without placeholders | its first row | no | error | such a rule has a single case |
+
 ## <a id="lint.examples.provided-value"></a> Rule: A provided cell says whether the guard holds
 
 ```guarded
