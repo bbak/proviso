@@ -1,6 +1,7 @@
 package lint
 
 import (
+	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -58,6 +59,13 @@ func (l *linter) checkExamples(r *rule) {
 	}
 	prov := slices.Index(columns, "provided")
 	var values []string
+	var keyCols []int
+	for i, c := range columns {
+		if slices.Contains(placeholders, c) {
+			keyCols = append(keyCols, i)
+		}
+	}
+	seen := map[string]int{}
 	for _, row := range t.Rows {
 		pos := l.at(r, row.N)
 		cells := splitRow(row.Text)
@@ -72,6 +80,13 @@ func (l *linter) checkExamples(r *rule) {
 		}
 		if incomplete {
 			l.report(Error, "examples-row-incomplete", pos, "the row needs one cell per column, each with a value except why")
+		}
+		if key, ok := rowKey(cells, keyCols); ok {
+			if first, dup := seen[key]; dup {
+				l.report(Error, "examples-row-repeated", pos, "the row has the same placeholder values as the row on line %d", first)
+			} else {
+				seen[key] = pos.Line
+			}
 		}
 		if prov >= 0 && prov < len(cells) {
 			v := cells[prov]
@@ -106,6 +121,21 @@ func (l *linter) checkExamples(r *rule) {
 	if parts := 1 + len(guard[0].Ands); parts >= 2 && no < parts {
 		l.report(Error, "examples-part-missing", tablePos, "the guard has %d parts but only %d rows show it failing", parts, no)
 	}
+}
+
+// rowKey joins the cells of a row in the placeholder columns, which tell
+// one case from another. A row that lacks one of those cells is not
+// compared: it is reported incomplete, and its case cannot be told. Nor
+// is a row with an undecided placeholder cell, which equals no other cell.
+func rowKey(cells []string, keyCols []int) (string, bool) {
+	var key []string
+	for _, i := range keyCols {
+		if i >= len(cells) || firstWord(cells[i]) == "?" {
+			return "", false
+		}
+		key = append(key, cells[i])
+	}
+	return fmt.Sprintf("%q", key), true
 }
 
 func columnName(columns []string, i int) string {

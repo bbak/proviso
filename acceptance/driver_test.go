@@ -81,6 +81,7 @@ var severities = map[string]string{
 	"examples-column-unknown":      "error",
 	"examples-empty":               "error",
 	"examples-row-incomplete":      "error",
+	"examples-row-repeated":        "error",
 	"provided-value-unknown":       "error",
 	"examples-side-missing":        "error",
 	"examples-part-missing":        "error",

@@ -210,8 +210,11 @@ func kwBlock(keywords ...string) (string, string) {
 	var table string
 	if guarded {
 		table = "| product | provided | outcome |\n| --- | --- | --- |\n| apple | yes | added |\n"
+		// A product of its own per failing part, so that no row repeats
+		// another (lint.examples.row-repeated).
+		failing := []string{"pear", "kiwi", "plum", "fig"}
 		for p := 1; p <= parts; p++ {
-			table += "| pear | no (part " + string(rune('0'+p)) + ") | refused |\n"
+			table += "| " + failing[p-1] + " | no (part " + string(rune('0'+p)) + ") | refused |\n"
 		}
 	} else {
 		table = "| product | outcome |\n| --- | --- |\n| apple | added |\n"
