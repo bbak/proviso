@@ -185,6 +185,31 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		o.stopped(t)
 		names(t, o, line, headingLine+1)
 	})
+	// The same rows for impact.
+	impactWith := func(t *testing.T, manifest string) impactOutcome {
+		dir := plainTree().with(manifestPath, manifest).write(t)
+		return impactIn(t, dir, dir, filepath.Join(dir, "proviso"))
+	}
+	impactNames := func(t *testing.T, o impactOutcome, line string, number int) {
+		t.Helper()
+		impactStopped(t, o)
+		for _, r := range []run{o.json, o.text} {
+			if !strings.Contains(r.stderr, line) && !strings.Contains(r.stderr, strconv.Itoa(number)) {
+				t.Errorf("want stderr to name the line %q (line %d), got: %s", line, number, r.stderr)
+			}
+		}
+	}
+	t.Run("impact/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		impactWith(t, good).only(t)
+	})
+	t.Run("impact/row2 <<<<<<< HEAD", func(t *testing.T) {
+		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
+		impactNames(t, impactWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
+	})
+	t.Run("impact/row3 spaces for tabs", func(t *testing.T) {
+		line := "cart heading " + fp("Cart")
+		impactNames(t, impactWith(t, replaced(line)), line, headingLine+1)
+	})
 	derived := []struct{ name, line string }{
 		{"derived: a short fingerprint", "cart\theading\th1:5b0d"},
 		{"derived: uppercase hexadecimal", "cart\theading\t" + strings.ToUpper(fp("Cart"))},
@@ -348,68 +373,106 @@ func TestBaselineDiffRemoved(t *testing.T) {
 	})
 }
 
-func TestBaselineDiffReference(t *testing.T) {
-	cases := []struct {
-		name string
-		edit change
-		want []string
-	}{
-		{"row1 a new Version", change{referencesPath, "- Version: 0.31.2", "- Version: 0.32"},
-			[]string{"system.ref.commonmark:changed", "cart.thematic-break:changed", "cart.x.line:changed-by-term"}},
-		{"row2 a new Contact only", change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"},
-			[]string{"system.ref.commonmark:changed"}},
-		{"derived: a new Link", change{referencesPath, "- Link: https://spec.commonmark.org/0.31.2/", "- Link: https://spec.commonmark.org/current/"},
-			[]string{"system.ref.commonmark:changed", "cart.thematic-break:changed", "cart.x.line:changed-by-term"}},
+// handTree is diffTree with a rule in x.md that hands over to
+// cart.add.limit.
+func handTree() tree {
+	return diffTree().appendTo(xPath, "\n"+ruleMD("cart.x.hand", "A spoken quantity",
+		"When      a buyer says the quantity <quantity> for the product <product>\nProvided  the shop hears <quantity>\nThen      the cart holds <quantity> more of <product>\n  And     nothing else changes\nOtherwise → cart.add.limit",
+		"| quantity | product | provided | outcome |\n| --- | --- | --- | --- |\n| 1 | apple | yes | added |\n| 2 | apple | no | handed over |"))
+}
+
+// checkThrough asserts that e is changed through a dependency, along exactly
+// the chains given, each written as identifiers joined by " > ", in any
+// order.
+func checkThrough(t *testing.T, e diffElement, chains ...string) {
+	t.Helper()
+	if e.Change != "changed-through" {
+		t.Errorf("want %s changed-through, got %s", e.ID, e.Change)
 	}
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			r, _ := accepted(t, diffTree())
-			r.set(diffTree().apply(c.edit))
-			o := r.diff()
-			o.only(t, c.want...)
-			if len(c.want) > 1 {
-				onlyParts(t, o.elem(t, "cart.thematic-break"), "field Defined by:changed")
-				if e := o.elem(t, "cart.x.line"); strings.Join(e.Terms, ",") != "cart.thematic-break" {
-					t.Errorf("want cart.x.line to name cart.thematic-break, got %v", e.Terms)
-				}
-			}
-		})
+	var got []string
+	for _, c := range e.Through {
+		got = append(got, strings.Join(c, " > "))
+	}
+	if strings.Join(sorted(got), " | ") != strings.Join(sorted(chains), " | ") {
+		t.Errorf("want %s changed through %q, got %q", e.ID, chains, got)
 	}
 }
 
-func TestBaselineDiffTerm(t *testing.T) {
-	cases := []struct {
-		name  string
-		edits []change
-		want  []string
-	}{
-		{"row1 its Definition reworded", []change{itemDefinition},
-			[]string{"cart.item:changed", "cart.add.limit:changed-by-term", "cart.add.empty:changed-by-term"}},
-		{"row2 a new alias only", []change{itemAlias}, []string{"cart.item:changed"}},
-		{"row3 a new Contact only", []change{itemContact}, []string{"cart.item:changed"}},
-		{"derived: a rule marking it and changed itself", []change{itemDefinition, limitThen},
-			[]string{"cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-by-term"}},
+func TestBaselineDiffDependency(t *testing.T) {
+	diffOf := func(t *testing.T, base tree, cs ...change) diffOutcome {
+		t.Helper()
+		r, _ := accepted(t, base)
+		r.set(amended(base, cs...))
+		return r.diff()
 	}
-	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			r, _ := accepted(t, diffTree())
-			tr := diffTree().apply(c.edits...)
-			r.set(tr)
-			o := r.diff()
-			o.only(t, c.want...)
-			for _, w := range c.want {
-				id, kind, _ := strings.Cut(w, ":")
-				if !strings.HasPrefix(id, "cart.add.") {
-					continue
-				}
-				e := o.elem(t, id)
-				if strings.Join(e.Terms, ",") != "cart.item" {
-					t.Errorf("want %s (%s) to name cart.item, got %v", id, kind, e.Terms)
-				}
-				checkFull(t, e, tr, featurePath)
-			}
-		})
-	}
+	t.Run("row1 a glossary entry's Definition reworded", func(t *testing.T) {
+		o := diffOf(t, diffTree(), itemDefinition)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed-through", "cart.add.empty:changed-through")
+		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
+	})
+	t.Run("row2 a reference with a new Version", func(t *testing.T) {
+		o := diffOf(t, diffTree(), change{referencesPath, "- Version: 0.31.2", "- Version: 0.32"})
+		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed-through", "cart.x.line:changed-through")
+		checkThrough(t, o.elem(t, "cart.thematic-break"), "system.ref.commonmark")
+		checkThrough(t, o.elem(t, "cart.x.line"), "system.ref.commonmark > cart.thematic-break")
+	})
+	t.Run("row3 a member of a contract element with a new value", func(t *testing.T) {
+		o := diffOf(t, impactTree(), iCountBody)
+		checkThrough(t, o.elem(t, "cart.pay.lines"), "cart.api.line.count")
+	})
+	t.Run("row4 a member with a new description, reaching the rules referring to the element holding it", func(t *testing.T) {
+		o := diffOf(t, impactTree(), iCountBody)
+		o.only(t, "cart.api.line.count:changed", "cart.pay.lines:changed-through", "cart.pay.order:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line.count")
+	})
+	t.Run("row5 a rule's Then step changed, reaching the rules handing over to it", func(t *testing.T) {
+		o := diffOf(t, handTree(), limitThen)
+		o.only(t, "cart.add.limit:changed", "cart.x.hand:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.add.limit")
+	})
+	t.Run("row6 a rule changed in its Rationale only, marking a term whose Definition changed", func(t *testing.T) {
+		o := diffOf(t, handTree(), itemDefinition, limitNoRatio)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
+	})
+	t.Run("row7 a new alias only", func(t *testing.T) {
+		diffOf(t, diffTree(), itemAlias).only(t, "cart.item:changed")
+	})
+	t.Run("row8 a reference with a new Contact only", func(t *testing.T) {
+		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
+	})
+	t.Run("derived: a reference with a new Link", func(t *testing.T) {
+		o := diffOf(t, diffTree(), change{referencesPath, "- Link: https://spec.commonmark.org/0.31.2/", "- Link: https://spec.commonmark.org/current/"})
+		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed-through", "cart.x.line:changed-through")
+	})
+	t.Run("derived: a new Contact of a glossary entry", func(t *testing.T) {
+		diffOf(t, diffTree(), itemContact).only(t, "cart.item:changed")
+	})
+	t.Run("derived: a rule depending on a changed meaning and changed itself", func(t *testing.T) {
+		o := diffOf(t, diffTree(), itemDefinition, limitThen)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through")
+	})
+	t.Run("derived: a parameter with a new value", func(t *testing.T) {
+		o := diffOf(t, impactTree(), iParamValue)
+		o.only(t, "cart.max-quantity:changed", "cart.add.limit:changed-through", "cart.pay.cap:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.cap"), "cart.max-quantity")
+	})
+	t.Run("derived: a contract element passes on the term it represents", func(t *testing.T) {
+		o := diffOf(t, impactTree(), iItemDef)
+		o.only(t, "cart.item:changed", "cart.api.line:changed-through", "cart.add.limit:changed-through",
+			"cart.pay.total:changed-through", "cart.pay.order:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.line"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.item > cart.api.line")
+	})
+	t.Run("derived: every chain that reaches an element", func(t *testing.T) {
+		o := diffOf(t, impactTree(), iItemDef, iParamValue)
+		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item", "cart.max-quantity")
+	})
+	t.Run("derived: a chain through a hand-over", func(t *testing.T) {
+		o := diffOf(t, handTree(), itemDefinition)
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
+	})
 }
 
 // The undecided tree: diffTree with an open glossary entry, a rule that
@@ -506,7 +569,7 @@ func TestBaselineDiffUndecided(t *testing.T) {
 			t.Errorf("want cart.add.limit to name the undecided place %v, got %v", want, e.Undecided)
 		}
 	})
-	t.Run("derived: a rule changed by an open term", func(t *testing.T) {
+	t.Run("derived: a rule changed through an open term", func(t *testing.T) {
 		r, _ := accepted(t, diffTree())
 		open := diffTree().edit(glossaryPath, "- Definition: A product placed in the cart.\n- Contact: Dana Reyes\n- Status: defined\n",
 			"- Definition: ?\n- Contact: Dana Reyes\n- Status: open\n- Question: Is a service an item?\n")
@@ -514,8 +577,8 @@ func TestBaselineDiffUndecided(t *testing.T) {
 		o := r.diff()
 		e := o.elem(t, "cart.add.empty")
 		want := place{featurePath, open.line(featurePath, "[items]")}
-		if e.Change != "changed-by-term" || len(e.Undecided) != 1 || e.Undecided[0] != want {
-			t.Errorf("want cart.add.empty changed by a term, naming the mark %v, got %s %v", want, e.Change, e.Undecided)
+		if e.Change != "changed-through" || len(e.Undecided) != 1 || e.Undecided[0] != want {
+			t.Errorf("want cart.add.empty changed through a dependency, naming the mark %v, got %s %v", want, e.Change, e.Undecided)
 		}
 	})
 }
@@ -705,13 +768,13 @@ func TestBaselineDiffExit(t *testing.T) {
 		r.set(diffTree().edit(featurePath, text, ""))
 		exit(t, r.diff(), 1)
 	})
-	t.Run("row3 a glossary entry with a new Definition, and one rule changed by a term", func(t *testing.T) {
+	t.Run("row3 a glossary entry with a new Definition, and one rule changed through it", func(t *testing.T) {
 		r, _ := accepted(t, diffTree())
 		// thematic break, marked by cart.x.line alone, gets a Definition
 		// in place of its reference.
 		r.set(diffTree().apply(breakDefinition))
 		o := r.diff()
-		o.only(t, "cart.thematic-break:changed", "cart.x.line:changed-by-term")
+		o.only(t, "cart.thematic-break:changed", "cart.x.line:changed-through")
 		exit(t, o, 1)
 	})
 }

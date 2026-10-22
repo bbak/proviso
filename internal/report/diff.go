@@ -24,7 +24,7 @@ type jsonElement struct {
 	Text      string     `json:"text,omitempty"`
 	Former    string     `json:"former,omitempty"`
 	Parts     []jsonPart `json:"parts,omitempty"`
-	Terms     []string   `json:"terms,omitempty"`
+	Through   [][]string `json:"through,omitempty"`
 	Undecided []lint.Pos `json:"undecided"`
 }
 
@@ -42,7 +42,7 @@ func DiffJSON(w io.Writer, root, revision string, entries []*baseline.Entry) err
 		d.Revision = &revision
 	}
 	for _, e := range entries {
-		je := jsonElement{ID: e.ID, Change: e.Change, Former: e.Former, Terms: e.Terms, Undecided: e.Undecided()}
+		je := jsonElement{ID: e.ID, Change: e.Change, Former: e.Former, Through: e.Through, Undecided: e.Undecided()}
 		if je.Undecided == nil {
 			je.Undecided = []lint.Pos{}
 		}
@@ -87,8 +87,8 @@ func DiffText(w io.Writer, revision string, entries []*baseline.Entry) error {
 				indent(&sb, "    - ", p.Former)
 			}
 		}
-		if len(e.Terms) > 0 {
-			fmt.Fprintf(&sb, "  through the terms of %s\n", strings.Join(e.Terms, ", "))
+		for _, c := range e.Through {
+			fmt.Fprintf(&sb, "  through %s\n", strings.Join(c, " → "))
 		}
 		if u := e.Undecided(); len(u) > 0 {
 			var at []string

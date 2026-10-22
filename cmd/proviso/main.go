@@ -1,5 +1,6 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
-// Model: `proviso lint`, `proviso manifest` and `proviso diff`.
+// Model: `proviso lint`, `proviso manifest`, `proviso diff` and
+// `proviso impact`.
 package main
 
 import (
@@ -20,14 +21,15 @@ import (
 )
 
 // The exit statuses of the contracts lint.cli.lint.exit-status,
-// system.cli.manifest.exit-status and system.cli.diff.exit-status.
+// system.cli.manifest.exit-status, system.cli.diff.exit-status and
+// system.cli.impact.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element
 	exitCantRun = 2
 )
 
-const usage = "usage: proviso lint [--json] | proviso manifest | proviso diff [--json]"
+const usage = "usage: proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json]"
 
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
@@ -40,7 +42,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	cmd, opts := args[0], args[1:]
 	switch cmd {
-	case "lint", "manifest", "diff":
+	case "lint", "manifest", "diff", "impact":
 	default:
 		fmt.Fprintln(stderr, usage)
 		return exitCantRun
@@ -60,17 +62,20 @@ func run(args []string, stdout, stderr io.Writer) int {
 	switch cmd {
 	case "lint":
 		return lintRun(t, res, asJSON, stdout, stderr)
-	case "manifest", "diff":
+	case "manifest", "diff", "impact":
 		// baseline.run.lint: only where lint finds no error, and without
 		// writing what lint would write.
 		if lint.HasError(res.Findings) {
 			report.Text(stderr, res.Findings)
 			return exitCantRun
 		}
-		if cmd == "manifest" {
+		switch cmd {
+		case "manifest":
 			return manifestRun(t, res, stderr)
+		case "diff":
+			return diffRun(t, res, asJSON, stdout, stderr)
 		}
-		return diffRun(t, res, asJSON, stdout, stderr)
+		return impactRun(t, res, asJSON, stdout, stderr)
 	}
 	return exitCantRun
 }
@@ -162,28 +167,39 @@ func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 	return exitClean
 }
 
-func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
+// elementDiff derives the element diff with its former texts, and returns
+// the revision they came from and the elements of the tree there, nil
+// where none was needed. It writes to stderr why it could not.
+func elementDiff(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, string, []lint.Element, bool) {
 	base := baseline.Baseline{}
 	data, hasManifest := t.Manifest()
 	if hasManifest {
 		var bad []string
 		base, bad = baseline.Parse(data)
 		if len(bad) > 0 {
-			fmt.Fprintf(stderr, "proviso diff: %s cannot be read:\n", path.Join(tree.RootName, tree.ManifestName))
+			fmt.Fprintf(stderr, "proviso %s: %s cannot be read:\n", cmd, path.Join(tree.RootName, tree.ManifestName))
 			for _, b := range bad {
 				fmt.Fprintf(stderr, "  %s\n", b)
 			}
-			return exitCantRun
+			return nil, "", nil, false
 		}
 	}
 	entries := baseline.Compare(res.Elements, base)
-	revision := ""
-	if baseline.NeedsFormer(entries) {
-		var err error
-		if revision, err = former(t, entries, base, data); err != nil {
-			fmt.Fprintf(stderr, "proviso diff: cannot read the former text: %v\n", err)
-			return exitCantRun
-		}
+	if !baseline.NeedsFormer(entries) {
+		return entries, "", nil, true
+	}
+	revision, formerElements, err := former(t, entries, base, data)
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso %s: cannot read the former text: %v\n", cmd, err)
+		return nil, "", nil, false
+	}
+	return entries, revision, formerElements, true
+}
+
+func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
+	entries, revision, _, ok := elementDiff("diff", t, res, stderr)
+	if !ok {
+		return exitCantRun
 	}
 	var buf bytes.Buffer
 	var err error
@@ -205,19 +221,42 @@ func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writ
 	return exitClean
 }
 
+func impactRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
+	entries, revision, formerElements, ok := elementDiff("impact", t, res, stderr)
+	if !ok {
+		return exitCantRun
+	}
+	candidates, frames := baseline.Impact(entries, res.Elements, formerElements)
+	var buf bytes.Buffer
+	var err error
+	if asJSON {
+		err = report.ImpactJSON(&buf, reportRoot(t.Root), revision, candidates, frames)
+	} else {
+		err = report.ImpactText(&buf, revision, candidates, frames)
+	}
+	if err == nil {
+		_, err = buf.WriteTo(stdout)
+	}
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso impact: %v\n", err)
+		return exitCantRun
+	}
+	return exitClean
+}
+
 // former fills in the former texts from the revision that wrote the
-// manifest, and returns that revision.
-func former(t *tree.Tree, entries []*baseline.Entry, base baseline.Baseline, manifest []byte) (string, error) {
+// manifest, and returns that revision and the elements of the tree there.
+func former(t *tree.Tree, entries []*baseline.Entry, base baseline.Baseline, manifest []byte) (string, []lint.Element, error) {
 	rev, err := git.ManifestRevision(t.Root, tree.ManifestName, manifest)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	files, err := git.Files(t.Root, rev)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	formerTree := lint.Check(tree.FromFiles(t.Root, files))
-	return rev, baseline.Former(entries, base, formerTree.Elements, rev)
+	return rev, formerTree.Elements, baseline.Former(entries, base, formerTree.Elements, rev)
 }
 
 // reportRoot writes the absolute path of the spec root with "/" as its

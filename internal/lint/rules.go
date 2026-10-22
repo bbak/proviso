@@ -161,8 +161,10 @@ func (l *linter) checkBlock(r *rule) {
 					}
 				}
 			case guarded.Code:
-				if !l.resolveReference(r.cap, sp.Value) {
+				if t := l.resolveReference(r.cap, sp.Value); t == nil {
 					l.report(Error, "reference-unresolved", pos, "`%s` names no visible contract element or parameter", sp.Value).col = sp.Start
+				} else if ref := (Ref{sp.Value, t.id}); !slices.Contains(r.refs, ref) {
+					r.refs = append(r.refs, ref)
 				}
 			}
 		}
@@ -200,10 +202,10 @@ func (l *linter) checkOrder(r *rule) {
 	}
 }
 
-// resolveReference reports whether a backtick reference names a visible
-// contract element or parameter: its first segment a top-level element or
-// parameter, each further segment a member of the one before.
-func (l *linter) resolveReference(cap, ref string) bool {
+// resolveReference returns the visible contract element or parameter a
+// backtick reference names, if any: its first segment a top-level element
+// or parameter, each further segment a member of the one before.
+func (l *linter) resolveReference(cap, ref string) *element {
 	segs := strings.Split(ref, ".")
 	for _, lv := range visible(cap) {
 		cands := l.names[lv][segs[0]]
@@ -214,13 +216,13 @@ func (l *linter) resolveReference(cap, ref string) bool {
 		for _, s := range segs[1:] {
 			m := e.members[s]
 			if len(m) == 0 {
-				return false
+				return nil
 			}
 			e = m[0]
 		}
-		return true
+		return e
 	}
-	return false
+	return nil
 }
 
 // checkUnmarked reports each name or alias of a visible glossary entry that
@@ -372,7 +374,12 @@ func (l *linter) checkRepresents(e *element) {
 		ln := guarded.Parse([]guarded.SourceLine{{N: f.line, Text: f.value}})
 		for _, gl := range ln.Lines {
 			for _, sp := range gl.Spans {
-				if sp.Kind == guarded.Mark && l.resolveTerm(e.cap, sp.Value) == nil {
+				if sp.Kind != guarded.Mark {
+					continue
+				}
+				if t := l.resolveTerm(e.cap, sp.Value); t != nil {
+					e.represents = append(e.represents, t.id)
+				} else {
 					l.report(Error, "term-unresolved", Pos{e.file.path, f.line}, "the term [%s] names no visible glossary entry", sp.Value).col = sp.Start
 				}
 			}
