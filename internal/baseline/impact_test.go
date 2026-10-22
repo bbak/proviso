@@ -19,29 +19,106 @@ func invariant(id string) string {
 	return "## <a id=\"" + id + "\"></a> Invariant: I\n\n" + invariantBody
 }
 
-// systemInvariant is an invariant in invariants.md, where its heading has
-// no prefix.
-func systemInvariant(id string) string {
+// levelInvariant is an invariant in an invariants.md, where its heading
+// has no prefix.
+func levelInvariant(id string) string {
 	return "## <a id=\"" + id + "\"></a> I\n\n" + invariantBody
 }
 
-// impactTree adds to the base tree: a second feature with a rule sharing
-// the term and the event head of c.f.r and one referring to the parameter
-// `p`, an invariant in each feature and one at system level, and a contract
-// element representing the term.
+const handOver = "## <a id=\"c.g.d\"></a> Rule: D\n\n```guarded\nWhen      someone writes <x>\nProvided  <x> is 1\nThen      it is written\n  And     everything else stays as it was\nOtherwise → c.f.r\n```\n\n| x | provided | outcome |\n| --- | --- | --- |\n| 1 | yes | written |\n| 2 | no | handed over |\n\n"
+
+// impactTree adds to the base tree a second feature with a rule on the
+// event of c.f.r marking its term, one referring to the parameter `p`, one
+// referring to the contract element `api` and one handing over to c.f.r;
+// an invariant in each feature, one of the capability and one of the
+// system; and a contract element representing the term, with a member.
 func impactTree(m map[string]string) {
 	m["capabilities/c/features/f.md"] = feature + "\n" + invariant("c.f.inv")
 	m["capabilities/c/features/g.md"] = "# <a id=\"c.g\"></a> G\n\n- Contact: Ann\n\n## Goal\n\ng\n\n## Rationale\n\nr\n\n" +
 		rule("c.g.a", "someone reads <x> of the [thing]", "it is read") +
-		rule("c.g.b", "`p` is set to <x>", "it is set") + invariant("c.g.inv")
-	m["invariants.md"] = "# Invariants\n\n" + systemInvariant("system.inv")
+		rule("c.g.b", "`p` is set to <x>", "it is set") +
+		rule("c.g.c", "`api` answers <x>", "it is answered") +
+		handOver + invariant("c.g.inv")
+	m["capabilities/c/invariants.md"] = "# Invariants\n\n" + levelInvariant("c.inv")
+	m["invariants.md"] = "# Invariants\n\n" + levelInvariant("system.inv")
 	m["parameters.md"] = "# Parameters\n\n## <a id=\"system.p\"></a> p\n\n- Value: 1\n- Configurable: no\n- Rationale: r\n"
 	m["contracts/api.md"] = "# API\n\n## <a id=\"system.api\"></a> api\n\n- Represents: [thing]\n\nThe api.\n\n### <a id=\"system.api.code\"></a> code\n\nA code.\n"
 }
 
-// impact compares the tree, edited after impactTree, with the baseline of
-// the tree impactTree gives, and returns each candidate's reasons as
-// "source via from".
+func editTree(edit func(map[string]string)) func(map[string]string) {
+	return func(m map[string]string) {
+		impactTree(m)
+		edit(m)
+	}
+}
+
+func replace(m map[string]string, file, old, new string) {
+	if !strings.Contains(m[file], old) {
+		panic(old)
+	}
+	m[file] = strings.Replace(m[file], old, new, 1)
+}
+
+// through compares the edited tree with the baseline of impactTree and
+// returns how each element is listed, with the chains through which an
+// element changed through a dependency.
+func through(t *testing.T, edit func(map[string]string)) map[string]string {
+	t.Helper()
+	base, _ := Parse(Write(files(impactTree)))
+	out := map[string]string{}
+	for _, e := range Compare(files(editTree(edit)), base) {
+		out[e.ID] = e.Change
+		if e.Change == ChangedThrough {
+			out[e.ID] = fmt.Sprint(e.Through)
+		}
+	}
+	return out
+}
+
+func TestDependencies(t *testing.T) {
+	got := through(t, func(m map[string]string) { replace(m, "glossary.md", "A thing.", "Another thing.") })
+	want := map[string]string{
+		"system.thing": Changed,
+		"c.f.r":        "[[system.thing]]",
+		"c.g.a":        "[[system.thing]]",
+		"system.api":   "[[system.thing]]",
+		"c.g.c":        "[[system.thing system.api]]",
+		"c.g.d":        "[[system.thing c.f.r]]",
+	}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("a new Definition:\n%v\nwant\n%v", got, want)
+	}
+	got = through(t, func(m map[string]string) { replace(m, "references.md", "- Version: 1", "- Version: 2") })
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.ref.std": Changed, "system.std": "[[system.ref.std]]"}) {
+		t.Errorf("a new Version: %v", got)
+	}
+	got = through(t, func(m map[string]string) { replace(m, "contracts/api.md", "A code.", "A new code.") })
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.api.code": Changed, "c.g.c": "[[system.api.code]]"}) {
+		t.Errorf("a member: %v", got)
+	}
+	got = through(t, func(m map[string]string) { replace(m, "parameters.md", "- Value: 1", "- Value: 2") })
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.p": Changed, "c.g.b": "[[system.p]]"}) {
+		t.Errorf("a parameter: %v", got)
+	}
+	got = through(t, func(m map[string]string) {
+		replace(m, "capabilities/c/features/f.md", "Then      it is read", "Then      it is read twice")
+	})
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"c.f.r": Changed, "c.g.d": "[[c.f.r]]"}) {
+		t.Errorf("a hand-over: %v", got)
+	}
+	for _, edit := range []func(map[string]string){
+		func(m map[string]string) { replace(m, "glossary.md", "- Aliases: things", "- Aliases: things, stuff") },
+		func(m map[string]string) { replace(m, "references.md", "- Contact: Ann", "- Contact: Bob") },
+		func(m map[string]string) { replace(m, "parameters.md", "- Rationale: r", "- Rationale: s") },
+	} {
+		if got := through(t, edit); len(got) != 1 {
+			t.Errorf("no dependents: %v", got)
+		}
+	}
+}
+
+// impact compares the edited tree with the baseline of impactTree, and
+// returns each candidate's reasons as "source via from".
 func impact(t *testing.T, edit func(map[string]string)) (map[string][]string, []Frame) {
 	t.Helper()
 	before := files(impactTree)
@@ -49,10 +126,7 @@ func impact(t *testing.T, edit func(map[string]string)) (map[string][]string, []
 	if len(bad) > 0 {
 		t.Fatal(bad)
 	}
-	now := files(func(m map[string]string) {
-		impactTree(m)
-		edit(m)
-	})
+	now := files(editTree(edit))
 	entries := Compare(now, base)
 	if err := Former(entries, base, before, "rev"); err != nil {
 		t.Fatal(err)
@@ -72,92 +146,76 @@ func impact(t *testing.T, edit func(map[string]string)) (map[string][]string, []
 
 func TestImpactRuleChanged(t *testing.T) {
 	got, frames := impact(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = strings.Replace(m["capabilities/c/features/f.md"], "Then      it is read", "Then      it is read twice", 1)
+		replace(m, "capabilities/c/features/f.md", "Then      it is read", "Then      it is read twice")
 	})
 	want := map[string][]string{
-		"c.g.a":      {"terms system.thing c.f.r", "events someone reads c.f.r"},
+		"c.g.a":      {"events someone reads c.f.r"},
 		"c.f.inv":    {"ranges feature c.f.r"},
-		"c.g.inv":    {"ranges capability c.f.r"},
-		"system.inv": {"ranges system c.f.r"},
+		"c.g.inv":    {"ranges feature c.g.d"},
+		"c.inv":      {"ranges capability c.f.r,c.g.d"},
+		"system.inv": {"ranges system c.f.r,c.g.d"},
 	}
 	if fmt.Sprint(got) != fmt.Sprint(want) || len(frames) != 0 {
-		t.Errorf("%v %v", got, frames)
+		t.Errorf("%v\nwant\n%v", got, want)
 	}
 }
 
-func TestImpactReferences(t *testing.T) {
-	got, _ := impact(t, func(m map[string]string) {
-		m["parameters.md"] = strings.Replace(m["parameters.md"], "- Value: 1", "- Value: 2", 1)
-	})
-	if fmt.Sprint(got) != fmt.Sprint(map[string][]string{"c.g.b": {"references p system.p"}}) {
-		t.Errorf("a parameter: %v", got)
-	}
-	got, _ = impact(t, func(m map[string]string) {
-		m["parameters.md"] = strings.Replace(m["parameters.md"], "- Rationale: r", "- Rationale: s", 1)
-	})
-	if len(got) != 0 {
-		t.Errorf("a parameter's Rationale: %v", got)
-	}
-	// A member's top-level element represents the term.
-	got, _ = impact(t, func(m map[string]string) {
-		m["contracts/api.md"] = strings.Replace(m["contracts/api.md"], "A code.", "A new code.", 1)
-	})
-	want := map[string][]string{"c.f.r": {"references system.thing system.api.code"}, "c.g.a": {"references system.thing system.api.code"}}
-	if fmt.Sprint(got) != fmt.Sprint(want) {
-		t.Errorf("a contract element: %v", got)
-	}
-}
-
-func TestImpactListed(t *testing.T) {
-	got, _ := impact(t, func(m map[string]string) {
-		m["glossary.md"] = strings.Replace(m["glossary.md"], "A thing.", "Another thing.", 1)
-	})
-	// The rules marking the term are changed by it, so listed, not
-	// candidates; every part of theirs counts as touched, so the
-	// invariants above them are found.
+func TestImpactThroughDefinition(t *testing.T) {
+	got, _ := impact(t, func(m map[string]string) { replace(m, "glossary.md", "A thing.", "Another thing.") })
+	// The rules marking the term are listed, not candidates; every part of
+	// theirs counts as changed, so the invariants above them are found.
 	want := map[string][]string{
-		"c.f.inv":    {"ranges capability c.g.a", "ranges feature c.f.r"},
-		"c.g.inv":    {"ranges capability c.f.r", "ranges feature c.g.a"},
-		"system.inv": {"ranges system c.f.r,c.g.a"},
+		"c.f.inv":    {"ranges feature c.f.r"},
+		"c.g.inv":    {"ranges feature c.g.a,c.g.c,c.g.d"},
+		"c.inv":      {"ranges capability c.f.r,c.g.a,c.g.c,c.g.d"},
+		"system.inv": {"ranges system c.f.r,c.g.a,c.g.c,c.g.d"},
 	}
 	if fmt.Sprint(got) != fmt.Sprint(want) {
-		t.Errorf("rules changed by a term: %v", got)
+		t.Errorf("%v\nwant\n%v", got, want)
 	}
 }
 
 func TestImpactScope(t *testing.T) {
-	got, frames := impact(t, func(m map[string]string) {
-		m["capabilities/c/capability.md"] = strings.Replace(m["capabilities/c/capability.md"], "## Goal\n\ng", "## Goal\n\nh", 1)
-	})
-	ids := []string{"c.f.inv", "c.f.r", "c.g.a", "c.g.b", "c.g.inv"}
-	if len(frames) != 1 || frames[0].ID != "c" || !slices.Equal(frames[0].Candidates, ids) || len(got) != 5 || got["c.f.r"][0] != "scope c c" {
-		t.Errorf("%v %v", got, frames)
+	scope := func(edit func(map[string]string)) []Frame {
+		_, frames := impact(t, edit)
+		return frames
 	}
-	got, frames = impact(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = strings.Replace(m["capabilities/c/features/f.md"], "- Contact: Ann", "- Contact: Bob", 1)
+	all := []string{"c.f.inv", "c.f.r", "c.g.a", "c.g.b", "c.g.c", "c.g.d", "c.g.inv", "c.inv"}
+	cases := []struct {
+		name  string
+		edit  func(map[string]string)
+		frame string
+		want  []string
+	}{
+		{"a capability's Goal", func(m map[string]string) { replace(m, "capabilities/c/capability.md", "## Goal\n\ng", "## Goal\n\nh") }, "c", all},
+		{"a feature's Goal", func(m map[string]string) { replace(m, "capabilities/c/features/g.md", "## Goal\n\ng", "## Goal\n\nh") }, "c.g", []string{"c.g.a", "c.g.b", "c.g.c", "c.g.d", "c.g.inv"}},
+		{"an invariant of the system", func(m map[string]string) { replace(m, "invariants.md", "### Property\n\np", "### Property\n\nq") }, "system.inv", all},
+		{"an invariant of the capability", func(m map[string]string) {
+			replace(m, "capabilities/c/invariants.md", "### Property\n\np", "### Property\n\nq")
+		}, "c.inv", all[:7]},
+		{"an invariant of a feature", func(m map[string]string) {
+			replace(m, "capabilities/c/features/f.md", "### Property\n\np", "### Property\n\nq")
+		}, "c.f.inv", []string{"c.f.r"}},
+	}
+	for _, c := range cases {
+		frames := scope(c.edit)
+		if len(frames) != 1 || frames[0].ID != c.frame || !slices.Equal(frames[0].Candidates, c.want) {
+			t.Errorf("%s: %v", c.name, frames)
+		}
+	}
+	got, frames := impact(t, func(m map[string]string) {
+		replace(m, "capabilities/c/features/f.md", "- Contact: Ann", "- Contact: Bob")
 	})
 	if len(got) != 0 || len(frames) != 0 {
 		t.Errorf("a new Contact: %v %v", got, frames)
-	}
-	got, frames = impact(t, func(m map[string]string) {
-		m["capabilities/c/features/g.md"] = strings.Replace(m["capabilities/c/features/g.md"], "## Goal\n\ng", "## Goal\n\nh", 1)
-	})
-	if len(frames) != 1 || !slices.Equal(frames[0].Candidates, []string{"c.g.a", "c.g.b", "c.g.inv"}) {
-		t.Errorf("a feature's Goal: %v %v", got, frames)
-	}
-	_, frames = impact(t, func(m map[string]string) {
-		m["invariants.md"] = strings.Replace(m["invariants.md"], "### Property\n\np", "### Property\n\nq", 1)
-	})
-	if len(frames) != 1 || len(frames[0].Candidates) != 5 { // every rule and invariant but itself
-		t.Errorf("a system invariant: %v", frames)
 	}
 }
 
 func TestImpactRemoved(t *testing.T) {
 	got, _ := impact(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = feature[:strings.Index(feature, "## <a id=\"c.f.r\">")] + invariant("c.f.inv")
+		replace(m, "capabilities/c/features/g.md", rule("c.g.a", "someone reads <x> of the [thing]", "it is read"), "")
 	})
-	if !slices.Contains(got["c.g.a"], "terms system.thing c.f.r") || !slices.Contains(got["c.f.inv"], "ranges feature c.f.r") {
+	if !slices.Contains(got["c.f.r"], "events someone reads c.g.a") || !slices.Contains(got["c.g.inv"], "ranges feature c.g.a") {
 		t.Errorf("a removed rule: %v", got)
 	}
 }
@@ -167,6 +225,7 @@ func TestEventHead(t *testing.T) {
 		"lint reads the row <row> of an [Examples table], below the rows <earlier>":      "lint reads row",
 		"lint reads the row <row> of an [Examples table] with the columns <columns>":     "lint reads row",
 		"`diff` compares the [element] <element> of the [spec tree] with the [baseline]": "diff compares element",
+		"lint reads the [hand-over] to <target>":                                         "lint reads hand over to", // the tree's example leaves "to" out
 		"lint exits, having found \"x\"":                                                 "lint exits having found x",
 	}
 	for when, want := range cases {
