@@ -431,10 +431,15 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o.only(t, "cart.add.limit:changed", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.add.limit")
 	})
-	t.Run("row6 a new alias only", func(t *testing.T) {
+	t.Run("row6 a rule changed in its Rationale only, marking a term whose Definition changed", func(t *testing.T) {
+		o := diffOf(t, handTree(), itemDefinition, limitNoRatio)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
+	})
+	t.Run("row7 a new alias only", func(t *testing.T) {
 		diffOf(t, diffTree(), itemAlias).only(t, "cart.item:changed")
 	})
-	t.Run("row7 a reference with a new Contact only", func(t *testing.T) {
+	t.Run("row8 a reference with a new Contact only", func(t *testing.T) {
 		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
 	})
 	t.Run("derived: a reference with a new Link", func(t *testing.T) {
