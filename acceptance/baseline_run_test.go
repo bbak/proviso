@@ -9,8 +9,9 @@ import (
 	"testing"
 )
 
-// baseRun runs the baseline command cmd in cwd: `manifest`, or `diff` or
-// `impact` with --json (diffIn and impactIn run them without as well). root
+// baseRun runs the baseline command cmd in cwd: `manifest`, or `diff`,
+// `impact` or `pack` with --json (diffIn, impactIn and packIn run them
+// without as well). root
 // is the spec root the command is expected to work on, if any.
 func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 	t.Helper()
@@ -19,6 +20,8 @@ func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 		return manifestIn(t, base, cwd, root, nil)
 	case "impact":
 		return impactIn(t, base, cwd, root).json
+	case "pack":
+		return packIn(t, base, cwd, root).json
 	}
 	return diffIn(t, base, cwd, root).json
 }
@@ -37,7 +40,7 @@ func lintLines(t *testing.T, cwd string) []string {
 
 func TestBaselineRunLint(t *testing.T) {
 	invalid := "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"
-	for _, cmd := range []string{"manifest", "diff", "impact"} {
+	for _, cmd := range []string{"manifest", "diff", "impact", "pack"} {
 		t.Run(cmd, func(t *testing.T) {
 			t.Run("row1 a tree without findings", func(t *testing.T) {
 				dir := plainTree().write(t)
@@ -125,7 +128,8 @@ func TestBaselineRunLint(t *testing.T) {
 // of every kind, however they end: every file and folder below the test
 // directory, the git repository's .git included, is as it was, except
 // manifest.sum after a run of `manifest` that exits with 0. Every other test
-// checks it too, for each run it makes (see manifestIn, diffIn and impactIn).
+// checks it too, for each run it makes (see manifestIn, diffIn, impactIn and
+// packIn).
 func TestBaselineRunWrites(t *testing.T) {
 	// staged leaves an edit in the index and an untracked file, which a
 	// run must leave as they are.
@@ -195,15 +199,15 @@ func TestBaselineRunWrites(t *testing.T) {
 		}},
 	}
 	for _, c := range cases {
-		// Every case of diff is a case of impact as well.
+		// Every case of diff is a case of impact and of pack as well.
 		cmds := []string{c.cmd}
 		if c.cmd == "diff" {
-			cmds = append(cmds, "impact")
+			cmds = append(cmds, "impact", "pack")
 		}
 		for _, cmd := range cmds {
 			name := c.name
-			if cmd == "impact" {
-				name = "impact" + strings.TrimPrefix(c.name, "diff")
+			if cmd != c.cmd {
+				name = cmd + strings.TrimPrefix(c.name, "diff")
 			}
 			t.Run(name, func(t *testing.T) {
 				r := c.setup(t)

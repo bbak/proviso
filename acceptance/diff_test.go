@@ -210,6 +210,32 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		line := "cart heading " + fp("Cart")
 		impactNames(t, impactWith(t, replaced(line)), line, headingLine+1)
 	})
+	// The same rows for pack.
+	packWith := func(t *testing.T, manifest string) packOutcome {
+		dir := plainTree().with(manifestPath, manifest).write(t)
+		return packIn(t, dir, dir, filepath.Join(dir, "proviso"))
+	}
+	packNames := func(t *testing.T, o packOutcome, line string, number int) {
+		t.Helper()
+		o.stopped(t)
+		for _, r := range []run{o.json, o.text} {
+			if !strings.Contains(r.stderr, line) && !strings.Contains(r.stderr, strconv.Itoa(number)) {
+				t.Errorf("want stderr to name the line %q (line %d), got: %s", line, number, r.stderr)
+			}
+		}
+	}
+	t.Run("pack/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		o := packWith(t, good)
+		o.headingsAre(t, "Builder notes", "System")
+	})
+	t.Run("pack/row2 <<<<<<< HEAD", func(t *testing.T) {
+		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
+		packNames(t, packWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
+	})
+	t.Run("pack/row3 spaces for tabs", func(t *testing.T) {
+		line := "cart heading " + fp("Cart")
+		packNames(t, packWith(t, replaced(line)), line, headingLine+1)
+	})
 	derived := []struct{ name, line string }{
 		{"derived: a short fingerprint", "cart\theading\th1:5b0d"},
 		{"derived: uppercase hexadecimal", "cart\theading\t" + strings.ToUpper(fp("Cart"))},
