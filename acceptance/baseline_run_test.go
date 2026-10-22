@@ -9,13 +9,16 @@ import (
 	"testing"
 )
 
-// baseRun runs the baseline command cmd in cwd: `manifest`, or `diff` with
-// --json (diffIn runs it without as well). root is the spec root the
-// command is expected to work on, if any.
+// baseRun runs the baseline command cmd in cwd: `manifest`, or `diff` or
+// `impact` with --json (diffIn and impactIn run them without as well). root
+// is the spec root the command is expected to work on, if any.
 func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 	t.Helper()
-	if cmd == "manifest" {
+	switch cmd {
+	case "manifest":
 		return manifestIn(t, base, cwd, root, nil)
+	case "impact":
+		return impactIn(t, base, cwd, root).json
 	}
 	return diffIn(t, base, cwd, root).json
 }
@@ -34,7 +37,7 @@ func lintLines(t *testing.T, cwd string) []string {
 
 func TestBaselineRunLint(t *testing.T) {
 	invalid := "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"
-	for _, cmd := range []string{"manifest", "diff"} {
+	for _, cmd := range []string{"manifest", "diff", "impact"} {
 		t.Run(cmd, func(t *testing.T) {
 			t.Run("row1 a tree without findings", func(t *testing.T) {
 				dir := plainTree().write(t)
@@ -122,7 +125,7 @@ func TestBaselineRunLint(t *testing.T) {
 // of every kind, however they end: every file and folder below the test
 // directory, the git repository's .git included, is as it was, except
 // manifest.sum after a run of `manifest` that exits with 0. Every other test
-// checks it too, for each run it makes (see manifestIn and diffIn).
+// checks it too, for each run it makes (see manifestIn, diffIn and impactIn).
 func TestBaselineRunWrites(t *testing.T) {
 	// staged leaves an edit in the index and an untracked file, which a
 	// run must leave as they are.
@@ -192,12 +195,23 @@ func TestBaselineRunWrites(t *testing.T) {
 		}},
 	}
 	for _, c := range cases {
-		t.Run(c.name, func(t *testing.T) {
-			r := c.setup(t)
-			if _, ok := snapshotAll(t, r.dir)[".git/HEAD"]; !ok {
-				t.Fatal("the snapshot does not cover the git repository")
+		// Every case of diff is a case of impact as well.
+		cmds := []string{c.cmd}
+		if c.cmd == "diff" {
+			cmds = append(cmds, "impact")
+		}
+		for _, cmd := range cmds {
+			name := c.name
+			if cmd == "impact" {
+				name = "impact" + strings.TrimPrefix(c.name, "diff")
 			}
-			baseRun(t, c.cmd, r.dir, r.dir, r.root())
-		})
+			t.Run(name, func(t *testing.T) {
+				r := c.setup(t)
+				if _, ok := snapshotAll(t, r.dir)[".git/HEAD"]; !ok {
+					t.Fatal("the snapshot does not cover the git repository")
+				}
+				baseRun(t, cmd, r.dir, r.dir, r.root())
+			})
+		}
 	}
 }
