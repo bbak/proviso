@@ -185,7 +185,7 @@ type diffElement struct {
 	Text      *string      `json:"text"`
 	Former    *string      `json:"former"`
 	Parts     []partChange `json:"parts"`
-	Terms     []string     `json:"terms"`
+	Through   [][]string   `json:"through"`
 	Undecided []place      `json:"undecided"`
 }
 
@@ -254,7 +254,7 @@ func diffIn(t *testing.T, base, cwd, root string) diffOutcome {
 	return o
 }
 
-var diffChanges = map[string]bool{"added": true, "changed": true, "removed": true, "changed-by-term": true}
+var diffChanges = map[string]bool{"added": true, "changed": true, "removed": true, "changed-through": true}
 var partChanges = map[string]bool{"added": true, "changed": true, "removed": true}
 
 // parseElementDiff checks stdout against the schema of `element_diff` and
@@ -297,7 +297,7 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 			}
 		}
 		if json.Unmarshal(it["change"], &s) == nil && !diffChanges[s] {
-			t.Errorf("system.cli.element-diff: element %d: change %q is not added, changed, removed or changed-by-term", i, s)
+			t.Errorf("system.cli.element-diff: element %d: change %q is not added, changed, removed or changed-through", i, s)
 		}
 		if v, ok := it["line"]; ok && !isLine(v) {
 			t.Errorf("system.cli.element-diff: element %d: line %s is not an integer of at least 1", i, v)
@@ -319,10 +319,10 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 				}
 			}
 		}
-		if v, ok := it["terms"]; ok {
-			var terms []string
-			if json.Unmarshal(v, &terms) != nil {
-				t.Errorf("system.cli.element-diff: element %d: terms is not an array of strings", i)
+		if v, ok := it["through"]; ok {
+			var through [][]string
+			if json.Unmarshal(v, &through) != nil {
+				t.Errorf("system.cli.element-diff: element %d: through is not an array of arrays of strings", i)
 			}
 		}
 		if v := bytes.TrimSpace(it["undecided"]); len(v) == 0 || v[0] != '[' {
@@ -400,7 +400,7 @@ func (o diffOutcome) dump() string {
 		for _, p := range e.Parts {
 			parts = append(parts, p.Part+":"+p.Change)
 		}
-		fmt.Fprintf(&b, "  %s %s parts=%v terms=%v undecided=%v\n", e.Change, e.ID, parts, e.Terms, e.Undecided)
+		fmt.Fprintf(&b, "  %s %s parts=%v through=%v undecided=%v\n", e.Change, e.ID, parts, e.Through, e.Undecided)
 	}
 	return b.String()
 }

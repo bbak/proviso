@@ -44,8 +44,8 @@ type impactOutcome struct {
 	diff       diffOutcome
 }
 
-// sourceRank is the order in which impact_triggers names the sources.
-var sourceRank = map[string]int{"terms": 0, "references": 1, "events": 2, "ranges": 3, "scope": 4}
+// sourceRank is the order of the sources baseline.impact.order gives.
+var sourceRank = map[string]int{"events": 0, "ranges": 1, "scope": 2}
 
 // impactIn runs `proviso impact --json` and `proviso impact` in cwd and
 // checks what holds for every run. base is the directory the test tree was
@@ -165,7 +165,7 @@ func parseImpactSet(t *testing.T, stdout string) impactSet {
 			if json.Unmarshal(r["source"], &s) != nil {
 				t.Errorf("system.cli.impact-set: candidate %d: source is not a string", i)
 			} else if _, ok := sourceRank[s]; !ok {
-				t.Errorf("system.cli.impact-set: candidate %d: source %q is none of terms, references, events, ranges, scope", i, s)
+				t.Errorf("system.cli.impact-set: candidate %d: source %q is none of events, ranges, scope", i, s)
 			}
 			var from []string
 			if json.Unmarshal(r["from"], &from) != nil {
