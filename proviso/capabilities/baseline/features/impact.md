@@ -89,7 +89,7 @@ Then      it is the words of the "When" [step] of <rule> up to its first [placeh
 | `lint.examples.cells`, `When` `lint reads the row <row> of an [Examples table] with the columns <columns>` | "lint reads row", the same |
 | `baseline.diff.added`, `When` `` `diff` compares the [element] <element> of the [spec tree] with the [baseline] `` | "diff compares element" |
 | a rule whose `When` holds no placeholder | the words of the whole step |
-| a `When` reading `lint reads the [hand-over] to <target>` | "lint reads hand over", the hyphen separating words |
+| a `When` reading `lint reads the [hand-over] to <target>` | "lint reads hand over to", the hyphen separating words |
 
 ## <a id="baseline.impact.ranges"></a> Rule: A touched rule reaches the invariants above it
 
