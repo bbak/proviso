@@ -6,6 +6,20 @@ import (
 	"github.com/bbak/proviso/internal/guarded"
 )
 
+// The element types, as the parameters name them.
+const (
+	TypeSystem     = tSystem
+	TypeCapability = tCapability
+	TypeFeature    = tFeature
+	TypeRule       = tRule
+	TypeInvariant  = tInvariant
+	TypeConstraint = tConstraint
+	TypeGlossary   = tGlossary
+	TypeParameter  = tParameter
+	TypeReference  = tReference
+	TypeContract   = tContract
+)
+
 // Result is what lint found in a tree, and the elements it read there, for
 // the commands that build on lint's reading of the tree.
 type Result struct {
@@ -32,9 +46,19 @@ type Element struct {
 	Rows     []Row
 	Body     string // everything else it holds
 
-	Marks     []string // the identifiers of the glossary entries its rule block marks
-	DefinedBy string   // the identifier of the reference its Defined by links to
-	Undecided []Pos    // the places lint asks about as undecided
+	Cap        string   // the capability it stands in; "" at system level
+	Top        string   // the top-level contract element it is or belongs to
+	Marks      []string // the identifiers of the glossary entries its rule block marks
+	Refs       []Ref    // the backtick references of its rule block
+	Represents []string // the identifiers of the glossary entries its Represents marks
+	DefinedBy  string   // the identifier of the reference its Defined by links to
+	Undecided  []Pos    // the places lint asks about as undecided
+}
+
+// Ref is a backtick reference as written, and the identifier of the
+// contract element or parameter it names.
+type Ref struct {
+	Name, ID string
 }
 
 // Field is a field of an element.
@@ -73,6 +97,14 @@ func (l *linter) export() []Element {
 			ID: e.id, Type: e.typ, File: e.file.path, Line: e.line, End: end,
 			Text:    e.file.doc.Source(e.line, end),
 			Heading: e.raw, Marks: e.marks, DefinedBy: e.definedBy,
+			Cap: e.cap, Refs: e.refs, Represents: e.represents,
+		}
+		if e.typ == tContract {
+			top := e
+			for top.parent != nil {
+				top = top.parent
+			}
+			x.Top = top.id
 		}
 		for _, f := range e.fields {
 			x.Fields = append(x.Fields, Field{f.key, f.value, f.line})

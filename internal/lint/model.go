@@ -83,6 +83,8 @@ type element struct {
 	rule       *rule    // its rule block and Examples table, for a rule
 	marks      []string // the glossary entries its rule block marks
 	definedBy  string   // the reference its Defined by links to
+	refs       []Ref    // the backtick references of its rule block
+	represents []string // the glossary entries its Represents marks
 }
 
 func (e *element) pos() Pos { return Pos{e.file.path, e.line} }

@@ -171,3 +171,32 @@ func TestBaselineCommands(t *testing.T) {
 		t.Error("a refused manifest changed the former one")
 	}
 }
+
+func TestImpactCommand(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system})
+	var out, errOut bytes.Buffer
+	if status := run([]string{"impact", "--json"}, &out, &errOut); status != 0 {
+		t.Fatalf("status %d: %s", status, errOut.String())
+	}
+	var r struct {
+		Revision   *string
+		Candidates []any
+		Scopes     []struct {
+			ID         string
+			Candidates []string
+		}
+	}
+	if err := json.Unmarshal(out.Bytes(), &r); err != nil || r.Revision != nil || r.Candidates == nil || len(r.Candidates) != 0 || len(r.Scopes) != 1 || r.Scopes[0].ID != "system" {
+		t.Errorf("%v %s", err, out.String())
+	}
+	out.Reset()
+	if status := run([]string{"impact"}, &out, &errOut); status != 0 || out.Len() != 0 {
+		t.Errorf("text without candidates: %d %q", status, out.String())
+	}
+	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	out.Reset()
+	errOut.Reset()
+	if status := run([]string{"impact", "--json"}, &out, &errOut); status != 2 || out.Len() != 0 || !strings.Contains(errOut.String(), "file-unknown") {
+		t.Errorf("a tree with an error: %d %q %q", status, out.String(), errOut.String())
+	}
+}
