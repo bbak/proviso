@@ -1,6 +1,7 @@
 package baseline
 
 import (
+	"maps"
 	"slices"
 	"strings"
 
@@ -146,6 +147,10 @@ func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
 		}
 	}
 	slices.Sort(queue)
+	// changed holds every element whose meaning changed: one whose changed
+	// part passes it on, and every element depending on one, transitively,
+	// listed or not. Each is taken once.
+	changed := maps.Clone(seeds)
 	through := map[string]bool{}
 	for len(queue) > 0 {
 		id := queue[0]
@@ -153,14 +158,19 @@ func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
 		ds := slices.Clone(dependents[id])
 		slices.Sort(ds)
 		for _, x := range ds {
-			if byID[x] != nil {
-				continue // listed already, or taken
+			if changed[x] || elem[x] == nil {
+				continue
 			}
-			through[x] = true
-			byID[x] = &Entry{ID: x, Change: ChangedThrough, Element: elem[x]}
+			changed[x] = true
 			queue = append(queue, x)
+			if byID[x] == nil {
+				through[x] = true
+				byID[x] = &Entry{ID: x, Change: ChangedThrough, Element: elem[x]}
+			}
 		}
 	}
+	// chains returns every chain of identifiers from a first changed
+	// element to one the element id depends on directly.
 	memo := map[string][][]string{}
 	var chains func(id string, visiting map[string]bool) [][]string
 	chains = func(id string, visiting map[string]bool) [][]string {
@@ -170,17 +180,18 @@ func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
 		visiting[id] = true
 		var out [][]string
 		for _, d := range deps[id] {
-			switch {
-			case seeds[d]:
+			if !changed[d] || visiting[d] {
+				continue
+			}
+			if seeds[d] {
 				out = append(out, []string{d})
-			case through[d] && !visiting[d]:
-				for _, c := range chains(d, visiting) {
-					out = append(out, append(slices.Clone(c), d))
-				}
+			}
+			for _, c := range chains(d, visiting) {
+				out = append(out, append(slices.Clone(c), d))
 			}
 		}
 		delete(visiting, id)
-		slices.SortFunc(out, func(a, b []string) int { return strings.Compare(strings.Join(a, "\x00"), strings.Join(b, "\x00")) })
+		slices.SortFunc(out, slices.Compare[[]string])
 		memo[id] = out
 		return out
 	}

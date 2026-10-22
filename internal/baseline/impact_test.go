@@ -106,6 +106,15 @@ func TestDependencies(t *testing.T) {
 	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"c.f.r": Changed, "c.g.d": "[[c.f.r]]"}) {
 		t.Errorf("a hand-over: %v", got)
 	}
+	// A listed element passes on the meaning that changed through what it
+	// depends on.
+	got = through(t, func(m map[string]string) {
+		replace(m, "glossary.md", "A thing.", "Another thing.")
+		replace(m, "capabilities/c/features/f.md", "why", "why not")
+	})
+	if got["c.f.r"] != Changed || got["c.g.d"] != "[[system.thing c.f.r]]" {
+		t.Errorf("through a listed rule: %v", got)
+	}
 	for _, edit := range []func(map[string]string){
 		func(m map[string]string) { replace(m, "glossary.md", "- Aliases: things", "- Aliases: things, stuff") },
 		func(m map[string]string) { replace(m, "references.md", "- Contact: Ann", "- Contact: Bob") },
@@ -225,7 +234,7 @@ func TestEventHead(t *testing.T) {
 		"lint reads the row <row> of an [Examples table], below the rows <earlier>":      "lint reads row",
 		"lint reads the row <row> of an [Examples table] with the columns <columns>":     "lint reads row",
 		"`diff` compares the [element] <element> of the [spec tree] with the [baseline]": "diff compares element",
-		"lint reads the [hand-over] to <target>":                                         "lint reads hand over to", // the tree's example leaves "to" out
+		"lint reads the [hand-over] to <target>":                                         "lint reads hand over to",
 		"lint exits, having found \"x\"":                                                 "lint exits having found x",
 	}
 	for when, want := range cases {
