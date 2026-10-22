@@ -130,7 +130,7 @@ that stopped depending on something was edited, and is listed anyway.
 
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
-Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> is itself changed through a dependency
+Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
 Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming the chain of [identifiers] from the first changed [element] to it
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
@@ -144,6 +144,7 @@ Otherwise nothing is listed because of <element>
 | `lint.cli.lint.exit-status`, a new value | yes | every rule referring to `lint.exit-status` listed | |
 | `lint.findings.anchor-misplaced`, a new description | yes | every rule referring to `findings.anchor-misplaced` or to `findings` listed | a rule referring to the element holding it depends on it too |
 | `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
+| `lint.run.exit`, its Rationale reworded, marking a term whose Definition changed | yes | every rule handing over to it listed | its meaning changed through the term, though it is listed as changed for its Rationale |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
 
