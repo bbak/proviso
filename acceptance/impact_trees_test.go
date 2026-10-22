@@ -1,9 +1,9 @@
 package acceptance
 
 // The impact tree: a spec tree in which the rules and invariants share
-// every source impact_triggers names with each other, so that the tests of
-// baseline.impact can tell each source's candidates apart. Backticks are
-// written as ´ (see md).
+// events, levels, terms and references with each other, so that the tests
+// of baseline.impact and baseline.diff.dependency can tell each source and
+// each dependency apart. Backticks are written as ´ (see md).
 //
 // What the rules share:
 //

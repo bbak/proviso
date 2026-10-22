@@ -15,7 +15,6 @@ import (
 var (
 	iLimitThen     = change{featurePath, "Then      the cart holds <quantity> more of <product>", "Then      the cart holds <quantity> more pieces of <product>"}
 	iLimitProvided = change{featurePath, "Provided  <quantity> is at most ´max_quantity´", "Provided  <quantity> is no more than ´max_quantity´"}
-	iLimitUnmark   = change{featurePath, "When      a buyer adds the quantity <quantity> of the [item] <product>", "When      a buyer adds the quantity <quantity> of the product <product>"}
 	iLimitRatio    = change{featurePath, "A shelf holds ten pieces.", "A shelf holds no more than ten pieces."}
 	iFullThen      = change{featurePath, "Then      <cart> refuses <quantity>", "Then      <cart> turns <quantity> away"}
 	iItemDef       = change{glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product a buyer placed in the cart."}
@@ -23,8 +22,6 @@ var (
 	iAddGoal       = change{featurePath, "Buyers put goods into the cart.", "Buyers put goods into the cart, one by one."}
 	iAddRatio      = change{featurePath, "A cart that takes anything would empty the shelves.", "A cart that takes everything would empty the shelves."}
 	iCountBody     = change{apiPath, "How many pieces the line holds.", "How many pieces the line holds, at most ten."}
-	iNewMember     = change{apiPath, "How many pieces the line holds.\n", "How many pieces the line holds.\n\n### <a id=\"cart.api.line.cost\"></a> cost\n\nWhat the line costs.\n"}
-	iParamRatio    = change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}
 	iParamValue    = change{paramsPath, "- Value: 10", "- Value: 12"}
 	iFastProperty  = change{sysConstraintsPath, "Every cart answers within a second.", "Every cart answers within half a second."}
 	iBoundedProp   = change{cartInvariantsPath, "No cart holds more than ten pieces of a product.", "No cart holds more than twelve pieces of a product."}
@@ -69,9 +66,6 @@ var (
 	addTwice = addRule(featurePath, "cart.add.twice", "A buyer adds twice",
 		"When      A buyer adds the quantity, <quantity> twice\nThen      the cart holds twice <quantity>\n  And     nothing else changes",
 		"| quantity | outcome |\n| --- | --- |\n| 1 | two held |")
-	addAgain = addRule(featurePath, "cart.add.again", "A buyer adds an item again",
-		"When      a buyer adds the quantity <quantity> of the [item] <product> again\nThen      the cart holds <quantity> more of <product>\n  And     nothing else changes",
-		"| quantity | product | outcome |\n| --- | --- | --- |\n| 1 | apple | added |")
 	addTip = addRule(payPath, "cart.pay.tip", "A buyer may tip",
 		"When      a buyer tips the shop <amount>\nThen      the shop thanks the buyer for <amount>\n  And     nothing else changes",
 		"| amount | outcome |\n| --- | --- |\n| one coin | thanked |")
@@ -92,9 +86,9 @@ func without(ids []string, drop ...string) []string {
 }
 
 func TestBaselineImpactListed(t *testing.T) {
-	t.Run("row1 unchanged, marking a term a changed rule marks", func(t *testing.T) {
+	t.Run("row1 unchanged, on the event of a changed rule", func(t *testing.T) {
 		o, _ := impactOf(t, iLimitThen)
-		o.hasReason(t, "cart.pay.total", "terms", "cart.item", "cart.add.limit")
+		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
 	})
 	t.Run("row2 changed itself", func(t *testing.T) {
 		// cart.add.full shares the event head of cart.add.limit.
@@ -103,86 +97,32 @@ func TestBaselineImpactListed(t *testing.T) {
 		o.notCand(t, "cart.add.limit")
 		o.hasReason(t, "billing.refund.add", "events", "buyer adds quantity", "cart.add.full", "cart.add.limit")
 	})
-	t.Run("row3 changed by a term", func(t *testing.T) {
+	t.Run("row3 changed through a dependency", func(t *testing.T) {
 		o, _ := impactOf(t, iItemDef)
 		o.notCand(t, "cart.add.limit")
 		o.notCand(t, "cart.pay.total")
+		o.notCand(t, "cart.pay.order")
+	})
+	// change_effects: every part of an element changed through a
+	// dependency counts as changed, so its steps open events and ranges.
+	t.Run("derived: an element changed through a dependency opens its sources", func(t *testing.T) {
+		o, _ := impactOf(t, iParamValue)
+		o.notCand(t, "cart.add.limit")
+		o.notCand(t, "cart.pay.cap")
+		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
+		o.hasReason(t, "cart.bounded", "ranges", "capability", "cart.add.limit", "cart.pay.cap")
+	})
+	// baseline.impact Rationale: sharing a term or a reference with a
+	// changed rule is no link while it keeps its meaning.
+	t.Run("derived: sharing a term or a reference is no link", func(t *testing.T) {
+		o, _ := impactOf(t, iLimitProvided)
+		o.notCand(t, "cart.pay.total")
+		o.notCand(t, "cart.pay.cap")
 	})
 	t.Run("derived: without a manifest, every element is touched and none a candidate", func(t *testing.T) {
 		dir := impactTree().write(t)
 		o := impactIn(t, dir, dir, filepath.Join(dir, "proviso"))
 		o.only(t)
-	})
-}
-
-func TestBaselineImpactTerms(t *testing.T) {
-	t.Run("row1 its Then step changed, marking the term", func(t *testing.T) {
-		o, _ := impactOf(t, iLimitThen)
-		o.hasReason(t, "cart.pay.total", "terms", "cart.item", "cart.add.limit")
-	})
-	t.Run("row2 its mark of the term removed", func(t *testing.T) {
-		o, _ := impactOf(t, iLimitUnmark)
-		o.hasReason(t, "cart.pay.total", "terms", "cart.item", "cart.add.limit")
-	})
-	t.Run("row3 its Definition changed", func(t *testing.T) {
-		// The rules marking item are changed by a term and listed, so none
-		// is a candidate through item.
-		o, _ := impactOf(t, iItemDef)
-		for _, c := range o.is.Candidates {
-			for _, r := range c.Reasons {
-				if r.Source == "terms" && r.Via == "cart.item" {
-					t.Errorf("want no candidate through cart.item, got:\n%s", o.dump())
-				}
-			}
-		}
-	})
-	t.Run("row4 its Contact changed", func(t *testing.T) {
-		o, _ := impactOf(t, iAddContact)
-		o.only(t)
-	})
-	// impact_triggers: every part of a rule changed by a term counts as
-	// touched, so its other terms open as well.
-	t.Run("derived: a rule changed by a term reaches its other terms", func(t *testing.T) {
-		o, _ := impactOf(t, iItemDef)
-		o.hasReason(t, "billing.refund.full", "terms", "system.price", "cart.pay.total")
-	})
-	t.Run("derived: a removed rule reaches the rules marking its terms", func(t *testing.T) {
-		total, _ := elementText(impactTree()[payPath], "cart.pay.total")
-		o, _ := impactOf(t, change{payPath, total, ""})
-		o.hasReason(t, "cart.add.limit", "terms", "cart.item", "cart.pay.total")
-		o.hasReason(t, "billing.refund.full", "terms", "system.price", "cart.pay.total")
-	})
-}
-
-func TestBaselineImpactReferences(t *testing.T) {
-	t.Run("row1 a member of a contract element with a new value", func(t *testing.T) {
-		o, _ := impactOf(t, iCountBody)
-		o.hasReason(t, "cart.pay.lines", "references", "line.count", "cart.api.line.count")
-	})
-	t.Run("row2 a rule's step changed, referring to a parameter", func(t *testing.T) {
-		o, _ := impactOf(t, iLimitProvided)
-		o.hasReason(t, "cart.pay.cap", "references", "max_quantity", "cart.add.limit")
-	})
-	t.Run("row3 a new member of a contract element that represents a term", func(t *testing.T) {
-		o, _ := impactOf(t, iNewMember)
-		o.hasReason(t, "cart.add.limit", "references", "", "cart.api.line.cost")
-		o.hasReason(t, "cart.pay.total", "references", "", "cart.api.line.cost")
-	})
-	t.Run("row4 a parameter's Rationale reworded", func(t *testing.T) {
-		o, _ := impactOf(t, iParamRatio)
-		o.only(t)
-	})
-	t.Run("derived: a parameter's Value changed", func(t *testing.T) {
-		o, _ := impactOf(t, iParamValue)
-		o.only(t, "cart.add.limit", "cart.pay.cap")
-		o.hasReason(t, "cart.add.limit", "references", "max_quantity", "cart.max-quantity")
-		o.hasReason(t, "cart.pay.cap", "references", "max_quantity", "cart.max-quantity")
-	})
-	// The link between a contract element and the term it represents is
-	// followed both ways.
-	t.Run("derived: a changed definition reaches the rules referring to its contract element", func(t *testing.T) {
-		o, _ := impactOf(t, iItemDef)
-		o.hasReason(t, "cart.pay.order", "references", "line", "cart.item")
 	})
 }
 
@@ -210,7 +150,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.pay.more")
 		o.hasReason(t, "cart.add.limit", "events", "buyer adds quantity", "cart.pay.more")
 	})
-	t.Run("row3 case, articles, punctuation, term marks and backticks ignored", func(t *testing.T) {
+	t.Run("row3 case, articles, punctuation and backticks ignored", func(t *testing.T) {
 		// cart.pay.order: "a buyer orders a `line` for the products <products>".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.again", "A buyer orders again",
 			"When      The Buyer orders the line, for the products: <products>\nThen      the order holds <products>\n  And     nothing else changes",
@@ -230,6 +170,20 @@ func TestBaselineImpactEventHead(t *testing.T) {
 			"When      The shop opens.\nThen      the shop lights its lamps\n  And     nothing else changes",
 			"| outcome |\n| --- |\n| lit |"))
 		o.hasReason(t, "cart.pay.open", "events", "shop opens", "cart.pay.dawn")
+	})
+	t.Run("row5 a hyphen separates words", func(t *testing.T) {
+		// cart.pay.order: "a buyer orders a `line` for the products <products>".
+		o, _ := impactOf(t, addRule(payPath, "cart.pay.hyphen", "A buyer orders by line",
+			"When      the buyer-orders the line for products <products>\nThen      the order holds <products>\n  And     nothing else changes",
+			"| products | outcome |\n| --- | --- |\n| apple | held |"))
+		o.hasReason(t, "cart.pay.order", "events", "buyer orders line for products", "cart.pay.hyphen")
+	})
+	t.Run("derived: an underscore separates words", func(t *testing.T) {
+		// cart.pay.cap: "a buyer checks out the cart <cart>".
+		o, _ := impactOf(t, addRule(payPath, "cart.pay.under", "A buyer checks out",
+			"When      a buyer checks_out the cart <cart> at once\nThen      the shop takes <cart>\n  And     nothing else changes",
+			"| cart | outcome |\n| --- | --- |\n| the first cart | taken |"))
+		o.hasReason(t, "cart.pay.cap", "events", "buyer checks out cart", "cart.pay.under")
 	})
 	t.Run("derived: other words are another event", func(t *testing.T) {
 		o, _ := impactOf(t, addTwice)
@@ -260,8 +214,7 @@ func TestBaselineImpactRanges(t *testing.T) {
 	// Every source of a changed step at once, and nothing else.
 	t.Run("derived: every source of a changed step", func(t *testing.T) {
 		o, tr := impactOf(t, iLimitThen)
-		o.only(t, "billing.refund.add", "cart.add.full", "cart.add.never", "cart.bounded", "cart.pay.cap", "cart.pay.total", "system.honest")
-		o.hasReason(t, "cart.pay.cap", "references", "max_quantity", "cart.add.limit")
+		o.only(t, "billing.refund.add", "cart.add.full", "cart.add.never", "cart.bounded", "system.honest")
 		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
 		o.hasReason(t, "billing.refund.add", "events", "buyer adds quantity", "cart.add.limit")
 		o.at(t, tr)
@@ -280,9 +233,9 @@ func TestBaselineImpactScope(t *testing.T) {
 	}{
 		{"row1 a system constraint's Property changed", iFastProperty, "system.fast", everyRuleInv},
 		{"row2 a capability's invariant's Property changed", iBoundedProp, "cart.bounded", without(cartAll, "cart.bounded")},
-		{"row3 a feature's Goal changed", iAddGoal, "cart.add", addRules},
-		{"row4 the system's Scope changed", iSystemScope, "system", everyRuleInv},
-		{"derived: a feature's invariant's Property changed", iNeverProp, "cart.add.never", without(addRules, "cart.add.never")},
+		{"row3 a feature's invariant's Property changed", iNeverProp, "cart.add.never", without(addRules, "cart.add.never")},
+		{"row4 a feature's Goal changed", iAddGoal, "cart.add", addRules},
+		{"row5 the system's Scope changed", iSystemScope, "system", everyRuleInv},
 		{"derived: a system invariant's Ranges over changed", iHonestRanges, "system.honest", without(everyRuleInv, "system.honest")},
 		{"derived: a capability's Goal changed", iCartGoal, "cart", cartAll},
 		{"derived: another capability's Goal changed", iBillingGoal, "billing", billingAll},
@@ -309,7 +262,7 @@ func TestBaselineImpactScope(t *testing.T) {
 			}
 		})
 	}
-	t.Run("row5 a feature's Rationale reworded", func(t *testing.T) {
+	t.Run("row6 a feature's Rationale reworded", func(t *testing.T) {
 		o, _ := impactOf(t, iAddRatio)
 		o.only(t)
 		if len(o.is.Scopes) != 0 {
@@ -341,14 +294,14 @@ func TestBaselineImpactOrder(t *testing.T) {
 			t.Errorf("want %v, got %v", sorted(everyRuleInv), got)
 		}
 	})
-	t.Run("row2 found through events and through terms", func(t *testing.T) {
-		o, _ := impactOf(t, addAgain)
+	t.Run("row2 found through scope and through events", func(t *testing.T) {
+		o, _ := impactOf(t, iLimitThen, iAddGoal)
 		var sources []string
-		for _, r := range o.cand(t, "cart.add.limit").Reasons {
+		for _, r := range o.cand(t, "cart.add.full").Reasons {
 			sources = append(sources, r.Source)
 		}
-		if strings.Join(sources, " ") != "terms events" {
-			t.Errorf("want the terms reason first, then the events reason, got %v", sources)
+		if strings.Join(sources, " ") != "events scope" {
+			t.Errorf("want the events reason first, then the scope reason, got %v", sources)
 		}
 	})
 }
@@ -466,12 +419,6 @@ func TestBaselineImpactFormer(t *testing.T) {
 		if o.is.Revision != nil {
 			t.Errorf("want revision null, as no former text was needed, got %q", *o.is.Revision)
 		}
-	})
-	// impact derives the element diff as diff does (baseline.impact).
-	t.Run("derived: a malformed manifest stops impact as it stops diff", func(t *testing.T) {
-		good := manifestFor(plainParts())
-		dir := plainTree().with(manifestPath, good+"<<<<<<< HEAD\n").write(t)
-		impactStopped(t, impactIn(t, dir, dir, filepath.Join(dir, "proviso")))
 	})
 }
 
