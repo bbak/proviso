@@ -190,15 +190,15 @@ manifest in the tree differs from the one in that revision, the former
 text found there would not belong to the baseline.
 
 ```guarded
-When      `diff` needs the [former text] of a removed [element] or of a [part], in the git history <history>
+When      `diff` or `impact` needs the [former text] of a removed [element] or of a [part], in the git history <history>
 Provided  <history> names the newest revision that changed `manifest_file`, not counting a merge that took it unchanged from one of its parents
   And     `manifest_file` in that revision is the same as in the [spec root]
   And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records
-Then      `diff` reads the [former text] from the [spec tree] in that revision
-  And     `diff` names that revision in what it writes
-Otherwise `diff` writes to "stderr" why it could not read the [former text]
-  And     `diff` exits with `diff.exit-status` 2
-  And     nothing goes to "stdout", not even an empty `element_diff`
+Then      the command reads the [former text] from the [spec tree] in that revision
+  And     the command names that revision in what it writes
+Otherwise the command writes to "stderr" why it could not read the [former text]
+  And     the command exits with 2, as `diff.exit-status` and `impact.exit-status` define
+  And     nothing goes to "stdout", not even an empty `element_diff` or `impact_set`
 ```
 
 | history | provided | outcome | why |

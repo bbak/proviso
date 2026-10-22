@@ -201,3 +201,96 @@ properties:
   rule is changed by a term.
 - `undecided` lists every undecided place in the element and every mark
   of an open term; an element with any is not to be built.
+
+## <a id="system.cli.impact"></a> impact
+
+The command `proviso impact`, run anywhere inside the system's
+repository. It writes the impact candidates of the amendment as text by
+default, or an `impact_set` with `--json`.
+
+### <a id="system.cli.impact.json"></a> json
+
+The option `--json`: write the `impact_set` to standard output instead
+of text. The text form is for people and not part of the contract.
+
+### <a id="system.cli.impact.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: the candidates were found, whether there are any or none.
+- `2`: the command could not run.
+
+## <a id="system.cli.impact-set"></a> impact_set
+
+What `impact --json` writes: the spec root that was compared, the
+revision the former text came from, every candidate with every reason
+it is one, and the candidates found through scope, grouped by what framed
+them. Paths, `root` and `revision` follow the same conventions as in
+`element_diff`.
+
+```yaml
+type: object
+required: [root, revision, candidates, scopes]
+properties:
+  root:
+    type: string
+  revision:
+    type: [string, "null"]
+  candidates:
+    type: array
+    items:
+      type: object
+      required: [id, file, line, reasons]
+      properties:
+        id:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+          minimum: 1
+        reasons:
+          type: array
+          items:
+            type: object
+            required: [source, via, from]
+            properties:
+              source:
+                enum: [terms, references, events, ranges, scope]
+              via:
+                type: string
+              from:
+                type: array
+                items:
+                  type: string
+  scopes:
+    type: array
+    items:
+      type: object
+      required: [id, candidates]
+      properties:
+        id:
+          type: string
+        candidates:
+          type: array
+          items:
+            type: string
+```
+
+- `file` and `line` say where the candidate stands, at the line of its
+  heading.
+- `via` names what the candidate shares with the touched elements: the
+  identifier of a glossary entry for `terms`, the name a rule refers to
+  for `references`, the event head for `events`, `feature`, `capability`
+  or `system` for `ranges`, and the identifier of the framing element
+  for `scope`.
+- `from` lists the identifiers of the touched elements the reason comes
+  from, in byte order.
+- `scopes` lists, for each touched element that opened `scope`, the
+  identifiers of the candidates found through it, in byte order, so that
+  they can be judged in bulk.

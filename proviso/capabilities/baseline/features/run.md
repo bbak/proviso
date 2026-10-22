@@ -19,12 +19,12 @@ to be built.
 ## <a id="baseline.run.lint"></a> Rule: The baseline commands run only where lint finds no error
 
 ```guarded
-When      someone runs `manifest` or `diff` in the directory <directory>
+When      someone runs `manifest`, `diff` or `impact` in the directory <directory>
 Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0
 Then      the command works on the [spec tree] that `lint` would check
   And     nothing of what `lint` would write is written
 Otherwise the command writes to "stderr" what `lint` would write as text
-  And     the command exits with 2, as `manifest.exit-status` and `diff.exit-status` define
+  And     the command exits with 2, as `manifest.exit-status`, `diff.exit-status` and `impact.exit-status` define
   And     nothing goes to "stdout"
 ```
 
@@ -40,13 +40,13 @@ Otherwise the command writes to "stderr" what `lint` would write as text
 
 ### Rationale
 
-`diff` is a check, and `manifest` records what it finds; neither may
-change what it reads. Git is only read, so a run never moves a branch or
+`diff` and `impact` are checks, and `manifest` records what it finds;
+none may change what it reads. Git is only read, so a run never moves a branch or
 touches the index.
 
 ### Ranges over
 
-Every run of `manifest` and `diff`, however it ends.
+Every run of `manifest`, `diff` and `impact`, however it ends.
 
 ### Property
 

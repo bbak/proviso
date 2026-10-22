@@ -17,6 +17,34 @@
 - Status: defined
 - Aliases: fingerprints
 
+## <a id="baseline.touched-element"></a> touched element
+
+- Definition: An element the element diff lists: added, changed, removed
+  or changed by a term.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: touched elements
+
+## <a id="baseline.candidate"></a> candidate
+
+- Definition: A rule or invariant the element diff does not list, but
+  which an amendment may affect, found through at least one of the
+  sources `impact_triggers` names. Its judgement decides whether it is
+  changed after all or stays as it is.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: candidates
+
+## <a id="baseline.event-head"></a> event head
+
+- Definition: The text of a rule's `When` step up to its first
+  placeholder, with case, the articles "the", "a" and "an",
+  punctuation, term marks and backticks ignored, such as "lint reads
+  row". Two rules with the same event head react to the same event.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: event heads
+
 ## <a id="baseline.former-text"></a> former text
 
 - Definition: The text an element or a part had in the baseline, read
