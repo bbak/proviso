@@ -44,12 +44,12 @@ the contract says is damage, such as a merge conflict left in it. A
 guess at what it meant could hide every change it records.
 
 ```guarded
-When      `diff` reads the line <line> of `manifest_file`, after its first
+When      `diff` or `impact` reads the line <line> of `manifest_file`, after its first
 Provided  <line> is as `manifest_file` describes
-Then      `diff` takes the [fingerprint] it records
-  And     `diff` goes on with the next line
-Otherwise `diff` writes to "stderr" that `manifest_file` cannot be read, naming <line>
-  And     `diff` exits with `diff.exit-status` 2
+Then      the command takes the [fingerprint] it records
+  And     the command goes on with the next line
+Otherwise the command writes to "stderr" that `manifest_file` cannot be read, naming <line>
+  And     the command exits with 2, as `diff.exit-status` and `impact.exit-status` define
   And     nothing goes to "stdout"
 ```
 
@@ -113,57 +113,44 @@ Otherwise <id> is listed as removed, with the [former text] of its [element]
 | `lint.run.exit`, its rule deleted | no | removed, with its former text | its tests can be retired |
 | `lint.keyword`, moved to the system glossary | yes | compared | the identifier stays |
 
-## <a id="baseline.diff.reference"></a> Rule: A changed standard changes the terms it defines
+## <a id="baseline.diff.dependency"></a> Rule: An element that depends on a changed meaning is changed through it
 
 ### Rationale
 
-A term defined by a standard means what that version of the standard
-says. Upgrading the standard changes the meaning of every term defined
-by it, while no word of their entries changes.
+A rule that marks a term means whatever the term's definition says; one
+that refers to a parameter behaves as its value says; a term defined by
+a standard means what that version of the standard says. When what an
+element depends on changes its meaning, the element's text stays the
+same while its meaning does not, and its tests may no longer hold. The
+meaning passes on along every dependency, however long the chain, and
+stops where nothing depends on a changed meaning: in practice a
+reference, a glossary entry, a contract element and a rule at most.
+Which elements depend on what is read from the tree as it stands: one
+that stopped depending on something was edited, and is listed anyway.
 
 ```guarded
-When      `diff` lists the [reference] <reference> as changed
-Provided  the [part] of <reference> that changed is its [field] "Version" or "Link"
-Then      every [glossary entry] whose [field] "Defined by" links to <reference> counts as changed in that [field]
-  And     everything else stays as it was
-Otherwise no [glossary entry] counts as changed because of <reference>
+When      `diff` takes the [element] <element>, whose meaning changed
+Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> is itself changed through a dependency
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming the chain of [identifiers] from the first changed [element] to it
+  And     every [element] listed so is taken in turn, and every [element] once
+Otherwise nothing is listed because of <element>
   And     everything else stays as it was
 ```
 
-| reference | provided | outcome | why |
+| element | provided | outcome | why |
 | --- | --- | --- | --- |
-| `system.ref.commonmark`, a new `Version` | yes | every term defined by it counts as changed | |
-| `system.ref.commonmark`, a new `Contact` only | no | no term counts as changed | the standard is the same |
-
-## <a id="baseline.diff.term"></a> Rule: A rule whose term changed its meaning is changed by a term
-
-### Rationale
-
-A rule that marks a term means whatever the term's definition says. When
-the definition changes, the rule's text stays the same while its meaning
-does not, and its tests may no longer hold. Which rules mark a term is
-read from the tree as it stands: a rule that stopped marking it was
-edited, and is listed as changed anyway.
-
-```guarded
-When      `diff` lists the [glossary entry] <entry> as changed
-Provided  the [field] "Definition" or "Defined by" of <entry> changed
-Then      every [rule] that marks the [term] of <entry> and is not listed otherwise is listed as changed by a [term], naming <entry>
-  And     every [rule] that marks it and is listed as changed names <entry> as well
-Otherwise no [rule] is listed because of <entry>
-  And     everything else stays as it was
-```
-
-| entry | provided | outcome | why |
-| --- | --- | --- | --- |
-| `lint.step`, its Definition reworded | yes | every rule marking it listed, naming `lint.step` | |
-| `lint.step`, a new alias only | no | no rule listed because of it | the meaning is the same |
-| `lint.step`, a new Contact only | no | no rule listed because of it | |
+| `lint.step`, its Definition reworded | yes | every rule marking it listed, through `lint.step` | |
+| `system.ref.commonmark`, a new `Version` | yes | every term defined by it listed, and every rule marking one of them, through `system.ref.commonmark` and the term | the chain passes on |
+| `lint.cli.lint.exit-status`, a new value | yes | every rule referring to `lint.exit-status` listed | |
+| `lint.findings.anchor-misplaced`, a new description | yes | every rule referring to `findings.anchor-misplaced` or to `findings` listed | a rule referring to the element holding it depends on it too |
+| `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
+| `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
+| `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
 
 ## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
 
 ```guarded
-When      `diff` lists the [element] <element> as added, changed or changed by a [term]
+When      `diff` lists the [element] <element> as added, changed or changed through a dependency
 Provided  <element> holds no [undecided] place
   And     <element> marks no [term] whose [field] "Status" is "open"
 Then      <element> is to be built
@@ -264,4 +251,4 @@ Otherwise `diff` exits with `diff.exit-status` 1
 | --- | --- | --- | --- |
 | none | yes | 0 | |
 | one removed | no | 1 | |
-| a glossary entry with a new Definition, and one rule changed by a term | no | 1 | |
+| a glossary entry with a new Definition, and one rule changed through it | no | 1 | |

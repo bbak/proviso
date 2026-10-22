@@ -13,13 +13,17 @@ affected is left unexamined.
 
 A decision that changes one rule can break another that nobody edited.
 Which ones is a question of meaning, and only an agent can judge it; but
-which ones to look at can be found mechanically, through what the rules
-share: a term, a reference, an event, the invariants above them, the
-constraints and goals that frame them. Finding too many costs a
-judgement each, often in bulk; finding too few hides an effect, the
-failure Proviso exists to prevent. So the sources are coarse on
-purpose, and the coherence check reads the capability for what they
-miss.
+which ones to look at can be found mechanically, through what stands
+beside a changed rule or above it: the rules on the same event, the
+invariants above it, the constraints and goals that frame it. What
+depends on a changed meaning, such as a rule marking a redefined term,
+is no candidate: the element diff lists it as changed through a
+dependency. Sharing a term or a reference with a changed rule is no
+link at all, as long as the term or the reference keeps its meaning.
+Finding too many costs a judgement each, often in bulk; finding too few
+hides an effect, the failure Proviso exists to prevent. So the sources
+are coarse on purpose, and the coherence check reads the capability for
+what they miss.
 
 `impact` derives the element diff as `diff` does, and starts from its
 touched elements. "Formerly" always means the baseline: a touched
@@ -44,52 +48,9 @@ Otherwise <element> is no [candidate]
 
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
-| `lint.run.exit`, unchanged, marking a term a changed rule marks | yes | a candidate | |
+| `lint.examples.cells`, unchanged, on the event of a changed rule | yes | a candidate | |
 | `lint.run.root`, changed itself | no | no candidate | it is in the element diff |
-| `lint.run.exit`, changed by a term | no | no candidate | it is in the element diff |
-
-## <a id="baseline.impact.terms"></a> Rule: A touched rule or definition reaches the rules marking its terms
-
-```guarded
-When      `impact` takes the [touched element] <element>
-Provided  `impact_triggers` opens "terms" for a [part] of <element>
-Then      every [rule] that marks a [term] which <element> marks or defines, now or in the [baseline], is found through "terms", naming that [term]
-  And     everything else stays as it was
-Otherwise nothing is found through "terms" from <element>
-  And     everything else stays as it was
-```
-
-| element | provided | outcome | why |
-| --- | --- | --- | --- |
-| `lint.run.exit`, its `Then` step changed, marking `findings` | yes | every rule marking `findings` found | |
-| `lint.run.exit`, its `Then` step changed, a mark of `findings` removed from it | yes | every rule marking `findings` found | the term it marked in the baseline |
-| `lint.step`, its Definition changed | yes | every rule marking `step` found | they are changed by a term, so the diff lists them already |
-| `lint.run`, its Contact changed | no | nothing found | |
-
-## <a id="baseline.impact.references"></a> Rule: A touched rule, contract element or parameter reaches the rules that refer to the same
-
-### Rationale
-
-A backtick reference ties a rule to a contract element or a parameter
-as a term ties it to a definition. A contract element and the term it
-represents are two views of one thing, so the link is followed both
-ways.
-
-```guarded
-When      `impact` takes the [touched element] <element>
-Provided  `impact_triggers` opens "references" for a [part] of <element>
-Then      every [rule] that refers to <element>, or to a [contract element] or [parameter] that <element> refers to, now or in the [baseline], is found through "references", naming what it refers to
-  And     every [rule] that marks a [term] a [contract element] among them represents, or refers to a [contract element] that represents a [term] <element> defines, is found through "references" as well
-Otherwise nothing is found through "references" from <element>
-  And     everything else stays as it was
-```
-
-| element | provided | outcome | why |
-| --- | --- | --- | --- |
-| `lint.cli.lint.exit-status`, a new value | yes | every rule referring to `lint.exit-status` found | |
-| `lint.run.exit`, its `Then` step changed, referring to `lint.exit-status` | yes | every other rule referring to `lint.exit-status` found | |
-| `lint.findings`, a new member | yes | every rule marking `finding` found | it represents that term |
-| `lint.tree-layout`, its Rationale reworded | no | nothing found | |
+| `lint.run.exit`, changed through a dependency | no | no candidate | it is in the element diff |
 
 ## <a id="baseline.impact.events"></a> Rule: A touched rule reaches the rules with its event head
 
@@ -102,7 +63,7 @@ its own words; the event head does.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `impact_triggers` opens "events" for a [part] of <element>
+Provided  `change_effects` opens "events" for a [part] of <element>
 Then      every [rule] with the [event head] of <element>, now or in the [baseline], is found through "events", naming that [event head]
   And     everything else stays as it was
 Otherwise nothing is found through "events" from <element>
@@ -118,7 +79,7 @@ Otherwise nothing is found through "events" from <element>
 
 ```guarded
 When      `impact` takes the [event head] of the [rule] <rule>
-Then      it is the text of the "When" [step] of <rule> up to its first [placeholder], with case, articles, punctuation, [term] marks and backticks ignored
+Then      it is the words of the "When" [step] of <rule> up to its first [placeholder], every character but a letter, a mark or a digit separating them, with case ignored and the articles left out
   And     two [event heads] are the same when that text is
 ```
 
@@ -127,7 +88,8 @@ Then      it is the text of the "When" [step] of <rule> up to its first [placeho
 | `lint.examples.row-repeated`, `When` `lint reads the row <row> of an [Examples table], below the rows <earlier>` | "lint reads row" |
 | `lint.examples.cells`, `When` `lint reads the row <row> of an [Examples table] with the columns <columns>` | "lint reads row", the same |
 | `baseline.diff.added`, `When` `` `diff` compares the [element] <element> of the [spec tree] with the [baseline] `` | "diff compares element" |
-| a rule whose `When` holds no placeholder | the whole text of the step |
+| a rule whose `When` holds no placeholder | the words of the whole step |
+| a `When` reading `lint reads the [hand-over] to <target>` | "lint reads hand over", the hyphen separating words |
 
 ## <a id="baseline.impact.ranges"></a> Rule: A touched rule reaches the invariants above it
 
@@ -140,7 +102,7 @@ event. It is coarse, and the mirror of scope.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `impact_triggers` opens "ranges" for a [part] of <element>
+Provided  `change_effects` opens "ranges" for a [part] of <element>
 Then      every invariant of the feature and the capability of <element>, and every invariant of the system, is found through "ranges", naming the [level] it stands at
   And     everything else stays as it was
 Otherwise nothing is found through "ranges" from <element>
@@ -158,14 +120,15 @@ Otherwise nothing is found through "ranges" from <element>
 ### Rationale
 
 A constraint, an invariant, the system's sections and a Goal frame
-everything at and below their level, whether or not a rule shares a
-word with them: a new constraint may share no term and no event with the
-rules it touches, and a new Goal changes how the agents fill the gaps
-between rules. Scope is the only source that does not depend on wording.
+everything at and below the level they stand at, whether or not a rule
+shares a word with them. A new constraint may share no term and no event
+with the rules it touches, and a new Goal changes how the agents fill
+the gaps between rules. Scope is the only source that does not depend
+on wording.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `impact_triggers` opens "scope" for a [part] of <element>
+Provided  `change_effects` opens "scope" for a [part] of <element>
 Then      every [rule] and invariant at and below the [level] of <element> is found through "scope", naming <element>
   And     the [candidates] found through "scope" are also listed together under <element>, so they can be judged in bulk
 Otherwise nothing is found through "scope" from <element>
@@ -175,7 +138,8 @@ Otherwise nothing is found through "scope" from <element>
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
 | `system.git`, its Property changed | yes | every rule and invariant of the tree found | a system constraint |
-| `baseline.run.writes`, its Property changed | yes | every rule and invariant of the capability `baseline` found | |
+| `baseline.run.writes`, an invariant of the capability, its Property changed | yes | every rule and invariant of the capability `baseline` found | |
+| `lint.run.read-only`, an invariant of the feature `lint.run`, its Property changed | yes | every rule of the feature `lint.run` found | an invariant binds the level it stands at |
 | `lint.run`, its Goal changed | yes | every rule and invariant of the feature `lint.run` found | |
 | `system`, its Scope changed | yes | every rule and invariant of the tree found | |
 | `lint.run`, its Rationale reworded | no | nothing found | |
@@ -185,13 +149,13 @@ Otherwise nothing is found through "scope" from <element>
 ```guarded
 When      `impact` writes the [candidates] <candidates>
 Then      they appear ordered by [identifier], compared byte by byte
-  And     the reasons of each appear ordered by source, as `impact_triggers` names them first, then by what they name
+  And     the reasons of each appear ordered by source, "events", "ranges", then "scope", then by what they name
 ```
 
 | candidates | outcome |
 | --- | --- |
 | `lint.run.root`, `lint.run.exit`, `baseline.run.writes` | `baseline.run.writes`, `lint.run.exit`, `lint.run.root` |
-| `lint.run.exit`, found through "events" and through "terms" | its "terms" reason first, then its "events" reason |
+| `lint.run.exit`, found through "scope" and through "events" | its "events" reason first, then its "scope" reason |
 
 ## <a id="baseline.impact.output"></a> Rule: The candidates are written as text or as JSON
 
