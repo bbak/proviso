@@ -298,3 +298,124 @@ properties:
 - `scopes` lists, for each touched element that opened `scope`, the
   identifiers of the candidates found through it, in byte order, so that
   they can be judged in bulk.
+
+## <a id="system.cli.pack"></a> pack
+
+The command `proviso pack`, run anywhere inside the system's repository.
+It writes the context pack of the amendment as `pack_text` by default,
+or a `context_pack` with `--json`.
+
+### <a id="system.cli.pack.json"></a> json
+
+The option `--json`: write the `context_pack` to standard output instead
+of `pack_text`.
+
+### <a id="system.cli.pack.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: the pack was written, whether the element diff lists any element
+  or none.
+- `2`: the command could not run.
+
+## <a id="system.cli.pack-text"></a> pack_text
+
+What `pack` writes by default: Markdown in UTF-8, read by the
+implementing agents. Unlike the text of the other commands, it is part
+of the contract.
+
+- **Five headings** of level 1 divide it, in this order: `# Builder
+  notes`, `# System`, `# Amendment`, `# Frames` and `# Context`. A
+  heading under which no element appears is left out.
+- **An element** appears as its own text as it stands now, from its
+  heading to the next element's heading, as `text` in `element_diff`
+  holds it, with a blank line before and after.
+- **Under Amendment,** a line saying what happened to it comes before
+  each element:
+  - ``Added `<id>`.``
+  - ``Changed `<id>`:``, then each part named for it, as `part_kinds`
+    writes it, in backticks, followed by `added`, `changed` or
+    `removed`, separated by commas, and a full stop.
+  - ``Removed `<id>`.``; its former text stands in place of its text.
+  - ``Changed through `<id>`:``, then each chain that reaches it, as
+    identifiers in backticks joined by ` → `, separated by `; `, and a
+    full stop.
+  - An element not to be built gets a second line: `Not to be built:`,
+    then each undecided place as its path and line joined by `:`,
+    separated by commas, and a full stop.
+- **The former text** of each changed or removed part follows its
+  element, each after a line ``Former `<part>`:``.
+- **Former text** stands in a fenced block labelled `text`, its fence
+  longer than any run of backticks in it, so that nothing in it reads
+  as Markdown.
+- Paths follow the same conventions as in `report`.
+
+~~~~text
+# Builder notes
+
+## <a id="system.builder-notes"></a> builder_notes
+…
+
+# Amendment
+
+Changed `lint.run.exit`: `step Then` changed.
+
+## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
+…
+
+Former `step Then`:
+
+```text
+Then      lint exits with `lint.exit-status` 0
+```
+
+# Frames
+…
+~~~~
+
+## <a id="system.cli.context-pack"></a> context_pack
+
+What `pack --json` writes: the spec root the pack was assembled from,
+the revision the former text came from, the element diff, and every
+other element of the pack. Paths, `root` and `revision` follow the same
+conventions as in `element_diff`.
+
+```yaml
+type: object
+required: [root, revision, diff, elements]
+properties:
+  root:
+    type: string
+  revision:
+    type: [string, "null"]
+  diff:
+    type: array
+  elements:
+    type: array
+    items:
+      type: object
+      required: [id, heading, file, line, text]
+      properties:
+        id:
+          type: string
+        heading:
+          enum: [notes, system, frames, context]
+        file:
+          type: string
+        line:
+          type: integer
+          minimum: 1
+        text:
+          type: string
+```
+
+- `diff` holds the elements under Amendment, each exactly as an item of
+  `elements` in `element_diff`.
+- `elements` holds every other element of the pack, under the heading
+  `heading` names, in the order of `pack_text`.
+- `file`, `line` and `text` mean what they mean in `element_diff`.

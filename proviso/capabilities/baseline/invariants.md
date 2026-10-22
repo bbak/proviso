@@ -4,13 +4,13 @@
 
 ### Rationale
 
-`diff` and `impact` are checks, and `manifest` records what it finds;
-none may change what it reads. Git is only read, so a run never moves a branch or
+`diff`, `impact` and `pack` read the tree, and `manifest` records what
+it finds; none may change what it reads. Git is only read, so a run never moves a branch or
 touches the index.
 
 ### Ranges over
 
-Every run of `manifest`, `diff` and `impact`, however it ends.
+Every run of `manifest`, `diff`, `impact` and `pack`, however it ends.
 
 ### Property
 

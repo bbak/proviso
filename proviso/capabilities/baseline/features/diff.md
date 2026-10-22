@@ -44,12 +44,12 @@ the contract says is damage, such as a merge conflict left in it. A
 guess at what it meant could hide every change it records.
 
 ```guarded
-When      `diff` or `impact` reads the line <line> of `manifest_file`, after its first
+When      `diff`, `impact` or `pack` reads the line <line> of `manifest_file`, after its first
 Provided  <line> is as `manifest_file` describes
 Then      the command takes the [fingerprint] it records
   And     the command goes on with the next line
 Otherwise the command writes to "stderr" that `manifest_file` cannot be read, naming <line>
-  And     the command exits with 2, as `diff.exit-status` and `impact.exit-status` define
+  And     the command exits with 2, as `diff.exit-status`, `impact.exit-status` and `pack.exit-status` define
   And     nothing goes to "stdout"
 ```
 
@@ -178,15 +178,15 @@ manifest in the tree differs from the one in that revision, the former
 text found there would not belong to the baseline.
 
 ```guarded
-When      `diff` or `impact` needs the [former text] of a removed [element] or of a [part], in the git history <history>
+When      `diff`, `impact` or `pack` needs the [former text] of a removed [element] or of a [part], in the git history <history>
 Provided  <history> names the newest revision that changed `manifest_file`, not counting a merge that took it unchanged from one of its parents
   And     `manifest_file` in that revision is the same as in the [spec root]
   And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records
 Then      the command reads the [former text] from the [spec tree] in that revision
   And     the command names that revision in what it writes
 Otherwise the command writes to "stderr" why it could not read the [former text]
-  And     the command exits with 2, as `diff.exit-status` and `impact.exit-status` define
-  And     nothing goes to "stdout", not even an empty `element_diff` or `impact_set`
+  And     the command exits with 2, as `diff.exit-status`, `impact.exit-status` and `pack.exit-status` define
+  And     nothing goes to "stdout", not even an empty `element_diff`, `impact_set` or `context_pack`
 ```
 
 | history | provided | outcome | why |
