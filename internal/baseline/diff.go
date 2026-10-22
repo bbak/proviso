@@ -11,10 +11,10 @@ import (
 
 // The changes an element and a part are listed with.
 const (
-	Added         = "added"
-	Changed       = "changed"
-	Removed       = "removed"
-	ChangedByTerm = "changed-by-term"
+	Added          = "added"
+	Changed        = "changed"
+	Removed        = "removed"
+	ChangedThrough = "changed-through"
 )
 
 // Entry is an element listed in the element diff.
@@ -24,7 +24,7 @@ type Entry struct {
 	Element *lint.Element // as it stands now; nil for a removed element
 	Former  string        // the former text of a removed element
 	Parts   []PartChange  // for a changed element
-	Terms   []string      // the glossary entries through which it changed by a term
+	Through [][]string    // for an element changed through a dependency, every chain that reaches it
 }
 
 // PartChange is a part of a changed element that was added, changed or
@@ -81,59 +81,13 @@ func Compare(elements []lint.Element, base Baseline) []*Entry {
 			byID[id] = &Entry{ID: id, Change: Removed}
 		}
 	}
-	byReference(elements, byID)
-	byTerm(elements, byID)
+	throughDependencies(elements, byID)
 	for _, id := range slices.Sorted(maps.Keys(byID)) {
 		e := byID[id]
 		slices.SortFunc(e.Parts, func(a, b PartChange) int { return cmp.Compare(a.Part, b.Part) })
-		slices.Sort(e.Terms)
 		out = append(out, e)
 	}
 	return out
-}
-
-func changedPart(e *Entry, keys ...string) bool {
-	return e != nil && e.Change == Changed && slices.ContainsFunc(e.Parts, func(p PartChange) bool { return slices.Contains(keys, p.Part) })
-}
-
-// byReference lets every glossary entry defined by a reference whose
-// Version or Link changed count as changed in its Defined by.
-func byReference(elements []lint.Element, byID map[string]*Entry) {
-	for i := range elements {
-		e := &elements[i]
-		if e.DefinedBy == "" || !changedPart(byID[e.DefinedBy], "field Version", "field Link") {
-			continue
-		}
-		listed := byID[e.ID]
-		switch {
-		case listed == nil:
-			byID[e.ID] = &Entry{ID: e.ID, Change: Changed, Element: e, Parts: []PartChange{{Part: "field Defined by", Change: Changed}}}
-		case listed.Change == Changed && !changedPart(listed, "field Defined by"):
-			listed.Parts = append(listed.Parts, PartChange{Part: "field Defined by", Change: Changed})
-		}
-	}
-}
-
-// byTerm lists every rule that marks a glossary entry whose Definition or
-// Defined by changed, naming the entry.
-func byTerm(elements []lint.Element, byID map[string]*Entry) {
-	for i := range elements {
-		r := &elements[i]
-		for _, id := range r.Marks {
-			if !changedPart(byID[id], "field Definition", "field Defined by") {
-				continue
-			}
-			listed := byID[r.ID]
-			switch {
-			case listed == nil:
-				byID[r.ID] = &Entry{ID: r.ID, Change: ChangedByTerm, Element: r, Terms: []string{id}}
-			case listed.Change == Changed || listed.Change == ChangedByTerm:
-				if !slices.Contains(listed.Terms, id) {
-					listed.Terms = append(listed.Terms, id)
-				}
-			}
-		}
-	}
 }
 
 // NeedsFormer reports whether any entry needs former text: a removed

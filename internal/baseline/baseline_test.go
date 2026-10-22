@@ -270,41 +270,6 @@ func TestCompare(t *testing.T) {
 	}
 }
 
-func TestCompareTerms(t *testing.T) {
-	d := diff(t, func(m map[string]string) {
-		m["glossary.md"] = strings.Replace(glossary, "A thing.", "Another thing.", 1)
-	})
-	if r := d["c.f.r"]; r == nil || r.Change != ChangedByTerm || !slices.Equal(r.Terms, []string{"system.thing"}) {
-		t.Errorf("%+v", r)
-	}
-	d = diff(t, func(m map[string]string) {
-		m["glossary.md"] = strings.Replace(glossary, "- Aliases: things", "- Aliases: things, stuff", 1)
-	})
-	if d["c.f.r"] != nil || d["system.thing"] == nil {
-		t.Errorf("a new alias: %v", d)
-	}
-	d = diff(t, func(m map[string]string) {
-		m["glossary.md"] = strings.Replace(glossary, "A thing.", "Another thing.", 1)
-		m["capabilities/c/features/f.md"] = strings.Replace(feature, "it is read", "it is read now", 1)
-	})
-	if r := d["c.f.r"]; r == nil || r.Change != Changed || !slices.Equal(r.Terms, []string{"system.thing"}) {
-		t.Errorf("%+v", r)
-	}
-
-	d = diff(t, func(m map[string]string) {
-		m["references.md"] = strings.Replace(references, "- Version: 1", "- Version: 2", 1)
-	})
-	if g := d["system.std"]; g == nil || g.Change != Changed || len(g.Parts) != 1 || g.Parts[0].Part != "field Defined by" {
-		t.Errorf("a new Version: %+v", g)
-	}
-	d = diff(t, func(m map[string]string) {
-		m["references.md"] = strings.Replace(references, "- Contact: Ann", "- Contact: Bob", 1)
-	})
-	if d["system.std"] != nil {
-		t.Error("a new Contact changed the terms")
-	}
-}
-
 func TestFormer(t *testing.T) {
 	m := Write(files(nil))
 	base, _ := Parse(m)

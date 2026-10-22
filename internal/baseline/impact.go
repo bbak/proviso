@@ -11,18 +11,6 @@ import (
 	"github.com/bbak/proviso/internal/lint"
 )
 
-// The sources of impact candidates, in the order impact_triggers names
-// them.
-const (
-	Terms      = "terms"
-	References = "references"
-	Events     = "events"
-	Ranges     = "ranges"
-	Scope      = "scope"
-)
-
-var sourceOrder = []string{Terms, References, Events, Ranges, Scope}
-
 // Reason is why an element is a candidate: the source it was found
 // through, what it shares with the touched elements, and the touched
 // elements the reason comes from.
@@ -45,44 +33,11 @@ type Frame struct {
 	Candidates []string
 }
 
-// The element types impact_triggers names.
-const (
-	tSystem     = lint.TypeSystem
-	tCapability = lint.TypeCapability
-	tFeature    = lint.TypeFeature
-	tRule       = lint.TypeRule
-	tInvariant  = lint.TypeInvariant
-	tConstraint = lint.TypeConstraint
-	tGlossary   = lint.TypeGlossary
-	tParameter  = lint.TypeParameter
-	tContract   = lint.TypeContract
-)
-
-// opens returns the sources a touched part of an element of the type typ
-// opens: the parameter impact_triggers.
-func opens(typ, part string) []string {
-	kind, name, _ := strings.Cut(part, " ")
-	switch {
-	case typ == tRule && (kind == "step" || kind == "row"):
-		return []string{Terms, References, Events, Ranges}
-	case typ == tGlossary && (part == "field Definition" || part == "field Defined by"):
-		return []string{Terms}
-	case typ == tContract, typ == tParameter && part != "field Rationale":
-		return []string{References}
-	case (typ == tInvariant || typ == tConstraint) && (part == "section Property" || part == "section Ranges over"):
-		return []string{Scope}
-	case typ == tSystem && kind == "section":
-		return []string{Scope}
-	case (typ == tCapability || typ == tFeature) && kind == "section" && name == "Goal":
-		return []string{Scope}
-	}
-	return nil
-}
-
-// EventHead returns the event head of a rule: the text of its When step up
-// to its first placeholder, with case, the articles, punctuation, term
-// marks and backticks ignored. It returns false for an element without a
-// When step.
+// EventHead returns the event head of a rule: the words of its When step
+// up to its first placeholder, or of the whole step if it has none, every
+// character but a letter, a mark or a digit separating them, with case
+// ignored and the articles left out. It returns false for an element
+// without a When step.
 func EventHead(e *lint.Element) (string, bool) {
 	i := slices.IndexFunc(e.Steps, func(s lint.Step) bool { return s.Keyword == guarded.When })
 	if i < 0 {
@@ -111,6 +66,9 @@ done:
 	words = slices.DeleteFunc(words, func(w string) bool { return w == "the" || w == "a" || w == "an" })
 	return strings.Join(words, " "), true
 }
+
+// inFeature reports whether an element stands in a feature's file.
+func inFeature(e *lint.Element) bool { return strings.Contains(e.File, "/features/") }
 
 // Impact finds the candidates of an amendment from the touched elements
 // of its element diff: the elements now, and those of the baseline, or nil
@@ -154,46 +112,14 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 		if len(versions) == 0 {
 			continue
 		}
-		typ := versions[0].Type
-		var parts []string
-		if e.Change == Changed {
-			for _, p := range e.Parts {
-				parts = append(parts, p.Part)
-			}
-		} else {
-			for _, v := range versions {
-				for _, p := range Parts(*v) {
-					parts = append(parts, p.Key)
-				}
-			}
-		}
 		open := map[string]bool{}
-		for _, p := range parts {
-			for _, s := range opens(typ, p) {
-				open[s] = true
-			}
-		}
-		if open[Terms] {
-			terms := map[string]bool{}
-			for _, v := range versions {
-				for _, m := range v.Marks {
-					terms[m] = true
-				}
-				if v.Type == tGlossary {
-					terms[v.ID] = true
+		for _, v := range versions {
+			for _, p := range changedParts(e, v) {
+				_, sources := effects(v.Type, p)
+				for _, s := range sources {
+					open[s] = true
 				}
 			}
-			for i := range now {
-				r := &now[i]
-				for _, m := range r.Marks {
-					if r.Type == tRule && terms[m] {
-						add(r, Terms, m, e.ID)
-					}
-				}
-			}
-		}
-		if open[References] {
-			referring(e.ID, versions, now, nowByID, formerByID, add)
 		}
 		if open[Events] {
 			heads := map[string]bool{}
@@ -212,17 +138,10 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 		if open[Ranges] {
 			for _, v := range versions {
 				for i := range now {
-					inv := &now[i]
-					if inv.Type != tInvariant {
-						continue
-					}
-					switch {
-					case inv.File == v.File:
-						add(inv, Ranges, "feature", e.ID)
-					case inv.Cap != "" && inv.Cap == v.Cap:
-						add(inv, Ranges, "capability", e.ID)
-					case inv.Cap == "":
-						add(inv, Ranges, "system", e.ID)
+					if inv := &now[i]; inv.Type == tInvariant {
+						if level := ranges(v, inv); level != "" {
+							add(inv, Ranges, level, e.ID)
+						}
 					}
 				}
 			}
@@ -264,79 +183,36 @@ func byID(els []lint.Element) map[string]*lint.Element {
 	return m
 }
 
-// framed reports whether the element c stands at or below the level of the
-// frame f: the whole tree for the system and a system constraint or
-// invariant, the capability for a capability and a capability's constraint
-// or invariant, wherever it stands in it, and the feature's file for a
-// feature.
+// ranges returns the level of the invariant inv above the rule r: its
+// feature, for an invariant in the rule's feature file; its capability, for
+// one in the capability's invariants.md; the system, for one in the
+// system's; and "" for any other.
+func ranges(r, inv *lint.Element) string {
+	switch {
+	case inv.File == r.File:
+		return "feature"
+	case inFeature(inv):
+		return ""
+	case inv.Cap != "" && inv.Cap == r.Cap:
+		return "capability"
+	case inv.Cap == "":
+		return "system"
+	}
+	return ""
+}
+
+// framed reports whether the element c stands at or below the level the
+// frame f stands at: its feature's file for a feature and an invariant in
+// a feature's file, the whole tree for the system and a system constraint
+// or invariant, and the capability for a capability and a capability's
+// constraint or invariant.
 func framed(f, c *lint.Element) bool {
 	switch {
-	case f.Type == tFeature:
+	case f.Type == tFeature || inFeature(f):
 		return c.File == f.File
 	case f.Type == tSystem || f.Cap == "":
 		return true
 	default:
 		return c.Cap == f.Cap
-	}
-}
-
-// referring finds the rules that refer to the touched element, or to a
-// contract element or parameter it refers to, and the rules that mark a
-// term one of those contract elements represents, or that refer to a
-// contract element representing a term the touched element defines.
-func referring(from string, versions []*lint.Element, now []lint.Element, nowByID, formerByID map[string]*lint.Element, add func(*lint.Element, string, string, string) bool) {
-	targets := map[string]bool{from: true}
-	defines := map[string]bool{}
-	for _, v := range versions {
-		for _, r := range v.Refs {
-			targets[r.ID] = true
-		}
-		if v.Type == tGlossary {
-			defines[v.ID] = true
-		}
-	}
-	lookup := func(id string) *lint.Element {
-		if e := nowByID[id]; e != nil {
-			return e
-		}
-		return formerByID[id]
-	}
-	// represented returns the terms a contract element represents, itself
-	// or through its top-level element.
-	represented := func(id string) []string {
-		e := lookup(id)
-		if e == nil {
-			return nil
-		}
-		terms := slices.Clone(e.Represents)
-		if top := lookup(e.Top); top != nil && top != e {
-			terms = append(terms, top.Represents...)
-		}
-		return terms
-	}
-	terms := map[string]bool{}
-	for id := range targets {
-		for _, t := range represented(id) {
-			terms[t] = true
-		}
-	}
-	for i := range now {
-		r := &now[i]
-		if r.Type != tRule {
-			continue
-		}
-		for _, ref := range r.Refs {
-			if targets[ref.ID] {
-				add(r, References, ref.Name, from)
-			}
-			if slices.ContainsFunc(represented(ref.ID), func(t string) bool { return defines[t] }) {
-				add(r, References, ref.Name, from)
-			}
-		}
-		for _, m := range r.Marks {
-			if terms[m] {
-				add(r, References, m, from)
-			}
-		}
 	}
 }

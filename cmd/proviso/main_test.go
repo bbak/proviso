@@ -200,3 +200,11 @@ func TestImpactCommand(t *testing.T) {
 		t.Errorf("a tree with an error: %d %q %q", status, out.String(), errOut.String())
 	}
 }
+
+func TestImpactDamagedManifest(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": "model 0\n<<<<<<< HEAD\n"})
+	var out, errOut bytes.Buffer
+	if status := run([]string{"impact", "--json"}, &out, &errOut); status != 2 || out.Len() != 0 || !strings.Contains(errOut.String(), "<<<<<<< HEAD") {
+		t.Errorf("%d %q %q", status, out.String(), errOut.String())
+	}
+}

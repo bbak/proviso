@@ -47,7 +47,8 @@ type Element struct {
 	Body     string // everything else it holds
 
 	Cap        string   // the capability it stands in; "" at system level
-	Top        string   // the top-level contract element it is or belongs to
+	Parent     string   // the contract element it is a member of
+	HandOver   string   // the rule its hand-over reaches
 	Marks      []string // the identifiers of the glossary entries its rule block marks
 	Refs       []Ref    // the backtick references of its rule block
 	Represents []string // the identifiers of the glossary entries its Represents marks
@@ -99,12 +100,11 @@ func (l *linter) export() []Element {
 			Heading: e.raw, Marks: e.marks, DefinedBy: e.definedBy,
 			Cap: e.cap, Refs: e.refs, Represents: e.represents,
 		}
-		if e.typ == tContract {
-			top := e
-			for top.parent != nil {
-				top = top.parent
-			}
-			x.Top = top.id
+		if e.parent != nil {
+			x.Parent = e.parent.id
+		}
+		if e.rule != nil && e.rule.next != nil {
+			x.HandOver = e.rule.next.id
 		}
 		for _, f := range e.fields {
 			x.Fields = append(x.Fields, Field{f.key, f.value, f.line})
