@@ -252,7 +252,8 @@
 
 - Definition: What an amendment did to the spec tree, element by element:
   the elements added, those changed with the parts that changed, those
-  removed, and those changed by a term whose definition changed. It is
+  removed, and those changed through a dependency, such as a rule whose
+  term's definition changed. It is
   derived mechanically from the baseline and the tree, so rewording
   that leaves every element's normalised text the same shows nothing.
 - Contact: Bruno Baketarić
