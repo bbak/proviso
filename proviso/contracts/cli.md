@@ -148,7 +148,7 @@ properties:
         id:
           type: string
         change:
-          enum: [added, changed, removed, changed-by-term]
+          enum: [added, changed, removed, changed-through]
         file:
           type: string
         line:
@@ -170,10 +170,12 @@ properties:
                 enum: [added, changed, removed]
               former:
                 type: string
-        terms:
+        through:
           type: array
           items:
-            type: string
+            type: array
+            items:
+              type: string
         undecided:
           type: array
           items:
@@ -197,8 +199,10 @@ properties:
 - `parts` lists, for a changed element, each part that was added,
   changed or removed, written as `part_kinds` writes it, with the former
   text of a changed or removed part.
-- `terms` lists the identifiers of the glossary entries through which a
-  rule is changed by a term.
+- `through` lists, for an element changed through a dependency, every
+  chain of identifiers that reaches it, each from the first changed
+  element to the one the element depends on directly, as
+  `dependencies` gives them.
 - `undecided` lists every undecided place in the element and every mark
   of an open term; an element with any is not to be built.
 
@@ -261,7 +265,7 @@ properties:
             required: [source, via, from]
             properties:
               source:
-                enum: [terms, references, events, ranges, scope]
+                enum: [events, ranges, scope]
               via:
                 type: string
               from:
@@ -285,10 +289,10 @@ properties:
 - `file` and `line` say where the candidate stands, at the line of its
   heading.
 - `via` names what the candidate shares with the touched elements: the
-  identifier of a glossary entry for `terms`, the name a rule refers to
-  for `references`, the event head for `events`, `feature`, `capability`
-  or `system` for `ranges`, and the identifier of the framing element
-  for `scope`.
+  event head for `events`, `feature`, `capability` or `system` for
+  `ranges`, and the identifier of the framing element for `scope`.
+  Reasons with the same source and `via` are one reason, whose `from`
+  lists every touched element behind it.
 - `from` lists the identifiers of the touched elements the reason comes
   from, in byte order.
 - `scopes` lists, for each touched element that opened `scope`, the
