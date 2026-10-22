@@ -22,23 +22,45 @@ rule or a contract element's member, has parts of its own.
 | each row of the Examples table | its placeholder values | `row <fingerprint of the values>` |
 | everything else the element holds, such as a contract element's prose and blocks or a parameter's table | none: one per element | `body` |
 
-## <a id="baseline.impact-triggers"></a> impact_triggers
+## <a id="baseline.change-effects"></a> change_effects
 
 - Configurable: no
 - Rationale: only a change that can alter behaviour, or the frame in
   which agents fill the gaps between rules, may affect other elements; a
   reworded rationale or a new contact cannot.
 
-Which sources a touched element's parts open. A part of an added or
-removed element counts as touched, and so does every part of a rule
-changed by a term, whose meaning changed while its text did not.
+What a changed part does beyond its own element. "Dependents" passes the
+changed meaning on to every element that depends on it, which the
+element diff lists as changed through a dependency; the other entries
+are sources of impact candidates. A part of an added or removed element
+counts as changed, and so does every part of an element changed through
+a dependency, whose meaning changed while its text did not.
 
-| touched part | sources |
+| changed part | dependents | candidate sources |
+| --- | --- | --- |
+| a step or Examples row of a rule | yes | events, ranges |
+| the field `Definition` or `Defined by` of a glossary entry | yes | none |
+| the field `Version` or `Link` of a reference | yes | none |
+| any part of a contract element, and any part of a parameter but its field `Rationale` | yes | none |
+| the section `Property` or `Ranges over` of an invariant or a constraint | no | scope |
+| any section of the system | no | scope |
+| the section `Goal` of a capability or a feature | no | scope |
+| any other part, such as a field `Contact` or a section `Rationale` | no | none |
+
+## <a id="baseline.dependencies"></a> dependencies
+
+- Configurable: no
+- Rationale: these are the links the notation makes explicit; a link
+  only prose makes, such as a definition naming another term without a
+  mark, is left to the coherence check.
+
+Which element depends on which: when the meaning of the second changes,
+so does the meaning of the first.
+
+| element | depends on |
 | --- | --- |
-| a step or Examples row of a rule | terms, references, events, ranges |
-| the field `Definition` or `Defined by` of a glossary entry | terms |
-| any part of a contract element, and any part of a parameter but its field `Rationale` | references |
-| the section `Property` or `Ranges over` of an invariant or a constraint | scope |
-| any section of the system | scope |
-| the section `Goal` of a capability or a feature | scope |
-| any other part, such as a field `Contact` or a section `Rationale` | none |
+| a rule | every glossary entry whose term its rule block marks |
+| a rule | every contract element and parameter its rule block refers to, and every member of such a contract element |
+| a rule | the rule its hand-over names |
+| a contract element | the glossary entry its field `Represents` marks |
+| a glossary entry | the reference its field `Defined by` links to |

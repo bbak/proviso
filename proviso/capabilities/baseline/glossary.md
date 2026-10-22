@@ -20,7 +20,7 @@
 ## <a id="baseline.touched-element"></a> touched element
 
 - Definition: An element the element diff lists: added, changed, removed
-  or changed by a term.
+  or changed through a dependency.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: touched elements
@@ -29,8 +29,8 @@
 
 - Definition: A rule or invariant the element diff does not list, but
   which an amendment may affect, found through at least one of the
-  sources `impact_triggers` names. Its judgement decides whether it is
-  changed after all or stays as it is.
+  candidate sources `change_effects` names. Its judgement decides
+  whether it is changed after all or stays as it is.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: candidates
@@ -38,9 +38,11 @@
 ## <a id="baseline.event-head"></a> event head
 
 - Definition: The text of a rule's `When` step up to its first
-  placeholder, with case, the articles "the", "a" and "an",
-  punctuation, term marks and backticks ignored, such as "lint reads
-  row". Two rules with the same event head react to the same event.
+  placeholder, or the whole step if it has none, read as words: every
+  character that is not a letter, a mark or a digit separates words,
+  case is ignored, and the articles "the", "a" and "an" are left out,
+  such as "lint reads row". Two rules with the same event head react to
+  the same event.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: event heads
