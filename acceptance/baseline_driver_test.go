@@ -206,11 +206,15 @@ type diffOutcome struct {
 // diffIn runs `proviso diff --json` and `proviso diff` in cwd and checks what
 // holds for every run. base is the directory the test tree was written to;
 // nothing below it may change. root, if not empty, is the spec root the diff
-// is expected to compare.
-func diffIn(t *testing.T, base, cwd, root string) diffOutcome {
+// is expected to compare. args, such as --since and a revision, are given to
+// both runs.
+func diffIn(t *testing.T, base, cwd, root string, args ...string) diffOutcome {
 	t.Helper()
 	before := snapshotAll(t, base)
-	o := diffOutcome{json: execProviso(t, cwd, "diff", "--json"), text: execProviso(t, cwd, "diff")}
+	o := diffOutcome{
+		json: execProviso(t, cwd, append([]string{"diff", "--json"}, args...)...),
+		text: execProviso(t, cwd, append([]string{"diff"}, args...)...),
+	}
 	after := snapshotAll(t, base)
 	checkWrites(t, before, after, "")
 	if o.json.exit != o.text.exit {
