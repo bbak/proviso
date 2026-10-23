@@ -59,9 +59,10 @@ learnt in earlier rounds of it.
 
 ## Further notes
 
-If the file `.proviso/tester.md` exists in the worktree, read it too: it
-holds the engineers' working practice for this system's tests. Where it
-contradicts the pack, the pack wins; list the contradiction.
+Read `.proviso/tester.md` in the worktree: it holds the engineers' working
+practice for this system's tests. It may be empty or missing; then there
+is none. Where it contradicts the pack, the pack wins; list the
+contradiction.
 
 ## What you report
 
