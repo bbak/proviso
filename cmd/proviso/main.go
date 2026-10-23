@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/bbak/proviso/internal/baseline"
@@ -31,7 +32,7 @@ const (
 	exitCantRun = 2
 )
 
-const usage = "usage: proviso init | proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json] | proviso pack [--json]"
+const usage = "usage: proviso init | proviso lint [--json] | proviso manifest | proviso diff [--json] [--since <revision>] | proviso impact [--json] | proviso pack [--json] [--since <revision>]"
 
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
@@ -55,15 +56,25 @@ func run(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintln(stderr, usage)
 		return exitCantRun
 	}
-	asJSON := false
-	for _, a := range opts {
-		if a != "--json" || cmd == "manifest" {
+	asJSON, since := false, ""
+	for i := 0; i < len(opts); i++ {
+		switch a := opts[i]; {
+		case a == "--json" && cmd != "manifest":
+			asJSON = true
+		case a == "--since" && (cmd == "diff" || cmd == "pack") && since == "":
+			if i+1 == len(opts) || opts[i+1] == "" {
+				fmt.Fprintf(stderr, "proviso %s: --since needs a revision\n%s\n", cmd, usage)
+				return exitCantRun
+			}
+			i++
+			since = opts[i]
+		default:
 			fmt.Fprintf(stderr, "proviso %s: unknown argument %q\n%s\n", cmd, a, usage)
 			return exitCantRun
 		}
-		asJSON = true
 	}
-	t, res, ok := check(cmd, stderr)
+	// baseline.diff.since: since a revision, manifest.sum is not read.
+	t, res, ok := check(cmd, since == "", stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -81,9 +92,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 		case "manifest":
 			return manifestRun(t, res, stderr)
 		case "diff":
-			return diffRun(t, res, asJSON, stdout, stderr)
+			return diffRun(t, res, asJSON, since, stdout, stderr)
 		case "pack":
-			return packRun(t, res, asJSON, stdout, stderr)
+			return packRun(t, res, asJSON, since, stdout, stderr)
 		}
 		return impactRun(t, res, asJSON, stdout, stderr)
 	}
@@ -145,9 +156,9 @@ func install(dst string, data []byte) error {
 }
 
 // check finds the spec root as lint does, reads its tree completely,
-// checks that it is of this binary's model version, and lints it. It
-// writes to stderr why it could not.
-func check(cmd string, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
+// checks, if readManifest, that it is of this binary's model version, and
+// lints it. It writes to stderr why it could not.
+func check(cmd string, readManifest bool, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso %s: %v\n", cmd, err)
@@ -166,7 +177,7 @@ func check(cmd string, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
 		}
 		return nil, nil, false
 	}
-	if data, ok := t.Manifest(); ok {
+	if data, ok := t.Manifest(); ok && readManifest {
 		if err := baseline.CheckModel(data); err != nil {
 			fmt.Fprintf(stderr, "proviso %s: %v\n", cmd, err)
 			return nil, nil, false
@@ -231,10 +242,15 @@ func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 	return exitClean
 }
 
-// elementDiff derives the element diff with its former texts, and returns
-// the revision they came from and the elements of the tree there, nil
-// where none was needed. It writes to stderr why it could not.
-func elementDiff(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, string, []lint.Element, bool) {
+// elementDiff derives the element diff with its former texts, against the
+// baseline or, if since names a revision, against the tree there. It
+// returns the revision the former texts came from and the elements of the
+// tree there, nil where none was needed. It writes to stderr why it could
+// not.
+func elementDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr io.Writer) ([]*baseline.Entry, string, []lint.Element, bool) {
+	if since != "" {
+		return sinceDiff(cmd, t, res, since, stderr)
+	}
 	base := baseline.Baseline{}
 	data, hasManifest := t.Manifest()
 	if hasManifest {
@@ -260,8 +276,51 @@ func elementDiff(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) (
 	return entries, revision, formerElements, true
 }
 
-func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
-	entries, revision, _, ok := elementDiff("diff", t, res, stderr)
+// sinceDiff derives the element diff against the spec tree at the revision
+// since names, fingerprinted as a manifest would record it, provided lint
+// accepts that tree or there is none.
+func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr io.Writer) ([]*baseline.Entry, string, []lint.Element, bool) {
+	fail := func(format string, args ...any) ([]*baseline.Entry, string, []lint.Element, bool) {
+		fmt.Fprintf(stderr, "proviso %s: cannot compare with %s: %s\n", cmd, since, fmt.Sprintf(format, args...))
+		return nil, "", nil, false
+	}
+	rev, err := git.Commit(t.Root, since)
+	if err != nil {
+		return fail("%v", err)
+	}
+	files, err := git.Files(t.Root, rev)
+	if err != nil {
+		return fail("%v", err)
+	}
+	formerTree := tree.FromFiles(t.Root, files)
+	var formerElements []lint.Element
+	// Without system.md, there is no spec tree at the revision, and the
+	// tree compared with is empty.
+	if slices.ContainsFunc(formerTree.Files, func(f *tree.File) bool { return f.Kind == tree.System }) {
+		if len(formerTree.Unreadable) > 0 {
+			return fail("the spec tree there cannot be read completely: %s", strings.Join(formerTree.Unreadable, ", "))
+		}
+		formerRes := lint.Check(formerTree)
+		if lint.HasError(formerRes.Findings) {
+			fail("lint finds an error in the spec tree there:")
+			report.Text(stderr, formerRes.Findings)
+			return nil, "", nil, false
+		}
+		formerElements = formerRes.Elements
+	}
+	base := baseline.Record(formerElements)
+	entries := baseline.Compare(res.Elements, base)
+	if !baseline.NeedsFormer(entries) {
+		return entries, "", nil, true
+	}
+	if err := baseline.Former(entries, base, formerElements, rev); err != nil {
+		return fail("%v", err)
+	}
+	return entries, rev, formerElements, true
+}
+
+func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, stderr io.Writer) int {
+	entries, revision, _, ok := elementDiff("diff", t, res, since, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -286,7 +345,7 @@ func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writ
 }
 
 func impactRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
-	entries, revision, formerElements, ok := elementDiff("impact", t, res, stderr)
+	entries, revision, formerElements, ok := elementDiff("impact", t, res, "", stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -308,8 +367,8 @@ func impactRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	return exitClean
 }
 
-func packRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
-	entries, revision, _, ok := elementDiff("pack", t, res, stderr)
+func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, stderr io.Writer) int {
+	entries, revision, _, ok := elementDiff("pack", t, res, since, stderr)
 	if !ok {
 		return exitCantRun
 	}

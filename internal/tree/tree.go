@@ -291,21 +291,55 @@ func (t *Tree) Manifest() ([]byte, bool) {
 
 // FromFiles places files given by their slash-separated paths relative to
 // the spec root, such as a former revision's, in the layout, as Load would
-// read them from disk. Paths the layout does not list, hidden ones and the
-// manifest are left out; names are read in NFC.
+// read them from disk, so that lint finds in them what it would find on
+// disk: unknown files, capability folders, malformed names and files that
+// are not UTF-8. Hidden paths and the manifest are left out; names are read
+// in NFC.
 func FromFiles(root string, files map[string][]byte) *Tree {
 	t := &Tree{Root: root}
-	rels := slices.Sorted(maps.Keys(files))
-	for _, rel := range rels {
-		name := norm.NFC.String(rel)
-		if slices.ContainsFunc(strings.Split(name, "/"), func(s string) bool { return strings.HasPrefix(s, ".") }) && name != ".markdownlint.jsonc" {
+	stored := map[string]map[string]map[string]bool{} // by folder and name in NFC, the names as stored
+	isFile := map[string]bool{}                       // by path in NFC
+	for _, rel := range slices.Sorted(maps.Keys(files)) {
+		at, isHidden := "", false
+		for _, s := range strings.Split(rel, "/") {
+			name := path.Join(at, norm.NFC.String(s))
+			if isHidden = hidden(name); isHidden {
+				break
+			}
+			if stored[at] == nil {
+				stored[at] = map[string]map[string]bool{}
+			}
+			if stored[at][path.Base(name)] == nil {
+				stored[at][path.Base(name)] = map[string]bool{}
+			}
+			stored[at][path.Base(name)][s] = true
+			at = name
+		}
+		if isHidden {
 			continue
 		}
-		kind, cap := Classify(name)
-		if kind == Unknown || kind == Manifest {
-			continue
+		isFile[at] = true
+		kind, cap := Classify(at)
+		switch {
+		case kind == Manifest:
+		case kind == Unknown:
+			t.Unknown = append(t.Unknown, at)
+		case !utf8.Valid(files[rel]):
+			t.Unreadable = append(t.Unreadable, at)
+		default:
+			t.Files = append(t.Files, &File{Rel: at, Kind: kind, Cap: cap, Data: files[rel]})
 		}
-		t.Files = append(t.Files, &File{Rel: name, Kind: kind, Cap: cap, Data: files[rel]})
+	}
+	for _, dir := range slices.Sorted(maps.Keys(stored)) {
+		for _, name := range slices.Sorted(maps.Keys(stored[dir])) {
+			rel := path.Join(dir, name)
+			if !wellNamed(name) || len(stored[dir][name]) > 1 {
+				t.Malformed = append(t.Malformed, rel)
+			}
+			if path.Dir(rel) == "capabilities" && stored[rel] != nil {
+				t.CapFolders = append(t.CapFolders, CapFolder{Rel: rel, HasCapability: isFile[rel+"/capability.md"]})
+			}
+		}
 	}
 	return t
 }

@@ -53,6 +53,19 @@ func Write(elements []lint.Element) []byte {
 // element identifier and part.
 type Baseline map[string]map[string]string
 
+// Record returns what a manifest of the elements would record, so that a
+// tree at a revision can take the baseline's place.
+func Record(elements []lint.Element) Baseline {
+	b := Baseline{}
+	for _, e := range elements {
+		b[e.ID] = map[string]string{}
+		for _, p := range Parts(e) {
+			b[e.ID][p.Key] = p.FP
+		}
+	}
+	return b
+}
+
 var (
 	hash       = `h1:[0-9a-f]{64}`
 	manifestID = regexp.MustCompile(`^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$`)
