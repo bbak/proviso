@@ -5,6 +5,11 @@
 # Local build (task build). Never the root: proviso/ is the spec tree.
 bin/
 
+# The kit as installed into this repository by `task install`; its source
+# is internal/kit/.
+.claude/agents/proviso-*
+.claude/skills/proviso-*
+
 # Test artifacts
 *.test
 *.out

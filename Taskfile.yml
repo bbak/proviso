@@ -32,6 +32,15 @@ tasks:
     cmds:
       - go test -timeout 30m ./acceptance/... {{.CLI_ARGS}}
 
+  install:
+    desc: Install the kit into this repository again, after every change of internal/kit/
+    cmds:
+      # init never overwrites, so the installed copies are removed first;
+      # they are ignored by git, and internal/kit/ is their only source.
+      - rm -f .claude/agents/proviso-*.md
+      - rm -rf .claude/skills/proviso-*
+      - go run ./cmd/{{.BINARY}} init
+
   vet:
     desc: Run go vet
     cmds:
