@@ -194,13 +194,16 @@ func limitBlock() string {
 // TestBaselineFixtures checks the ground the baseline tests stand on: lint
 // reports no finding about their trees, or only asks.
 func TestBaselineFixtures(t *testing.T) {
+	t.Parallel()
 	for name, tr := range map[string]tree{"plain": plainTree(), "rich": richTree(), "diff": diffTree()} {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			check(t, tr).clean(t)
 		})
 	}
 	// The undecided tree holds asks, and no error.
 	t.Run("undecided", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, undecidedTree())
 		if o.json.exit != 0 {
 			t.Errorf("want asks only, got exit status %d:\n%s%s", o.json.exit, dump(o.report.Findings), o.json.stderr)

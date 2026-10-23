@@ -27,6 +27,7 @@ func blockLines(tr tree) []int {
 }
 
 func TestLintRulesBlock(t *testing.T) {
+	t.Parallel()
 	block, table := kwBlock("When", "Then", "And")
 	gherkin := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n´´´gherkin\n" + block + "\n´´´\n\n" + table)
 	two := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n´´´guarded\n" + block + "\n´´´\n\n´´´guarded\n" + block + "\n´´´\n\n" + table)
@@ -38,6 +39,7 @@ func TestLintRulesBlock(t *testing.T) {
 }
 
 func TestLintRulesKeyword(t *testing.T) {
+	t.Parallel()
 	const good = `Given     the shop is open
 When      a buyer adds <product>
 Provided  <product> is in stock
@@ -59,11 +61,13 @@ Otherwise → cart.add.empty`
 		{name: "row6 a step continued on a new line", tree: continued, file: xPath, lines: lines(continued.line(xPath, "and keeps it"))},
 	})
 	t.Run("rows1-3 the block is read", func(t *testing.T) {
+		t.Parallel()
 		check(t, ok).clean(t)
 	})
 }
 
 func TestLintRulesOrder(t *testing.T) {
+	t.Parallel()
 	rs := []row{
 		{name: "row1 the shortest rule", tree: kwTree("When", "Then", "And"), holds: true},
 		{name: "row2 state in two parts, a guard in two parts", tree: kwTree("Given", "And", "When", "Provided", "And", "Then", "And", "Otherwise", "And"), holds: true},
@@ -82,11 +86,13 @@ func TestLintRulesOrder(t *testing.T) {
 	}
 	rows(t, "keyword-order", rs)
 	t.Run("row2 is a well-formed rule", func(t *testing.T) {
+		t.Parallel()
 		check(t, kwTree("Given", "And", "When", "Provided", "And", "Then", "And", "Otherwise", "And")).clean(t)
 	})
 }
 
 func TestLintRulesCount(t *testing.T) {
+	t.Parallel()
 	bad := func(name string, keywords ...string) row {
 		tr := kwTree(keywords...)
 		return row{name: name, tree: tr, file: xPath, lines: blockLines(tr)}
@@ -121,6 +127,7 @@ Otherwise the cart refuses <product>
   And     nothing else changes`},
 	} {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			tr := withRule(c.block, "| product | other | provided | outcome |\n| --- | --- | --- | --- |\n| apple | pear | yes | added |\n| kiwi | pear | no | refused |\n")
 			o := checkGoesOn(t, tr)
 			o.has(t, "keyword-count", xPath, blockLines(tr)...)
@@ -131,6 +138,7 @@ Otherwise the cart refuses <product>
 	}
 	// lint.rules Rationale: every other check still applies to such a block.
 	t.Run("rows3-4 no When: the other checks still apply", func(t *testing.T) {
+		t.Parallel()
 		tr := withRule(`Given     the shop has <product>
 Then      the cart holds <product>
 Provided  <product> is in stock
@@ -142,6 +150,7 @@ Otherwise the cart refuses <product>
 		o.has(t, "and-missing", xPath, tr.line(xPath, "Then      the cart"))
 	})
 	t.Run("rows3-4 two Whens: the other checks still apply", func(t *testing.T) {
+		t.Parallel()
 		tr := withRule(`When      a buyer adds <product>
 When      a buyer pays for <product>
 Provided  <product> is in stock
@@ -156,6 +165,7 @@ Then      the cart holds <product>
 }
 
 func TestLintRulesGuard(t *testing.T) {
+	t.Parallel()
 	bad := func(name string, keywords ...string) row {
 		tr := kwTree(keywords...)
 		return row{name: name, tree: tr, file: xPath, lines: blockLines(tr)}
@@ -180,6 +190,7 @@ Then      the cart holds <product>
 }
 
 func TestLintRulesHandOver(t *testing.T) {
+	t.Parallel()
 	bare := handOver("Otherwise → cart.add.empty")
 	one := handOver("Otherwise → cart.add.empty\n  And     everything else stays as it was")
 	two := handOver("Otherwise → cart.add.empty\n  And     nothing else changes\n  And     the cart stays as it was")
@@ -193,14 +204,17 @@ func TestLintRulesHandOver(t *testing.T) {
 		{name: "derived: the second of two And lines", tree: two, file: xPath, lines: lines(otherwise(two) + 2)},
 	})
 	t.Run("row1 nothing reported", func(t *testing.T) {
+		t.Parallel()
 		check(t, bare).clean(t)
 	})
 	t.Run("row3 handed over to lint.rules.and", func(t *testing.T) {
+		t.Parallel()
 		check(t, stated).clean(t)
 	})
 }
 
 func TestLintRulesAnd(t *testing.T) {
+	t.Parallel()
 	noThenAnd := withRule("When      a buyer opens the new cart <cart>\nThen      <cart> is empty", "| cart | outcome |\n| --- | --- |\n| the first cart | empty |\n")
 	noOtherwiseAnd := handOver("Otherwise the cart refuses <product>")
 	everything := withRule("When      a buyer opens the new cart <cart>\nThen      <cart> is empty\n  And     everything else stays as it was", "| cart | outcome |\n| --- | --- |\n| the first cart | empty |\n")
@@ -216,6 +230,7 @@ func TestLintRulesAnd(t *testing.T) {
 const givenTable = "| others | id | outcome |\n| --- | --- | --- |\n| apple, pear | apple | shown |\n"
 
 func TestLintRulesGiven(t *testing.T) {
+	t.Parallel()
 	refers := withRule(`Given     the shop has <id>
 When      a buyer looks up the product <id>
 Then      the shop shows <id>
@@ -234,6 +249,7 @@ Then      <cart> is empty
 }
 
 func TestLintRulesProvided(t *testing.T) {
+	t.Parallel()
 	without := withRule(`When      a buyer adds the product <file>
 Provided  the shop is open
 Then      the cart holds <file>
@@ -257,6 +273,7 @@ Otherwise the cart refuses <entry>
 		{name: "row3 perhaps state for a Given", tree: without, file: xPath, lines: lines(without.line(xPath, "Provided  the shop is open"))},
 	})
 	t.Run("row3 an ask does not fail the run", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, without)
 		if o.json.exit != 0 {
 			t.Errorf("want exit status 0, got %d:\n%s", o.json.exit, dump(o.report.Findings))
@@ -265,6 +282,7 @@ Otherwise the cart refuses <entry>
 }
 
 func TestLintRulesBound(t *testing.T) {
+	t.Parallel()
 	unbound := withRule(`When      a buyer reads the heading <heading>
 Then      the shop shows <file>
   And     nothing else changes`, "| heading | file | outcome |\n| --- | --- | --- |\n| Fruit | apples.md | shown |\n")

@@ -5,6 +5,7 @@ package acceptance
 import "testing"
 
 func TestLintUndecidedField(t *testing.T) {
+	t.Parallel()
 	contactRow := func(name, value string) row {
 		tr := baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact:"+value)
 		return row{name: name, tree: tr, file: featurePath, lines: lines(3)}
@@ -19,12 +20,14 @@ func TestLintUndecidedField(t *testing.T) {
 		{name: "derived: a word is what whitespace separates", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?(Treasury)"), holds: true},
 	})
 	t.Run("row2 a question mark ending a sentence", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, open)
 		o.lacks(t, "undecided", glossaryPath, open.line(glossaryPath, "- Question:"))
 	})
 }
 
 func TestLintUndecidedCell(t *testing.T) {
+	t.Parallel()
 	cell := func(value string) tree {
 		return baseline().edit(featurePath, "| 11 | apple | no | refused |", "| 11 | apple | no | "+value+" |")
 	}
@@ -40,6 +43,7 @@ func TestLintUndecidedCell(t *testing.T) {
 }
 
 func TestLintUndecidedSection(t *testing.T) {
+	t.Parallel()
 	body := func(text string) tree {
 		return baseline().edit(featurePath, "Buyers put goods into the cart.", text)
 	}
@@ -58,6 +62,7 @@ func TestLintUndecidedSection(t *testing.T) {
 }
 
 func TestLintUndecidedToken(t *testing.T) {
+	t.Parallel()
 	literal := withRule(`When      a buyer enters the code <value>
 Provided  <value> is "yes", "no", "no (<part>)" or "?"
 Then      the shop accepts <value>
@@ -80,15 +85,18 @@ Otherwise the cart refuses <count> pieces
 		{name: "row5 the comparison itself is open", tree: comparison, file: xPath, lines: lines(comparison.line(xPath, "<count> ?"))},
 	})
 	t.Run("row2 a ? inside a literal is a value", func(t *testing.T) {
+		t.Parallel()
 		checkGoesOn(t, literal).lacks(t, "undecided", xPath, literal.line(xPath, "Provided"))
 	})
 	t.Run("derived: a ? in a backtick reference", func(t *testing.T) {
+		t.Parallel()
 		tr := withRule("When      a buyer adds <product>\nThen      the cart holds <product>, see ´?´\n  And     nothing else changes", "| product | outcome |\n| --- | --- |\n| apple | added |\n")
 		checkGoesOn(t, tr).lacks(t, "undecided", xPath, tr.line(xPath, "Then"))
 	})
 }
 
 func TestLintUndecidedTerm(t *testing.T) {
+	t.Parallel()
 	mark := func(status, extra string) tree {
 		return baseline().
 			appendTo(glossaryPath, "\n## <a id=\"cart.daily-limit\"></a> daily limit\n\n"+extra+"- Contact: Dana Reyes\n- Status: "+status+"\n").
@@ -101,11 +109,13 @@ func TestLintUndecidedTerm(t *testing.T) {
 		{name: "row2 the rule waits for the term's meaning", tree: open, file: featurePath, lines: lines(open.line(featurePath, "[daily limit]"))},
 	})
 	t.Run("row2 naming the entry in related", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, open)
 		f := o.has(t, "undecided", featurePath, open.line(featurePath, "[daily limit]"))
 		relates(t, f, glossaryPath, open.line(glossaryPath, `id="cart.daily-limit"`))
 	})
 	t.Run("row1 nothing reported", func(t *testing.T) {
+		t.Parallel()
 		check(t, defined).clean(t)
 	})
 }

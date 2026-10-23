@@ -14,8 +14,10 @@ import (
 // TestSystemPlatforms checks system.platforms as far as a build can: Proviso
 // builds for Windows, macOS and Linux, as one static binary (system.go).
 func TestSystemPlatforms(t *testing.T) {
+	t.Parallel()
 	for _, goos := range []string{"windows", "darwin", "linux"} {
 		t.Run(goos, func(t *testing.T) {
+			t.Parallel()
 			out := filepath.Join(t.TempDir(), "proviso")
 			build := exec.Command("go", "build", "-o", out, "github.com/bbak/proviso/cmd/proviso")
 			build.Env = append(os.Environ(), "CGO_ENABLED=0", "GOOS="+goos)
@@ -32,6 +34,7 @@ func TestSystemPlatforms(t *testing.T) {
 // tree's files is for review; that it is never written is the invariant
 // baseline.run.writes.
 func TestSystemGit(t *testing.T) {
+	t.Parallel()
 	out, err := exec.Command("go", "list", "-deps", "-f", "{{if not .Standard}}{{.ImportPath}}{{end}}", "github.com/bbak/proviso/cmd/proviso").Output()
 	if err != nil {
 		t.Fatalf("go list: %v", err)

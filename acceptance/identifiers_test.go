@@ -7,6 +7,7 @@ import "testing"
 const limitHeading = `## <a id="cart.add.limit"></a> Rule: The cart takes a limited quantity`
 
 func TestLintIdentifiersPlacement(t *testing.T) {
+	t.Parallel()
 	before := baseline().edit(featurePath, limitHeading, `<a id="cart.add.limit"></a>`+"\n"+`## Rule: The cart takes a limited quantity`)
 	inside := baseline().edit(featurePath, limitHeading, `## Rule: The cart takes a limited quantity <a id="cart.add.limit"></a>`)
 	paragraph := baseline().edit(featurePath, "A cart that takes anything would", `A cart that takes anything <a id="cart.add.why"></a> would`)
@@ -25,11 +26,13 @@ func TestLintIdentifiersPlacement(t *testing.T) {
 			"A cart that takes anything would empty the shelves.\n\n´´´html\n<a id=\"cart.add.why\"></a>\n´´´\n"), holds: true},
 	})
 	t.Run("row2 opens the element", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline().edit(featurePath, `</a> Rule: The cart takes`, `</a>Rule: The cart takes`)).clean(t)
 	})
 }
 
 func TestLintIdentifiersForm(t *testing.T) {
+	t.Parallel()
 	withID := func(id string) tree {
 		return baseline().edit(featurePath, `id="cart.add.limit"`, `id="`+id+`"`)
 	}
@@ -54,10 +57,13 @@ func TestLintIdentifiersForm(t *testing.T) {
 }
 
 func TestLintIdentifiersUnique(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 lint.identifiers among lint, lint.run", func(t *testing.T) {
+		t.Parallel()
 		checkGoesOn(t, baseline()).lacks(t, "identifier-duplicate", "")
 	})
 	t.Run("row2 reported at each of the two", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline().edit(featurePath, `id="cart.add.empty"`, `id="cart.add.limit"`)
 		first := tr.line(featurePath, "Rule: The cart takes")
 		second := tr.line(featurePath, "Rule: A new cart is empty")
@@ -66,11 +72,13 @@ func TestLintIdentifiersUnique(t *testing.T) {
 		relates(t, o.has(t, "identifier-duplicate", featurePath, second), featurePath, first)
 	})
 	t.Run("row3 a capability identified as system", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, baseline().edit(capPath, `id="cart"`, `id="system"`))
 		relates(t, o.has(t, "identifier-duplicate", capPath, 1), systemPath, 1)
 		relates(t, o.has(t, "identifier-duplicate", systemPath, 1), capPath, 1)
 	})
 	t.Run("derived: in two files", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline().edit(glossaryPath, `id="cart.item"`, `id="cart.add"`)
 		entry := tr.line(glossaryPath, `id="cart.add"`)
 		o := checkGoesOn(t, tr)
@@ -80,6 +88,7 @@ func TestLintIdentifiersUnique(t *testing.T) {
 }
 
 func TestLintIdentifiersSystem(t *testing.T) {
+	t.Parallel()
 	rows(t, "system-identifier", []row{
 		{name: "row1 system", tree: baseline(), holds: true},
 		{name: "row2 proviso", tree: baseline().edit(systemPath, `id="system"`, `id="proviso"`),

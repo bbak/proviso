@@ -16,13 +16,16 @@ import (
 // the whole file follows from the contract. The format itself is checked
 // for every manifest written (see manifestIn).
 func TestSystemManifestFile(t *testing.T) {
+	t.Parallel()
 	t.Run("the plain tree, byte for byte", func(t *testing.T) {
+		t.Parallel()
 		got, want := manifestOf(t, plainTree()), manifestFor(plainParts())
 		if got != want {
 			t.Errorf("want the manifest\n%s\ngot\n%s", want, got)
 		}
 	})
 	t.Run("a tree of every element type, in the format", func(t *testing.T) {
+		t.Parallel()
 		m := manifestOf(t, richTree())
 		if !strings.HasPrefix(m, "model 0\n") {
 			t.Errorf("want the first line %q, got %q", "model 0", strings.SplitN(m, "\n", 2)[0])
@@ -31,6 +34,7 @@ func TestSystemManifestFile(t *testing.T) {
 }
 
 func TestBaselineManifestWrite(t *testing.T) {
+	t.Parallel()
 	written := func(t *testing.T, dir string) string {
 		t.Helper()
 		b, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(manifestPath)))
@@ -41,6 +45,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 	}
 
 	t.Run("row1 without a manifest", func(t *testing.T) {
+		t.Parallel()
 		dir := plainTree().write(t)
 		r := manifestIn(t, dir, dir, filepath.Join(dir, "proviso"), nil)
 		if r.exit != 0 {
@@ -51,6 +56,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("row2 with a manifest written before an edit", func(t *testing.T) {
+		t.Parallel()
 		dir := plainTree().write(t)
 		manifestOK(t, dir)
 		goal := "Buyers put goods into the cart."
@@ -68,6 +74,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("derived: replaced, not updated", func(t *testing.T) {
+		t.Parallel()
 		stale := "model 0\ncart.gone\theading\th1:" + strings.Repeat("0", 64) + "\n"
 		dir := plainTree().with(manifestPath, stale).write(t)
 		manifestOK(t, dir)
@@ -76,6 +83,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("row3 with a manifest written from the same tree", func(t *testing.T) {
+		t.Parallel()
 		dir := richTree().write(t)
 		first := manifestOK(t, dir)
 		second := manifestOK(t, dir)
@@ -91,6 +99,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("row4 without write permission", func(t *testing.T) {
+		t.Parallel()
 		former := manifestFor(plainParts())
 		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former).write(t)
 		root := filepath.Join(dir, "proviso")
@@ -116,6 +125,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("derived: run inside the tree, written into the spec root", func(t *testing.T) {
+		t.Parallel()
 		dir := plainTree().write(t)
 		root := filepath.Join(dir, "proviso")
 		r := manifestIn(t, dir, filepath.Join(root, "capabilities", "cart"), root, nil)
@@ -127,6 +137,7 @@ func TestBaselineManifestWrite(t *testing.T) {
 		}
 	})
 	t.Run("derived: the nearest spec root", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline()
 		for k, v := range plainTree().prefixed("a") {
 			tr[k] = v

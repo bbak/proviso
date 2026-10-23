@@ -300,5 +300,6 @@ Goods are not given away.
 // baseline tree follows the notation, so lint reports nothing and exits
 // with 0.
 func TestLintBaselineClean(t *testing.T) {
+	t.Parallel()
 	check(t, baseline()).clean(t)
 }

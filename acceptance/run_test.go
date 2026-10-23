@@ -25,21 +25,25 @@ func skipIfSpecRootAbove(t *testing.T, dir string) {
 }
 
 func TestLintRunRoot(t *testing.T) {
+	t.Parallel()
 	marked := baseline().with("proviso/notes.md", "# Notes\n")
 
 	t.Run("row1 repo holding proviso/system.md", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		o := lintIn(t, dir, dir, nil)
 		o.has(t, "file-unknown", "proviso/notes.md")
 		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row2 repo/cmd/proviso found upwards", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with("cmd/proviso/main.go", "package main\n").write(t)
 		o := lintIn(t, dir, filepath.Join(dir, "cmd", "proviso"), nil)
 		o.has(t, "file-unknown", "proviso/notes.md")
 		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row3 found from inside the tree", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		o := lintIn(t, dir, filepath.Join(dir, "proviso", "capabilities", "cart"), nil)
 		// Paths are relative to the directory holding the spec root,
@@ -48,6 +52,7 @@ func TestLintRunRoot(t *testing.T) {
 		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	})
 	t.Run("row4 the nearest wins", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline().with("proviso/outer.md", "# Outer\n")
 		for k, v := range baseline().with("proviso/inner.md", "# Inner\n").prefixed("a") {
 			tr[k] = v
@@ -65,6 +70,7 @@ func TestLintRunRoot(t *testing.T) {
 	// lint.cli.report: every name in root is in NFC, also when the folder
 	// above the spec root is stored as u followed by a mark.
 	t.Run("derived: root in NFC", func(t *testing.T) {
+		t.Parallel()
 		composed, decomposed := "repo-ü", "repo-ü"
 		dir := marked.prefixed(decomposed).write(t)
 		if !hasEntry(dir, decomposed) {
@@ -89,6 +95,7 @@ func TestLintRunRoot(t *testing.T) {
 	}
 	for _, c := range noRoot {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			dir := c.tree.write(t)
 			skipIfSpecRootAbove(t, dir)
 			o := lintIn(t, dir, filepath.Join(dir, c.cwd), nil)
@@ -105,6 +112,7 @@ func TestLintRunRoot(t *testing.T) {
 }
 
 func TestLintRunUnreadable(t *testing.T) {
+	t.Parallel()
 	// The tree also holds an error, so that any finding lint reported
 	// despite the unreadable file would show.
 	marked := baseline().with("proviso/notes.md", "# Notes\n")
@@ -129,9 +137,11 @@ func TestLintRunUnreadable(t *testing.T) {
 	}
 
 	t.Run("row1 none", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline()).clean(t)
 	})
 	t.Run("row2 glossary.md without read permission", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		path := filepath.Join(dir, filepath.FromSlash(glossaryPath))
 		undo, err := makeUnreadable(path)
@@ -149,10 +159,12 @@ func TestLintRunUnreadable(t *testing.T) {
 		stopped(t, o, "glossary.md")
 	})
 	t.Run("row3 a.md not valid UTF-8", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with(aPath, invalid).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md")
 	})
 	t.Run("row4 shared, a link to a folder outside the tree", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		link := filepath.Join(dir, "proviso", "shared")
 		if err := os.Symlink(filepath.Join(dir, "outside"), link); err != nil {
@@ -161,6 +173,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		stopped(t, lintIn(t, dir, dir, nil), "shared")
 	})
 	t.Run("row5 shared, a Windows junction to a folder outside the tree", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		if err := makeJunction(filepath.Join(dir, "proviso", "shared"), filepath.Join(dir, "outside")); err != nil {
 			t.Skipf("cannot create a junction here: %v", err)
@@ -168,6 +181,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		stopped(t, lintIn(t, dir, dir, nil), "shared")
 	})
 	t.Run("row6 x.md a link to another feature in the tree", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		link := filepath.Join(dir, filepath.FromSlash(xPath))
 		if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
@@ -176,10 +190,12 @@ func TestLintRunUnreadable(t *testing.T) {
 		stopped(t, lintIn(t, dir, dir, nil), "x.md")
 	})
 	t.Run("row7 a.md and b.md both unreadable", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with(aPath, invalid, bPath, strings.Replace(invalid, "cart.bad", "cart.worse", 1)).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md", "b.md")
 	})
 	t.Run("row8 notes.md, not in the layout, without read permission", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		path := filepath.Join(dir, "proviso", "notes.md")
 		undo, err := makeUnreadable(path)
@@ -205,6 +221,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	// A link counts as unreadable wherever it stands, whatever its name,
 	// unless a hidden name has it skipped.
 	t.Run("derived: a link the layout does not list", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.write(t)
 		link := filepath.Join(dir, "proviso", "notes.md")
 		os.Remove(link)
@@ -216,6 +233,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	// Any other entry that is neither a regular file nor a folder counts as
 	// unreadable, as a link or a junction does.
 	t.Run("derived: neither a regular file nor a folder (a named pipe)", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		name, err := makeSpecial(dir)
 		if err != nil {
@@ -224,6 +242,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		stopped(t, lintIn(t, dir, dir, nil), name)
 	})
 	t.Run("derived: .shared, a junction with a hidden name", func(t *testing.T) {
+		t.Parallel()
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		if err := makeJunction(filepath.Join(dir, "proviso", ".shared"), filepath.Join(dir, "outside")); err != nil {
 			t.Skipf("cannot create a junction here: %v", err)
@@ -243,6 +262,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	}
 	for _, c := range hidden {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 			link := filepath.Join(dir, filepath.FromSlash(c.link))
 			if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(c.target)), link); err != nil {
@@ -262,9 +282,11 @@ func TestLintRunUnreadable(t *testing.T) {
 }
 
 func TestLintRunOutput(t *testing.T) {
+	t.Parallel()
 	oneError := baseline().with("proviso/notes.md", "# Notes\n")
 
 	t.Run("row1 one error with --json", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, oneError)
 		if len(o.report.Findings) != 1 {
 			t.Errorf("want a report with one finding, got:\n%s", dump(o.report.Findings))
@@ -272,6 +294,7 @@ func TestLintRunOutput(t *testing.T) {
 		o.has(t, "file-unknown", "proviso/notes.md")
 	})
 	t.Run("row2 none with --json", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, baseline())
 		// The report's shape, an array for findings, is checked for
 		// every run; here it must be empty.
@@ -280,6 +303,7 @@ func TestLintRunOutput(t *testing.T) {
 		}
 	})
 	t.Run("row3 one error as text", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, oneError)
 		text := strings.TrimRight(o.text.stdout, "\r\n")
 		if text == "" || strings.Contains(text, "\n") {
@@ -287,6 +311,7 @@ func TestLintRunOutput(t *testing.T) {
 		}
 	})
 	t.Run("row4 none as text", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, baseline())
 		if o.text.stdout != "" {
 			t.Errorf("want nothing written, got: %q", o.text.stdout)
@@ -307,9 +332,11 @@ Some reason.
 }
 
 func TestLintRunOrder(t *testing.T) {
+	t.Parallel()
 	features := "proviso/capabilities/cart/features/"
 
 	t.Run("row1 by file path, then line", func(t *testing.T) {
+		t.Parallel()
 		// Findings in b.md and a.md, two of them in a.md.
 		tr := baseline().with(
 			features+"b.md", featureWith("cart.b", "- Contact: Dana Reyes\n- Owner: Team B\n\n", ""),
@@ -333,6 +360,7 @@ func TestLintRunOrder(t *testing.T) {
 	})
 
 	t.Run("row2 then by kind on one line", func(t *testing.T) {
+		t.Parallel()
 		// One heading whose identifier is used twice and that holds a
 		// second, misplaced anchor.
 		tr := withX(ruleMD("cart.add.limit", `B <a id="cart.x.z"></a>`, idBlock, idTable))
@@ -364,6 +392,7 @@ func TestLintRunOrder(t *testing.T) {
 	}
 	for _, c := range byteOrder {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			tr := baseline()
 			for i, f := range c.files {
 				tr = tr.with(features+f, featureWith([]string{"cart.first", "cart.second"}[i], "", ""))
@@ -382,6 +411,7 @@ func TestLintRunOrder(t *testing.T) {
 	}
 
 	t.Run("not depending on the order files were read", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline().with(
 			"proviso/notes.md", "# Notes\n",
 			features+"a.md", featureWith("cart.a", "- Owner: Team A\n\n", "\n## Scope\n\nAll of it.\n"),
@@ -408,6 +438,7 @@ func TestLintRunOrder(t *testing.T) {
 }
 
 func TestLintRunExit(t *testing.T) {
+	t.Parallel()
 	ask := baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?")
 	cases := []struct {
 		name string
@@ -421,6 +452,7 @@ func TestLintRunExit(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			o := check(t, c.tree)
 			if o.json.exit != c.exit {
 				t.Errorf("want exit status %d, got %d:\n%s", c.exit, o.json.exit, dump(o.report.Findings))
@@ -437,6 +469,7 @@ func TestLintRunExit(t *testing.T) {
 // every kind: clean, with errors, with asks, unable to run. Every other test
 // checks it too, for each run it makes (see lintIn).
 func TestLintRunReadOnly(t *testing.T) {
+	t.Parallel()
 	trees := map[string]tree{
 		"clean":       baseline(),
 		"errors":      baseline().with("proviso/notes.md", "# Notes\n", "proviso/capabilities/billing/glossary.md", "# Glossary\n"),
@@ -448,6 +481,7 @@ func TestLintRunReadOnly(t *testing.T) {
 	}
 	for name, tr := range trees {
 		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 			dir := tr.write(t)
 			before := snapshot(t, dir)
 			lintIn(t, dir, dir, nil)
@@ -459,6 +493,7 @@ func TestLintRunReadOnly(t *testing.T) {
 }
 
 func TestLintRunModel(t *testing.T) {
+	t.Parallel()
 	// stopped checks exit status 2 and that stderr says something; that
 	// nothing goes to stdout is checked for every run with exit status 2.
 	stopped := func(t *testing.T, o outcome) {
@@ -470,12 +505,15 @@ func TestLintRunModel(t *testing.T) {
 		}
 	}
 	t.Run("row1 without manifest.sum", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline()).clean(t)
 	})
 	t.Run("row2 manifest.sum starting with model 0", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline().with("proviso/manifest.sum", "model 0\n")).clean(t)
 	})
 	t.Run("row3 manifest.sum starting with model 0 and a carriage return", func(t *testing.T) {
+		t.Parallel()
 		// The model check passes; the line ending is line-ending's to
 		// report, and nothing else.
 		o := check(t, baseline().with("proviso/manifest.sum", "model 0\r\n"))
@@ -485,18 +523,22 @@ func TestLintRunModel(t *testing.T) {
 		}
 	})
 	t.Run("row4 manifest.sum starting with model 1", func(t *testing.T) {
+		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n")))
 	})
 	t.Run("row5 manifest.sum empty", func(t *testing.T) {
+		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "")))
 	})
 	// Lint checks nothing of the manifest beyond its first line but what it
 	// checks of every file it reads: the lines that follow are not checked
 	// as manifest lines, but the file must still be readable.
 	t.Run("derived: model 0, then lines that are no manifest's", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline().with("proviso/manifest.sum", "model 0\nnot a line of a manifest\n<<<<<<< HEAD\n")).clean(t)
 	})
 	t.Run("derived: model 0, then text that is not UTF-8", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, baseline().with("proviso/manifest.sum", "model 0\n\xff\xfe\n"))
 		stopped(t, o)
 		if !strings.Contains(o.json.stderr, "manifest.sum") {
@@ -506,6 +548,7 @@ func TestLintRunModel(t *testing.T) {
 	// The model version a tree needs is checked before the tree: a tree
 	// with an error gives exit status 2, not 1, and no report.
 	t.Run("derived: model 1 and a tree with an error", func(t *testing.T) {
+		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n", "proviso/notes.md", "# Notes\n")))
 	})
 }

@@ -24,6 +24,7 @@ func withSystemGlossary() tree {
 }
 
 func TestLintReferencesTerm(t *testing.T) {
+	t.Parallel()
 	sys := withSystemGlossary()
 	other := withBilling(baseline(), `When      a buyer pays for the [item] <product>
 Then      the shop sends a bill for <product>
@@ -44,11 +45,13 @@ Then      the shop sends a bill for <product>
 			file: "proviso/capabilities/cart/contracts/api.md", lines: lines(represents.line("proviso/capabilities/cart/contracts/api.md", "- Represents:"))},
 	})
 	t.Run("row1 resolves without other findings", func(t *testing.T) {
+		t.Parallel()
 		check(t, withThenAnd(sys, "the cart stays in the [spec tree]")).clean(t)
 	})
 }
 
 func TestLintReferencesMarked(t *testing.T) {
+	t.Parallel()
 	sys := withSystemGlossary()
 	unmarked := func(tr tree, text string) row {
 		tr = withThenAnd(tr, text)
@@ -77,6 +80,7 @@ func TestLintReferencesMarked(t *testing.T) {
 }
 
 func TestLintReferencesTermAmbiguous(t *testing.T) {
+	t.Parallel()
 	list := baseline().appendTo(glossaryPath, "\n## <a id=\"cart.item-list\"></a> item list\n\n- Definition: The goods in the cart.\n- Contact: Dana Reyes\n- Status: defined\n- Aliases: items\n")
 	redefined := withSystemGlossary().appendTo(glossaryPath, "\n## <a id=\"cart.spec-tree\"></a> spec tree\n\n- Definition: The cart's own files.\n- Contact: Dana Reyes\n- Status: defined\n")
 	label := "\n## <a id=\"%s.label\"></a> label\n\n- Definition: A name on a shelf.\n- Contact: Dana Reyes\n- Status: defined\n"
@@ -85,18 +89,22 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 		with("proviso/capabilities/billing/glossary.md", "# Glossary\n"+fmt.Sprintf(label, "billing"))
 
 	t.Run("row1 finding", func(t *testing.T) {
+		t.Parallel()
 		checkGoesOn(t, baseline()).lacks(t, "term-ambiguous", "")
 	})
 	t.Run("row2 capabilities do not see each other's terms", func(t *testing.T) {
+		t.Parallel()
 		checkGoesOn(t, apart).lacks(t, "term-ambiguous", "")
 	})
 	t.Run("row3 the same glossary", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, list)
 		item, other := list.line(glossaryPath, `id="cart.item"`), list.line(glossaryPath, `id="cart.item-list"`)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, item), glossaryPath, other)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, other), glossaryPath, item)
 	})
 	t.Run("row4 a capability may not redefine a system term", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, redefined)
 		own, sys := redefined.line(glossaryPath, `id="cart.spec-tree"`), redefined.line("proviso/glossary.md", `id="system.spec-tree"`)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, own), "proviso/glossary.md", sys)
@@ -105,6 +113,7 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 }
 
 func TestLintReferencesHandOver(t *testing.T) {
+	t.Parallel()
 	feature := handOver("Otherwise → cart.add")
 	missing := handOver("Otherwise → cart.add.emptyx")
 	at := func(tr tree) []int { return lines(tr.line(xPath, "Otherwise →")) }
@@ -125,6 +134,7 @@ Otherwise → `+target, handOverTable)
 }
 
 func TestLintReferencesChain(t *testing.T) {
+	t.Parallel()
 	self := withX(chainRule("cart.x.a", "cart.x.a"))
 	loop := withX(chainRule("cart.x.a", "cart.x.b") + chainRule("cart.x.b", "cart.x.a"))
 	ruleA := func(tr tree) []int { return lines(tr.line(xPath, `id="cart.x.a"`)) }
@@ -134,6 +144,7 @@ func TestLintReferencesChain(t *testing.T) {
 		{name: "row3 a, b, a", tree: loop, file: xPath, lines: ruleA(loop)},
 	})
 	t.Run("row3 reported once per cycle, with b in related", func(t *testing.T) {
+		t.Parallel()
 		o := check(t, loop)
 		found := o.find("hand-over-cycle", xPath, nil)
 		if len(found) != 1 {
@@ -151,6 +162,7 @@ func withContracts() tree {
 }
 
 func TestLintReferencesReference(t *testing.T) {
+	t.Parallel()
 	ref := func(r string) tree { return withThenAnd(withContracts(), "the shop logs ´"+r+"´") }
 	bad := func(name, r string) row {
 		tr := ref(r)
@@ -169,6 +181,7 @@ func TestLintReferencesReference(t *testing.T) {
 			"the shop logs ´currency´"), holds: true},
 	})
 	t.Run("rows1-3 resolve without other findings", func(t *testing.T) {
+		t.Parallel()
 		for _, r := range []string{"findings.anchor-misplaced", "lint.exit-status", "max_quantity"} {
 			check(t, ref(r)).clean(t)
 		}
@@ -176,6 +189,7 @@ func TestLintReferencesReference(t *testing.T) {
 }
 
 func TestLintReferencesReferenceAmbiguous(t *testing.T) {
+	t.Parallel()
 	report := "# Report\n\n## <a id=\"%s\"></a> report\n\nWhat the shop writes.\n"
 	contract := "proviso/capabilities/cart/contracts/report.md"
 	sameLevel := withContracts().
@@ -186,15 +200,18 @@ func TestLintReferencesReferenceAmbiguous(t *testing.T) {
 		with("proviso/contracts/report.md", fmt.Sprintf(report, "system.report"))
 
 	t.Run("row1 findings", func(t *testing.T) {
+		t.Parallel()
 		checkGoesOn(t, withContracts()).lacks(t, "reference-ambiguous", "")
 	})
 	t.Run("row2 contracts and parameters share one namespace", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, sameLevel)
 		c, p := sameLevel.line(contract, `id="cart.report"`), sameLevel.line(paramsPath, `id="cart.report-size"`)
 		relates(t, o.has(t, "reference-ambiguous", contract, c), paramsPath, p)
 		relates(t, o.has(t, "reference-ambiguous", paramsPath, p), contract, c)
 	})
 	t.Run("row3 no shadowing", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, levels)
 		c, s := levels.line(contract, `id="cart.report"`), levels.line("proviso/contracts/report.md", `id="system.report"`)
 		relates(t, o.has(t, "reference-ambiguous", contract, c), "proviso/contracts/report.md", s)

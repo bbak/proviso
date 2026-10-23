@@ -24,6 +24,10 @@ import (
 
 var binary string
 
+// templates is the folder that holds the repositories accepted once and
+// copied by every test that needs them (see accepted).
+var templates string
+
 func TestMain(m *testing.M) {
 	dir, err := os.MkdirTemp("", "proviso-acceptance-")
 	if err != nil {
@@ -35,6 +39,12 @@ func TestMain(m *testing.M) {
 		name += ".exe"
 	}
 	binary = filepath.Join(dir, name)
+	templates = filepath.Join(dir, "accepted")
+	if err := os.Mkdir(templates, 0o755); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.RemoveAll(dir)
+		os.Exit(1)
+	}
 	build := exec.Command("go", "build", "-o", binary, "github.com/bbak/proviso/cmd/proviso")
 	build.Env = append(os.Environ(), "CGO_ENABLED=0")
 	if out, err := build.CombinedOutput(); err != nil {
@@ -751,6 +761,7 @@ func rows(t *testing.T, kind string, rs []row) {
 	t.Helper()
 	for _, r := range rs {
 		t.Run(r.name, func(t *testing.T) {
+			t.Parallel()
 			o := checkGoesOn(t, r.tree)
 			if r.holds {
 				o.lacks(t, kind, r.file, r.lines...)

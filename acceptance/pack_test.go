@@ -74,7 +74,9 @@ func union(lists ...[]string) []string {
 }
 
 func TestBaselinePackContents(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 a rule's Then step changed", func(t *testing.T) {
+		t.Parallel()
 		// lint.run.exit: cart.pay.cap, which no rule hands over to.
 		o, tr, base := packOf(t, pCapThen)
 		o.exactly(t, "System", "system")
@@ -92,6 +94,7 @@ func TestBaselinePackContents(t *testing.T) {
 		o.standsAt(t, tr)
 	})
 	t.Run("row2 a rule removed", func(t *testing.T) {
+		t.Parallel()
 		// lint.run.root: cart.pay.total.
 		o, _, base := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"))
 		o.headingsAre(t, "System", "Amendment")
@@ -108,12 +111,14 @@ func TestBaselinePackContents(t *testing.T) {
 		}
 	})
 	t.Run("row3 none: the tree as the manifest records it", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, packTree())
 		o := r.pack()
 		o.headingsAre(t, "System")
 		o.exactly(t, "System", "system")
 	})
 	t.Run("derived: an added element", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, addTip)
 		o.exactly(t, "Amendment", "cart.pay.tip")
 		if it := o.item(t, "cart.pay.tip"); it.status != "Added `cart.pay.tip`." {
@@ -124,6 +129,7 @@ func TestBaselinePackContents(t *testing.T) {
 		}
 	})
 	t.Run("derived: elements changed through a dependency, with their chains", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iParamValue)
 		o.exactly(t, "Amendment", "cart.max-quantity", "cart.add.limit", "cart.add.spoken", "cart.pay.cap")
 		want := map[string]string{
@@ -139,6 +145,7 @@ func TestBaselinePackContents(t *testing.T) {
 		}
 	})
 	t.Run("derived: every chain that reaches an element", func(t *testing.T) {
+		t.Parallel()
 		// The order of the chains is checked against element_diff's for
 		// every run, as a set (see the report).
 		o, _, _ := packOf(t, iItemDef, iParamValue)
@@ -149,6 +156,7 @@ func TestBaselinePackContents(t *testing.T) {
 		}
 	})
 	t.Run("derived: an element not to be built", func(t *testing.T) {
+		t.Parallel()
 		o, tr, _ := packOf(t, pCapOpen)
 		want := "Not to be built: " + payPath + ":" + itoa(tr.line(payPath, "Then      ?")) + "."
 		if it := o.item(t, "cart.pay.cap"); it.notBuilt != want {
@@ -156,6 +164,7 @@ func TestBaselinePackContents(t *testing.T) {
 		}
 	})
 	t.Run("derived: without a manifest, every element under Amendment", func(t *testing.T) {
+		t.Parallel()
 		dir := packTree().write(t)
 		o := packIn(t, dir, dir, filepath.Join(dir, "proviso"))
 		o.headingsAre(t, "Amendment")
@@ -164,45 +173,54 @@ func TestBaselinePackContents(t *testing.T) {
 }
 
 func TestBaselinePackFrames(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 a rule's Then step changed", func(t *testing.T) {
+		t.Parallel()
 		// lint.run.exit: cart.pay.cap.
 		o, tr, _ := packOf(t, pCapThen)
 		o.exactly(t, "Frames", payFrames...)
 		o.standsAt(t, tr)
 	})
 	t.Run("row2 a glossary entry of the capability, its Definition changed", func(t *testing.T) {
+		t.Parallel()
 		// baseline.part: cart.shelf, which no rule marks.
 		o, _, _ := packOf(t, pShelfDef)
 		o.exactly(t, "Amendment", "cart.shelf")
 		o.exactly(t, "Frames", cartFrames...)
 	})
 	t.Run("row3 a system constraint, its Property changed", func(t *testing.T) {
+		t.Parallel()
 		// system.git: system.fast.
 		o, _, _ := packOf(t, iFastProperty)
 		o.exactly(t, "Amendment", "system.fast")
 		o.exactly(t, "Frames", "system.honest")
 	})
 	t.Run("row4 a rule removed", func(t *testing.T) {
+		t.Parallel()
 		// lint.run.root: cart.pay.total.
 		o, _, _ := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"))
 		o.exactly(t, "Frames")
 	})
 	t.Run("derived: a feature, its Goal changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pPayGoal)
 		o.exactly(t, "Amendment", "cart.pay")
 		o.exactly(t, "Frames", cartFrames...)
 	})
 	t.Run("derived: a capability, its Goal changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iBillingGoal)
 		o.exactly(t, "Amendment", "billing")
 		o.exactly(t, "Frames", billingFrames...)
 	})
 	t.Run("derived: an invariant of a feature, its Property changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iNeverProp)
 		o.exactly(t, "Amendment", "cart.add.never")
 		o.exactly(t, "Frames", "cart.add", "cart", "cart.bounded", "cart.light", "system.fast", "system.honest")
 	})
 	t.Run("derived: elements changed through a dependency bring their frames", func(t *testing.T) {
+		t.Parallel()
 		// system.price stands at system level; only the rules changed
 		// through it bring the frames of cart and billing.
 		o, _, _ := packOf(t, pPriceDef)
@@ -212,7 +230,9 @@ func TestBaselinePackFrames(t *testing.T) {
 }
 
 func TestBaselinePackChain(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 a rule handing over, its Then step changed", func(t *testing.T) {
+		t.Parallel()
 		// baseline.diff.added: cart.add.spoken, handing over to
 		// cart.add.limit; both mark terms.
 		o, tr, _ := packOf(t, pSpokenThen)
@@ -221,6 +241,7 @@ func TestBaselinePackChain(t *testing.T) {
 		o.standsAt(t, tr)
 	})
 	t.Run("row2 a rule referring to a member", func(t *testing.T) {
+		t.Parallel()
 		// findings.anchor-misplaced: line.count, a member of cart.api.line,
 		// which represents [item].
 		o, _, _ := packOf(t, pLinesThen)
@@ -228,11 +249,13 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Context", "cart.api.line", "cart.api.line.count", "cart.item")
 	})
 	t.Run("row3 a rule marking a term defined by a reference", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pReceiptThen)
 		o.exactly(t, "Amendment", "cart.pay.receipt")
 		o.exactly(t, "Context", "cart.thematic-break", "system.ref.commonmark")
 	})
 	t.Run("row4 a rule marking a term other rules mark", func(t *testing.T) {
+		t.Parallel()
 		// [spec root]: [price], which cart.pay.total and cart.add.spoken
 		// mark as well.
 		o, _, _ := packOf(t, pRefundThen)
@@ -240,18 +263,21 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Context", "system.price")
 	})
 	t.Run("row5 a rule removed", func(t *testing.T) {
+		t.Parallel()
 		// lint.run.root: cart.add.spoken, which marks a term and hands over.
 		o, _, _ := packOf(t, removedFrom(packTree(), featurePath, "cart.add.spoken"))
 		o.exactly(t, "Amendment", "cart.add.spoken")
 		o.exactly(t, "Context")
 	})
 	t.Run("derived: elements changed through a dependency follow the chain", func(t *testing.T) {
+		t.Parallel()
 		// cart.max-quantity is under Amendment; cart.add.limit brings
 		// cart.item, cart.add.spoken brings system.price.
 		o, _, _ := packOf(t, iParamValue)
 		o.exactly(t, "Context", "cart.item", "system.price")
 	})
 	t.Run("derived: a changed member brings its holder and the term it represents", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iCountBody)
 		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line", "cart.item")
@@ -259,30 +285,36 @@ func TestBaselinePackChain(t *testing.T) {
 }
 
 func TestBaselinePackOnce(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 the system, its Scope changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iSystemScope)
 		o.headingsAre(t, "Amendment", "Frames")
 		o.exactly(t, "Amendment", "system")
 		o.exactly(t, "Frames", sysFrames...)
 	})
 	t.Run("row2 a feature, its Goal changed, holding a changed rule", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pPayGoal, pCapThen)
 		o.exactly(t, "Amendment", "cart.pay", "cart.pay.cap")
 		o.exactly(t, "Frames", cartFrames...)
 	})
 	t.Run("row3 a glossary entry, its Definition changed, marked by a changed rule", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, iItemDef, pTotalThen)
 		o.exactly(t, "Amendment", "cart.item", "cart.pay.total", "cart.add.limit", "cart.add.spoken", "cart.api.line", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line.count", "cart.max-quantity", "system.price")
 	})
 	// That no element appears twice is checked for every run (see packIn).
 	t.Run("row4 a feature, unchanged, holding two changed rules", func(t *testing.T) {
+		t.Parallel()
 		// lint.run: cart.pay, holding cart.pay.cap and cart.pay.total.
 		o, _, _ := packOf(t, pCapThen, pTotalThen)
 		o.exactly(t, "Amendment", "cart.pay.cap", "cart.pay.total")
 		o.exactly(t, "Frames", payFrames...)
 	})
 	t.Run("row5 a term, unchanged, marked by two changed rules", func(t *testing.T) {
+		t.Parallel()
 		// [spec root]: [price], marked by cart.pay.total and
 		// billing.refund.full.
 		o, _, _ := packOf(t, pTotalThen, pRefundThen)
@@ -292,10 +324,12 @@ func TestBaselinePackOnce(t *testing.T) {
 }
 
 func TestBaselinePackOrder(t *testing.T) {
+	t.Parallel()
 	// That the elements under each heading are in byte order, and the parts
 	// of each in diff's order, is checked for every run (see packIn); here
 	// each row's outcome is checked as well.
 	t.Run("row1 under Frames", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pCapThen)
 		want := "cart cart.bounded cart.light cart.pay system.fast system.honest"
 		if got := strings.Join(o.under("Frames"), " "); got != want {
@@ -303,12 +337,14 @@ func TestBaselinePackOrder(t *testing.T) {
 		}
 	})
 	t.Run("row2 under Amendment", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"), pCapThen)
 		if got := strings.Join(o.under("Amendment"), " "); got != "cart.pay.cap cart.pay.total" {
 			t.Errorf("want under Amendment cart.pay.cap, then cart.pay.total, got %s", got)
 		}
 	})
 	t.Run("derived: the parts in diff's order", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pCapThen, pCapProvided, pCapRow)
 		key := "row " + rowKey("cart", "the first cart")
 		want := "Changed `cart.pay.cap`: `" + key + "` changed, `step Provided` changed, `step Then` changed."
@@ -326,6 +362,7 @@ func TestBaselinePackOrder(t *testing.T) {
 }
 
 func TestBaselinePackOutput(t *testing.T) {
+	t.Parallel()
 	exit0 := func(t *testing.T, o packOutcome) {
 		t.Helper()
 		if o.json.exit != 0 || o.text.exit != 0 {
@@ -333,6 +370,7 @@ func TestBaselinePackOutput(t *testing.T) {
 		}
 	}
 	t.Run("row1 one changed rule, --json", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pCapThen)
 		exit0(t, o)
 		if len(o.cp.Diff) != 1 || o.cp.Diff[0].ID != "cart.pay.cap" {
@@ -340,17 +378,20 @@ func TestBaselinePackOutput(t *testing.T) {
 		}
 	})
 	t.Run("row2 one changed rule, as text", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := packOf(t, pCapThen)
 		exit0(t, o)
 		o.headingsAre(t, "System", "Amendment", "Frames", "Context")
 	})
 	t.Run("row3 an empty element diff, as text", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, packTree())
 		o := r.pack()
 		exit0(t, o)
 		o.headingsAre(t, "System")
 	})
 	t.Run("derived: an empty element diff, --json", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, packTree())
 		o := r.pack()
 		exit0(t, o)
@@ -369,6 +410,7 @@ func TestBaselinePackOutput(t *testing.T) {
 
 // TestBaselinePackFormer runs the cases of baseline.diff.former with `pack`.
 func TestBaselinePackFormer(t *testing.T) {
+	t.Parallel()
 	formerThen := "Then      the shop takes the order\n  And     nothing else changes"
 	formerOf := func(t *testing.T, o packOutcome) string {
 		t.Helper()
@@ -385,6 +427,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		checkFormer(t, partChange{Part: "step Then", Former: ptr(formerOf(t, o))}, want)
 	}
 	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
+		t.Parallel()
 		r, base := accepted(t, packTree())
 		r.set(amended(packTree(), pCapThen))
 		o := r.pack()
@@ -395,6 +438,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		checkThen(t, o, formerThen)
 	})
 	t.Run("row2 a merge that took the manifest from the mainline", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, packTree())
 		r.git("checkout", "-q", "-b", "feature")
 		feature := amended(packTree(), iCountBody)
@@ -419,6 +463,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		checkThen(t, o, "Then      the shop accepts the order\n  And     nothing else changes")
 	})
 	t.Run("row3 the spec root in no git repository", func(t *testing.T) {
+		t.Parallel()
 		dir := packTree().write(t)
 		skipIfGitAbove(t, dir)
 		manifestOK(t, dir)
@@ -426,6 +471,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		packIn(t, dir, dir, filepath.Join(dir, "proviso")).stopped(t)
 	})
 	t.Run("row4 the manifest written but never committed", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, packTree())
 		r.commit("tree")
 		r.manifest()
@@ -433,6 +479,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		r.pack().stopped(t)
 	})
 	t.Run("row5 the manifest written again since and not committed", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, packTree())
 		r.set(amended(packTree(), pCapThen))
 		r.manifest()
@@ -440,6 +487,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		r.pack().stopped(t)
 	})
 	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, packTree())
 		r.manifest()
 		r.set(amended(packTree(), pCapProvided))
@@ -448,6 +496,7 @@ func TestBaselinePackFormer(t *testing.T) {
 		r.pack().stopped(t)
 	})
 	t.Run("derived: added elements need no former text, and no git", func(t *testing.T) {
+		t.Parallel()
 		dir := packTree().write(t)
 		manifestOK(t, dir)
 		skipIfGitAbove(t, dir)

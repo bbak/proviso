@@ -39,10 +39,13 @@ func lintLines(t *testing.T, cwd string) []string {
 }
 
 func TestBaselineRunLint(t *testing.T) {
+	t.Parallel()
 	invalid := "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"
 	for _, cmd := range []string{"manifest", "diff", "impact", "pack"} {
 		t.Run(cmd, func(t *testing.T) {
+			t.Parallel()
 			t.Run("row1 a tree without findings", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().write(t)
 				r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso"))
 				if r.exit == 2 {
@@ -50,6 +53,7 @@ func TestBaselineRunLint(t *testing.T) {
 				}
 			})
 			t.Run("row2 a tree with an ask only", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?").write(t)
 				lint := lintLines(t, dir)
 				if len(lint) == 0 {
@@ -67,6 +71,7 @@ func TestBaselineRunLint(t *testing.T) {
 				}
 			})
 			t.Run("row3 a tree with an error", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().with("proviso/notes.md", "# Notes\n").write(t)
 				lint := lintLines(t, dir)
 				r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso"))
@@ -82,12 +87,14 @@ func TestBaselineRunLint(t *testing.T) {
 				}
 			})
 			t.Run("row4 a tree with an unreadable file", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().with("proviso/capabilities/cart/features/a.md", invalid).write(t)
 				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
 					t.Errorf("want exit status 2, got %d", r.exit)
 				}
 			})
 			t.Run("row5 no spec root up to the file system's root", func(t *testing.T) {
+				t.Parallel()
 				dir := tree{"other/readme.txt": "nothing here\n"}.write(t)
 				skipIfSpecRootAbove(t, dir)
 				if r := baseRun(t, cmd, dir, filepath.Join(dir, "other"), ""); r.exit != 2 {
@@ -96,12 +103,14 @@ func TestBaselineRunLint(t *testing.T) {
 			})
 			// lint.run.model stops lint, and with it the command.
 			t.Run("derived: a manifest of another model version", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().with(manifestPath, "model 1\n").write(t)
 				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
 					t.Errorf("want exit status 2, got %d", r.exit)
 				}
 			})
 			t.Run("derived: run inside the tree", func(t *testing.T) {
+				t.Parallel()
 				dir := plainTree().write(t)
 				root := filepath.Join(dir, "proviso")
 				if r := baseRun(t, cmd, dir, filepath.Join(root, "capabilities", "cart", "features"), root); r.exit == 2 {
@@ -109,6 +118,7 @@ func TestBaselineRunLint(t *testing.T) {
 				}
 			})
 			t.Run("derived: the nearest spec root", func(t *testing.T) {
+				t.Parallel()
 				// The outer tree has an error, the inner none.
 				tr := plainTree().with("proviso/notes.md", "# Notes\n")
 				for k, v := range plainTree().prefixed("a") {
@@ -131,6 +141,7 @@ func TestBaselineRunLint(t *testing.T) {
 // checks it too, for each run it makes (see manifestIn, diffIn, impactIn and
 // packIn).
 func TestBaselineRunWrites(t *testing.T) {
+	t.Parallel()
 	// staged leaves an edit in the index and an untracked file, which a
 	// run must leave as they are.
 	staged := func(r *repo) {
@@ -210,6 +221,7 @@ func TestBaselineRunWrites(t *testing.T) {
 				name = cmd + strings.TrimPrefix(c.name, "diff")
 			}
 			t.Run(name, func(t *testing.T) {
+				t.Parallel()
 				r := c.setup(t)
 				if _, ok := snapshotAll(t, r.dir)[".git/HEAD"]; !ok {
 					t.Fatal("the snapshot does not cover the git repository")

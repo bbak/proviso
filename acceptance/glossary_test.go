@@ -27,6 +27,7 @@ const (
 )
 
 func TestLintGlossaryStatus(t *testing.T) {
+	t.Parallel()
 	status := func(name, value string, holds bool) row {
 		tr := withEntry("- Definition: The amount a buyer may spend per day.\n" + contact + "- Status: " + value + "\n")
 		return row{name: name, tree: tr, holds: holds, file: glossaryPath, lines: lines(tr.line(glossaryPath, "- Status: "+value))}
@@ -41,6 +42,7 @@ func TestLintGlossaryStatus(t *testing.T) {
 }
 
 func TestLintGlossaryOpen(t *testing.T) {
+	t.Parallel()
 	rows(t, "open-entry-incomplete", []row{
 		{name: "row1 Definition ? and a Question", tree: withEntry("- Definition: ?\n" + contact + "- Status: open\n" + question), holds: true},
 		entryRow("row2 no Question", "- Definition: ?\n"+contact+"- Status: open\n"),
@@ -50,6 +52,7 @@ func TestLintGlossaryOpen(t *testing.T) {
 }
 
 func TestLintGlossaryDefined(t *testing.T) {
+	t.Parallel()
 	rows(t, "defined-entry-open", []row{
 		{name: "row1 a Definition", tree: withEntry("- Definition: An amount is composable when it splits.\n" + contact + "- Status: defined\n"), holds: true},
 		{name: "row2 defined by a reference", tree: withEntry(definedBy + contact + "- Status: defined\n"), holds: true},
@@ -57,12 +60,14 @@ func TestLintGlossaryDefined(t *testing.T) {
 		entryRow("row4 Definition ?", "- Definition: ?\n"+contact+"- Status: defined\n"),
 	})
 	t.Run("rows1-2 nothing reported", func(t *testing.T) {
+		t.Parallel()
 		check(t, withEntry("- Definition: An amount is composable when it splits.\n"+contact+"- Status: defined\n")).clean(t)
 		check(t, withEntry(definedBy+contact+"- Status: defined\n")).clean(t)
 	})
 }
 
 func TestLintGlossaryDefinition(t *testing.T) {
+	t.Parallel()
 	rows(t, "definition-count", []row{
 		{name: "row1 Definition", tree: withEntry("- Definition: An amount is composable when it splits.\n" + contact + "- Status: defined\n"), holds: true},
 		{name: "row2 Defined by", tree: withEntry(definedBy + "- Deviations: none\n" + contact + "- Status: defined\n"), holds: true},
@@ -72,6 +77,7 @@ func TestLintGlossaryDefinition(t *testing.T) {
 }
 
 func TestLintGlossaryDefinedBy(t *testing.T) {
+	t.Parallel()
 	field := func(name, value string, holds bool, extra ...string) row {
 		tr := withEntry("- Defined by: " + value + "\n" + contact + "- Status: defined\n").with(extra...)
 		return row{name: name, tree: tr, holds: holds, file: glossaryPath, lines: lines(tr.line(glossaryPath, "- Defined by:"))}
@@ -101,6 +107,7 @@ func TestLintGlossaryDefinedBy(t *testing.T) {
 }
 
 func TestLintGlossaryDeviations(t *testing.T) {
+	t.Parallel()
 	rows(t, "deviations-without-reference", []row{
 		{name: "row1 defined by CommonMark", tree: withEntry(definedBy + "- Deviations: none\n" + contact + "- Status: defined\n"), holds: true},
 		entryRow("row2 a Definition only", "- Definition: An amount is composable when it splits.\n- Deviations: none\n"+contact+"- Status: defined\n"),

@@ -25,6 +25,7 @@ Then      the shop shows <findings>
   And     nothing else changes`
 
 func TestLintExamplesPresent(t *testing.T) {
+	t.Parallel()
 	noTable := withX(ruleMD("cart.x.r", "Under test", findingsBlock, ""))
 	before := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n| findings | outcome |\n| --- | --- |\n| apples | shown |\n\n´´´guarded\n" + findingsBlock + "\n´´´\n")
 	rows(t, "examples-missing", []row{
@@ -35,6 +36,7 @@ func TestLintExamplesPresent(t *testing.T) {
 }
 
 func TestLintExamplesReserved(t *testing.T) {
+	t.Parallel()
 	reserved := func(name string) tree {
 		return withRule(`When      a buyer adds <product> on <`+name+`>
 Provided  <product> is in stock
@@ -54,6 +56,7 @@ Otherwise the cart refuses <product>
 }
 
 func TestLintExamplesColumns(t *testing.T) {
+	t.Parallel()
 	othersBlock := `Given     the shop lists the products <others>
 When      a buyer looks up the product <id>
 Provided  <id> is listed
@@ -73,11 +76,13 @@ Otherwise the shop shows nothing
 		{name: "row5 no outcome", tree: noOutcome, file: xPath, lines: tableLines(noOutcome)},
 	})
 	t.Run("row1 is a well-formed rule", func(t *testing.T) {
+		t.Parallel()
 		check(t, withRule(idBlock, idTable)).clean(t)
 	})
 }
 
 func TestLintExamplesProvidedColumn(t *testing.T) {
+	t.Parallel()
 	missing := withRule(idBlock, "| id | outcome |\n| --- | --- |\n| apple | shown |\n| pear | nothing shown |\n")
 	extra := withRule(findingsBlock, "| findings | provided | outcome |\n| --- | --- | --- |\n| apples | yes | shown |\n")
 	rows(t, "provided-column", []row{
@@ -89,6 +94,7 @@ func TestLintExamplesProvidedColumn(t *testing.T) {
 }
 
 func TestLintExamplesUnknownColumn(t *testing.T) {
+	t.Parallel()
 	extra := func(column string) tree {
 		return withRule(idBlock, "| id | provided | outcome | "+column+" |\n| --- | --- | --- | --- |\n| apple | yes | shown | x |\n| pear | no | nothing shown | x |\n")
 	}
@@ -102,6 +108,7 @@ func TestLintExamplesUnknownColumn(t *testing.T) {
 }
 
 func TestLintExamplesRows(t *testing.T) {
+	t.Parallel()
 	empty := withRule(findingsBlock, "| findings | outcome |\n| --- | --- |\n")
 	rows(t, "examples-empty", []row{
 		{name: "row1 one row", tree: withRule(findingsBlock, "| findings | outcome |\n| --- | --- |\n| apples | shown |\n"), holds: true},
@@ -115,6 +122,7 @@ func withRow(cells string) tree {
 }
 
 func TestLintExamplesCells(t *testing.T) {
+	t.Parallel()
 	short := withRow("| system | yes | nothing reported |")
 	empty := withRow("| system | yes | | |")
 	at := func(tr tree) []int { return lines(tr.line(xPath, "| system |")) }
@@ -134,6 +142,7 @@ func withRows(cells ...string) tree {
 }
 
 func TestLintExamplesRowRepeated(t *testing.T) {
+	t.Parallel()
 	// The n-th (1-based) row of x.md that starts with the id cell.
 	rowAt := func(tr tree, id string, n int) []int { return lines(tr.lineN(xPath, "| "+id+" |", n)) }
 	same := withRows("| a | yes | error | |", "| a | yes | error | |")
@@ -163,22 +172,26 @@ Otherwise the cart refuses <id>
 			ruleMD("cart.x.r", "Under test", idBlock, idTable) + ruleMD("cart.x.s", "Again", idBlock, idTable)), holds: true},
 	})
 	t.Run("row2 reported at the later row, not at the earlier one", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, same)
 		o.has(t, "examples-row-repeated", xPath, rowAt(same, "a", 2)...)
 		o.lacks(t, "examples-row-repeated", xPath, rowAt(same, "a", 1)...)
 	})
 	t.Run("derived: each repeating row is reported", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, thrice)
 		o.lacks(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 1)...)
 		o.has(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 2)...)
 		o.has(t, "examples-row-repeated", xPath, rowAt(thrice, "a", 3)...)
 	})
 	t.Run("row1 is a well-formed rule", func(t *testing.T) {
+		t.Parallel()
 		check(t, withRows("| b | yes | error | |", "| a | yes | error | |")).clean(t)
 	})
 }
 
 func TestLintExamplesProvidedValue(t *testing.T) {
+	t.Parallel()
 	value := func(v string) tree { return withRow("| system | " + v + " | shown | |") }
 	at := func(tr tree) []int { return lines(tr.line(xPath, "| system |")) }
 	isTrue, upper := value("true"), value("Yes")
@@ -202,6 +215,7 @@ func withValues(values ...string) tree {
 }
 
 func TestLintExamplesSides(t *testing.T) {
+	t.Parallel()
 	bad := func(name string, values ...string) row {
 		tr := withValues(values...)
 		return row{name: name, tree: tr, file: xPath, lines: tableLines(tr)}
@@ -216,6 +230,7 @@ func TestLintExamplesSides(t *testing.T) {
 }
 
 func TestLintExamplesParts(t *testing.T) {
+	t.Parallel()
 	twoParts := func(values ...string) tree {
 		var b strings.Builder
 		b.WriteString("| id | provided | outcome | why |\n| --- | --- | --- | --- |\n")
@@ -237,6 +252,7 @@ Otherwise the shop shows nothing
 		{name: "row3 the second part never shown failing", tree: missing, file: xPath, lines: tableLines(missing)},
 	})
 	t.Run("row2 is a well-formed rule", func(t *testing.T) {
+		t.Parallel()
 		check(t, twoParts("yes", "no (level 1)", "no (no anchor)")).clean(t)
 	})
 }

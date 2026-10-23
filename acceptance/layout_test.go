@@ -11,6 +11,7 @@ import (
 )
 
 func TestLintLayoutHidden(t *testing.T) {
+	t.Parallel()
 	// A skipped entry holds content that lint would report or could not
 	// read, so that reading it would show.
 	cases := []struct {
@@ -30,12 +31,14 @@ func TestLintLayoutHidden(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			// Skipped, or handed over to lint.layout.file and read: either
 			// way nothing is reported.
 			check(t, c.tree).clean(t)
 		})
 	}
 	t.Run("row6 notes.md, marked hidden by Windows", func(t *testing.T) {
+		t.Parallel()
 		// Hidden means a name starting with a dot: the mark does not
 		// travel with the tree, so notes.md is handed over to
 		// lint.layout.file, which reports it.
@@ -48,6 +51,7 @@ func TestLintLayoutHidden(t *testing.T) {
 		o.has(t, "file-unknown", "proviso/notes.md", 1)
 	})
 	t.Run("derived: the spec root's settings are read, not skipped", func(t *testing.T) {
+		t.Parallel()
 		// Handed over to lint.layout.file, which reads the file: a file
 		// that cannot be decoded stops lint (lint.run.unreadable).
 		dir := baseline().with("proviso/.markdownlint.jsonc", "\xff\xfe not settings").write(t)
@@ -71,6 +75,7 @@ func (tr tree) moved(from, to string) tree {
 }
 
 func TestLintLayoutName(t *testing.T) {
+	t.Parallel()
 	features := "proviso/capabilities/cart/features/"
 	upperCart := baseline().moved("proviso/capabilities/cart", "proviso/capabilities/Cart")
 	uebersicht := strings.ReplaceAll(featureMD, "cart.add", "cart.uebersicht")
@@ -81,6 +86,7 @@ func TestLintLayoutName(t *testing.T) {
 		{name: "row2 übersicht.md, a letter outside ASCII", tree: baseline().with(features+composed, uebersicht), holds: true},
 	})
 	t.Run("row3 übersicht.md, stored as u followed by a mark", func(t *testing.T) {
+		t.Parallel()
 		// Without a Contact the feature has a finding on its first line,
 		// so that its path is reported.
 		o := checkGoesOnAfter(t, baseline().with(features+decomposed, featureWith("cart.uebersicht", "", "")), func(dir string) {
@@ -111,6 +117,7 @@ func TestLintLayoutName(t *testing.T) {
 			file: features + "add_old.md", lines: lines(1)},
 	})
 	t.Run("row11 add.md., ending with a dot", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOnAfter(t, baseline(), func(dir string) {
 			folder := filepath.Join(dir, filepath.FromSlash(features))
 			name := filepath.Join(folder, "add.md") + "."
@@ -131,6 +138,7 @@ func TestLintLayoutName(t *testing.T) {
 		o.has(t, "name-malformed", features+"add.md.", 1)
 	})
 	t.Run("row12 übersicht.md, once composed and once as u followed by a mark", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline().with(features+composed, uebersicht,
 			features+decomposed, strings.ReplaceAll(featureMD, "cart.add", "cart.overview"))
 		o := checkGoesOnAfter(t, tr, func(dir string) {
@@ -158,6 +166,7 @@ func TestLintLayoutName(t *testing.T) {
 			file: "proviso/capabilities/cart/README.md", lines: lines(1)},
 	})
 	t.Run("derived: the folder's name only, not the names in it", func(t *testing.T) {
+		t.Parallel()
 		o := checkGoesOn(t, upperCart)
 		o.has(t, "name-malformed", "proviso/capabilities/Cart", 1)
 		if n := len(o.find("name-malformed", "", nil)); n != 1 {
@@ -194,11 +203,13 @@ func crlf(s string, at ...int) string {
 }
 
 func TestLintLayoutLineEnding(t *testing.T) {
+	t.Parallel()
 	settings := "proviso/.markdownlint.jsonc"
 	rows(t, "line-ending", []row{
 		{name: "row1 glossary.md, every line ending in a line feed", tree: baseline(), holds: true},
 	})
 	t.Run("row2 glossary.md, lines 3 and 7 ending in CR LF", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline()
 		tr[glossaryPath] = crlf(glossaryMD, 3, 7)
 		o := checkGoesOn(t, tr)
@@ -224,6 +235,7 @@ func TestLintLayoutLineEnding(t *testing.T) {
 		{name: "derived: a hidden file is skipped", tree: baseline().with("proviso/.notes.md", crlf("# Notes\n")), holds: true},
 	})
 	t.Run("derived: a lone carriage return does not end a line", func(t *testing.T) {
+		t.Parallel()
 		// lint.cli.report counts lines by line feeds only, so a finding
 		// after the carriage return stands on the line a line feed count
 		// gives.
@@ -235,6 +247,7 @@ func TestLintLayoutLineEnding(t *testing.T) {
 		o.has(t, "heading-unknown", b, tr.line(b, "## Scope"))
 	})
 	t.Run("derived: a feature in CR LF throughout", func(t *testing.T) {
+		t.Parallel()
 		tr := baseline()
 		tr[featurePath] = crlf(tr[featurePath])
 		o := check(t, tr)
@@ -246,6 +259,7 @@ func TestLintLayoutLineEnding(t *testing.T) {
 }
 
 func TestLintLayoutFile(t *testing.T) {
+	t.Parallel()
 	rows(t, "file-unknown", []row{
 		{name: "row1 capabilities/cart/features/add.md", tree: baseline(), holds: true},
 		{name: "row2 .markdownlint.jsonc", tree: baseline().with("proviso/.markdownlint.jsonc", "{}\n"), holds: true},
@@ -271,6 +285,7 @@ func TestLintLayoutFile(t *testing.T) {
 }
 
 func TestLintLayoutCapability(t *testing.T) {
+	t.Parallel()
 	rows(t, "capability-file-missing", []row{
 		{name: "row1 holding capability.md", tree: baseline(), holds: true},
 		{name: "row2 holding only glossary.md", tree: baseline().with("proviso/capabilities/billing/glossary.md", `# Glossary
@@ -287,6 +302,7 @@ func TestLintLayoutCapability(t *testing.T) {
 }
 
 func TestLintLayoutTitle(t *testing.T) {
+	t.Parallel()
 	rows(t, "title-missing", []row{
 		{name: "row1 # Glossary", tree: baseline(), holds: true},
 		{name: "row2 ## Glossary", tree: baseline().edit(glossaryPath, "# Glossary", "## Glossary"),
@@ -307,6 +323,7 @@ func TestLintLayoutTitle(t *testing.T) {
 }
 
 func TestLintLayoutEmpty(t *testing.T) {
+	t.Parallel()
 	rows(t, "sibling-empty", []row{
 		{name: "row1 glossary.md with one entry", tree: baseline(), holds: true},
 		{name: "row2 glossary.md with only # Glossary", tree: baseline().with(glossaryPath, "# Glossary\n"),
@@ -351,6 +368,7 @@ A cart is there on the next visit.
 // TestLintTreeLayoutManifest checks the row of tree_layout for manifest.sum:
 // in the spec root it belongs to the layout, anywhere else it does not.
 func TestLintTreeLayoutManifest(t *testing.T) {
+	t.Parallel()
 	rows(t, "file-unknown", []row{
 		{name: "manifest.sum in the spec root", tree: baseline().with("proviso/manifest.sum", "model 0\n"), holds: true, file: "proviso/manifest.sum"},
 		{name: "manifest.sum in a capability's folder", tree: baseline().with("proviso/capabilities/cart/manifest.sum", "model 0\n"), file: "proviso/capabilities/cart/manifest.sum"},

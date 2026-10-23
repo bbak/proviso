@@ -86,11 +86,14 @@ func without(ids []string, drop ...string) []string {
 }
 
 func TestBaselineImpactListed(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 unchanged, on the event of a changed rule", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitThen)
 		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
 	})
 	t.Run("row2 changed itself", func(t *testing.T) {
+		t.Parallel()
 		// cart.add.full shares the event head of cart.add.limit.
 		o, _ := impactOf(t, iLimitThen, iFullThen)
 		o.notCand(t, "cart.add.full")
@@ -98,6 +101,7 @@ func TestBaselineImpactListed(t *testing.T) {
 		o.hasReason(t, "billing.refund.add", "events", "buyer adds quantity", "cart.add.full", "cart.add.limit")
 	})
 	t.Run("row3 changed through a dependency", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iItemDef)
 		o.notCand(t, "cart.add.limit")
 		o.notCand(t, "cart.pay.total")
@@ -106,6 +110,7 @@ func TestBaselineImpactListed(t *testing.T) {
 	// change_effects: every part of an element changed through a
 	// dependency counts as changed, so its steps open events and ranges.
 	t.Run("derived: an element changed through a dependency opens its sources", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iParamValue)
 		o.notCand(t, "cart.add.limit")
 		o.notCand(t, "cart.pay.cap")
@@ -115,11 +120,13 @@ func TestBaselineImpactListed(t *testing.T) {
 	// baseline.impact Rationale: sharing a term or a reference with a
 	// changed rule is no link while it keeps its meaning.
 	t.Run("derived: sharing a term or a reference is no link", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitProvided)
 		o.notCand(t, "cart.pay.total")
 		o.notCand(t, "cart.pay.cap")
 	})
 	t.Run("derived: without a manifest, every element is touched and none a candidate", func(t *testing.T) {
+		t.Parallel()
 		dir := impactTree().write(t)
 		o := impactIn(t, dir, dir, filepath.Join(dir, "proviso"))
 		o.only(t)
@@ -127,7 +134,9 @@ func TestBaselineImpactListed(t *testing.T) {
 }
 
 func TestBaselineImpactEvents(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 an added rule with an event head others have", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, addTwice)
 		o.only(t, "billing.refund.add", "cart.add.full", "cart.add.limit", "cart.add.never", "cart.bounded", "system.honest")
 		for _, id := range []string{"billing.refund.add", "cart.add.full", "cart.add.limit"} {
@@ -135,13 +144,16 @@ func TestBaselineImpactEvents(t *testing.T) {
 		}
 	})
 	t.Run("row2 its Rationale reworded", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitRatio)
 		o.only(t)
 	})
 }
 
 func TestBaselineImpactEventHead(t *testing.T) {
+	t.Parallel()
 	t.Run("rows1-2 the When up to its first placeholder", func(t *testing.T) {
+		t.Parallel()
 		// cart.add.full and cart.add.limit qualify the event after the
 		// placeholder each in its own words.
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.more", "A buyer adds more",
@@ -151,6 +163,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.add.limit", "events", "buyer adds quantity", "cart.pay.more")
 	})
 	t.Run("row3 case, articles, punctuation and backticks ignored", func(t *testing.T) {
+		t.Parallel()
 		// cart.pay.order: "a buyer orders a `line` for the products <products>".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.again", "A buyer orders again",
 			"When      The Buyer orders the line, for the products: <products>\nThen      the order holds <products>\n  And     nothing else changes",
@@ -158,6 +171,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.pay.order", "events", "buyer orders line for products", "cart.pay.again")
 	})
 	t.Run("derived: a term mark ignored, its words kept", func(t *testing.T) {
+		t.Parallel()
 		// cart.pay.total: "a buyer pays for the [items] <items>".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.again", "A buyer pays again",
 			"When      the buyer pays for [items] <items> again\nThen      the shop charges <items> again\n  And     nothing else changes",
@@ -165,6 +179,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.pay.total", "events", "buyer pays for items", "cart.pay.again")
 	})
 	t.Run("row4 a When without a placeholder", func(t *testing.T) {
+		t.Parallel()
 		// cart.pay.open: "the shop opens".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.dawn", "The shop opens at dawn",
 			"When      The shop opens.\nThen      the shop lights its lamps\n  And     nothing else changes",
@@ -172,6 +187,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.pay.open", "events", "shop opens", "cart.pay.dawn")
 	})
 	t.Run("row5 a hyphen separates words", func(t *testing.T) {
+		t.Parallel()
 		// cart.pay.order: "a buyer orders a `line` for the products <products>".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.hyphen", "A buyer orders by line",
 			"When      the buyer-orders the line for products <products>\nThen      the order holds <products>\n  And     nothing else changes",
@@ -179,6 +195,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.pay.order", "events", "buyer orders line for products", "cart.pay.hyphen")
 	})
 	t.Run("derived: an underscore separates words", func(t *testing.T) {
+		t.Parallel()
 		// cart.pay.cap: "a buyer checks out the cart <cart>".
 		o, _ := impactOf(t, addRule(payPath, "cart.pay.under", "A buyer checks out",
 			"When      a buyer checks_out the cart <cart> at once\nThen      the shop takes <cart>\n  And     nothing else changes",
@@ -186,6 +203,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 		o.hasReason(t, "cart.pay.cap", "events", "buyer checks out cart", "cart.pay.under")
 	})
 	t.Run("derived: other words are another event", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, addTwice)
 		for _, id := range []string{"cart.pay.lines", "cart.pay.cap", "cart.pay.open", "cart.pay.total", "billing.refund.full"} {
 			o.notCand(t, id)
@@ -194,7 +212,9 @@ func TestBaselineImpactEventHead(t *testing.T) {
 }
 
 func TestBaselineImpactRanges(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 a rule's Then step changed", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitThen)
 		o.hasReason(t, "cart.add.never", "ranges", "feature", "cart.add.limit")
 		o.hasReason(t, "cart.bounded", "ranges", "capability", "cart.add.limit")
@@ -202,17 +222,20 @@ func TestBaselineImpactRanges(t *testing.T) {
 		o.notCand(t, "billing.balanced")
 	})
 	t.Run("row2 an added rule", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, addTip)
 		o.only(t, "cart.bounded", "system.honest")
 		o.hasReason(t, "cart.bounded", "ranges", "capability", "cart.pay.tip")
 		o.hasReason(t, "system.honest", "ranges", "system", "cart.pay.tip")
 	})
 	t.Run("row3 a rule's Rationale reworded", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitRatio)
 		o.only(t)
 	})
 	// Every source of a changed step at once, and nothing else.
 	t.Run("derived: every source of a changed step", func(t *testing.T) {
+		t.Parallel()
 		o, tr := impactOf(t, iLimitThen)
 		o.only(t, "billing.refund.add", "cart.add.full", "cart.add.never", "cart.bounded", "system.honest")
 		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
@@ -225,6 +248,7 @@ func TestBaselineImpactRanges(t *testing.T) {
 }
 
 func TestBaselineImpactScope(t *testing.T) {
+	t.Parallel()
 	cases := []struct {
 		name  string
 		edit  change
@@ -242,6 +266,7 @@ func TestBaselineImpactScope(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			o, tr := impactOf(t, c.edit)
 			o.only(t, c.want...)
 			for _, id := range c.want {
@@ -263,6 +288,7 @@ func TestBaselineImpactScope(t *testing.T) {
 		})
 	}
 	t.Run("row6 a feature's Rationale reworded", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iAddRatio)
 		o.only(t)
 		if len(o.is.Scopes) != 0 {
@@ -282,9 +308,11 @@ func sorted(s []string) []string {
 }
 
 func TestBaselineImpactOrder(t *testing.T) {
+	t.Parallel()
 	// That candidates and reasons are ordered is checked for every run
 	// (see parseImpactSet); here each row's outcome is checked as well.
 	t.Run("row1 by identifier, byte by byte", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iFastProperty)
 		var got []string
 		for _, c := range o.is.Candidates {
@@ -295,6 +323,7 @@ func TestBaselineImpactOrder(t *testing.T) {
 		}
 	})
 	t.Run("row2 found through scope and through events", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iLimitThen, iAddGoal)
 		var sources []string
 		for _, r := range o.cand(t, "cart.add.full").Reasons {
@@ -307,6 +336,7 @@ func TestBaselineImpactOrder(t *testing.T) {
 }
 
 func TestBaselineImpactOutput(t *testing.T) {
+	t.Parallel()
 	// That the text form is written for candidates, and nothing for none,
 	// is checked for every run (see impactIn).
 	exit0 := func(t *testing.T, o impactOutcome) {
@@ -316,11 +346,13 @@ func TestBaselineImpactOutput(t *testing.T) {
 		}
 	}
 	t.Run("row1 two, --json", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iNeverProp)
 		o.only(t, "cart.add.full", "cart.add.limit")
 		exit0(t, o)
 	})
 	t.Run("row2 none, --json", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, impactTree())
 		o := r.impact()
 		o.only(t)
@@ -330,6 +362,7 @@ func TestBaselineImpactOutput(t *testing.T) {
 		exit0(t, o)
 	})
 	t.Run("row3 two, as text", func(t *testing.T) {
+		t.Parallel()
 		o, _ := impactOf(t, iNeverProp)
 		if strings.TrimSpace(o.text.stdout) == "" {
 			t.Errorf("want the two candidates as text, got nothing")
@@ -337,6 +370,7 @@ func TestBaselineImpactOutput(t *testing.T) {
 		exit0(t, o)
 	})
 	t.Run("row4 none, as text", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, impactTree())
 		o := r.impact()
 		if o.text.stdout != "" {
@@ -349,7 +383,9 @@ func TestBaselineImpactOutput(t *testing.T) {
 // TestBaselineImpactFormer runs the cases of baseline.diff.former that need
 // former text with `impact`.
 func TestBaselineImpactFormer(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
+		t.Parallel()
 		r, base := accepted(t, impactTree())
 		r.set(amended(impactTree(), iLimitThen))
 		o := r.impact()
@@ -359,6 +395,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		}
 	})
 	t.Run("row2 a merge that took the manifest from the mainline", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, impactTree())
 		r.git("checkout", "-q", "-b", "feature")
 		feature := amended(impactTree(), iCountBody)
@@ -381,6 +418,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		}
 	})
 	t.Run("row3 the spec root in no git repository", func(t *testing.T) {
+		t.Parallel()
 		dir := impactTree().write(t)
 		skipIfGitAbove(t, dir)
 		manifestOK(t, dir)
@@ -388,6 +426,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		impactStopped(t, impactIn(t, dir, dir, filepath.Join(dir, "proviso")))
 	})
 	t.Run("row4 the manifest written but never committed", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, impactTree())
 		r.commit("tree")
 		r.manifest()
@@ -395,6 +434,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		impactStopped(t, r.impact())
 	})
 	t.Run("row5 the manifest written again since and not committed", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, impactTree())
 		r.set(amended(impactTree(), iLimitThen))
 		r.manifest()
@@ -402,6 +442,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		impactStopped(t, r.impact())
 	})
 	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, impactTree())
 		r.manifest()
 		r.set(amended(impactTree(), iLimitProvided))
@@ -410,6 +451,7 @@ func TestBaselineImpactFormer(t *testing.T) {
 		impactStopped(t, r.impact())
 	})
 	t.Run("derived: added rules need no former text, and no git", func(t *testing.T) {
+		t.Parallel()
 		dir := impactTree().write(t)
 		manifestOK(t, dir)
 		skipIfGitAbove(t, dir)

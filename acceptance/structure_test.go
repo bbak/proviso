@@ -27,6 +27,7 @@ The cart holds at most ´max_quantity´ pieces of one product.
 func appendFeature(text string) tree { return baseline().appendTo(featurePath, text) }
 
 func TestLintStructureType(t *testing.T) {
+	t.Parallel()
 	something := appendFeature("\n## <a id=\"cart.add.x\"></a> Something\n\nA paragraph.\n")
 	nested := appendFeature("\n### <a id=\"cart.add.y\"></a> Rule: Nested\n\nA paragraph.\n")
 	inGlossary := baseline().appendTo(glossaryPath, "\n## <a id=\"cart.rule-like\"></a> Rule: A rule in a glossary\n\nA paragraph.\n")
@@ -55,14 +56,17 @@ func TestLintStructureType(t *testing.T) {
 			file: glossaryPath, lines: lines(deeper.line(glossaryPath, `id="cart.item.kind"`))},
 	})
 	t.Run("row2 the invariant is read as one", func(t *testing.T) {
+		t.Parallel()
 		check(t, appendFeature(invariantMD)).clean(t)
 	})
 	t.Run("row3 invariants.md is read", func(t *testing.T) {
+		t.Parallel()
 		check(t, baseline().with("proviso/invariants.md", invariantsMD)).clean(t)
 	})
 }
 
 func TestLintStructureSection(t *testing.T) {
+	t.Parallel()
 	afterRationale := func(heading string) tree {
 		return baseline().edit(featurePath, "would empty the shelves.\n", "would empty the shelves.\n\n"+heading+"\n\nSome text.\n")
 	}
@@ -88,6 +92,7 @@ func TestLintStructureSection(t *testing.T) {
 }
 
 func TestLintStructureRequired(t *testing.T) {
+	t.Parallel()
 	noProperty := appendFeature(invariantMD[:len(invariantMD)-len("### Property\n\nThe cart holds at most ´max_quantity´ pieces of one product.\n")])
 	noConstraintProperty := baseline().with("proviso/constraints.md", constraintsMD[:len(constraintsMD)-len("### Property\n\nEvery page works in a browser.\n")])
 	rows(t, "section-missing", []row{
@@ -107,6 +112,7 @@ func TestLintStructureRequired(t *testing.T) {
 }
 
 func TestLintStructureOnce(t *testing.T) {
+	t.Parallel()
 	twice := baseline().edit(featurePath, "would empty the shelves.\n", "would empty the shelves.\n\n## Goal\n\nMore goals.\n")
 	rows(t, "section-repeated", []row{
 		{name: "row1 Goal, Rationale", tree: baseline(), holds: true},
@@ -117,6 +123,7 @@ func TestLintStructureOnce(t *testing.T) {
 }
 
 func TestLintStructureFieldKnown(t *testing.T) {
+	t.Parallel()
 	source := baseline().edit(glossaryPath, "- Status: defined\n", "- Status: defined\n- Source: Maria Keller\n")
 	owner := baseline().edit(featurePath, "- Contact: Dana Reyes\n", "- Contact: Dana Reyes\n- Owner: Search team\n")
 	lower := baseline().edit(featurePath, "- Contact: Dana Reyes\n", "- Contact: Dana Reyes\n- contact: Dana Reyes\n")
@@ -139,6 +146,7 @@ func TestLintStructureFieldKnown(t *testing.T) {
 }
 
 func TestLintStructureFieldRequired(t *testing.T) {
+	t.Parallel()
 	noStatus := baseline().appendTo(glossaryPath, "\n## <a id=\"cart.basket\"></a> basket\n\n- Definition: What a buyer carries.\n- Contact: Dana Reyes\n")
 	rows(t, "field-missing", []row{
 		{name: "row1 Contact", tree: baseline(), holds: true},
@@ -155,6 +163,7 @@ func TestLintStructureFieldRequired(t *testing.T) {
 }
 
 func TestLintStructureFieldOnce(t *testing.T) {
+	t.Parallel()
 	twice := baseline().edit(glossaryPath, "- Contact: Dana Reyes\n", "- Contact: Dana Reyes\n- Contact: Lee Park\n")
 	rows(t, "field-repeated", []row{
 		{name: "row1 Definition, Contact, Status, Aliases", tree: baseline(), holds: true},
@@ -164,6 +173,7 @@ func TestLintStructureFieldOnce(t *testing.T) {
 }
 
 func TestLintStructureElement(t *testing.T) {
+	t.Parallel()
 	rows(t, "element-missing", []row{
 		{name: "row1 system.md opening with its element", tree: baseline(), holds: true},
 		{name: "row2 system.md with no heading at all", tree: baseline().with(systemPath, "The shop sells goods.\n"),
@@ -176,6 +186,7 @@ func TestLintStructureElement(t *testing.T) {
 }
 
 func TestLintStructureSectionLevel(t *testing.T) {
+	t.Parallel()
 	ruleRationale := func(heading string) tree {
 		return baseline().edit(featurePath, limitHeading+"\n", limitHeading+"\n\n"+heading+"\n\nShelves are small.\n")
 	}
@@ -196,6 +207,7 @@ func TestLintStructureSectionLevel(t *testing.T) {
 			file: featurePath, lines: lines(property.line(featurePath, "## Property"))},
 	})
 	t.Run("row2 nothing reported", func(t *testing.T) {
+		t.Parallel()
 		check(t, ruleRationale("### Rationale")).clean(t)
 	})
 }

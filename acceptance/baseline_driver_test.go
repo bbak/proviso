@@ -21,6 +21,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
@@ -507,10 +508,14 @@ type repo struct {
 // committing anything.
 func newRepo(t *testing.T, tr tree) *repo {
 	t.Helper()
-	if _, err := exec.LookPath("git"); err != nil {
-		t.Skip("git is not installed")
-	}
-	r := &repo{t: t, dir: t.TempDir(), tr: tree{}}
+	return newRepoIn(t, t.TempDir(), tr)
+}
+
+// newRepoIn is newRepo in the empty directory dir.
+func newRepoIn(t *testing.T, dir string, tr tree) *repo {
+	t.Helper()
+	skipWithoutGit(t)
+	r := &repo{t: t, dir: dir, tr: tree{}}
 	r.cfg = filepath.Join(t.TempDir(), "gitconfig")
 	if err := os.WriteFile(r.cfg, nil, 0o644); err != nil {
 		t.Fatal(err)
@@ -584,14 +589,97 @@ func (r *repo) diff() diffOutcome {
 	return diffIn(r.t, r.dir, r.dir, r.root())
 }
 
+func skipWithoutGit(t *testing.T) {
+	t.Helper()
+	if _, err := exec.LookPath("git"); err != nil {
+		t.Skip("git is not installed")
+	}
+}
+
 // accepted is tr accepted: written into a new repository, its manifest
 // written by `proviso manifest`, and both committed. It returns the
-// repository and the commit.
+// repository and the commit. Each tree is accepted once, by the first test
+// that asks for it, in a folder of its own below templates; every test gets
+// a copy of that folder in its own temporary directory.
 func accepted(t *testing.T, tr tree) (*repo, string) {
 	t.Helper()
-	r := newRepo(t, tr)
-	r.manifest()
-	return r, r.commit("accept")
+	skipWithoutGit(t)
+	v, _ := acceptedRepos.LoadOrStore(tr.key(), &acceptedRepo{})
+	a := v.(*acceptedRepo)
+	a.once.Do(func() {
+		dir, err := os.MkdirTemp(templates, "accepted-")
+		if err != nil {
+			t.Fatal(err)
+		}
+		r := newRepoIn(t, dir, tr)
+		r.manifest()
+		a.commit = r.commit("accept")
+		a.dir, a.tick, a.built = dir, r.tick, true
+	})
+	if !a.built {
+		t.Fatal("accepting the tree failed in another test")
+	}
+	r := &repo{t: t, dir: t.TempDir(), tick: a.tick, tr: tr.clone()}
+	copyDir(t, a.dir, r.dir)
+	r.cfg = filepath.Join(t.TempDir(), "gitconfig")
+	if err := os.WriteFile(r.cfg, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return r, a.commit
+}
+
+// acceptedRepo is a tree accepted once: its repository, the git commands
+// run in it so far and the commit.
+type acceptedRepo struct {
+	once   sync.Once
+	built  bool
+	dir    string
+	tick   int
+	commit string
+}
+
+// acceptedRepos maps the key of each tree accepted to its *acceptedRepo.
+var acceptedRepos sync.Map
+
+// key identifies the tree by its paths and contents.
+func (tr tree) key() string {
+	paths := make([]string, 0, len(tr))
+	for p := range tr {
+		paths = append(paths, p)
+	}
+	sort.Strings(paths)
+	var b strings.Builder
+	for _, p := range paths {
+		fmt.Fprintf(&b, "%d:%s%d:%s", len(p), p, len(tr[p]), tr[p])
+	}
+	return b.String()
+}
+
+// copyDir copies the folders and regular files below src into dst.
+func copyDir(t *testing.T, src, dst string) {
+	t.Helper()
+	err := filepath.WalkDir(src, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, _ := filepath.Rel(src, p)
+		target := filepath.Join(dst, rel)
+		if d.IsDir() {
+			return os.MkdirAll(target, 0o755)
+		}
+		info, err := d.Info()
+		if err != nil {
+			return err
+		}
+		b, err := os.ReadFile(p)
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(target, b, info.Mode().Perm())
+	})
+	if err != nil {
+		t.Fatalf("copying the accepted repository: %v", err)
+	}
 }
 
 // skipIfGitAbove skips a test that needs dir to be in no git repository when

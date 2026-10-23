@@ -105,5 +105,6 @@ var packStandsIn = map[string]string{
 }
 
 func TestBaselinePackFixture(t *testing.T) {
+	t.Parallel()
 	check(t, packTree()).clean(t)
 }

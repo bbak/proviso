@@ -121,7 +121,9 @@ func checkFormer(t *testing.T, p partChange, text string) {
 }
 
 func TestBaselineDiffBaseline(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 with manifest.sum, compared with the manifest", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		o := r.diff()
 		o.only(t)
@@ -129,6 +131,7 @@ func TestBaselineDiffBaseline(t *testing.T) {
 		r.diff().only(t, "cart.add.extra:added")
 	})
 	t.Run("row2 without manifest.sum, every element added", func(t *testing.T) {
+		t.Parallel()
 		tr := diffTree()
 		dir := tr.write(t)
 		o := diffIn(t, dir, dir, filepath.Join(dir, "proviso"))
@@ -142,6 +145,7 @@ func TestBaselineDiffBaseline(t *testing.T) {
 }
 
 func TestBaselineDiffMalformed(t *testing.T) {
+	t.Parallel()
 	good := manifestFor(plainParts())
 	lines := strings.Split(strings.TrimSuffix(good, "\n"), "\n")
 	headingLine := 0
@@ -170,16 +174,19 @@ func TestBaselineDiffMalformed(t *testing.T) {
 	}
 
 	t.Run("row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
 		o := diffWith(t, good)
 		o.only(t)
 	})
 	t.Run("row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
 		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
 		o := diffWith(t, strings.Join(c, "\n")+"\n")
 		o.stopped(t)
 		names(t, o, "<<<<<<< HEAD", 3)
 	})
 	t.Run("row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
 		line := "cart heading " + fp("Cart")
 		o := diffWith(t, replaced(line))
 		o.stopped(t)
@@ -200,13 +207,16 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		}
 	}
 	t.Run("impact/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
 		impactWith(t, good).only(t)
 	})
 	t.Run("impact/row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
 		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
 		impactNames(t, impactWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
 	})
 	t.Run("impact/row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
 		line := "cart heading " + fp("Cart")
 		impactNames(t, impactWith(t, replaced(line)), line, headingLine+1)
 	})
@@ -225,14 +235,17 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		}
 	}
 	t.Run("pack/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
 		o := packWith(t, good)
 		o.headingsAre(t, "System")
 	})
 	t.Run("pack/row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
 		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
 		packNames(t, packWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
 	})
 	t.Run("pack/row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
 		line := "cart heading " + fp("Cart")
 		packNames(t, packWith(t, replaced(line)), line, headingLine+1)
 	})
@@ -246,6 +259,7 @@ func TestBaselineDiffMalformed(t *testing.T) {
 	}
 	for _, c := range derived {
 		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
 			o := diffWith(t, replaced(c.line))
 			o.stopped(t)
 		})
@@ -253,7 +267,9 @@ func TestBaselineDiffMalformed(t *testing.T) {
 }
 
 func TestBaselineDiffAdded(t *testing.T) {
+	t.Parallel()
 	t.Run("row1 new since the manifest was written", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		tr := diffTree().appendTo(featurePath, extraRule)
 		r.set(tr)
@@ -263,16 +279,19 @@ func TestBaselineDiffAdded(t *testing.T) {
 		checkRevision(t, o, "")
 	})
 	t.Run("row2 unchanged, handed over", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().appendTo(featurePath, extraRule))
 		r.diff().lacksElem(t, "cart.add.limit")
 	})
 	t.Run("row3 moved into another feature's file, handed over", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(moved())
 		r.diff().only(t)
 	})
 	t.Run("derived: added needs no former text, and no git", func(t *testing.T) {
+		t.Parallel()
 		dir := diffTree().write(t)
 		manifestOK(t, dir)
 		skipIfGitAbove(t, dir)
@@ -284,6 +303,7 @@ func TestBaselineDiffAdded(t *testing.T) {
 }
 
 func TestBaselineDiffChanged(t *testing.T) {
+	t.Parallel()
 	// amended accepts diffTree, applies cs and diffs.
 	amended := func(t *testing.T, cs ...change) (diffOutcome, tree, string) {
 		t.Helper()
@@ -294,6 +314,7 @@ func TestBaselineDiffChanged(t *testing.T) {
 	}
 
 	t.Run("row1 its Then step reworded", func(t *testing.T) {
+		t.Parallel()
 		o, tr, base := amended(t, limitThen)
 		o.only(t, "cart.add.limit:changed")
 		e := o.elem(t, "cart.add.limit")
@@ -303,6 +324,7 @@ func TestBaselineDiffChanged(t *testing.T) {
 		checkRevision(t, o, base)
 	})
 	t.Run("row2 its Rationale deleted", func(t *testing.T) {
+		t.Parallel()
 		o, _, base := amended(t, limitNoRatio)
 		o.only(t, "cart.add.limit:changed")
 		e := o.elem(t, "cart.add.limit")
@@ -311,11 +333,13 @@ func TestBaselineDiffChanged(t *testing.T) {
 		checkRevision(t, o, base)
 	})
 	t.Run("row3 a new Examples row", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t, limitNewRow)
 		o.only(t, "cart.add.limit:changed")
 		onlyParts(t, o.elem(t, "cart.add.limit"), "row "+rowKey("quantity", "5", "product", "pear")+":added")
 	})
 	t.Run("row4 an Examples row with a new outcome", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t, limitOutcome)
 		o.only(t, "cart.add.limit:changed")
 		e := o.elem(t, "cart.add.limit")
@@ -324,11 +348,13 @@ func TestBaselineDiffChanged(t *testing.T) {
 		checkFormer(t, part(t, e, key), "| 1 | apple | yes | added | |")
 	})
 	t.Run("row5 moved into another feature's file", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(moved())
 		r.diff().lacksElem(t, "cart.add.limit")
 	})
 	t.Run("row6 its text wrapped at other places", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t,
 			change{featurePath, "A cart that takes anything would empty the shelves.", "A cart that takes anything\nwould empty   the shelves."},
 			change{featurePath, "A shelf holds ten pieces.", "A shelf holds\nten pieces."},
@@ -337,10 +363,12 @@ func TestBaselineDiffChanged(t *testing.T) {
 		o.only(t)
 	})
 	t.Run("row7 one of a feature's rules changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t, limitThen)
 		o.lacksElem(t, "cart.add")
 	})
 	t.Run("derived: several parts, and the heading changed", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t, limitThen, limitProvided, limitOutcome,
 			change{xPath, "Rule: Under test", "Rule: Under a new test"},
 		)
@@ -351,11 +379,13 @@ func TestBaselineDiffChanged(t *testing.T) {
 		checkFormer(t, part(t, e, "heading"), "Rule: Under test")
 	})
 	t.Run("derived: a field added", func(t *testing.T) {
+		t.Parallel()
 		o, _, _ := amended(t, change{glossaryPath, "#system.ref.commonmark)\n- Contact: Dana Reyes\n- Status: defined\n", "#system.ref.commonmark)\n- Contact: Dana Reyes\n- Status: defined\n- Aliases: thematic breaks\n"})
 		o.only(t, "cart.thematic-break:changed")
 		onlyParts(t, o.elem(t, "cart.thematic-break"), "field Aliases:added")
 	})
 	t.Run("derived: only an added part needs no former text, and no git", func(t *testing.T) {
+		t.Parallel()
 		dir := diffTree().write(t)
 		manifestOK(t, dir)
 		skipIfGitAbove(t, dir)
@@ -367,15 +397,18 @@ func TestBaselineDiffChanged(t *testing.T) {
 }
 
 func TestBaselineDiffRemoved(t *testing.T) {
+	t.Parallel()
 	emptyText, _ := elementText(diffTree()[featurePath], "cart.add.empty")
 
 	t.Run("row1 still in the tree, compared", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().edit(featurePath, emptyText, ""))
 		o := r.diff()
 		o.lacksElem(t, "cart.add.limit")
 	})
 	t.Run("row2 its rule deleted", func(t *testing.T) {
+		t.Parallel()
 		r, base := accepted(t, diffTree())
 		r.set(diffTree().edit(featurePath, emptyText, ""))
 		o := r.diff()
@@ -387,12 +420,14 @@ func TestBaselineDiffRemoved(t *testing.T) {
 		checkRevision(t, o, base)
 	})
 	t.Run("row3 moved to the system glossary", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		item, _ := elementText(diffTree()[glossaryPath], "cart.item")
 		r.set(diffTree().edit(glossaryPath, item, "").with("proviso/glossary.md", "# Glossary\n\n"+item))
 		r.diff().only(t)
 	})
 	t.Run("derived: a whole feature file deleted", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().without(xPath))
 		r.diff().only(t, "cart.x:removed", "cart.x.r:removed", "cart.x.line:removed")
@@ -425,6 +460,7 @@ func checkThrough(t *testing.T, e diffElement, chains ...string) {
 }
 
 func TestBaselineDiffDependency(t *testing.T) {
+	t.Parallel()
 	diffOf := func(t *testing.T, base tree, cs ...change) diffOutcome {
 		t.Helper()
 		r, _ := accepted(t, base)
@@ -432,59 +468,72 @@ func TestBaselineDiffDependency(t *testing.T) {
 		return r.diff()
 	}
 	t.Run("row1 a glossary entry's Definition reworded", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, diffTree(), itemDefinition)
 		o.only(t, "cart.item:changed", "cart.add.limit:changed-through", "cart.add.empty:changed-through")
 		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
 	})
 	t.Run("row2 a reference with a new Version", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, diffTree(), change{referencesPath, "- Version: 0.31.2", "- Version: 0.32"})
 		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed-through", "cart.x.line:changed-through")
 		checkThrough(t, o.elem(t, "cart.thematic-break"), "system.ref.commonmark")
 		checkThrough(t, o.elem(t, "cart.x.line"), "system.ref.commonmark > cart.thematic-break")
 	})
 	t.Run("row3 a member of a contract element with a new value", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, impactTree(), iCountBody)
 		checkThrough(t, o.elem(t, "cart.pay.lines"), "cart.api.line.count")
 	})
 	t.Run("row4 a member with a new description, reaching the rules referring to the element holding it", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, impactTree(), iCountBody)
 		o.only(t, "cart.api.line.count:changed", "cart.pay.lines:changed-through", "cart.pay.order:changed-through")
 		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line.count")
 	})
 	t.Run("row5 a rule's Then step changed, reaching the rules handing over to it", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, handTree(), limitThen)
 		o.only(t, "cart.add.limit:changed", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.add.limit")
 	})
 	t.Run("row6 a rule changed in its Rationale only, marking a term whose Definition changed", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, handTree(), itemDefinition, limitNoRatio)
 		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
 	})
 	t.Run("row7 a new alias only", func(t *testing.T) {
+		t.Parallel()
 		diffOf(t, diffTree(), itemAlias).only(t, "cart.item:changed")
 	})
 	t.Run("row8 a reference with a new Contact only", func(t *testing.T) {
+		t.Parallel()
 		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
 	})
 	t.Run("derived: a reference with a new Link", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, diffTree(), change{referencesPath, "- Link: https://spec.commonmark.org/0.31.2/", "- Link: https://spec.commonmark.org/current/"})
 		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed-through", "cart.x.line:changed-through")
 	})
 	t.Run("derived: a new Contact of a glossary entry", func(t *testing.T) {
+		t.Parallel()
 		diffOf(t, diffTree(), itemContact).only(t, "cart.item:changed")
 	})
 	t.Run("derived: a rule depending on a changed meaning and changed itself", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, diffTree(), itemDefinition, limitThen)
 		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through")
 	})
 	t.Run("derived: a parameter with a new value", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, impactTree(), iParamValue)
 		o.only(t, "cart.max-quantity:changed", "cart.add.limit:changed-through", "cart.pay.cap:changed-through")
 		checkThrough(t, o.elem(t, "cart.pay.cap"), "cart.max-quantity")
 	})
 	t.Run("derived: a contract element passes on the term it represents", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, impactTree(), iItemDef)
 		o.only(t, "cart.item:changed", "cart.api.line:changed-through", "cart.add.limit:changed-through",
 			"cart.pay.total:changed-through", "cart.pay.order:changed-through")
@@ -492,10 +541,12 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.item > cart.api.line")
 	})
 	t.Run("derived: every chain that reaches an element", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, impactTree(), iItemDef, iParamValue)
 		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item", "cart.max-quantity")
 	})
 	t.Run("derived: a chain through a hand-over", func(t *testing.T) {
+		t.Parallel()
 		o := diffOf(t, handTree(), itemDefinition)
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
 	})
@@ -552,6 +603,7 @@ Then      the shop names the price of <product>
 }
 
 func TestBaselineDiffUndecided(t *testing.T) {
+	t.Parallel()
 	tr := undecidedTree()
 	dir := tr.write(t)
 	o := diffIn(t, dir, dir, filepath.Join(dir, "proviso"))
@@ -569,21 +621,27 @@ func TestBaselineDiffUndecided(t *testing.T) {
 		}
 	}
 	t.Run("row1 a rule with every step decided", func(t *testing.T) {
+		t.Parallel()
 		undecided(t, "cart.add.limit")
 	})
 	t.Run("row2 a rule with Then ?", func(t *testing.T) {
+		t.Parallel()
 		undecided(t, "cart.x.weigh", place{xPath, tr.line(xPath, "Then      ?")})
 	})
 	t.Run("row3 a rule marking an open term", func(t *testing.T) {
+		t.Parallel()
 		undecided(t, "cart.x.basket", place{xPath, tr.line(xPath, "[basket]")})
 	})
 	t.Run("derived: an undecided Examples cell", func(t *testing.T) {
+		t.Parallel()
 		undecided(t, "cart.x.price", place{xPath, tr.line(xPath, "| apple | ? |")})
 	})
 	t.Run("derived: an open entry's undecided Definition", func(t *testing.T) {
+		t.Parallel()
 		undecided(t, "cart.basket", place{glossaryPath, tr.line(glossaryPath, "- Definition: ?")})
 	})
 	t.Run("derived: a changed element", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		changed := diffTree().edit(featurePath, "Then      the cart holds <quantity> more of <product>", "Then      ?")
 		r.set(changed)
@@ -596,6 +654,7 @@ func TestBaselineDiffUndecided(t *testing.T) {
 		}
 	})
 	t.Run("derived: a rule changed through an open term", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		open := diffTree().edit(glossaryPath, "- Definition: A product placed in the cart.\n- Contact: Dana Reyes\n- Status: defined\n",
 			"- Definition: ?\n- Contact: Dana Reyes\n- Status: open\n- Question: Is a service an item?\n")
@@ -610,9 +669,11 @@ func TestBaselineDiffUndecided(t *testing.T) {
 }
 
 func TestBaselineDiffFormer(t *testing.T) {
+	t.Parallel()
 	formerThen := "Then      the cart holds <quantity> more of <product>\n  And     nothing else changes"
 
 	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
+		t.Parallel()
 		r, base := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
 		o := r.diff()
@@ -620,6 +681,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		checkFormer(t, part(t, o.elem(t, "cart.add.limit"), "step Then"), formerThen)
 	})
 	t.Run("derived: the edit committed since", func(t *testing.T) {
+		t.Parallel()
 		r, base := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
 		r.commit("amend")
@@ -628,6 +690,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		checkFormer(t, part(t, o.elem(t, "cart.add.limit"), "step Then"), formerThen)
 	})
 	t.Run("row2 a merge that took the manifest from the mainline", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.git("checkout", "-q", "-b", "feature")
 		feature := diffTree().apply(xThen)
@@ -652,6 +715,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 			"Then      the cart holds <quantity> more pieces of <product>\n  And     nothing else changes")
 	})
 	t.Run("row3 the spec root in no git repository", func(t *testing.T) {
+		t.Parallel()
 		dir := diffTree().write(t)
 		skipIfGitAbove(t, dir)
 		manifestOK(t, dir)
@@ -659,6 +723,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		diffIn(t, dir, dir, filepath.Join(dir, "proviso")).stopped(t)
 	})
 	t.Run("row4 the manifest written but never committed", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, diffTree())
 		r.commit("tree")
 		r.manifest()
@@ -666,6 +731,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.diff().stopped(t)
 	})
 	t.Run("row5 the manifest written again since and not committed", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
 		r.manifest()
@@ -673,6 +739,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.diff().stopped(t)
 	})
 	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+		t.Parallel()
 		r := newRepo(t, diffTree())
 		r.manifest()
 		r.set(diffTree().apply(limitProvided))
@@ -681,6 +748,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.diff().stopped(t)
 	})
 	t.Run("derived: the spec root in a folder of the repository", func(t *testing.T) {
+		t.Parallel()
 		// The spec root is found upwards from where a command runs
 		// (lint.run.root), so both run inside svc/.
 		r := newRepo(t, diffTree().prefixed("svc"))
@@ -702,9 +770,11 @@ func TestBaselineDiffFormer(t *testing.T) {
 }
 
 func TestBaselineDiffOutput(t *testing.T) {
+	t.Parallel()
 	// That the text form is written when elements are listed, and nothing
 	// when none are, is checked for every diff (see diffIn).
 	t.Run("row1 one changed, --json", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
 		o := r.diff()
@@ -713,6 +783,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 		}
 	})
 	t.Run("row2 none, --json", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		o := r.diff()
 		if strings.TrimSpace(o.json.stdout) == "" || len(o.ed.Elements) != 0 {
@@ -720,6 +791,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 		}
 	})
 	t.Run("row3 one changed, as text", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
 		o := r.diff()
@@ -728,6 +800,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 		}
 	})
 	t.Run("row4 none, as text", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		if o := r.diff(); o.text.stdout != "" {
 			t.Errorf("want nothing written, got %q", o.text.stdout)
@@ -736,6 +809,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 }
 
 func TestBaselineDiffOrder(t *testing.T) {
+	t.Parallel()
 	ids := func(o diffOutcome) string {
 		var s []string
 		for _, e := range o.ed.Elements {
@@ -744,6 +818,7 @@ func TestBaselineDiffOrder(t *testing.T) {
 		return strings.Join(s, ", ")
 	}
 	t.Run("row1 by identifier, byte by byte", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(xThen, limitThen, itemContact,
 			change{systemPath, "The shop sells goods to buyers.", "The shop sells goods to its buyers."}))
@@ -753,6 +828,7 @@ func TestBaselineDiffOrder(t *testing.T) {
 		}
 	})
 	t.Run("row2 a feature before its rule", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen, change{featurePath, "Buyers put goods into the cart.", "Buyers put goods in the cart."}))
 		o := r.diff()
@@ -761,6 +837,7 @@ func TestBaselineDiffOrder(t *testing.T) {
 		}
 	})
 	t.Run("derived: the parts in the order of their lines", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen, limitProvided, limitOutcome, limitNoRatio))
 		e := r.diff().elem(t, "cart.add.limit")
@@ -776,6 +853,7 @@ func TestBaselineDiffOrder(t *testing.T) {
 }
 
 func TestBaselineDiffExit(t *testing.T) {
+	t.Parallel()
 	// The exit status is checked against the elements listed for every
 	// diff (see diffIn); here each row's outcome is checked as well.
 	exit := func(t *testing.T, o diffOutcome, want int) {
@@ -785,16 +863,19 @@ func TestBaselineDiffExit(t *testing.T) {
 		}
 	}
 	t.Run("row1 none", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		exit(t, r.diff(), 0)
 	})
 	t.Run("row2 one removed", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		text, _ := elementText(diffTree()[featurePath], "cart.add.empty")
 		r.set(diffTree().edit(featurePath, text, ""))
 		exit(t, r.diff(), 1)
 	})
 	t.Run("row3 a glossary entry with a new Definition, and one rule changed through it", func(t *testing.T) {
+		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		// thematic break, marked by cart.x.line alone, gets a Definition
 		// in place of its reference.

@@ -327,5 +327,6 @@ var standsIn = map[string]string{
 }
 
 func TestBaselineImpactFixture(t *testing.T) {
+	t.Parallel()
 	check(t, impactTree()).clean(t)
 }
