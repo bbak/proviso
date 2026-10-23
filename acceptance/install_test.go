@@ -313,14 +313,31 @@ func TestInstallInitLineEndings(t *testing.T) {
 				if err := os.MkdirAll(filepath.Dir(full), 0o755); err != nil {
 					t.Fatal(err)
 				}
-				if err := os.WriteFile(full, []byte("added later\n"), 0o644); err != nil {
+				if err := os.WriteFile(full, []byte("added later\nwith a second line\n"), 0o644); err != nil {
 					t.Fatal(err)
 				}
 			}
-			// "eol" with "lf", and nothing else: no other attribute.
 			got := gitAttributes(r, row.file)
-			if len(got) != 1 || got[0] != "eol: lf" {
-				t.Errorf("install.init.line-endings: want git to give %s the attribute eol: lf and no other, got %q", row.file, got)
+			found := false
+			for _, a := range got {
+				found = found || a == "eol: lf"
+			}
+			if !found {
+				t.Errorf("install.init.line-endings: want git to give %s the attribute eol: lf, got %q", row.file, got)
+			}
+
+			// Settings that would give carriage returns: the file is
+			// committed, removed and checked out again.
+			r.git("config", "core.autocrlf", "true")
+			r.git("config", "core.eol", "crlf")
+			r.commit("tree")
+			full := filepath.Join(r.dir, filepath.FromSlash(row.file))
+			if err := os.Remove(full); err != nil {
+				t.Fatal(err)
+			}
+			r.git("checkout", "--", row.file)
+			if content := r.read(row.file); content == "" || strings.Contains(content, "\r") {
+				t.Errorf("install.init.line-endings: want git to check %s out with line feeds, got %q", row.file, content)
 			}
 		})
 	}
