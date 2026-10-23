@@ -329,9 +329,9 @@ What `pack` writes by default: Markdown in UTF-8, read by the
 implementing agents. Unlike the text of the other commands, it is part
 of the contract.
 
-- **Five headings** of level 1 divide it, in this order: `# Builder
-  notes`, `# System`, `# Amendment`, `# Frames` and `# Context`. A
-  heading under which no element appears is left out.
+- **Four headings** of level 1 divide it, in this order: `# System`,
+  `# Amendment`, `# Frames` and `# Context`. A heading under which no
+  element appears is left out.
 - **An element** appears as its own text as it stands now, from its
   heading to the next element's heading, as `text` in `element_diff`
   holds it, with a blank line before and after.
@@ -356,9 +356,9 @@ of the contract.
 - Paths follow the same conventions as in `report`.
 
 ~~~~text
-# Builder notes
+# System
 
-## <a id="system.builder-notes"></a> builder_notes
+# <a id="system"></a> Proviso
 …
 
 # Amendment
@@ -404,7 +404,7 @@ properties:
         id:
           type: string
         heading:
-          enum: [notes, system, frames, context]
+          enum: [system, frames, context]
         file:
           type: string
         line:
