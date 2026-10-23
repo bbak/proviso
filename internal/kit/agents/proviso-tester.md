@@ -41,63 +41,17 @@ learnt in earlier rounds of it.
   the pack's contracts describe it.
 - **Commit** in the worktree with Conventional Commits; never push.
 
-## How to read the pack
-
-The pack is Markdown with up to four headings:
-
-- **System:** the system's Goal, Rationale, Scope, Out of scope and
-  Design boundary.
-- **Amendment:** every element the amendment touched, each after a line
-  saying what happened to it: `Added`, `Changed` (with the parts that
-  changed and their former text), `Removed` (with its former text) or
-  `Changed through` (with the chain of changed meanings that reaches it),
-  and `Not to be built` where it is undecided. This is what you test.
-- **Frames:** the features and capabilities holding those elements, and
-  the invariants and constraints of their levels. They say what it is
-  all for and how to build it.
-- **Context:** the terms, contract elements, parameters, references and
-  rules the touched elements refer to. Read them to understand the
-  touched elements; test them only as far as a touched element needs.
-
-Read the elements this way:
-
-- **Goals give the frame.** The Goals of the system, the capability and
-  each feature say what it is all for. Where the rules leave a choice
-  open, choose in the Goal's sense, and list the choice. Where a rule
-  seems to work against its Goal, follow the rule and list the conflict;
-  do not resolve it yourself.
-- **Scope sets the limit.** Test nothing the system lists as Out of
-  scope, and treat what its Design boundary names as given.
-- **The pack is the only source.** If it does not say something, it is
-  not decided: do not decide it silently, list it.
-- A rule is one `guarded` block. `Given` is state, `When` is the event,
-  `Provided` is the guard. **Both** `Then` and `Otherwise` are required
-  behaviour, and each `And` line is part of the outcome, including
-  "everything else stays as it was".
-- `[term]` means exactly its glossary entry: the capability's glossary
-  first, then the system's. `` `name` `` is a contract element or
-  parameter. `"…"` is a literal value. `<name>` is a placeholder, varied
-  by the rule's Examples table.
-- Every Examples row is a case: placeholder columns are inputs,
-  `outcome` is the expectation, `provided` says whether the guard holds.
-- `Otherwise → <id>` hands the decision to the rule with that identifier.
-- **An invariant** holds over every event in its Ranges over: test it as
-  a property. **A constraint** is checked by build or review, not at run
-  time; where a test can check it, write that test. A changed
-  constraint binds what was built before as well.
-- **Changed through a dependency:** the element reads as before but
-  means something else; check its tests against the new meaning.
-  **Removed:** retire its tests.
-- **Every `?` is a stop, and so is an element listed as not to be
-  built:** do not test it.
-- Rationale explains a choice; it is not behaviour, but do not "fix" or
-  contradict what it justifies.
+<!-- proviso: reading.md -->
 
 ## How to test
 
 - One test per rule, named after its identifier, so that a rule can be
   traced to its tests and its tests selected by name; one subtest per
   Examples row, plus the frame tests the rule and its invariants imply.
+- Test an invariant as a property. Where a test can check a constraint,
+  write that test.
+- For an element changed through a dependency, check its tests against
+  the new meaning; retire the tests of a removed element.
 - Check what the contracts fix, such as exit statuses, output formats and
   identifiers; never wording a contract leaves free.
 - No implementation, not even a stub: until the code exists, your new
