@@ -26,24 +26,25 @@ as it is for the dependencies.
 The frames, the Goals and Rationale of the levels with their invariants
 and constraints, say what the listed elements are for, and how to fill
 the gaps between rules. One pack serves both agents; what differs
-between testing and coding is the skill's job.
+between testing and coding is the skill's job. The pack holds what the
+tree says about the system; how to read it is Proviso's own, and comes
+with the agents, not with the pack.
 
 `pack` derives the element diff as `diff` does.
 
-## <a id="baseline.pack.contents"></a> Rule: The builder notes, the system and the element diff are always in the pack
+## <a id="baseline.pack.contents"></a> Rule: The system and the element diff are always in the pack
 
 ```guarded
 When      `pack` assembles the [context pack] of the [element diff] <diff>
-Then      `builder_notes` is taken for "Builder notes"
-  And     the system is taken for "System"
+Then      the system is taken for "System"
   And     every [element] <diff> lists is taken for "Amendment", with everything <diff> lists for it
 ```
 
 | diff | outcome | why |
 | --- | --- | --- |
-| `lint.run.exit`, its `Then` step changed | `system.builder-notes`, `system` and `lint.run.exit` taken | |
-| `lint.run.root`, removed | `system.builder-notes`, `system` and `lint.run.root` with its former text taken | its tests can be retired |
-| none: the tree is as the manifest records it | `system.builder-notes` and `system` taken | nothing to build is no failure |
+| `lint.run.exit`, its `Then` step changed | `system` and `lint.run.exit` taken | |
+| `lint.run.root`, removed | `system` and `lint.run.root` with its former text taken | its tests can be retired |
+| none: the tree is as the manifest records it | `system` taken | nothing to build is no failure |
 
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
@@ -91,11 +92,11 @@ copies read as two elements. A listed element shows what happened to
 it, so it stands under "Amendment" wherever else it was taken.
 
 ```guarded
-When      `pack` has taken the [element] <element> for more than one heading of `pack_text`
+When      `pack` has taken the [element] <element> for "System", "Frames" or "Context"
 Provided  the [element diff] lists <element>
 Then      <element> appears under "Amendment" only
   And     everything else stays as it was
-Otherwise <element> appears only under the first of those headings, in the order `pack_text` gives them
+Otherwise <element> appears once under the heading it was taken for, however often it was taken
   And     everything else stays as it was
 ```
 
@@ -104,7 +105,8 @@ Otherwise <element> appears only under the first of those headings, in the order
 | `system`, its Scope changed | yes | under "Amendment" only | the change shows |
 | `lint.run`, its Goal changed, holding a changed rule | yes | under "Amendment" only | not repeated under "Frames" |
 | `lint.step`, its Definition changed, marked by a changed rule | yes | under "Amendment" only | not repeated under "Context" |
-| `system.builder-notes`, unchanged, referred to by a changed rule | no | under "Builder notes" only | not repeated under "Context" |
+| `lint.run`, unchanged, holding two changed rules | no | under "Frames" once | |
+| `system.spec-root`, unchanged, marked by two changed rules | no | under "Context" once | |
 
 ## <a id="baseline.pack.order"></a> Rule: The elements under each heading are ordered
 
@@ -135,4 +137,4 @@ Otherwise `pack` writes <pack> to "stdout" as `pack_text`
 | --- | --- | --- | --- | --- |
 | for one changed rule | `--json` | yes | a `context_pack`, exit status 0 | |
 | for one changed rule | none | no | `pack_text`, exit status 0 | |
-| for an empty element diff | none | no | `pack_text` with "Builder notes" and "System" only, exit status 0 | |
+| for an empty element diff | none | no | `pack_text` with "System" only, exit status 0 | |
