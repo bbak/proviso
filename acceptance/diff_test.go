@@ -226,7 +226,7 @@ func TestBaselineDiffMalformed(t *testing.T) {
 	}
 	t.Run("pack/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
 		o := packWith(t, good)
-		o.headingsAre(t, "Builder notes", "System")
+		o.headingsAre(t, "System")
 	})
 	t.Run("pack/row2 <<<<<<< HEAD", func(t *testing.T) {
 		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)

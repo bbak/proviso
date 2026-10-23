@@ -20,10 +20,8 @@ import (
 
 // The headings of pack_text, in their order, and how context_pack names
 // each but Amendment.
-var packHeadings = []string{"Builder notes", "System", "Amendment", "Frames", "Context"}
-var packHeadingJSON = map[string]string{"Builder notes": "notes", "System": "system", "Frames": "frames", "Context": "context"}
-
-const builderNotesID = "system.builder-notes"
+var packHeadings = []string{"System", "Amendment", "Frames", "Context"}
+var packHeadingJSON = map[string]string{"System": "system", "Frames": "frames", "Context": "context"}
 
 type packElement struct {
 	ID      string `json:"id"`
@@ -40,8 +38,8 @@ type contextPack struct {
 	Elements []packElement `json:"elements"`
 }
 
-// formerBlock is a line “Former `<part>`:“ of pack_text with the fenced
-// block after it.
+// formerBlock is a line Former `<part>`: of pack_text with the fenced block
+// after it.
 type formerBlock struct {
 	part, fence, content string
 }
@@ -64,7 +62,9 @@ func (it packItem) text() string { return strings.Join(it.body, "\n") }
 type packOutcome struct {
 	json, text run
 	cp         contextPack
-	headings   []string
+	cpOK       bool     // context_pack could be read
+	headings   []string // the headings of pack_text, in their order
+	revision   string   // the line Former text from under Amendment, if any
 	items      []packItem
 	diff       diffOutcome
 }
@@ -85,7 +85,8 @@ func packIn(t *testing.T, base, cwd, root string) packOutcome {
 	}
 	for _, r := range []run{o.json, o.text} {
 		if r.exit != 0 && r.exit != 2 {
-			t.Fatalf("system.cli.pack.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
+			t.Errorf("system.cli.pack.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
+			return o
 		}
 		if r.exit == 2 && strings.TrimSpace(r.stderr) == "" {
 			t.Errorf("exit status 2 with nothing on stderr")
@@ -99,13 +100,17 @@ func packIn(t *testing.T, base, cwd, root string) packOutcome {
 		}
 		return o
 	}
-	o.cp = parseContextPack(t, o.json.stdout)
-	o.headings, o.items = parsePackText(t, o.text.stdout)
-	if root != "" {
+	// Each check reports what it finds and the others go on, so that one
+	// cause does not hide another.
+	o.cp, o.cpOK = parseContextPack(t, o.json.stdout)
+	o.headings, o.revision, o.items = parsePackText(t, o.text.stdout)
+	if root != "" && o.cpOK {
 		checkRoot(t, outcome{report: report{Root: o.cp.Root}}, root)
 	}
 	checkPackHeadings(t, o)
-	checkPackAgrees(t, o)
+	if o.cpOK {
+		checkPackAgrees(t, o)
+	}
 	o.diff = diffIn(t, base, cwd, root)
 	if o.diff.json.exit == 2 {
 		t.Errorf("pack ran, but diff could not:\n%s", o.diff.json.stderr)
@@ -125,11 +130,12 @@ func (r *repo) pack() packOutcome {
 
 // parseContextPack checks stdout against the schema of `context_pack`: diff
 // holds items of element_diff, elements those of its own.
-func parseContextPack(t *testing.T, stdout string) contextPack {
+func parseContextPack(t *testing.T, stdout string) (contextPack, bool) {
 	t.Helper()
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal([]byte(stdout), &raw); err != nil {
-		t.Fatalf("system.cli.context-pack: stdout is not one JSON object: %v\n%s", err, stdout)
+		t.Errorf("system.cli.context-pack: stdout is not one JSON object: %v\n%s", err, stdout)
+		return contextPack{}, false
 	}
 	var s string
 	if raw["root"] == nil || json.Unmarshal(raw["root"], &s) != nil {
@@ -142,7 +148,8 @@ func parseContextPack(t *testing.T, stdout string) contextPack {
 	}
 	for _, k := range []string{"diff", "elements"} {
 		if r := bytes.TrimSpace(raw[k]); len(r) == 0 || r[0] != '[' {
-			t.Fatalf("system.cli.context-pack: %s missing or not an array: %s", k, raw[k])
+			t.Errorf("system.cli.context-pack: %s missing or not an array: %s", k, raw[k])
+			return contextPack{}, false
 		}
 	}
 	// Each item of diff exactly as an item of elements in element_diff.
@@ -150,7 +157,8 @@ func parseContextPack(t *testing.T, stdout string) contextPack {
 	parseElementDiff(t, string(asDiff))
 	var items []map[string]json.RawMessage
 	if err := json.Unmarshal(raw["elements"], &items); err != nil {
-		t.Fatalf("system.cli.context-pack: elements are not objects: %v", err)
+		t.Errorf("system.cli.context-pack: elements are not objects: %v", err)
+		return contextPack{}, false
 	}
 	for i, it := range items {
 		for _, k := range []string{"id", "heading", "file", "line", "text"} {
@@ -170,18 +178,19 @@ func parseContextPack(t *testing.T, stdout string) contextPack {
 	}
 	var cp contextPack
 	if err := json.Unmarshal([]byte(stdout), &cp); err != nil {
-		t.Fatalf("system.cli.context-pack: %v", err)
+		t.Errorf("system.cli.context-pack: %v", err)
+		return contextPack{}, false
 	}
-	enum := map[string]bool{"notes": true, "system": true, "frames": true, "context": true}
+	enum := map[string]bool{"system": true, "frames": true, "context": true}
 	for _, e := range cp.Elements {
 		if !enum[e.Heading] {
-			t.Errorf("system.cli.context-pack: %s: heading %q is none of notes, system, frames, context", e.ID, e.Heading)
+			t.Errorf("system.cli.context-pack: %s: heading %q is none of system, frames, context", e.ID, e.Heading)
 		}
 		if strings.Contains(e.File, `\`) {
 			t.Errorf("system.cli.context-pack: path %q does not use / as its separator", e.File)
 		}
 	}
-	return cp
+	return cp, true
 }
 
 // ---------------------------------------------------------------------------
@@ -193,31 +202,31 @@ var (
 	statusLine   = regexp.MustCompile("^(Added|Removed) `([^`]+)`\\.$|^(Changed through|Changed) `([^`]+)`: (.+)\\.$")
 	notBuiltLine = regexp.MustCompile(`^Not to be built: (.+)\.$`)
 	formerLine   = regexp.MustCompile("^Former `([^`]+)`:$")
+	revisionLine = regexp.MustCompile("^Former text from `([^`]+)`\\.$")
 	backtickRun  = regexp.MustCompile("`+")
 )
 
 // parsePackText reads stdout as pack_text and checks its layout: UTF-8, the
-// headings of level 1 among the five and in their order, each holding an
-// element; a blank line before every heading, status line, element and line
-// Former; the line Not to be built right after a status line; the former
+// headings of level 1 among the four and in their order, each holding an
+// element; the line Former text from, if any, first under Amendment; a
+// blank line before every heading, status line, element and line Former;
+// the line Not to be built right after a status line; the former
 // text of a part in a block fenced with backticks, labelled text, its fence
 // longer than any run of backticks in it. Line endings are read as line
 // feeds, or carriage returns and line feeds (see the report).
-func parsePackText(t *testing.T, stdout string) ([]string, []packItem) {
+func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
 	t.Helper()
 	if !utf8.ValidString(stdout) {
 		t.Errorf("system.cli.pack-text: not UTF-8")
 	}
 	text := strings.ReplaceAll(stdout, "\r\n", "\n")
 	lines := strings.Split(strings.TrimSuffix(text, "\n"), "\n")
-	if len(lines) == 0 || lines[0] != "# Builder notes" {
-		t.Errorf("system.cli.pack-text: the first line is %q, want %q", first(lines), "# Builder notes")
-	}
 	isHeading := map[string]bool{}
 	for _, h := range packHeadings {
 		isHeading["# "+h] = true
 	}
 	var headings []string
+	revision := ""
 	var items []packItem
 	var cur *packItem
 	heading := ""
@@ -259,6 +268,13 @@ func parsePackText(t *testing.T, stdout string) ([]string, []packItem) {
 			heading = strings.TrimPrefix(l, "# ")
 			headings = append(headings, heading)
 			cur = nil
+			continue
+		case heading == "Amendment" && revisionLine.MatchString(l):
+			blankBefore(i, "line Former text from")
+			if revision != "" || headings[len(headings)-1] != "Amendment" || lineAt(lines, i-2) != "# Amendment" {
+				t.Errorf("system.cli.pack-text: line %d %q is not the first line under Amendment", i+1, l)
+			}
+			revision = revisionLine.FindStringSubmatch(l)[1]
 			continue
 		case heading == "Amendment" && statusLine.MatchString(l):
 			blankBefore(i, "status line")
@@ -331,20 +347,13 @@ func parsePackText(t *testing.T, stdout string) ([]string, []packItem) {
 	if fence != "" {
 		t.Errorf("system.cli.pack-text: a fenced block %s is not closed", fence)
 	}
-	return headings, items
+	return headings, revision, items
 }
 
 // closesFence tells whether l closes the fenced block opened with fence.
 func closesFence(l, fence string) bool {
 	s := strings.TrimRight(l, " ")
 	return len(s) >= len(fence) && strings.Trim(s, fence[:1]) == ""
-}
-
-func first(lines []string) string {
-	if len(lines) == 0 {
-		return ""
-	}
-	return lines[0]
 }
 
 func lineAt(lines []string, i int) string {
@@ -356,10 +365,10 @@ func lineAt(lines []string, i int) string {
 
 // checkPackHeadings checks system.cli.pack-text's headings and
 // baseline.pack.contents, baseline.pack.once and baseline.pack.order for
-// every run: the headings in their order, none twice and none empty; the
-// builder notes alone under Builder notes; under System the system, unless
-// the element diff lists it; every element once; the elements under each
-// heading in byte order.
+// every run: the headings in their order, none twice and none empty; every
+// element once; the elements under each heading in byte order. That the
+// system stands under System is checked against the element diff (see
+// checkPackDiff).
 func checkPackHeadings(t *testing.T, o packOutcome) {
 	t.Helper()
 	rank := map[string]int{}
@@ -377,9 +386,6 @@ func checkPackHeadings(t *testing.T, o packOutcome) {
 		if count[h] == 0 {
 			t.Errorf("system.cli.pack-text: no element appears under %q, which is not left out", h)
 		}
-	}
-	if got := o.under("Builder notes"); strings.Join(got, " ") != builderNotesID {
-		t.Errorf("baseline.pack.contents: want %s alone under Builder notes, got %v", builderNotesID, got)
 	}
 	seen := map[string]string{}
 	for i, it := range o.items {
@@ -430,11 +436,32 @@ func checkPackAgrees(t *testing.T, o packOutcome) {
 
 // checkPackDiff checks the pack against the element diff: diff in
 // context_pack exactly as the elements of element_diff, the same revision,
-// and under Amendment of pack_text every element diff lists, in its order,
-// each with its status line, its text or former text, and the former text
-// of each changed or removed part, in the order diff gives them.
+// the same revision named in pack_text, the system alone under System unless
+// the element diff lists it, and under Amendment of pack_text every element
+// diff lists, in its order, each with its status line, its text or former
+// text, and the former text of each changed or removed part, in the order
+// diff gives them.
 func checkPackDiff(t *testing.T, o packOutcome) {
 	t.Helper()
+	if o.diff.ed.Revision == nil && o.revision != "" {
+		t.Errorf("system.cli.pack-text: no former text was needed, but the pack names the revision %s", o.revision)
+	}
+	if o.diff.ed.Revision != nil && o.revision != *o.diff.ed.Revision {
+		t.Errorf("system.cli.pack-text: want the line Former text from `%s`. first under Amendment, got the revision %q", *o.diff.ed.Revision, o.revision)
+	}
+	wantSystem := "system"
+	for _, e := range o.diff.ed.Elements {
+		if e.ID == "system" {
+			wantSystem = ""
+		}
+	}
+	if got := strings.Join(o.under("System"), " "); got != wantSystem {
+		t.Errorf("baseline.pack.contents: want under System %q, got %q", wantSystem, got)
+	}
+	if !o.cpOK {
+		checkAmendments(t, o)
+		return
+	}
 	var packRaw, diffRaw map[string]any
 	json.Unmarshal([]byte(o.json.stdout), &packRaw)
 	json.Unmarshal([]byte(o.diff.json.stdout), &diffRaw)
@@ -447,18 +474,27 @@ func checkPackDiff(t *testing.T, o packOutcome) {
 	if deref(o.cp.Revision) != deref(o.diff.ed.Revision) {
 		t.Errorf("system.cli.context-pack: revision %s, but the element diff's is %s", deref(o.cp.Revision), deref(o.diff.ed.Revision))
 	}
-	var amend []packItem
-	for _, it := range o.items {
-		if it.heading == "Amendment" {
-			amend = append(amend, it)
+	checkAmendments(t, o)
+}
+
+// checkAmendments checks the elements under Amendment against those the
+// element diff lists: the same, in the same order, each as checkAmendment
+// says.
+func checkAmendments(t *testing.T, o packOutcome) {
+	t.Helper()
+	var want []string
+	for _, e := range o.diff.ed.Elements {
+		want = append(want, e.ID)
+	}
+	if got := o.under("Amendment"); strings.Join(got, " ") != strings.Join(want, " ") {
+		t.Errorf("baseline.pack.contents: under Amendment %v, but the element diff lists %v", got, want)
+	}
+	for _, e := range o.diff.ed.Elements {
+		for _, it := range o.items {
+			if it.heading == "Amendment" && it.id == e.ID {
+				checkAmendment(t, it, e)
+			}
 		}
-	}
-	if len(amend) != len(o.diff.ed.Elements) {
-		t.Errorf("baseline.pack.contents: %d elements under Amendment, but the element diff lists %d:\n%s", len(amend), len(o.diff.ed.Elements), o.diff.dump())
-		return
-	}
-	for i, e := range o.diff.ed.Elements {
-		checkAmendment(t, amend[i], e)
 	}
 }
 
@@ -466,10 +502,6 @@ func checkPackDiff(t *testing.T, o packOutcome) {
 // writes it under Amendment.
 func checkAmendment(t *testing.T, it packItem, e diffElement) {
 	t.Helper()
-	if it.id != e.ID {
-		t.Errorf("baseline.pack.order: under Amendment %s where the element diff has %s", it.id, e.ID)
-		return
-	}
 	if want := statusFor(e); want != "" && it.status != want {
 		t.Errorf("system.cli.pack-text: want the line %q, got %q", want, it.status)
 	}
@@ -501,6 +533,9 @@ func checkAmendment(t *testing.T, it packItem, e diffElement) {
 	// Its text, or a removed element's former text.
 	if e.Change == "removed" {
 		former := unfenced(it.body)
+		if former == strings.TrimSpace(it.text()) {
+			t.Errorf("system.cli.pack-text: the former text of the removed %s does not stand in a block fenced with backticks and labelled text:\n%s", e.ID, it.text())
+		}
 		if m := fenceOpen.FindStringSubmatch(strings.TrimSpace(it.text())); m != nil && former != strings.TrimSpace(it.text()) {
 			for _, run := range backtickRun.FindAllString(former, -1) {
 				if m[1][0] != '`' || len(run) >= len(m[1]) {
@@ -662,12 +697,12 @@ func (o packOutcome) item(t *testing.T, id string) packItem {
 			return it
 		}
 	}
-	t.Fatalf("want %s in the pack, got:\n%s", id, o.dump())
+	t.Errorf("want %s in the pack, got:\n%s", id, o.dump())
 	return packItem{}
 }
 
-// standsAt asserts that each element of the pack outside Amendment and the
-// builder notes has its text as tr has it, and in context_pack stands where
+// standsAt asserts that each element of the pack outside Amendment has its
+// text as tr has it, and in context_pack stands where
 // tr has it, at the line of its heading.
 func (o packOutcome) standsAt(t *testing.T, tr tree) {
 	t.Helper()
