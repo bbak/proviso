@@ -37,10 +37,19 @@ type jsonDiff struct {
 // DiffJSON writes the element_diff: the spec root that was compared, the
 // revision the former text came from, or null, and every element listed.
 func DiffJSON(w io.Writer, root, revision string, entries []*baseline.Entry) error {
-	d := jsonDiff{Root: root, Elements: []jsonElement{}}
+	d := jsonDiff{Root: root, Elements: diffElements(entries)}
 	if revision != "" {
 		d.Revision = &revision
 	}
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(false)
+	enc.SetIndent("", "  ")
+	return enc.Encode(d)
+}
+
+// diffElements returns the elements of an element_diff.
+func diffElements(entries []*baseline.Entry) []jsonElement {
+	out := []jsonElement{}
 	for _, e := range entries {
 		je := jsonElement{ID: e.ID, Change: e.Change, Former: e.Former, Through: e.Through, Undecided: e.Undecided()}
 		if je.Undecided == nil {
@@ -56,12 +65,9 @@ func DiffJSON(w io.Writer, root, revision string, entries []*baseline.Entry) err
 			}
 			je.Parts = append(je.Parts, jp)
 		}
-		d.Elements = append(d.Elements, je)
+		out = append(out, je)
 	}
-	enc := json.NewEncoder(w)
-	enc.SetEscapeHTML(false)
-	enc.SetIndent("", "  ")
-	return enc.Encode(d)
+	return out
 }
 
 // DiffText writes the element diff for people: the revision the former

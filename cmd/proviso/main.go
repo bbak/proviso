@@ -1,6 +1,6 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
-// Model: `proviso lint`, `proviso manifest`, `proviso diff` and
-// `proviso impact`.
+// Model: `proviso lint`, `proviso manifest`, `proviso diff`,
+// `proviso impact` and `proviso pack`.
 package main
 
 import (
@@ -21,15 +21,15 @@ import (
 )
 
 // The exit statuses of the contracts lint.cli.lint.exit-status,
-// system.cli.manifest.exit-status, system.cli.diff.exit-status and
-// system.cli.impact.exit-status.
+// system.cli.manifest.exit-status, system.cli.diff.exit-status,
+// system.cli.impact.exit-status and system.cli.pack.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element
 	exitCantRun = 2
 )
 
-const usage = "usage: proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json]"
+const usage = "usage: proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json] | proviso pack [--json]"
 
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
@@ -42,7 +42,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	cmd, opts := args[0], args[1:]
 	switch cmd {
-	case "lint", "manifest", "diff", "impact":
+	case "lint", "manifest", "diff", "impact", "pack":
 	default:
 		fmt.Fprintln(stderr, usage)
 		return exitCantRun
@@ -62,7 +62,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	switch cmd {
 	case "lint":
 		return lintRun(t, res, asJSON, stdout, stderr)
-	case "manifest", "diff", "impact":
+	case "manifest", "diff", "impact", "pack":
 		// baseline.run.lint: only where lint finds no error, and without
 		// writing what lint would write.
 		if lint.HasError(res.Findings) {
@@ -74,6 +74,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return manifestRun(t, res, stderr)
 		case "diff":
 			return diffRun(t, res, asJSON, stdout, stderr)
+		case "pack":
+			return packRun(t, res, asJSON, stdout, stderr)
 		}
 		return impactRun(t, res, asJSON, stdout, stderr)
 	}
@@ -239,6 +241,29 @@ func impactRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso impact: %v\n", err)
+		return exitCantRun
+	}
+	return exitClean
+}
+
+func packRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
+	entries, revision, _, ok := elementDiff("pack", t, res, stderr)
+	if !ok {
+		return exitCantRun
+	}
+	packed := baseline.Pack(entries, res.Elements)
+	var buf bytes.Buffer
+	var err error
+	if asJSON {
+		err = report.PackJSON(&buf, reportRoot(t.Root), revision, entries, packed)
+	} else {
+		err = report.PackText(&buf, revision, entries, packed)
+	}
+	if err == nil {
+		_, err = buf.WriteTo(stdout)
+	}
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso pack: %v\n", err)
 		return exitCantRun
 	}
 	return exitClean

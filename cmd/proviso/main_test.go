@@ -208,3 +208,29 @@ func TestImpactDamagedManifest(t *testing.T) {
 		t.Errorf("%d %q %q", status, out.String(), errOut.String())
 	}
 }
+
+func TestPackCommand(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system})
+	call := func(args ...string) (int, string, string) {
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	if status, _, errOut := call("manifest"); status != 0 {
+		t.Fatalf("manifest: %d %q", status, errOut)
+	}
+	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system {
+		t.Errorf("an empty element diff: %d %q", status, out)
+	}
+	if status, out, _ := call("pack", "--json"); status != 0 || !strings.Contains(out, `"diff": []`) || !strings.Contains(out, `"heading": "system"`) {
+		t.Errorf("json: %d %s", status, out)
+	}
+	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644)
+	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
+		t.Errorf("malformed: %d %q %q", status, out, errOut)
+	}
+	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	if status, out, errOut := call("pack", "--json"); status != 2 || out != "" || !strings.Contains(errOut, "error file-unknown") {
+		t.Errorf("a tree with an error: %d %q %q", status, out, errOut)
+	}
+}
