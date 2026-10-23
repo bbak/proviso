@@ -10,14 +10,10 @@ import (
 // The headings of a context pack other than Amendment, as context_pack
 // names them, in the order pack_text gives them.
 const (
-	HeadingNotes   = "notes"
 	HeadingSystem  = "system"
 	HeadingFrames  = "frames"
 	HeadingContext = "context"
 )
-
-// BuilderNotes is the identifier of the contract element builder_notes.
-const BuilderNotes = "system.builder-notes"
 
 // Packed is an element of a context pack outside Amendment, with the
 // heading it appears under.
@@ -29,8 +25,8 @@ type Packed struct {
 // Pack assembles the context pack of an element diff from the elements of
 // the tree as it stands: the elements the diff lists, under Amendment, and
 // every other element of the pack, under its heading. Each element appears
-// once: a listed one under Amendment only, any other under the first
-// heading it was taken for. The elements under each heading are ordered by
+// once: a listed one under Amendment only, any other under the heading it
+// was taken for. The elements under each heading are ordered by
 // identifier.
 func Pack(entries []*Entry, elements []lint.Element) []Packed {
 	byID := byID(elements)
@@ -49,7 +45,6 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 	}
 
 	// baseline.pack.contents
-	take(HeadingNotes, byID[BuilderNotes])
 	for i := range elements {
 		if elements[i].Type == tSystem {
 			take(HeadingSystem, &elements[i])
@@ -110,7 +105,7 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 // rank is the place of a heading in pack_text, Amendment standing between
 // System and Frames.
 func rank(heading string) int {
-	return slices.Index([]string{HeadingNotes, HeadingSystem, HeadingFrames, HeadingContext}, heading)
+	return slices.Index([]string{HeadingSystem, HeadingFrames, HeadingContext}, heading)
 }
 
 // frames reports whether the element f frames the listed element e: the

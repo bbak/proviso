@@ -257,7 +257,7 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writ
 	if asJSON {
 		err = report.PackJSON(&buf, reportRoot(t.Root), revision, entries, packed)
 	} else {
-		err = report.PackText(&buf, entries, packed)
+		err = report.PackText(&buf, revision, entries, packed)
 	}
 	if err == nil {
 		_, err = buf.WriteTo(stdout)
