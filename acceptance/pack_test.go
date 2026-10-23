@@ -2,8 +2,7 @@ package acceptance
 
 // Feature baseline.pack: proviso/capabilities/baseline/features/pack.md, and
 // the contracts system.cli.pack, system.cli.pack-text and
-// system.cli.context-pack (proviso/contracts/cli.md) and
-// system.builder-notes (proviso/contracts/builder-notes.md). Every case
+// system.cli.context-pack (proviso/contracts/cli.md). Every case
 // accepts the pack tree (see pack_trees_test.go), amends it and runs
 // `proviso pack`. The Examples rows name elements of Proviso's own tree; each
 // case names the element of the pack tree that stands in for it.
@@ -77,16 +76,14 @@ func union(lists ...[]string) []string {
 func TestBaselinePackContents(t *testing.T) {
 	t.Run("row1 a rule's Then step changed", func(t *testing.T) {
 		// lint.run.exit: cart.pay.cap, which no rule hands over to.
-		o, tr, _ := packOf(t, pCapThen)
-		o.exactly(t, "Builder notes", builderNotesID)
+		o, tr, base := packOf(t, pCapThen)
 		o.exactly(t, "System", "system")
 		o.exactly(t, "Amendment", "cart.pay.cap")
 		if it := o.item(t, "cart.pay.cap"); it.status != "Changed `cart.pay.cap`: `step Then` changed." {
 			t.Errorf("want the line %q, got %q", "Changed `cart.pay.cap`: `step Then` changed.", it.status)
 		}
-		notes, _ := elementText(builderNotesMD, builderNotesID)
-		if it := o.item(t, builderNotesID); !sameText(it.text(), notes) {
-			t.Errorf("want builder_notes in full\n%s\ngot\n%s", notes, it.text())
+		if o.revision != base {
+			t.Errorf("want the line Former text from `%s`. first under Amendment, got the revision %q", base, o.revision)
 		}
 		system, _ := elementText(tr[systemPath], "system")
 		if it := o.item(t, "system"); !sameText(it.text(), system) {
@@ -97,7 +94,7 @@ func TestBaselinePackContents(t *testing.T) {
 	t.Run("row2 a rule removed", func(t *testing.T) {
 		// lint.run.root: cart.pay.total.
 		o, _, base := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"))
-		o.headingsAre(t, "Builder notes", "System", "Amendment")
+		o.headingsAre(t, "System", "Amendment")
 		o.exactly(t, "Amendment", "cart.pay.total")
 		if it := o.item(t, "cart.pay.total"); it.status != "Removed `cart.pay.total`." {
 			t.Errorf("want the line %q, got %q", "Removed `cart.pay.total`.", it.status)
@@ -106,15 +103,14 @@ func TestBaselinePackContents(t *testing.T) {
 		if it := o.item(t, "cart.pay.total"); !sameText(unfenced(it.body), former) {
 			t.Errorf("want the former text of cart.pay.total in place of its text\n%s\ngot\n%s", former, it.text())
 		}
-		if deref(o.cp.Revision) != base {
-			t.Errorf("want the revision %s, got %s", base, deref(o.cp.Revision))
+		if deref(o.cp.Revision) != base || o.revision != base {
+			t.Errorf("want the revision %s, got %s in context_pack and %q in pack_text", base, deref(o.cp.Revision), o.revision)
 		}
 	})
 	t.Run("row3 none: the tree as the manifest records it", func(t *testing.T) {
 		r, _ := accepted(t, packTree())
 		o := r.pack()
-		o.headingsAre(t, "Builder notes", "System")
-		o.exactly(t, "Builder notes", builderNotesID)
+		o.headingsAre(t, "System")
 		o.exactly(t, "System", "system")
 	})
 	t.Run("derived: an added element", func(t *testing.T) {
@@ -123,8 +119,8 @@ func TestBaselinePackContents(t *testing.T) {
 		if it := o.item(t, "cart.pay.tip"); it.status != "Added `cart.pay.tip`." {
 			t.Errorf("want the line %q, got %q", "Added `cart.pay.tip`.", it.status)
 		}
-		if deref(o.cp.Revision) != "(none)" {
-			t.Errorf("want revision null, as no former text was needed, got %s", deref(o.cp.Revision))
+		if deref(o.cp.Revision) != "(none)" || o.revision != "" {
+			t.Errorf("want no revision, as no former text was needed, got %s in context_pack and %q in pack_text", deref(o.cp.Revision), o.revision)
 		}
 	})
 	t.Run("derived: elements changed through a dependency, with their chains", func(t *testing.T) {
@@ -162,7 +158,7 @@ func TestBaselinePackContents(t *testing.T) {
 	t.Run("derived: without a manifest, every element under Amendment", func(t *testing.T) {
 		dir := packTree().write(t)
 		o := packIn(t, dir, dir, filepath.Join(dir, "proviso"))
-		o.headingsAre(t, "Builder notes", "Amendment")
+		o.headingsAre(t, "Amendment")
 		o.exactly(t, "Amendment", keysOf(packStandsIn)...)
 	})
 }
@@ -265,7 +261,7 @@ func TestBaselinePackChain(t *testing.T) {
 func TestBaselinePackOnce(t *testing.T) {
 	t.Run("row1 the system, its Scope changed", func(t *testing.T) {
 		o, _, _ := packOf(t, iSystemScope)
-		o.headingsAre(t, "Builder notes", "Amendment", "Frames")
+		o.headingsAre(t, "Amendment", "Frames")
 		o.exactly(t, "Amendment", "system")
 		o.exactly(t, "Frames", sysFrames...)
 	})
@@ -279,18 +275,19 @@ func TestBaselinePackOnce(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.item", "cart.pay.total", "cart.add.limit", "cart.add.spoken", "cart.api.line", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line.count", "cart.max-quantity", "system.price")
 	})
-	t.Run("row4 builder_notes, unchanged, referred to by a changed rule", func(t *testing.T) {
-		withNotes := packTree().with("proviso/contracts/notes.md", "# Notes\n\n## <a id=\"system.builder-notes\"></a> builder_notes\n\nWhat every pack says first.\n")
-		r, _ := accepted(t, withNotes)
-		tr := amended(withNotes, addRule(payPath, "cart.pay.notes", "The shop reads the notes",
-			"When      the shop reads the notes <notes>\nThen      the shop follows ´builder_notes´\n  And     nothing else changes",
-			"| notes | outcome |\n| --- | --- |\n| the first notes | followed |"))
-		check(t, tr).clean(t)
-		r.set(tr)
-		o := r.pack()
-		o.exactly(t, "Amendment", "cart.pay.notes")
-		o.exactly(t, "Builder notes", builderNotesID)
-		o.exactly(t, "Context")
+	// That no element appears twice is checked for every run (see packIn).
+	t.Run("row4 a feature, unchanged, holding two changed rules", func(t *testing.T) {
+		// lint.run: cart.pay, holding cart.pay.cap and cart.pay.total.
+		o, _, _ := packOf(t, pCapThen, pTotalThen)
+		o.exactly(t, "Amendment", "cart.pay.cap", "cart.pay.total")
+		o.exactly(t, "Frames", payFrames...)
+	})
+	t.Run("row5 a term, unchanged, marked by two changed rules", func(t *testing.T) {
+		// [spec root]: [price], marked by cart.pay.total and
+		// billing.refund.full.
+		o, _, _ := packOf(t, pTotalThen, pRefundThen)
+		o.exactly(t, "Amendment", "billing.refund.full", "cart.pay.total")
+		o.exactly(t, "Context", "cart.item", "system.price")
 	})
 }
 
@@ -345,13 +342,13 @@ func TestBaselinePackOutput(t *testing.T) {
 	t.Run("row2 one changed rule, as text", func(t *testing.T) {
 		o, _, _ := packOf(t, pCapThen)
 		exit0(t, o)
-		o.headingsAre(t, "Builder notes", "System", "Amendment", "Frames", "Context")
+		o.headingsAre(t, "System", "Amendment", "Frames", "Context")
 	})
 	t.Run("row3 an empty element diff, as text", func(t *testing.T) {
 		r, _ := accepted(t, packTree())
 		o := r.pack()
 		exit0(t, o)
-		o.headingsAre(t, "Builder notes", "System")
+		o.headingsAre(t, "System")
 	})
 	t.Run("derived: an empty element diff, --json", func(t *testing.T) {
 		r, _ := accepted(t, packTree())
@@ -364,8 +361,8 @@ func TestBaselinePackOutput(t *testing.T) {
 		for _, e := range o.cp.Elements {
 			got = append(got, e.Heading+":"+e.ID)
 		}
-		if strings.Join(got, " ") != "notes:"+builderNotesID+" system:system" {
-			t.Errorf("want the elements builder_notes and the system, got %v", got)
+		if strings.Join(got, " ") != "system:system" {
+			t.Errorf("want the system alone among the elements, got %v", got)
 		}
 	})
 }
@@ -392,8 +389,8 @@ func TestBaselinePackFormer(t *testing.T) {
 		r.set(amended(packTree(), pCapThen))
 		o := r.pack()
 		o.ran(t)
-		if deref(o.cp.Revision) != base {
-			t.Errorf("want the revision %s, got %s", base, deref(o.cp.Revision))
+		if deref(o.cp.Revision) != base || o.revision != base {
+			t.Errorf("want the revision %s, got %s in context_pack and %q in pack_text", base, deref(o.cp.Revision), o.revision)
 		}
 		checkThen(t, o, formerThen)
 	})
@@ -416,8 +413,8 @@ func TestBaselinePackFormer(t *testing.T) {
 			change{payPath, "Then      the shop accepts the order", "Then      the shop gladly accepts the order"}))
 		o := r.pack()
 		o.ran(t)
-		if deref(o.cp.Revision) != e5f6 {
-			t.Errorf("want the revision %s, got %s", e5f6, deref(o.cp.Revision))
+		if deref(o.cp.Revision) != e5f6 || o.revision != e5f6 {
+			t.Errorf("want the revision %s, got %s in context_pack and %q in pack_text", e5f6, deref(o.cp.Revision), o.revision)
 		}
 		checkThen(t, o, "Then      the shop accepts the order\n  And     nothing else changes")
 	})
