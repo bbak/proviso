@@ -52,7 +52,7 @@ When      someone runs `diff` with `diff.since`, or `pack` with `pack.since`, na
 Provided  git knows <revision> as a commit
   And     `lint`, run on the [spec tree] at <revision>, would exit with `lint.exit-status` 0, or there is no [spec tree] at <revision>
 Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [part] fingerprinted as `manifest_file` describes, in place of the [baseline]
-  And     the text the command lists as former is read from <revision>, and the command names <revision> in what it writes
+  And     the text the command lists as former is read from <revision>
   And     `manifest_file` is not read
 Otherwise the command writes to "stderr" why it cannot compare with <revision>
   And     the command exits with 2, as `diff.exit-status` and `pack.exit-status` define

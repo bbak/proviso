@@ -134,4 +134,4 @@ Otherwise `init` writes to "stderr" why each of <failed> could not be written
 | --- | --- | --- | --- |
 | none, every file written | yes | exit status 0 | |
 | none, every file skipped | yes | exit status 0 | a second run is no failure |
-| both agent definitions, `.claude` being a file | no | exit status 2, the other files written | a folder cannot be made below a file |
+| every installed file below `.claude/`, `.claude` being a file | no | exit status 2, the other files written | a folder cannot be made below a file |
