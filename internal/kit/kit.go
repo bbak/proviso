@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-//go:embed agents notes tree
+//go:embed agents notes skills tree
 var files embed.FS
 
 // readingMark is the line in an agent definition that the shared reading
@@ -38,6 +38,8 @@ func Files(system string) []File {
 	out := []File{
 		{".claude/agents/proviso-coder.md", agent("proviso-coder.md")},
 		{".claude/agents/proviso-tester.md", agent("proviso-tester.md")},
+		{".claude/skills/proviso-build/SKILL.md", []byte(read("skills/proviso-build/SKILL.md"))},
+		{".proviso/build.md", []byte(read("notes/build.md"))},
 		{".proviso/coder.md", []byte(read("notes/coder.md"))},
 		{".proviso/tester.md", []byte(read("notes/tester.md"))},
 		{"proviso/.gitattributes", []byte(read("tree/gitattributes"))},

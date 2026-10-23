@@ -1,5 +1,5 @@
 // Package git holds every call Proviso makes to git: finding the revision
-// that wrote the manifest, and reading the files of the spec tree at a
+// that wrote the manifest or that a name stands for, and reading the files of the spec tree at a
 // revision. It runs the git command line and never writes to the
 // repository.
 package git
@@ -58,6 +58,20 @@ func ManifestRevision(root, name string, current []byte) (string, error) {
 		return "", fmt.Errorf("%s differs from the one revision %s wrote, so the text there is not the baseline's", name, rev)
 	}
 	return rev, nil
+}
+
+// Commit returns the full name of the commit that name stands for, in the
+// repository holding the folder root, as git reads any name of a revision.
+func Commit(root, name string) (string, error) {
+	// A name git could take for an option names no commit.
+	if name == "" || strings.HasPrefix(name, "-") {
+		return "", fmt.Errorf("git knows no commit named %q", name)
+	}
+	out, err := run(root, nil, "rev-parse", "--verify", "--quiet", name+"^{commit}")
+	if err != nil {
+		return "", fmt.Errorf("git knows no commit named %q", name)
+	}
+	return strings.TrimSpace(string(out)), nil
 }
 
 // Files returns the regular files below the folder root at the revision

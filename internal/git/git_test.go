@@ -87,6 +87,24 @@ func TestManifestRevision(t *testing.T) {
 	}
 }
 
+func TestCommit(t *testing.T) {
+	r := newRepo(t)
+	r.write("system.md", "a\n")
+	a1 := r.commit("first")
+	r.write("system.md", "b\n")
+	b2 := r.commit("second")
+	for name, want := range map[string]string{"HEAD": b2, "HEAD~1": a1, a1[:7]: a1} {
+		if rev, err := Commit(r.root, name); err != nil || rev != want {
+			t.Errorf("%s: %s %v, want %s", name, rev, err, want)
+		}
+	}
+	for _, name := range []string{"nosuch", "HEAD:proviso/system.md", "--all", ""} {
+		if rev, err := Commit(r.root, name); err == nil {
+			t.Errorf("%q names the commit %s", name, rev)
+		}
+	}
+}
+
 func TestNoRepository(t *testing.T) {
 	if _, err := exec.LookPath("git"); err != nil {
 		t.Skip("git is not installed")

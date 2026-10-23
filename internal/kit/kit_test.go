@@ -8,8 +8,8 @@ import (
 
 func TestFiles(t *testing.T) {
 	got := Files("shop")
-	if len(got) != 7 {
-		t.Fatalf("%d files, want 7", len(got))
+	if len(got) != 9 {
+		t.Fatalf("%d files, want 9", len(got))
 	}
 	reading := read("agents/reading.md")
 	for i, f := range got {

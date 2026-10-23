@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -236,7 +237,7 @@ func TestPackCommand(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	all := []string{".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
+	all := []string{".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-build/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
 	lines := func(verb string, paths ...string) string {
 		var b strings.Builder
 		for _, p := range paths {
@@ -253,8 +254,8 @@ func TestInit(t *testing.T) {
 		{"not a repository", map[string]string{"a.txt": "x"}, 2, ""},
 		{"fresh clone", map[string]string{".git/HEAD": "x"}, 0, lines("written", all...)},
 		{"worktree", map[string]string{".git": "gitdir: x"}, 0, lines("written", all...)},
-		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:6]...) + lines("skipped", all[6])},
-		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[2:]...)},
+		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:8]...) + lines("skipped", all[8])},
+		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[3:]...)},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -295,5 +296,76 @@ func TestInitSkeleton(t *testing.T) {
 	out.Reset()
 	if status := run([]string{"lint"}, &out, &errOut); status != 0 || strings.Count(out.String(), "ask undecided") != 6 {
 		t.Errorf("lint: %d %q", status, out.String())
+	}
+}
+
+func TestSince(t *testing.T) {
+	if _, err := exec.LookPath("git"); err != nil {
+		t.Skip("git is not installed")
+	}
+	inRepo(t, map[string]string{"README": "x\n"})
+	git := func(args ...string) string {
+		t.Helper()
+		out, err := exec.Command("git", append([]string{"-c", "user.name=t", "-c", "user.email=t@t", "-c", "commit.gpgsign=false"}, args...)...).CombinedOutput()
+		if err != nil {
+			t.Fatalf("git %v: %v\n%s", args, err, out)
+		}
+		return strings.TrimSpace(string(out))
+	}
+	commit := func() string {
+		git("add", "-A")
+		git("commit", "-q", "-m", "x")
+		return git("rev-parse", "HEAD")
+	}
+	write := func(rel, content string) {
+		if err := os.MkdirAll(filepath.Dir(rel), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(rel, []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	git("init", "-q", "-b", "main")
+	before := commit()
+	write("proviso/system.md", system)
+	a1 := commit()
+	write("proviso/system.md", strings.Replace(system, "\ng\n", "\ngoal\n", 1))
+	write("proviso/manifest.sum", "<<<<<<< HEAD\n")
+	write("proviso/notes.md", "x")
+	c3 := commit()
+	os.Remove("proviso/notes.md")
+
+	cases := []struct {
+		name   string
+		args   []string
+		status int
+		stdout string // a substring, or "" for nothing written
+	}{
+		{"changed since a1", []string{"diff", "--json", "--since", a1[:7]}, 1, `"revision": "` + a1 + `"`},
+		{"former text from a1", []string{"diff", "--json", "--since", a1}, 1, `"former": "g\n"`},
+		{"before the tree", []string{"diff", "--json", "--since", before}, 1, `"change": "added"`},
+		{"no former text needed", []string{"diff", "--json", "--since", before}, 1, `"revision": null`},
+		{"pack since a1", []string{"pack", "--since", "HEAD~1"}, 0, "Former text from `" + a1 + "`."},
+		{"no such commit", []string{"diff", "--since", "nosuch"}, 2, ""},
+		{"lint error there", []string{"pack", "--since", c3}, 2, ""},
+		{"no revision", []string{"diff", "--since"}, 2, ""},
+		{"twice", []string{"diff", "--since", a1, "--since", a1}, 2, ""},
+		{"impact", []string{"impact", "--since", a1}, 2, ""},
+		{"damaged manifest without since", []string{"diff"}, 2, ""},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			var out, errOut bytes.Buffer
+			status := run(c.args, &out, &errOut)
+			if status != c.status {
+				t.Errorf("status %d, want %d (stderr %q)", status, c.status, errOut.String())
+			}
+			if c.stdout == "" && out.Len() > 0 || !strings.Contains(out.String(), c.stdout) {
+				t.Errorf("stdout %q, want %q", out.String(), c.stdout)
+			}
+			if c.status == 2 && errOut.Len() == 0 {
+				t.Error("nothing on stderr")
+			}
+		})
 	}
 }

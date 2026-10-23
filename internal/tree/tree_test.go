@@ -209,3 +209,36 @@ func TestLoadNamesSameInNFC(t *testing.T) {
 		t.Errorf("malformed %q, want %q", tr.Malformed, want)
 	}
 }
+
+func TestFromFiles(t *testing.T) {
+	tr := FromFiles("root", map[string][]byte{
+		"system.md":                          []byte("# x"),
+		"manifest.sum":                       []byte("model 0\n"),
+		".hidden/notes.md":                   []byte("x"),
+		"notes.md":                           []byte("x"),
+		"glossary.md":                        []byte("\xff"),
+		"capabilities/c/capability.md":       []byte("# c"),
+		"capabilities/d/features/Run.md":     []byte("# r"),
+		"capabilities/e/features/u\u0308.md": []byte("# u"),
+	})
+	if want := []string{"notes.md"}; !slices.Equal(tr.Unknown, want) {
+		t.Errorf("unknown %v, want %v", tr.Unknown, want)
+	}
+	if want := []string{"glossary.md"}; !slices.Equal(tr.Unreadable, want) {
+		t.Errorf("unreadable %v, want %v", tr.Unreadable, want)
+	}
+	if want := []string{"capabilities/d/features/Run.md"}; !slices.Equal(tr.Malformed, want) {
+		t.Errorf("malformed %v, want %v", tr.Malformed, want)
+	}
+	want := []CapFolder{{"capabilities/c", true}, {"capabilities/d", false}, {"capabilities/e", false}}
+	if !slices.Equal(tr.CapFolders, want) {
+		t.Errorf("capability folders %+v, want %+v", tr.CapFolders, want)
+	}
+	var rels []string
+	for _, f := range tr.Files {
+		rels = append(rels, f.Rel)
+	}
+	if want := []string{"capabilities/c/capability.md", "capabilities/d/features/Run.md", "capabilities/e/features/\u00fc.md", "system.md"}; !slices.Equal(rels, want) {
+		t.Errorf("files %v, want %v", rels, want)
+	}
+}
