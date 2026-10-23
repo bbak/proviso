@@ -20,6 +20,8 @@ import (
 var installedFiles = []string{
 	".claude/agents/proviso-coder.md",
 	".claude/agents/proviso-tester.md",
+	".claude/skills/proviso-build/SKILL.md",
+	".proviso/build.md",
 	".proviso/coder.md",
 	".proviso/tester.md",
 	"proviso/.gitattributes",

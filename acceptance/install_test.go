@@ -22,6 +22,8 @@ func TestSystemCliInit(t *testing.T) {
 	o.exits(t, 0)
 	want := "written .claude/agents/proviso-coder.md\n" +
 		"written .claude/agents/proviso-tester.md\n" +
+		"written .claude/skills/proviso-build/SKILL.md\n" +
+		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
 		"written proviso/.gitattributes\n" +
@@ -29,6 +31,22 @@ func TestSystemCliInit(t *testing.T) {
 		"skipped proviso/system.md\n"
 	if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
 		t.Errorf("system.cli.init: want stdout\n%s\ngot\n%s", want, got)
+	}
+}
+
+// TestInstallInstalledFiles checks the rows of installed_files that the
+// other tests do not: the skill that builds an amendment is written, and is
+// no empty file. Its wording, and that of the stubs, is the kit's.
+func TestInstallInstalledFiles(t *testing.T) {
+	t.Parallel()
+	r := freshRepo(t, "repo", false)
+	o := r.init()
+	o.exits(t, 0)
+	for _, p := range []string{".claude/skills/proviso-build/SKILL.md", ".proviso/build.md"} {
+		o.says(t, "written", p)
+	}
+	if strings.TrimSpace(r.read(".claude/skills/proviso-build/SKILL.md")) == "" {
+		t.Errorf("install.installed-files: the skill that builds an amendment is empty")
 	}
 }
 
@@ -232,11 +250,18 @@ func TestInstallInitExit(t *testing.T) {
 		o := r.init()
 		o.exits(t, 2)
 		// That no line names a failed file, and that a file not named was
-		// not written, initIn checks; here, that the others were.
-		if len(o.lines) != len(installedFiles)-2 {
-			t.Errorf("install.init.exit: want the other five files named as written, got:\n%s", o.stdout)
+		// not written, initIn checks; here, that the others were. The
+		// skill lies below .claude too, and cannot be written either.
+		below := 0
+		for _, q := range installedFiles {
+			if strings.HasPrefix(q, ".claude/") {
+				below++
+			}
 		}
-		for _, q := range installedFiles[2:] {
+		if len(o.lines) != len(installedFiles)-below {
+			t.Errorf("install.init.exit: want the %d files outside .claude named as written, got:\n%s", len(installedFiles)-below, o.stdout)
+		}
+		for _, q := range installedFiles[below:] {
 			o.says(t, "written", q)
 		}
 	})

@@ -73,11 +73,15 @@ type packOutcome struct {
 // holds for every run. base is the directory the test tree was written to;
 // nothing below it may change. root, if not empty, is the spec root expected.
 // Where pack runs, `diff` is run as well, so that the pack can be checked
-// against the element diff.
-func packIn(t *testing.T, base, cwd, root string) packOutcome {
+// against the element diff. args, such as --since and a revision, are given
+// to every run, `diff` included.
+func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 	t.Helper()
 	before := snapshotAll(t, base)
-	o := packOutcome{json: execProviso(t, cwd, "pack", "--json"), text: execProviso(t, cwd, "pack")}
+	o := packOutcome{
+		json: execProviso(t, cwd, append([]string{"pack", "--json"}, args...)...),
+		text: execProviso(t, cwd, append([]string{"pack"}, args...)...),
+	}
 	after := snapshotAll(t, base)
 	checkWrites(t, before, after, "")
 	if o.json.exit != o.text.exit {
@@ -111,7 +115,7 @@ func packIn(t *testing.T, base, cwd, root string) packOutcome {
 	if o.cpOK {
 		checkPackAgrees(t, o)
 	}
-	o.diff = diffIn(t, base, cwd, root)
+	o.diff = diffIn(t, base, cwd, root, args...)
 	if o.diff.json.exit == 2 {
 		t.Errorf("pack ran, but diff could not:\n%s", o.diff.json.stderr)
 		return o
