@@ -8,7 +8,8 @@ the coding agent; the context pack decides what is built.
   into `bin/` or the repository root: a virus scanner may quarantine
   binaries in `bin/`.
 - **Run Proviso on its own tree:** `lint`, and the command the amendment
-  is about, on the worktree's `proviso/`; report the results.
+  is about, on the worktree's `proviso/`, unless the command would write
+  into it; then run it in a scratch repository. Report the results.
 - **Reuse before adding:** the packages in `internal/` already read the
   tree, the manifest and git; extend them rather than duplicating them.
 - **The files `init` installs** live as real files in `internal/kit/`,
