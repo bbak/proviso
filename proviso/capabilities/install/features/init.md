@@ -88,7 +88,7 @@ the repository's own settings say.
 ```guarded
 When      git reads the attributes of the file <file> below the [spec root], after `init` wrote `gitattributes_file` there
 Then      git gives <file> the attribute "eol" with the value "lf"
-  And     everything else stays as it was
+  And     git checks <file> out with line feeds, even where its settings would give carriage returns
 ```
 
 | file | outcome | why |
