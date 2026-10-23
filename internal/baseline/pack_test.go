@@ -7,22 +7,13 @@ import (
 	"testing"
 )
 
-const builderNotes = "# Builder notes\n\n## <a id=\"system.builder-notes\"></a> builder_notes\n\nThe notes.\n"
-
-// packOf compares the edited tree with the baseline of impactTree with
-// builder notes, and returns the identifiers of the pack by heading,
-// "amendment" for the element diff.
+// packOf compares the edited tree with the baseline of impactTree, and
+// returns the identifiers of the pack by heading, "amendment" for the
+// element diff.
 func packOf(t *testing.T, edit func(map[string]string)) map[string][]string {
 	t.Helper()
-	withNotes := func(m map[string]string) {
-		impactTree(m)
-		m["contracts/builder-notes.md"] = builderNotes
-	}
-	base, _ := Parse(Write(files(withNotes)))
-	now := files(func(m map[string]string) {
-		withNotes(m)
-		edit(m)
-	})
+	base, _ := Parse(Write(files(impactTree)))
+	now := files(editTree(edit))
 	entries := Compare(now, base)
 	out := map[string][]string{}
 	for _, e := range entries {
@@ -41,12 +32,12 @@ func TestPack(t *testing.T) {
 		want map[string][]string
 	}{
 		{"none", func(map[string]string) {}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem: {"system"},
 		}},
 		{"a rule referring to a contract element", func(m map[string]string) {
 			replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.c"},
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
@@ -54,7 +45,7 @@ func TestPack(t *testing.T) {
 		{"a member's holder and the term it represents", func(m map[string]string) {
 			replace(m, "capabilities/c/features/g.md", "`api` answers", "`api.code` answers")
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.c"},
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
@@ -62,7 +53,7 @@ func TestPack(t *testing.T) {
 		{"a hand-over followed to its end, not a rule sharing a term", func(m map[string]string) {
 			replace(m, "capabilities/c/features/g.md", "Then      it is written", "Then      it is written down")
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.d"},
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"c.f.r", "system.thing"},
@@ -70,7 +61,7 @@ func TestPack(t *testing.T) {
 		{"an unchanged standard", func(m map[string]string) {
 			replace(m, "capabilities/c/features/g.md", "of the [thing]", "of the [std]")
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.a"},
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"system.ref.std", "system.std"},
@@ -78,23 +69,23 @@ func TestPack(t *testing.T) {
 		{"a removed rule brings nothing", func(m map[string]string) {
 			m["capabilities/c/features/g.md"] = strings.Replace(m["capabilities/c/features/g.md"], rule("c.g.c", "`api` answers <x>", "it is answered"), "", 1)
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
-			"amendment": {"c.g.c"},
+			HeadingSystem: {"system"},
+			"amendment":   {"c.g.c"},
 		}},
 		{"a glossary entry of the system", func(m map[string]string) {
 			replace(m, "glossary.md", "- Contact: Ann\n- Status: defined\n- Aliases: things", "- Contact: Bob\n- Status: defined\n- Aliases: things")
 		}, map[string][]string{
-			HeadingNotes: {"system.builder-notes"}, HeadingSystem: {"system"},
+			HeadingSystem: {"system"},
 			"amendment":   {"system.thing"},
 			HeadingFrames: {"system.inv"},
 		}},
 		{"listed elements appear under Amendment only, others once", func(m map[string]string) {
 			replace(m, "capabilities/c/features/g.md", "## Goal\n\ng\n", "## Goal\n\nh\n")
-			replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered with `builder_notes`")
+			replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
+			replace(m, "capabilities/c/features/g.md", "it is read", "it is read at once")
 			replace(m, "system.md", "## Scope\n\ns\n", "## Scope\n\nt\n")
 		}, map[string][]string{
-			HeadingNotes:   {"system.builder-notes"},
-			"amendment":    {"c.g", "c.g.c", "system"},
+			"amendment":    {"c.g", "c.g.a", "c.g.c", "system"},
 			HeadingFrames:  {"c", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
 		}},

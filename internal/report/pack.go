@@ -12,7 +12,6 @@ import (
 // packHeadings are the headings of pack_text, in its order, with the
 // heading context_pack names; Amendment holds the element diff.
 var packHeadings = []struct{ title, heading string }{
-	{"Builder notes", baseline.HeadingNotes},
 	{"System", baseline.HeadingSystem},
 	{"Amendment", ""},
 	{"Frames", baseline.HeadingFrames},
@@ -21,13 +20,17 @@ var packHeadings = []struct{ title, heading string }{
 
 // PackText writes pack_text: under each heading its elements, each with a
 // blank line before and after, and under Amendment, before each element,
-// what happened to it, and after it the former text of its parts. A
-// heading under which no element appears is left out.
-func PackText(w io.Writer, entries []*baseline.Entry, packed []baseline.Packed) error {
+// what happened to it, and after it the former text of its parts, the
+// revision the former text came from first, if any was needed. A heading
+// under which no element appears is left out.
+func PackText(w io.Writer, revision string, entries []*baseline.Entry, packed []baseline.Packed) error {
 	var blocks []string // separated by a blank line
 	for _, h := range packHeadings {
 		var under []string
 		if h.heading == "" {
+			if revision != "" && len(entries) > 0 {
+				under = append(under, fmt.Sprintf("Former text from `%s`.\n", revision))
+			}
 			for _, e := range entries {
 				under = append(under, amendment(e)...)
 			}
