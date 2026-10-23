@@ -1,6 +1,6 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
-// Model: `proviso lint`, `proviso manifest`, `proviso diff`,
-// `proviso impact` and `proviso pack`.
+// Model: `proviso init`, `proviso lint`, `proviso manifest`,
+// `proviso diff`, `proviso impact` and `proviso pack`.
 package main
 
 import (
@@ -14,6 +14,7 @@ import (
 
 	"github.com/bbak/proviso/internal/baseline"
 	"github.com/bbak/proviso/internal/git"
+	"github.com/bbak/proviso/internal/kit"
 	"github.com/bbak/proviso/internal/lint"
 	"github.com/bbak/proviso/internal/report"
 	"github.com/bbak/proviso/internal/tree"
@@ -21,15 +22,16 @@ import (
 )
 
 // The exit statuses of the contracts lint.cli.lint.exit-status,
-// system.cli.manifest.exit-status, system.cli.diff.exit-status,
-// system.cli.impact.exit-status and system.cli.pack.exit-status.
+// system.cli.init.exit-status, system.cli.manifest.exit-status,
+// system.cli.diff.exit-status, system.cli.impact.exit-status and
+// system.cli.pack.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element
 	exitCantRun = 2
 )
 
-const usage = "usage: proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json] | proviso pack [--json]"
+const usage = "usage: proviso init | proviso lint [--json] | proviso manifest | proviso diff [--json] | proviso impact [--json] | proviso pack [--json]"
 
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
@@ -42,6 +44,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 	cmd, opts := args[0], args[1:]
 	switch cmd {
+	case "init":
+		if len(opts) > 0 {
+			fmt.Fprintf(stderr, "proviso init: unknown argument %q\n%s\n", opts[0], usage)
+			return exitCantRun
+		}
+		return initRun(stdout, stderr)
 	case "lint", "manifest", "diff", "impact", "pack":
 	default:
 		fmt.Fprintln(stderr, usage)
@@ -80,6 +88,60 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return impactRun(t, res, asJSON, stdout, stderr)
 	}
 	return exitCantRun
+}
+
+// initRun writes every installed file the working directory is missing,
+// provided it is the root of a git repository. It never opens an entry
+// that exists, and it creates each file exclusively, so that it cannot
+// replace one that appears meanwhile.
+func initRun(stdout, stderr io.Writer) int {
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso init: %v\n", err)
+		return exitCantRun
+	}
+	// Any entry named .git counts: a folder in a clone, a file in a
+	// worktree, whatever its attributes.
+	if _, err := os.Lstat(filepath.Join(wd, ".git")); err != nil {
+		fmt.Fprintf(stderr, "proviso init: %s is not the root of a git repository\n", wd)
+		return exitCantRun
+	}
+	status := exitClean
+	for _, f := range kit.Files(norm.NFC.String(filepath.Base(wd))) {
+		dst := filepath.Join(wd, filepath.FromSlash(f.Path))
+		if _, err := os.Lstat(dst); err == nil {
+			fmt.Fprintf(stdout, "skipped %s\n", f.Path)
+			continue
+		}
+		if err := install(dst, f.Data); err != nil {
+			fmt.Fprintf(stderr, "proviso init: cannot write %s: %v\n", f.Path, err)
+			status = exitCantRun
+			continue
+		}
+		fmt.Fprintf(stdout, "written %s\n", f.Path)
+	}
+	return status
+}
+
+// install creates the file dst, with the folders above it that are
+// missing, and removes what it created of the file if it cannot write it
+// completely, so that a later run writes it again.
+func install(dst string, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return err
+	}
+	f, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	if cerr := f.Close(); err == nil {
+		err = cerr
+	}
+	if err != nil {
+		os.Remove(dst)
+	}
+	return err
 }
 
 // check finds the spec root as lint does, reads its tree completely,

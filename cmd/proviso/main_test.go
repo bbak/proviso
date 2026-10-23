@@ -234,3 +234,66 @@ func TestPackCommand(t *testing.T) {
 		t.Errorf("a tree with an error: %d %q %q", status, out, errOut)
 	}
 }
+
+func TestInit(t *testing.T) {
+	all := []string{".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
+	lines := func(verb string, paths ...string) string {
+		var b strings.Builder
+		for _, p := range paths {
+			b.WriteString(verb + " " + p + "\n")
+		}
+		return b.String()
+	}
+	cases := []struct {
+		name   string
+		files  map[string]string
+		status int
+		stdout string
+	}{
+		{"not a repository", map[string]string{"a.txt": "x"}, 2, ""},
+		{"fresh clone", map[string]string{".git/HEAD": "x"}, 0, lines("written", all...)},
+		{"worktree", map[string]string{".git": "gitdir: x"}, 0, lines("written", all...)},
+		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:6]...) + lines("skipped", all[6])},
+		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[2:]...)},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			inRepo(t, c.files)
+			var out, errOut bytes.Buffer
+			if status := run([]string{"init"}, &out, &errOut); status != c.status {
+				t.Errorf("status %d, want %d (stderr %q)", status, c.status, errOut.String())
+			}
+			if out.String() != c.stdout {
+				t.Errorf("stdout %q, want %q", out.String(), c.stdout)
+			}
+			for rel, content := range c.files {
+				if data, err := os.ReadFile(rel); err != nil || string(data) != content {
+					t.Errorf("%s changed: %q, %v", rel, data, err)
+				}
+			}
+			if c.status == 0 {
+				out.Reset()
+				if status := run([]string{"init"}, &out, &errOut); status != 0 || out.String() != lines("skipped", all...) {
+					t.Errorf("second run: %d, %q", status, out.String())
+				}
+			}
+		})
+	}
+}
+
+func TestInitSkeleton(t *testing.T) {
+	inRepo(t, map[string]string{".git/HEAD": "x"})
+	wd, _ := os.Getwd()
+	var out, errOut bytes.Buffer
+	if status := run([]string{"init"}, &out, &errOut); status != 0 {
+		t.Fatalf("init: %d %s", status, errOut.String())
+	}
+	data, _ := os.ReadFile("proviso/system.md")
+	if want := "# <a id=\"system\"></a> " + filepath.Base(wd) + "\n"; !strings.HasPrefix(string(data), want) {
+		t.Errorf("heading %q, want %q", data, want)
+	}
+	out.Reset()
+	if status := run([]string{"lint"}, &out, &errOut); status != 0 || strings.Count(out.String(), "ask undecided") != 6 {
+		t.Errorf("lint: %d %q", status, out.String())
+	}
+}
