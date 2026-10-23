@@ -24,7 +24,9 @@ line. Proviso is those mechanics.
 - Impact sets for an amendment.
 - Context packs for the testing and coding agents.
 - Acceptance checks.
-- Installing and updating the skills that call Proviso.
+- Installing and updating the files a repository needs beside its code:
+  the start of a spec tree, its settings, the agent definitions and the
+  skills.
 - The authoring skill, with which business requesters write checkable
   requests; distributed on its own, since they never see the tree.
 

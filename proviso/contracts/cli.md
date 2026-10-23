@@ -425,3 +425,29 @@ properties:
 - `elements` holds every other element of the pack, under the heading
   `heading` names, in the order of `pack_text`.
 - `file`, `line` and `text` mean what they mean in `element_diff`.
+
+## <a id="system.cli.init"></a> init
+
+The command `proviso init`, run in the root of a git repository. It
+writes the installed files that are missing, and names each installed
+file on standard output: one line each, in the byte order of their
+paths, `written` or `skipped`, a space and the path, as
+`installed_files` gives it.
+
+```text
+written .claude/agents/proviso-coder.md
+skipped proviso/system.md
+```
+
+### <a id="system.cli.init.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: every installed file is in place, written or skipped.
+- `2`: the command could not run, or an installed file could not be
+  written.
