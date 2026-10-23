@@ -30,7 +30,7 @@ tasks:
   acceptance:
     desc: Run the testing agent's acceptance tests (they build the binary themselves)
     cmds:
-      - go test ./acceptance/... {{.CLI_ARGS}}
+      - go test -timeout 30m ./acceptance/... {{.CLI_ARGS}}
 
   vet:
     desc: Run go vet
