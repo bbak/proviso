@@ -112,6 +112,13 @@ It writes the element diff as text by default, or an `element_diff` with
 The option `--json`: write the `element_diff` to standard output instead
 of text. The text form is for people and not part of the contract.
 
+### <a id="system.cli.diff.since"></a> since
+
+The option `--since <revision>`: compare the spec tree with the spec tree
+at that git revision instead of with the baseline, and read former text
+from there. `<revision>` is any name git accepts for a commit, such as
+`a1b2c3d` or `HEAD~1`.
+
 ### <a id="system.cli.diff.exit-status"></a> exit-status
 
 The process exit status.
@@ -309,6 +316,12 @@ or a `context_pack` with `--json`.
 
 The option `--json`: write the `context_pack` to standard output instead
 of `pack_text`.
+
+### <a id="system.cli.pack.since"></a> since
+
+The option `--since <revision>`: assemble the pack of what changed since
+that git revision, as `diff.since` compares, instead of since the
+baseline. A resumed implementing agent receives it for a later round.
 
 ### <a id="system.cli.pack.exit-status"></a> exit-status
 

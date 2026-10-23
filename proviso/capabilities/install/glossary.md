@@ -4,9 +4,9 @@
 
 - Definition: The files Proviso carries in its binary for `init` to
   install: the start of a spec tree and its settings, the agent
-  definitions, the reading guide they share, and the stubs of the
-  engineers' notes for the implementing agents. Their wording is
-  Proviso's own.
+  definitions, the reading guide they share, the skills, and the stubs
+  of the engineers' notes to the implementing agents and the skills.
+  Their wording is Proviso's own.
 - Contact: Bruno Baketarić
 - Status: defined
 

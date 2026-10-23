@@ -22,7 +22,7 @@ nobody notices is what Proviso exists to prevent.
 ## <a id="baseline.diff.baseline"></a> Rule: Without a manifest, the baseline is empty
 
 ```guarded
-When      someone runs `diff`, and it works on the [spec tree] of the [spec root] <root>
+When      someone runs `diff` without `diff.since`, and it works on the [spec tree] of the [spec root] <root>
 Provided  <root> holds `manifest_file`
 Then      the [baseline] is what `manifest_file` records
   And     `diff` compares the [spec tree] with it
@@ -34,6 +34,39 @@ Otherwise the [baseline] is empty
 | --- | --- | --- | --- |
 | `repo/proviso/`, with `manifest.sum` | yes | compared with the manifest | |
 | `repo/proviso/`, without `manifest.sum` | no | every element added | a tree before its first acceptance |
+
+## <a id="baseline.diff.since"></a> Rule: Since a revision, the tree at that revision takes the baseline's place
+
+### Rationale
+
+An amendment is built in rounds, and a resumed agent needs only what
+changed since its last round. The tree at the revision it last received
+stands in for the baseline: its parts are fingerprinted as the manifest
+would record them, so the same comparison finds what changed, and the
+former text comes from the same revision. The manifest is not read. A
+tree that lint would reject could be misread, and a misread tree would
+show changes nobody made.
+
+```guarded
+When      someone runs `diff` with `diff.since`, or `pack` with `pack.since`, naming the revision <revision>
+Provided  git knows <revision> as a commit
+  And     `lint`, run on the [spec tree] at <revision>, would exit with `lint.exit-status` 0, or there is no [spec tree] at <revision>
+Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [part] fingerprinted as `manifest_file` describes, in place of the [baseline]
+  And     the text the command lists as former is read from <revision>, and the command names <revision> in what it writes
+  And     `manifest_file` is not read
+Otherwise the command writes to "stderr" why it cannot compare with <revision>
+  And     the command exits with 2, as `diff.exit-status` and `pack.exit-status` define
+  And     nothing goes to "stdout"
+```
+
+| revision | provided | outcome | why |
+| --- | --- | --- | --- |
+| `a1b2`, the commit an agent received in its last round | yes | compared with the tree at `a1b2`, former text from `a1b2` | |
+| `HEAD~1` | yes | compared with the tree one commit back | any name git accepts |
+| `e5f6`, from before the tree existed | yes | every element added | an empty tree, as without a manifest |
+| `a1b2`, with `manifest.sum` damaged by a merge conflict | yes | compared with the tree at `a1b2` | the manifest is not read |
+| `nosuch` | no (a commit) | exit status 2 | |
+| `c3d4`, whose tree has a lint error | no (no error) | exit status 2 | a misread tree would show changes nobody made |
 
 ## <a id="baseline.diff.malformed"></a> Rule: A manifest that cannot be read stops the diff
 
@@ -178,7 +211,7 @@ manifest in the tree differs from the one in that revision, the former
 text found there would not belong to the baseline.
 
 ```guarded
-When      `diff`, `impact` or `pack` needs the [former text] of a removed [element] or of a [part], in the git history <history>
+When      `diff`, `impact` or `pack`, run without `diff.since` or `pack.since`, needs the [former text] of a removed [element] or of a [part], in the git history <history>
 Provided  <history> names the newest revision that changed `manifest_file`, not counting a merge that took it unchanged from one of its parents
   And     `manifest_file` in that revision is the same as in the [spec root]
   And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records
