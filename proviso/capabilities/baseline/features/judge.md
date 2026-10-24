@@ -125,9 +125,9 @@ Otherwise `judge` writes to "stderr" that no [finding] has the id <id>
 
 ### Rationale
 
-A run of `judge` is the agent saying that it checked the amendment as
-it stands, so every touched element is recorded as it is now, and as
-its baseline holds it: a merge that changes the baseline of a touched
+A run of `judge` that closes no finding is the agent saying that it
+checked the amendment as it stands, so every touched element is
+recorded as it is now, and as its baseline holds it: a merge that changes the baseline of a touched
 element changes what the check was about, though the branch's own text
 stays the same. A candidate is recorded only when it is judged, since
 only then was it read.
@@ -135,7 +135,7 @@ only then was it read.
 ```guarded
 When      `judge` has taken every [judgement] and [finding] of the input of a run on the [spec root] <root>
 Provided  `coherence_file` can be written into <root>
-Then      `judge` writes `coherence_file` into <root>, recording for every [touched element] the [fingerprints] of its [parts] now and in the [baseline]
+Then      `judge` writes `coherence_file` into <root>
   And     a [judgement] recorded before for an [element] that is no longer a [candidate] is dropped, and so is a reason that no [judgement] names any more
   And     every [finding] recorded before is kept
   And     `judge` exits with `judge.exit-status` 0
@@ -149,6 +149,31 @@ Otherwise `judge` writes to "stderr" why it could not write `coherence_file`
 | `repo/proviso/`, without `.coherence.json` | yes | `repo/proviso/.coherence.json` written | |
 | `repo/proviso/`, with a judgement recorded for `lint.examples.cells`, edited since | yes | written, that judgement dropped | it is a touched element now |
 | `repo/proviso/`, without write permission | no | exit status 2 | |
+
+## <a id="baseline.judge.touched"></a> Rule: Closing a finding records no check
+
+### Rationale
+
+Closing a finding is the engineer's decision, not a check: an edit that
+resolves it was read by no agent. A run that closes a finding leaves the
+touched elements as the last check recorded them, so that an edit since
+then shows as stale, and the next run checks it.
+
+```guarded
+When      `judge` records the input <input> in `coherence_file`
+Provided  <input> closes no [finding]
+Then      every [touched element] is recorded with the [fingerprints] of its [parts] now and in the [baseline]
+  And     the check covers every [touched element] as it stands
+Otherwise every [touched element] keeps what `coherence_file` recorded for it before, and one recorded for none stays so
+  And     an edit of a [touched element] since the last check is left for the next check to read
+```
+
+| input | provided | outcome | why |
+| --- | --- | --- | --- |
+| one judgement and one new finding | yes | every touched element recorded as it is now | |
+| no judgements and no findings | yes | every touched element recorded as it is now | the check of an amendment without candidates |
+| `f1` resolved, `lint.run.exit` edited since the last run | no | `lint.run.exit` keeps what was recorded before | the edit was read by no agent |
+| `f2` dismissed, with one new finding | no | every touched element keeps what was recorded before | |
 
 ## <a id="baseline.judge.unreadable"></a> Rule: A coherence file that cannot be read stops the command
 
