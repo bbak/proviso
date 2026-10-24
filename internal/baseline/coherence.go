@@ -164,7 +164,9 @@ type InputFinding struct {
 	Elements           []string
 }
 
-// ParseCheckResult reads a check_result, or says why the input is none.
+// ParseCheckResult reads a check_result, or says why the input is none:
+// either a run of the coherence check or decisions on recorded findings,
+// never both.
 func ParseCheckResult(data []byte) (*CheckResult, error) {
 	if !utf8.Valid(data) {
 		return nil, errors.New("it is not UTF-8")
@@ -227,6 +229,13 @@ func ParseCheckResult(data []byte) (*CheckResult, error) {
 			return nil, err
 		}
 		r.Findings = append(r.Findings, fi)
+	}
+	run, decision := len(r.Judgements) > 0, false
+	for _, f := range r.Findings {
+		run, decision = run || f.ID == "", decision || f.ID != ""
+	}
+	if run && decision {
+		return nil, errors.New("it holds both a run of the coherence check, judgements or new findings, and decisions on recorded findings: a check and the engineer's decisions are recorded apart")
 	}
 	return &r, nil
 }

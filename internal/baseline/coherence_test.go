@@ -11,8 +11,11 @@ import (
 func TestParseCheckResult(t *testing.T) {
 	cases := map[string]string{ // the input, and "" or a part of why it is refused
 		`{}`: "",
-		`{"judgements": [{"reason": "r", "elements": ["a", "b", "a"]}], "findings": [{"kind": "gap", "text": "t"}, {"id": "f3", "status": "dismissed", "reason": "r"}]}`: "",
-		`{"findings": [{"id": "f1", "status": "resolved"}], "other": 1}`: "",
+		`{"judgements": [{"reason": "r", "elements": ["a", "b", "a"]}], "findings": [{"kind": "gap", "text": "t"}]}`: "",
+		`{"findings": [{"id": "f3", "status": "dismissed", "reason": "r"}, {"id": "f1", "status": "resolved"}]}`:     "",
+		`{"judgements": [{"reason": "r", "elements": ["a"]}], "findings": [{"id": "f1", "status": "resolved"}]}`:     "recorded apart",
+		`{"findings": [{"id": "f1", "status": "resolved"}, {"kind": "gap", "text": "t"}]}`:                           "recorded apart",
+		`{"findings": [{"id": "f1", "status": "resolved"}], "other": 1}`:                                             "",
 		`not json`:             "not JSON",
 		`[]`:                   "not a JSON object",
 		`{"judgements": null}`: "not an array",
@@ -96,9 +99,13 @@ func TestJudgeAndVerify(t *testing.T) {
 		t.Errorf("leftover: %v", got)
 	}
 
-	in, _ = ParseCheckResult([]byte(`{"judgements": [{"reason": "also untouched", "elements": ["c.f.inv", "c.g.inv", "system.inv", "c.g.a"]}], "findings": [{"id": "f1", "status": "dismissed", "reason": "r"}, {"kind": "missed", "text": "x"}]}`))
+	in, _ = ParseCheckResult([]byte(`{"judgements": [{"reason": "also untouched", "elements": ["c.f.inv", "c.g.inv", "system.inv", "c.g.a"]}], "findings": [{"kind": "missed", "text": "x"}]}`))
 	c, err = Judge(parsed, in, entries, cands, now, base)
 	if err != nil {
+		t.Fatal(err)
+	}
+	in, _ = ParseCheckResult([]byte(`{"findings": [{"id": "f1", "status": "dismissed", "reason": "r"}]}`))
+	if c, err = Judge(c, in, entries, cands, now, base); err != nil {
 		t.Fatal(err)
 	}
 	if got := Verify(c, entries, cands, base); len(got) != 1 || got[0].Finding != "f2" {
@@ -186,7 +193,7 @@ func TestJudgeClosingKeepsTouched(t *testing.T) {
 		replace(m, "capabilities/c/features/f.md", "Then      it is read twice", "Then      it is read three times")
 		replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
 	})
-	in, _ = ParseCheckResult([]byte(`{"findings": [{"id": "f1", "status": "resolved", "reason": "edited"}, {"kind": "missed", "text": "x"}]}`))
+	in, _ = ParseCheckResult([]byte(`{"findings": [{"id": "f1", "status": "resolved", "reason": "edited"}]}`))
 	c, err := Judge(first, in, entries2, cands2, now2, base)
 	if err != nil {
 		t.Fatal(err)
