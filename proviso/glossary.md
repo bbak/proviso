@@ -271,8 +271,9 @@
 
 ## <a id="system.judgement"></a> judgement
 
-- Definition: The decision on one candidate of an impact set: changed by
-  the amendment, or untouched, with the reason why.
+- Definition: The decision that one candidate of an impact set stays
+  as it is, with the reason why. A candidate the amendment does affect
+  gets no judgement: it is edited, or the coherence check reports it.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: judgements

@@ -439,6 +439,170 @@ properties:
   `heading` names, in the order of `pack_text`.
 - `file`, `line` and `text` mean what they mean in `element_diff`.
 
+## <a id="system.cli.judge"></a> judge
+
+The command `proviso judge`, run anywhere inside the system's
+repository. It reads a `check_result` from standard input, records it
+in `coherence_file` and writes nothing to standard output.
+
+### <a id="system.cli.judge.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 1, 2]
+```
+
+- `0`: the check result was recorded.
+- `1`: the check result was refused, and nothing was recorded.
+- `2`: `coherence_file` could not be read or written, or the command
+  could not run.
+
+## <a id="system.cli.check-result"></a> check_result
+
+What `judge` reads: the judgements and findings of a run of the
+coherence check, in UTF-8.
+
+```yaml
+type: object
+properties:
+  judgements:
+    type: array
+    items:
+      type: object
+      required: [reason, elements]
+      properties:
+        reason:
+          type: string
+          minLength: 1
+        elements:
+          type: array
+          minItems: 1
+          items:
+            type: string
+  findings:
+    type: array
+    items:
+      oneOf:
+        - type: object
+          required: [kind, text]
+          additionalProperties: false
+          properties:
+            kind:
+              enum: [contradiction, ignored, gap, missed]
+            elements:
+              type: array
+              items:
+                type: string
+            text:
+              type: string
+              minLength: 1
+        - type: object
+          required: [id, status]
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+            status:
+              enum: [resolved, dismissed]
+            reason:
+              type: string
+              minLength: 1
+```
+
+- A judgement says that every element it names stays as it is, for its
+  `reason`. One reason may cover many elements; an element appears in
+  at most one judgement.
+- A finding without an `id` is new. `kind` says what was found: a
+  `contradiction`, a term, invariant or constraint `ignored`, a `gap`,
+  or a candidate the impact sources `missed`. `elements` names the
+  elements it concerns, if any.
+- A finding with an `id` changes the status of one recorded before:
+  `resolved` when an edit removed it, `dismissed` when the engineer
+  dismissed it, which needs a `reason`.
+- A member left out is an empty list.
+
+```json
+{
+  "judgements": [
+    { "reason": "untouched: nothing here reads the manifest",
+      "elements": ["lint.examples.cells", "lint.run.root"] }
+  ],
+  "findings": [
+    { "kind": "gap", "elements": ["baseline.impact.events"],
+      "text": "No rule says what happens when a When has no step text." },
+    { "id": "f3", "status": "dismissed", "reason": "decided in system.git" }
+  ]
+}
+```
+
+## <a id="system.cli.verify"></a> verify
+
+The command `proviso verify`, run anywhere inside the system's
+repository. It writes the problems it finds as text by default, or a
+`verification` with `--json`. CI and the local checks run it on every
+branch.
+
+### <a id="system.cli.verify.json"></a> json
+
+The option `--json`: write the `verification` to standard output
+instead of text. The text form is for people and not part of the
+contract.
+
+### <a id="system.cli.verify.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 1, 2]
+```
+
+- `0`: the spec tree may become the baseline as it stands.
+- `1`: `verify` found at least one problem.
+- `2`: `coherence_file` could not be read, or the command could not
+  run.
+
+## <a id="system.cli.verification"></a> verification
+
+What `verify --json` writes: the spec root that was verified, and every
+problem found. `root` follows the same conventions as in `report`.
+
+```yaml
+type: object
+required: [root, problems]
+properties:
+  root:
+    type: string
+  problems:
+    type: array
+    items:
+      type: object
+      required: [kind, message]
+      properties:
+        kind:
+          enum: [missing, leftover, unjudged, stale, open]
+        element:
+          type: string
+        finding:
+          type: string
+        text:
+          type: string
+        message:
+          type: string
+```
+
+- `kind` says what is wrong: the element diff lists elements but no
+  coherence check is recorded (`missing`); a check is recorded beside a
+  tree the manifest records (`leftover`); a candidate has no judgement
+  (`unjudged`); an element changed since the check covered it
+  (`stale`); a finding is neither resolved nor dismissed (`open`).
+- `element` is the identifier of the element an `unjudged` or `stale`
+  problem is about; `finding` and `text` are the `id` and the text of
+  an `open` finding.
+- `message` is for people and not part of the contract.
+
 ## <a id="system.cli.init"></a> init
 
 The command `proviso init`, run in the root of a git repository. It
