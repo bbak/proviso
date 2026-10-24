@@ -109,7 +109,7 @@ every agent that reads a context pack, and `init` puts it in place.
 ```guarded
 When      `init` writes the [agent definition] <definition>
 Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s reading guide where the definition marks it
-  And     <definition> refers to no other file of the [kit]
+  And     <definition> refers to no file of the [kit] that `installed_files` does not name
 ```
 
 | definition | outcome |
@@ -129,7 +129,7 @@ pack, so it carries no reading guide.
 ```guarded
 When      `init` writes the [skill] <skill>
 Then      <skill> is the [kit]'s [skill] of that name, as the [kit] holds it
-  And     <skill> refers to no other file of the [kit]
+  And     <skill> refers to no file of the [kit] that `installed_files` does not name
 ```
 
 | skill | outcome |
