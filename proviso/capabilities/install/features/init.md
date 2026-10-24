@@ -109,14 +109,35 @@ every agent that reads a context pack, and `init` puts it in place.
 ```guarded
 When      `init` writes the [agent definition] <definition>
 Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s reading guide where the definition marks it
-  And     <definition> refers to no other file of the [kit]
+  And     <definition> refers to no file of the [kit] that `installed_files` does not name
+  And     <definition> refers to no file below ".proviso/" but the notes to that agent
 ```
 
 | definition | outcome |
 | --- | --- |
 | `.claude/agents/proviso-tester.md` | the testing agent's definition, named `proviso-tester`, with the reading guide in it |
 | `.claude/agents/proviso-coder.md` | the coding agent's definition, named `proviso-coder`, with the same reading guide in it |
-| `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it |
+| `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it, and no engineers' notes |
+
+## <a id="install.init.skills"></a> Rule: A skill is installed complete
+
+### Rationale
+
+The agent host reads only the installed skill; a skill that pointed to
+another file of the kit would point to nothing. A skill reads no context
+pack, so it carries no reading guide.
+
+```guarded
+When      `init` writes the [skill] <skill>
+Then      <skill> is the [kit]'s [skill] of that name, as the [kit] holds it
+  And     <skill> refers to no file of the [kit] that `installed_files` does not name
+```
+
+| skill | outcome |
+| --- | --- |
+| `.claude/skills/proviso-build/SKILL.md` | the skill that builds an amendment, named `proviso-build` |
+| `.claude/skills/proviso-check/SKILL.md` | the skill that checks an amendment, named `proviso-check` |
+| `.claude/skills/proviso-accept/SKILL.md` | the skill that accepts an amendment, named `proviso-accept` |
 
 ## <a id="install.init.exit"></a> Rule: The exit status tells whether every installed file is in place
 

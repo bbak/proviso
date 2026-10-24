@@ -2,9 +2,13 @@ package kit
 
 import (
 	"bytes"
+	"regexp"
 	"strings"
 	"testing"
 )
+
+// proviso matches a path below .proviso/.
+var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop")
@@ -19,6 +23,15 @@ func TestFiles(t *testing.T) {
 		if bytes.Contains(f.Data, []byte("\r")) {
 			t.Errorf("%s holds a carriage return", f.Path)
 		}
+		if strings.HasPrefix(f.Path, ".claude/") {
+			// A kit file that is not installed, or a kit path, would point to
+			// nothing on the agent host.
+			for _, ref := range []string{"reading.md", "proviso: ", "agents/", "notes/", "tree/", "skills/"} {
+				if bytes.Contains(f.Data, []byte(ref)) {
+					t.Errorf("%s refers to %q of the kit", f.Path, ref)
+				}
+			}
+		}
 		if strings.HasPrefix(f.Path, ".claude/agents/") {
 			if bytes.Contains(f.Data, []byte("proviso: reading.md")) || !bytes.Contains(f.Data, []byte(reading)) {
 				t.Errorf("%s: reading guide not in place", f.Path)
@@ -27,7 +40,31 @@ func TestFiles(t *testing.T) {
 			if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
 				t.Errorf("%s not named %s", f.Path, name)
 			}
+			// Below .proviso/ only the notes to that agent; the checker has none.
+			notes := map[string]string{"proviso-coder": ".proviso/coder.md", "proviso-tester": ".proviso/tester.md"}[name]
+			for _, ref := range proviso.FindAllString(string(f.Data), -1) {
+				if ref != notes {
+					t.Errorf("%s refers to %s", f.Path, ref)
+				}
+			}
 		}
+	}
+	skills := 0
+	for _, f := range got {
+		if !strings.HasPrefix(f.Path, ".claude/skills/") {
+			continue
+		}
+		skills++
+		name := strings.TrimSuffix(strings.TrimPrefix(f.Path, ".claude/skills/"), "/SKILL.md")
+		if want := read("skills/" + name + "/SKILL.md"); string(f.Data) != want {
+			t.Errorf("%s is not the kit's skill as the kit holds it", f.Path)
+		}
+		if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
+			t.Errorf("%s not named %s", f.Path, name)
+		}
+	}
+	if skills != 3 {
+		t.Errorf("%d skills, want 3", skills)
 	}
 	if sys := got[len(got)-1]; sys.Path != "proviso/system.md" || !bytes.HasPrefix(sys.Data, []byte("# <a id=\"system\"></a> shop\n")) {
 		t.Errorf("skeleton %s: %q", sys.Path, sys.Data)

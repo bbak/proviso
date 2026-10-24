@@ -5,8 +5,8 @@
 Installing gives a repository what Proviso needs beside the system's
 code: the start of a spec tree that lint accepts, the settings that keep
 the tree readable on every platform, the definitions of the agents and
-the skills that start them, so that an engineer begins with one
-command.
+the skills that build, check and accept an amendment, so that an
+engineer begins with one command.
 
 ## Rationale
 
