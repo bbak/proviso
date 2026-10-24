@@ -329,6 +329,95 @@ func TestBaselineJudgeNewFinding(t *testing.T) {
 	})
 }
 
+// checkedThenEdited records a check of the impact tree amended by
+// iLimitProvided, every candidate judged, with the findings fs, and then
+// edits the Then step of cart.add.limit, a touched element, so that the
+// check no longer covers it as it stands.
+func checkedThenEdited(t *testing.T, fs ...findingIn) *repo {
+	t.Helper()
+	r := amendedRepo(t, iLimitProvided)
+	r.judgeAll(nil, fs...)
+	r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+	r.verify().has(t, "stale cart.add.limit")
+	return r
+}
+
+// TestBaselineJudgeTouched checks baseline.judge.touched. lint.run.exit of
+// the spec's examples stands for cart.add.limit, as above. What a run
+// records for a touched element shows through verify: "stale" where the
+// record does not match the element as it stands now.
+func TestBaselineJudgeTouched(t *testing.T) {
+	t.Parallel()
+	t.Run("row1 one judgement and one new finding", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t)
+		r.judgeAll(nil, gap("A new gap."))
+		r.verify().only(t, "open f1")
+	})
+	t.Run("row2 no judgements and no findings", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t)
+		if res := r.judgeRaw("{}"); res.exit != 0 {
+			t.Fatalf("want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		r.verify().lacks(t, "stale cart.add.limit")
+	})
+	t.Run("row3 f1 resolved, lint.run.exit edited since the last run", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		o := r.verify()
+		o.has(t, "stale cart.add.limit")
+		o.lacks(t, "open f1")
+	})
+	t.Run("row4 f2 dismissed, with one new finding", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("The first gap."), gap("The second gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{dismissed("f2", "decided in system.git"), gap("The third gap.")}})
+		o := r.verify()
+		o.has(t, "stale cart.add.limit")
+		o.has(t, "open f1")
+		o.has(t, "open f3")
+		o.lacks(t, "open f2")
+	})
+	t.Run("derived: a closing run with a judgement keeps what was recorded", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("A gap."))
+		c := checkResult{Findings: []findingIn{resolved("f1")}}
+		if ids := r.candidates(); len(ids) > 0 {
+			c.Judgements = []judgementIn{{"untouched: the amendment does not reach it", ids}}
+		}
+		r.judgeOK(c)
+		r.verify().only(t, "stale cart.add.limit")
+	})
+	t.Run("derived: a touched element recorded for none stays so", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.open is touched only after the check, so the check
+		// recorded nothing for it.
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil, gap("A gap."))
+		r.set(amended(impactTree(), iLimitThen, iOpenThen))
+		r.verify().has(t, "stale cart.pay.open")
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().has(t, "stale cart.pay.open")
+	})
+	t.Run("derived: the next run that closes no finding checks the edit", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().has(t, "stale cart.add.limit")
+		r.judgeAll(nil)
+		r.verify().only(t)
+	})
+	t.Run("derived: a closing run with no edit since leaves nothing stale", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().only(t)
+	})
+}
+
 func TestBaselineJudgeUnreadable(t *testing.T) {
 	t.Parallel()
 	damaged := map[string]func(written string) string{
