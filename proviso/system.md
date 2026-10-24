@@ -22,7 +22,7 @@ line. Proviso is those mechanics.
 - Checking a spec tree against the model's notation.
 - A baseline of element fingerprints, and the element diff against it.
 - Impact sets for an amendment.
-- Context packs for the testing and coding agents.
+- Context packs for the implementing agents and the checking agent.
 - Acceptance checks.
 - Installing and updating the files a repository needs beside its code:
   the start of a spec tree, its settings, the agent definitions and the
