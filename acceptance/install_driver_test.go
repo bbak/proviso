@@ -18,9 +18,12 @@ import (
 
 // installedFiles are the paths installed_files names, in their byte order.
 var installedFiles = []string{
+	".claude/agents/proviso-checker.md",
 	".claude/agents/proviso-coder.md",
 	".claude/agents/proviso-tester.md",
+	".claude/skills/proviso-accept/SKILL.md",
 	".claude/skills/proviso-build/SKILL.md",
+	".claude/skills/proviso-check/SKILL.md",
 	".proviso/build.md",
 	".proviso/coder.md",
 	".proviso/tester.md",

@@ -20,9 +20,12 @@ func TestSystemCliInit(t *testing.T) {
 	r.set(tree{"proviso/system.md": "# Our own system\n"})
 	o := r.init()
 	o.exits(t, 0)
-	want := "written .claude/agents/proviso-coder.md\n" +
+	want := "written .claude/agents/proviso-checker.md\n" +
+		"written .claude/agents/proviso-coder.md\n" +
 		"written .claude/agents/proviso-tester.md\n" +
+		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
+		"written .claude/skills/proviso-check/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -35,23 +38,31 @@ func TestSystemCliInit(t *testing.T) {
 }
 
 // TestInstallInstalledFiles checks the rows of installed_files that the
-// other tests do not: the skill that builds an amendment is written, and is
-// no empty file. Its wording, and that of the stubs, is the kit's.
+// other tests do not: the skills that accept, build and check an amendment
+// are written, and are no empty files. Their wording, and that of the stubs,
+// is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
 	r := freshRepo(t, "repo", false)
 	o := r.init()
 	o.exits(t, 0)
-	for _, p := range []string{".claude/skills/proviso-build/SKILL.md", ".proviso/build.md"} {
+	skills := []string{
+		".claude/skills/proviso-accept/SKILL.md",
+		".claude/skills/proviso-build/SKILL.md",
+		".claude/skills/proviso-check/SKILL.md",
+	}
+	for _, p := range append(skills, ".proviso/build.md") {
 		o.says(t, "written", p)
 	}
-	if strings.TrimSpace(r.read(".claude/skills/proviso-build/SKILL.md")) == "" {
-		t.Errorf("install.installed-files: the skill that builds an amendment is empty")
+	for _, p := range skills {
+		if strings.TrimSpace(r.read(p)) == "" {
+			t.Errorf("install.installed-files: the skill %s is empty", p)
+		}
 	}
 }
 
-// guideLines is the fewest lines, blank ones not counted, that a block both
-// agent definitions share must have to count as the reading guide.
+// guideLines is the fewest lines, blank ones not counted, that a block every
+// agent definition shares must have to count as the reading guide.
 const guideLines = 10
 
 // sharedBlock gives the longest run of consecutive lines that a and b both
@@ -93,6 +104,11 @@ func TestInstallInitAgents(t *testing.T) {
 	rows := []struct{ name, definition, agent string }{
 		{"row1 the testing agent's definition", ".claude/agents/proviso-tester.md", "proviso-tester"},
 		{"row2 the coding agent's definition", ".claude/agents/proviso-coder.md", "proviso-coder"},
+		{"row3 the checking agent's definition", ".claude/agents/proviso-checker.md", "proviso-checker"},
+	}
+	definitions := make([]string, len(rows))
+	for i, row := range rows {
+		definitions[i] = row.definition
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
@@ -119,13 +135,17 @@ func TestInstallInitAgents(t *testing.T) {
 				t.Errorf("install.init.agents: %s does not start with front matter naming it %s", row.definition, row.agent)
 			}
 
-			// The same reading guide in both definitions.
-			other := ".claude/agents/proviso-coder.md"
-			if other == row.definition {
-				other = ".claude/agents/proviso-tester.md"
+			// The same reading guide in every definition: one block that
+			// this definition shares with both others.
+			var others []string
+			for _, d := range definitions {
+				if d != row.definition {
+					others = append(others, d)
+				}
 			}
-			if block, n := sharedBlock(def, r.read(other)); n < guideLines {
-				t.Errorf("install.init.agents: %s and %s share no reading guide; the longest block they share has %d lines that are not blank:\n%s", row.definition, other, n, block)
+			between, _ := sharedBlock(r.read(others[0]), r.read(others[1]))
+			if block, n := sharedBlock(def, between); n < guideLines {
+				t.Errorf("install.init.agents: %s shares no reading guide with %s and %s; the longest block all three share has %d lines that are not blank:\n%s", row.definition, others[0], others[1], n, block)
 			}
 
 			// No reference to a file that is not there.

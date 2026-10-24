@@ -20,8 +20,8 @@
 
 ## <a id="install.agent-definition"></a> agent definition
 
-- Definition: The instructions of an implementing agent in the form an
-  agent host reads, such as a file in `.claude/agents/`: its role, what
+- Definition: The instructions of an implementing agent or of the
+  checking agent in the form an agent host reads, such as a file in `.claude/agents/`: its role, what
   it may read and write, how it reads a context pack and what it
   reports.
 - Contact: Bruno Baketarić
