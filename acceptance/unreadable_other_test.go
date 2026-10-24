@@ -61,3 +61,26 @@ func makeUnwritable(root string) (func(), error) {
 	}
 	return restore, nil
 }
+
+// makeCoherenceUnwritable takes the write permission from the spec root root
+// and its .coherence.json until the returned function is called; both stay
+// readable.
+func makeCoherenceUnwritable(root string) (func(), error) {
+	file := filepath.Join(root, coherenceName)
+	if err := os.Chmod(file, 0o444); err != nil {
+		return nil, err
+	}
+	if err := os.Chmod(root, 0o555); err != nil {
+		os.Chmod(file, 0o644)
+		return nil, err
+	}
+	restore := func() { os.Chmod(root, 0o755); os.Chmod(file, 0o644) }
+	probe := filepath.Join(root, "probe")
+	if f, err := os.Create(probe); err == nil {
+		f.Close()
+		os.Remove(probe)
+		restore()
+		return nil, errors.New("the folder stays writable without permission (running as root?)")
+	}
+	return restore, nil
+}

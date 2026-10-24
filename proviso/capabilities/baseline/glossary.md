@@ -29,11 +29,23 @@
 
 - Definition: A rule or invariant the element diff does not list, but
   which an amendment may affect, found through at least one of the
-  candidate sources `change_effects` names. Its judgement decides
-  whether it is changed after all or stays as it is.
+  candidate sources `change_effects` names. Its judgement says why it
+  stays as it is; a candidate the amendment does affect is edited, and
+  is then no candidate, or is reported as a finding.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: candidates
+
+## <a id="baseline.finding"></a> finding
+
+- Definition: What the coherence check reports about an amendment
+  besides its judgements: a contradiction, a term, invariant or
+  constraint ignored, a gap, or a candidate the candidate sources
+  missed. It is open until an edit resolves it or the engineer dismisses
+  it with a reason.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: findings
 
 ## <a id="baseline.event-head"></a> event head
 

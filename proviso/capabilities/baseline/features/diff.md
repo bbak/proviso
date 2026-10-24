@@ -268,9 +268,9 @@ Then      they appear ordered by [identifier], compared byte by byte
 ### Rationale
 
 The mainline's tree must be what its manifest records, so that no
-amendment reaches it without acceptance. With this exit status, `diff`
-is that check, in CI and in the local checks, without a command of its
-own.
+amendment reaches it without acceptance. This exit status tells it in
+one command; `verify`, which CI and the local checks run, builds on the
+same comparison.
 
 ```guarded
 When      `diff` exits, having listed the [elements] <elements>

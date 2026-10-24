@@ -5,8 +5,9 @@
 The baseline records the spec tree as it was last accepted, part by part,
 and tells what has happened to the tree since: element by element, and in
 which part of each, so that a changed meaning shows and a reflowed line
-does not, which untouched rules and invariants that may affect, and
-what the implementing agents need to read it.
+does not, which untouched rules and invariants that may affect,
+what the implementing agents need to read it, and whether the
+coherence check covers the amendment as it stands.
 
 ## Rationale
 

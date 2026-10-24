@@ -21,10 +21,11 @@ When      someone runs `manifest`, and it works on the [spec tree] of the [spec 
 Provided  `manifest_file` can be written into <root>
 Then      `manifest` writes `manifest_file` into <root>, naming `model_version` on its first line and then one line for every [part] of every [element] of the [spec tree]
   And     a former `manifest_file` is replaced, not updated
+  And     a `coherence_file` in <root> is removed, since the [spec tree] it checked is the [baseline] now
   And     `manifest` exits with `manifest.exit-status` 0
 Otherwise `manifest` writes to "stderr" why it could not write `manifest_file`
   And     `manifest` exits with `manifest.exit-status` 2
-  And     a former `manifest_file` stays as it was
+  And     a former `manifest_file` and a `coherence_file` stay as they were
 ```
 
 | root | provided | outcome | why |
@@ -32,4 +33,5 @@ Otherwise `manifest` writes to "stderr" why it could not write `manifest_file`
 | `repo/proviso/`, without a manifest | yes | `repo/proviso/manifest.sum` written | |
 | `repo/proviso/`, with a manifest written before an edit | yes | the manifest replaced | |
 | `repo/proviso/`, with a manifest written from the same tree | yes | the same bytes as before | the file depends only on the tree |
+| `repo/proviso/`, with `.coherence.json` | yes | the manifest written, `.coherence.json` removed | |
 | `repo/proviso/`, without write permission | no | exit status 2 | |
