@@ -170,3 +170,52 @@ func TestProblemOrder(t *testing.T) {
 		t.Errorf("%v", got)
 	}
 }
+
+func TestJudgeClosingKeepsTouched(t *testing.T) {
+	entries, cands, now, base := amendment(t, nil)
+	in, _ := ParseCheckResult([]byte(`{"findings": [{"kind": "gap", "elements": ["c.f.r"], "text": "a gap"}]}`))
+	first, err := Judge(nil, in, entries, cands, now, base)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// c.f.r is edited after the check, and f1 is resolved by that edit:
+	// the run closes a finding, so c.f.r keeps what was recorded, and c.g.a,
+	// touched now and recorded for none, stays so.
+	entries2, cands2, now2, _ := amendment(t, func(m map[string]string) {
+		replace(m, "capabilities/c/features/f.md", "Then      it is read twice", "Then      it is read three times")
+		replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
+	})
+	in, _ = ParseCheckResult([]byte(`{"findings": [{"id": "f1", "status": "resolved", "reason": "edited"}, {"kind": "missed", "text": "x"}]}`))
+	c, err := Judge(first, in, entries2, cands2, now2, base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fmt.Sprint(c.Touched) != fmt.Sprint(first.Touched) {
+		t.Errorf("closing a finding recorded the touched elements anew:\n%v\nwant %v", c.Touched, first.Touched)
+	}
+	var stale []string
+	for _, p := range Verify(c, entries2, cands2, base) {
+		if p.Kind == Stale {
+			stale = append(stale, p.Element)
+		}
+	}
+	if fmt.Sprint(stale) != "[c.f.r c.g.a]" {
+		t.Errorf("stale %v", stale)
+	}
+
+	// A run that closes no finding records every touched element as it is now.
+	in, _ = ParseCheckResult([]byte(`{}`))
+	c, err = Judge(c, in, entries2, cands2, now2, base)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(c.Touched) != len(entries2) {
+		t.Errorf("touched %v", c.Touched)
+	}
+	for _, p := range Verify(c, entries2, cands2, base) {
+		if p.Kind == Stale {
+			t.Errorf("stale after a check: %v", p)
+		}
+	}
+}

@@ -355,8 +355,11 @@ func fingerprints(e *lint.Element) map[string]string {
 // Judge takes the judgements and findings of a check result one by one
 // into what coherence_file recorded before, nil if there is none, and
 // records every touched element of the element diff now and in the
-// baseline. It returns why it refuses the check result, if it does; the
-// caller then records nothing.
+// baseline, following baseline.judge.write. A check result that closes a
+// finding is no check: every touched element keeps what was recorded for
+// it before, and one recorded for none stays so, following
+// baseline.judge.touched. It returns why it refuses the check result, if
+// it does; the caller then records nothing.
 func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Candidate, now []lint.Element, base Baseline) (*Coherence, error) {
 	if before == nil {
 		before = &Coherence{}
@@ -384,6 +387,7 @@ func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Ca
 	for _, f := range findings {
 		next = max(next, findingNumber(f.ID)+1)
 	}
+	closes := false
 	for _, f := range in.Findings {
 		if f.ID == "" {
 			for _, id := range f.Elements {
@@ -400,10 +404,19 @@ func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Ca
 			return nil, fmt.Errorf("no finding has the id %s", f.ID)
 		}
 		findings[i].Status, findings[i].Reason = f.Status, f.Reason
+		closes = true
+	}
+	covered := map[string]Covered{}
+	for _, t := range before.Touched {
+		covered[t.ID] = t
 	}
 	c := &Coherence{Touched: []Covered{}, Judgements: []Judged{}, Findings: findings}
 	for _, e := range entries {
-		c.Touched = append(c.Touched, Covered{ID: e.ID, Now: fingerprints(e.Element), Baseline: recorded(base, e.ID)})
+		if !closes {
+			c.Touched = append(c.Touched, Covered{ID: e.ID, Now: fingerprints(e.Element), Baseline: recorded(base, e.ID)})
+		} else if t, ok := covered[e.ID]; ok {
+			c.Touched = append(c.Touched, t)
+		}
 	}
 	for _, id := range slices.Sorted(maps.Keys(judged)) {
 		if isCandidate[id] != nil {
