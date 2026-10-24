@@ -174,7 +174,7 @@ func TestInstallInitAgents(t *testing.T) {
 					}
 				}
 				if !found {
-					t.Errorf("install.init.agents: %s refers to %s, which is not in the repository", row.definition, ref)
+					t.Errorf("install.init.agents: %s refers to %s, which installed_files does not name and which is not in the repository", row.definition, ref)
 				}
 			}
 		})
@@ -183,11 +183,12 @@ func TestInstallInitAgents(t *testing.T) {
 
 // TestInstallInitSkills checks install.init.skills. What the kit holds is not
 // visible from outside, so "as the kit holds it" is checked as: named as the
-// row says, byte for byte the same in two repositories of other names, and
-// no copy of another skill. "Refers to no other file of the kit" is checked
-// as: no link or import names a file that is not in the repository after
-// init, and the skill carries no reading guide, the kit's file the agent
-// definitions share.
+// row says, byte for byte the same in two repositories of other names, no
+// copy of another skill, and, unlike an agent definition, without the
+// reading guide the agent definitions share. "Refers to no file of the kit
+// that installed_files does not name" is checked as: every link or import
+// names a file that is in the repository after init, which an installed
+// file is and a file only the kit holds is not.
 func TestInstallInitSkills(t *testing.T) {
 	t.Parallel()
 	rows := []struct{ name, skill, named string }{
@@ -242,7 +243,8 @@ func TestInstallInitSkills(t *testing.T) {
 				}
 			}
 
-			// No reading guide: no block the agent definitions share.
+			// As the kit holds it, with no reading guide put in: no block
+			// the agent definitions share.
 			between, _ := sharedBlock(r.read(agents[0]), r.read(agents[1]))
 			guide, _ := sharedBlock(between, r.read(agents[2]))
 			if block, n := sharedBlock(skill, guide); n >= guideLines {
@@ -275,7 +277,7 @@ func TestInstallInitSkills(t *testing.T) {
 					}
 				}
 				if !found {
-					t.Errorf("install.init.skills: %s refers to %s, which is not in the repository", row.skill, ref)
+					t.Errorf("install.init.skills: %s refers to %s, which installed_files does not name and which is not in the repository", row.skill, ref)
 				}
 			}
 		})
