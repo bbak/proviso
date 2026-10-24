@@ -20,9 +20,12 @@ func TestSystemCliInit(t *testing.T) {
 	r.set(tree{"proviso/system.md": "# Our own system\n"})
 	o := r.init()
 	o.exits(t, 0)
-	want := "written .claude/agents/proviso-coder.md\n" +
+	want := "written .claude/agents/proviso-checker.md\n" +
+		"written .claude/agents/proviso-coder.md\n" +
 		"written .claude/agents/proviso-tester.md\n" +
+		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
+		"written .claude/skills/proviso-check/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -132,13 +135,17 @@ func TestInstallInitAgents(t *testing.T) {
 				t.Errorf("install.init.agents: %s does not start with front matter naming it %s", row.definition, row.agent)
 			}
 
-			// The same reading guide in both definitions.
-			other := ".claude/agents/proviso-coder.md"
-			if other == row.definition {
-				other = ".claude/agents/proviso-tester.md"
+			// The same reading guide in every definition: one block that
+			// this definition shares with both others.
+			var others []string
+			for _, d := range definitions {
+				if d != row.definition {
+					others = append(others, d)
+				}
 			}
-			if block, n := sharedBlock(def, r.read(other)); n < guideLines {
-				t.Errorf("install.init.agents: %s and %s share no reading guide; the longest block they share has %d lines that are not blank:\n%s", row.definition, other, n, block)
+			between, _ := sharedBlock(r.read(others[0]), r.read(others[1]))
+			if block, n := sharedBlock(def, between); n < guideLines {
+				t.Errorf("install.init.agents: %s shares no reading guide with %s and %s; the longest block all three share has %d lines that are not blank:\n%s", row.definition, others[0], others[1], n, block)
 			}
 
 			// No reference to a file that is not there.
