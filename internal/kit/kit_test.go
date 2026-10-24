@@ -2,9 +2,13 @@ package kit
 
 import (
 	"bytes"
+	"regexp"
 	"strings"
 	"testing"
 )
+
+// proviso matches a path below .proviso/.
+var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop")
@@ -35,6 +39,13 @@ func TestFiles(t *testing.T) {
 			name := strings.TrimSuffix(strings.TrimPrefix(f.Path, ".claude/agents/"), ".md")
 			if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
 				t.Errorf("%s not named %s", f.Path, name)
+			}
+			// Below .proviso/ only the notes to that agent; the checker has none.
+			notes := map[string]string{"proviso-coder": ".proviso/coder.md", "proviso-tester": ".proviso/tester.md"}[name]
+			for _, ref := range proviso.FindAllString(string(f.Data), -1) {
+				if ref != notes {
+					t.Errorf("%s refers to %s", f.Path, ref)
+				}
 			}
 		}
 	}
