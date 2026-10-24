@@ -339,7 +339,7 @@ enum: [0, 2]
 ## <a id="system.cli.pack-text"></a> pack_text
 
 What `pack` writes by default: Markdown in UTF-8, read by the
-implementing agents. Unlike the text of the other commands, it is part
+implementing agents and the checking agent. Unlike the text of the other commands, it is part
 of the contract.
 
 - **Four headings** of level 1 divide it, in this order: `# System`,

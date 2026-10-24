@@ -280,8 +280,8 @@
 
 ## <a id="system.coherence-check"></a> coherence check
 
-- Definition: The check by an agent that an amendment keeps the spec tree
-  sane in meaning: every candidate of its impact set has a judgement, and
+- Definition: The check by the checking agent that an amendment keeps
+  the spec tree sane in meaning: every candidate of its impact set has a judgement, and
   no contradiction, gap or ignored term, invariant or constraint is left.
   It reads the amendment against its capability and the system level,
   never the whole spec tree, and runs again after every later edit.
@@ -291,8 +291,8 @@
 
 ## <a id="system.context-pack"></a> context pack
 
-- Definition: What an implementing agent receives for an amendment: the
-  element diff and everything needed to read it, such as the glossary
+- Definition: What an implementing agent or the checking agent receives
+  for an amendment: the element diff and everything needed to read it, such as the glossary
   entries, invariants, constraints and parameters it uses and
   `system.md`, and nothing else of the spec tree.
 - Contact: Bruno Baketarić
@@ -306,3 +306,11 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: implementing agents
+
+## <a id="system.checking-agent"></a> checking agent
+
+- Definition: The agent that runs the coherence check from a context
+  pack, kept apart from the implementing agents and from what they
+  built.
+- Contact: Bruno Baketarić
+- Status: defined
