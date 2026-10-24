@@ -35,10 +35,16 @@ func Files(system string) []File {
 	agent := func(name string) []byte {
 		return []byte(strings.Replace(read("agents/"+name), readingMark, reading, 1))
 	}
+	skill := func(name string) []byte {
+		return []byte(read("skills/" + name + "/SKILL.md"))
+	}
 	out := []File{
+		{".claude/agents/proviso-checker.md", agent("proviso-checker.md")},
 		{".claude/agents/proviso-coder.md", agent("proviso-coder.md")},
 		{".claude/agents/proviso-tester.md", agent("proviso-tester.md")},
-		{".claude/skills/proviso-build/SKILL.md", []byte(read("skills/proviso-build/SKILL.md"))},
+		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept")},
+		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build")},
+		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check")},
 		{".proviso/build.md", []byte(read("notes/build.md"))},
 		{".proviso/coder.md", []byte(read("notes/coder.md"))},
 		{".proviso/tester.md", []byte(read("notes/tester.md"))},
