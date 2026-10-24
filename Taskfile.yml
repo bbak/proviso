@@ -57,13 +57,14 @@ tasks:
       - go mod tidy
 
   spec:
-    desc: Check the spec tree; on main, also that it is what its manifest records
+    desc: Check the spec tree; on main, also that verify finds it may be the baseline
     cmds:
-      # An amendment branch differs from the manifest until acceptance, so
-      # only main must match it; diff refuses a tree with lint errors anyway.
+      # An amendment branch has no recorded coherence check until near
+      # acceptance, which runs verify itself, so only main must pass it;
+      # verify refuses a tree with lint errors anyway.
       - |
         if [ "$(git branch --show-current)" = main ]; then
-          go run ./cmd/{{.BINARY}} diff
+          go run ./cmd/{{.BINARY}} verify
         else
           go run ./cmd/{{.BINARY}} lint
         fi
