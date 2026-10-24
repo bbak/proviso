@@ -104,7 +104,7 @@ Then      git gives <file> the attribute "eol" with the value "lf"
 The agent host reads only the installed definition, and the agent reads
 only what it is given; a definition that pointed to another file of the
 kit would point to nothing. The kit keeps the reading guide once for
-both agents, and `init` puts it in place.
+every agent that reads a context pack, and `init` puts it in place.
 
 ```guarded
 When      `init` writes the [agent definition] <definition>
@@ -116,6 +116,7 @@ Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s
 | --- | --- |
 | `.claude/agents/proviso-tester.md` | the testing agent's definition, named `proviso-tester`, with the reading guide in it |
 | `.claude/agents/proviso-coder.md` | the coding agent's definition, named `proviso-coder`, with the same reading guide in it |
+| `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it |
 
 ## <a id="install.init.exit"></a> Rule: The exit status tells whether every installed file is in place
 
