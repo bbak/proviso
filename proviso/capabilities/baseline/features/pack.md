@@ -4,10 +4,10 @@
 
 ## Goal
 
-The context pack gives the implementing agents the element diff and
-everything they need to read it, and nothing else of the spec tree, so
-that each builds from what the tree says and lists what it does not
-say.
+The context pack gives the implementing agents and the checking agent
+the element diff and everything they need to read it, and nothing else
+of the spec tree, so that each builds or checks from what the tree says
+and lists what it does not say.
 
 ## Rationale
 
@@ -25,8 +25,8 @@ as it is for the dependencies.
 
 The frames, the Goals and Rationale of the levels with their invariants
 and constraints, say what the listed elements are for, and how to fill
-the gaps between rules. One pack serves both agents; what differs
-between testing and coding is the skill's job. The pack holds what the
+the gaps between rules. One pack serves every agent; what differs
+between testing, coding and checking is the skill's job. The pack holds what the
 tree says about the system; how to read it is Proviso's own, and comes
 with the agents, not with the pack.
 
