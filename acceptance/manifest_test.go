@@ -98,10 +98,22 @@ func TestBaselineManifestWrite(t *testing.T) {
 			t.Errorf("want the same bytes for the same tree written in another order, got\n%s\nand\n%s", first, third)
 		}
 	})
-	t.Run("row4 without write permission", func(t *testing.T) {
+	t.Run("row4 with .coherence.json", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil, gap("A gap."))
+		// That the manifest is written and .coherence.json removed is
+		// checked for every run that exits with 0 (see manifestIn).
+		r.manifest()
+		if r.hasCoherence() {
+			t.Errorf("want %s removed", coherenceName)
+		}
+	})
+	t.Run("row5 without write permission", func(t *testing.T) {
 		t.Parallel()
 		former := manifestFor(plainParts())
-		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former).write(t)
+		// The coherence file stays as it was, too (see manifestIn).
+		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former, coherencePath, "{}\n").write(t)
 		root := filepath.Join(dir, "proviso")
 		undo, err := makeUnwritable(root)
 		if err != nil {

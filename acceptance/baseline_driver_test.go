@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -29,13 +30,22 @@ import (
 // ---------------------------------------------------------------------------
 // Running proviso
 
-// execProviso runs the binary with args in cwd.
+// execProviso runs the binary with args in cwd, with nothing on standard
+// input.
 func execProviso(t *testing.T, cwd string, args ...string) run {
+	t.Helper()
+	return execProvisoWith(t, cwd, nil, args...)
+}
+
+// execProvisoWith runs the binary with args in cwd, reading stdin, if not
+// nil, as its standard input.
+func execProvisoWith(t *testing.T, cwd string, stdin io.Reader, args ...string) run {
 	t.Helper()
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, binary, args...)
 	cmd.Dir = cwd
+	cmd.Stdin = stdin
 	var out, errOut bytes.Buffer
 	cmd.Stdout, cmd.Stderr = &out, &errOut
 	err := cmd.Run()
@@ -86,12 +96,21 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 }
 
 // checkWrites checks baseline.run.writes: everything below base is as it was,
-// except the entry allowed, if not empty (the manifest.sum of a run of
-// `manifest` that exited with 0).
-func checkWrites(t *testing.T, before, after map[string]string, allowed string) {
+// except the entries allowed, if not empty (manifest.sum and .coherence.json
+// after a run of `manifest` that exited with 0, .coherence.json after a run
+// of `judge` that exited with 0).
+func checkWrites(t *testing.T, before, after map[string]string, allowed ...string) {
 	t.Helper()
+	isAllowed := func(p string) bool {
+		for _, a := range allowed {
+			if a != "" && p == a {
+				return true
+			}
+		}
+		return false
+	}
 	for p, v := range before {
-		if p == allowed {
+		if isAllowed(p) {
 			continue
 		}
 		if w, ok := after[p]; !ok {
@@ -101,7 +120,7 @@ func checkWrites(t *testing.T, before, after map[string]string, allowed string) 
 		}
 	}
 	for p := range after {
-		if _, ok := before[p]; !ok && p != allowed {
+		if _, ok := before[p]; !ok && !isAllowed(p) {
 			t.Errorf("baseline.run.writes: %s was created", p)
 		}
 	}
@@ -109,8 +128,8 @@ func checkWrites(t *testing.T, before, after map[string]string, allowed string) 
 
 // manifestIn runs `proviso manifest` in cwd. base is the directory the test
 // tree was written to; root, if not empty, is the spec root the command is
-// expected to work on, whose manifest.sum alone may change, and only if the
-// command exits with 0. prepare, if given, runs after the first snapshot and
+// expected to work on, whose manifest.sum alone may change, and whose
+// .coherence.json must be removed, and only if the command exits with 0. prepare, if given, runs after the first snapshot and
 // before the command; what it returns runs before the second snapshot.
 func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run {
 	t.Helper()
@@ -124,12 +143,20 @@ func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run
 		undo()
 	}
 	after := snapshotAll(t, base)
-	allowed := ""
+	var allowed []string
 	if r.exit == 0 && root != "" {
-		rel, _ := filepath.Rel(base, filepath.Join(root, "manifest.sum"))
-		allowed = filepath.ToSlash(rel)
+		for _, name := range []string{"manifest.sum", coherenceName} {
+			rel, _ := filepath.Rel(base, filepath.Join(root, name))
+			allowed = append(allowed, filepath.ToSlash(rel))
+		}
+		// baseline.manifest.write: a coherence file is removed, not
+		// written.
+		rel, _ := filepath.Rel(base, filepath.Join(root, coherenceName))
+		if _, ok := after[filepath.ToSlash(rel)]; ok {
+			t.Errorf("baseline.manifest.write: manifest exited with 0, but %s is still in the spec root", coherenceName)
+		}
 	}
-	checkWrites(t, before, after, allowed)
+	checkWrites(t, before, after, allowed...)
 	if r.exit != 0 && r.exit != 2 {
 		t.Fatalf("system.cli.manifest.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
 	}

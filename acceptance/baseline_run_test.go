@@ -9,8 +9,9 @@ import (
 	"testing"
 )
 
-// baseRun runs the baseline command cmd in cwd: `manifest`, or `diff`,
-// `impact` or `pack` with --json (diffIn, impactIn and packIn run them
+// baseRun runs the baseline command cmd in cwd: `manifest`, `judge` with a
+// check result of no judgements and no findings, or `diff`, `impact`, `pack`
+// or `verify` with --json (diffIn, impactIn, packIn and verifyIn run them
 // without as well). root
 // is the spec root the command is expected to work on, if any.
 func baseRun(t *testing.T, cmd, base, cwd, root string) run {
@@ -18,6 +19,10 @@ func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 	switch cmd {
 	case "manifest":
 		return manifestIn(t, base, cwd, root, nil)
+	case "judge":
+		return judgeIn(t, base, cwd, root, "{}")
+	case "verify":
+		return verifyIn(t, base, cwd, root).json
 	case "impact":
 		return impactIn(t, base, cwd, root).json
 	case "pack":
@@ -41,7 +46,7 @@ func lintLines(t *testing.T, cwd string) []string {
 func TestBaselineRunLint(t *testing.T) {
 	t.Parallel()
 	invalid := "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"
-	for _, cmd := range []string{"manifest", "diff", "impact", "pack"} {
+	for _, cmd := range []string{"manifest", "diff", "impact", "pack", "judge", "verify"} {
 		t.Run(cmd, func(t *testing.T) {
 			t.Parallel()
 			t.Run("row1 a tree without findings", func(t *testing.T) {
@@ -137,9 +142,10 @@ func TestBaselineRunLint(t *testing.T) {
 // TestBaselineRunWrites checks the invariant baseline.run.writes over runs
 // of every kind, however they end: every file and folder below the test
 // directory, the git repository's .git included, is as it was, except
-// manifest.sum after a run of `manifest` that exits with 0. Every other test
-// checks it too, for each run it makes (see manifestIn, diffIn, impactIn and
-// packIn).
+// manifest.sum and .coherence.json after a run of `manifest` that exits with
+// 0, and .coherence.json after a run of `judge` that exits with 0. Every
+// other test checks it too, for each run it makes (see manifestIn, diffIn,
+// impactIn, packIn, judgeIn and verifyIn).
 func TestBaselineRunWrites(t *testing.T) {
 	t.Parallel()
 	// staged leaves an edit in the index and an untracked file, which a
@@ -166,6 +172,20 @@ func TestBaselineRunWrites(t *testing.T) {
 		}},
 		{"manifest, a manifest of another model version", "manifest", func(t *testing.T) *repo {
 			return newRepo(t, diffTree().with(manifestPath, "model 1\n"))
+		}},
+		{"manifest, written, with a coherence file", "manifest", func(t *testing.T) *repo {
+			r, _ := accepted(t, diffTree())
+			r.set(r.tr.apply(limitThen))
+			r.judgeOK(checkResult{})
+			staged(r)
+			return r
+		}},
+		{"manifest, a tree with an error, with a coherence file", "manifest", func(t *testing.T) *repo {
+			r, _ := accepted(t, diffTree())
+			r.set(r.tr.apply(limitThen))
+			r.judgeOK(checkResult{})
+			r.set(r.tr.with("proviso/notes.md", "# Notes\n"))
+			return r
 		}},
 		{"diff, nothing changed", "diff", func(t *testing.T) *repo {
 			r, _ := accepted(t, diffTree())
@@ -208,12 +228,26 @@ func TestBaselineRunWrites(t *testing.T) {
 		{"diff, without a manifest", "diff", func(t *testing.T) *repo {
 			return newRepo(t, diffTree())
 		}},
+		{"diff, changes with a coherence file", "diff", func(t *testing.T) *repo {
+			r, _ := accepted(t, diffTree())
+			r.set(r.tr.apply(limitThen))
+			r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
+			staged(r)
+			return r
+		}},
+		{"diff, a damaged coherence file", "diff", func(t *testing.T) *repo {
+			r, _ := accepted(t, diffTree())
+			r.set(r.tr.apply(limitThen))
+			os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD\n"), 0o644)
+			return r
+		}},
 	}
 	for _, c := range cases {
-		// Every case of diff is a case of impact and of pack as well.
+		// Every case of diff is a case of impact, pack, judge and verify
+		// as well.
 		cmds := []string{c.cmd}
 		if c.cmd == "diff" {
-			cmds = append(cmds, "impact", "pack")
+			cmds = append(cmds, "impact", "pack", "judge", "verify")
 		}
 		for _, cmd := range cmds {
 			name := c.name
