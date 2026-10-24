@@ -110,13 +110,14 @@ every agent that reads a context pack, and `init` puts it in place.
 When      `init` writes the [agent definition] <definition>
 Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s reading guide where the definition marks it
   And     <definition> refers to no file of the [kit] that `installed_files` does not name
+  And     <definition> refers to no file below ".proviso/" but the notes to that agent
 ```
 
 | definition | outcome |
 | --- | --- |
 | `.claude/agents/proviso-tester.md` | the testing agent's definition, named `proviso-tester`, with the reading guide in it |
 | `.claude/agents/proviso-coder.md` | the coding agent's definition, named `proviso-coder`, with the same reading guide in it |
-| `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it |
+| `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it, and no engineers' notes |
 
 ## <a id="install.init.skills"></a> Rule: A skill is installed complete
 
