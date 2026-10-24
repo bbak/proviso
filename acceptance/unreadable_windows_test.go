@@ -91,3 +91,20 @@ func makeSpecial(dir string) (string, error) {
 func makeUnwritable(root string) (func(), error) {
 	return makeUnreadable(filepath.Join(root, "manifest.sum"))
 }
+
+// makeCoherenceUnwritable keeps the .coherence.json of the spec root root
+// open, sharing it for reading only, so that other processes can read it but
+// not write, replace or remove it until the returned function is called.
+// Windows has no write permission bit on a folder that a test could take
+// away.
+func makeCoherenceUnwritable(root string) (func(), error) {
+	p, err := syscall.UTF16PtrFromString(filepath.Join(root, coherenceName))
+	if err != nil {
+		return nil, err
+	}
+	h, err := syscall.CreateFile(p, syscall.GENERIC_READ, syscall.FILE_SHARE_READ, nil, syscall.OPEN_EXISTING, syscall.FILE_ATTRIBUTE_NORMAL, 0)
+	if err != nil {
+		return nil, err
+	}
+	return func() { syscall.CloseHandle(h) }, nil
+}
