@@ -1,4 +1,4 @@
-# Notes for building an amendment
+# Notes for the Proviso skills
 
 Proviso's command: `go run ./cmd/proviso`, from the repository's root,
 so that the skills always run the checked-out code.

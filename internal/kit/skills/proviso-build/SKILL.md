@@ -28,7 +28,8 @@ Look nowhere else.
 ## 1. Check the start
 
 - The current branch is the amendment's branch, not the default branch,
-  and its working tree is clean: the tree change is committed.
+  nor the branch the engineer names as the target, and its working tree
+  is clean: the tree change is committed.
 - `proviso lint` exits with 0.
 - `proviso diff` exits with 1: the amendment lists something to build.
   Tell the engineer which elements it lists as not to be built; the
