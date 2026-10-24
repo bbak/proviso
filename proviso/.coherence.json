@@ -1,0 +1,110 @@
+{
+  "touched": [
+    {
+      "id": "baseline.judge.input",
+      "now": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:2dc32b58dab8a65a954875399ac0c1ebf38170d63c5dbef9c0c0123458cc9c1d"
+      },
+      "baseline": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:2dc32b58dab8a65a954875399ac0c1ebf38170d63c5dbef9c0c0123458cc9c1d"
+      }
+    },
+    {
+      "id": "baseline.judge.touched",
+      "now": {
+        "heading": "h1:2400ddae454bf3dbd2d66ca7672fb83ad21c832c9d3ef0fbdf5e5fe2361544a4",
+        "row h1:2613281f910cf989cfc3ed554be79956d77d3ebd929a959e9118b5b8b114b8fe": "h1:c65f095f2252a2612a32626503116b0ef0164c041939f65f4cf0d544fb986d3b",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:75442eca253cec56b81c7e7a435dc2f5d06bcfb2809ed034c9bbaed6981ed921",
+        "row h1:34762a3c2691e8b123899b7159ac129f34389b8ebaaf5ce82777f18123cbe37b": "h1:c1b780c9cbfeda63901ca65157008634dfd1532a914099d4c5b85e961e2d9352",
+        "row h1:684c3506c4ad70fa4677b666665ca5552543f81d2068f9256158c4889d61c1e2": "h1:6dda28cc31111e20c67237939a7614fb12f5538eb605577c2e2e41725562883b",
+        "section Rationale": "h1:9e6686aad07926ac819f464f984f234751bf730174678ec798e0ebe585cabda4",
+        "step Otherwise": "h1:5b55d96f863fa8360d042d5f6224bff638cd3775d4e2e9d7ed6a7c46c92d1956",
+        "step Provided": "h1:03e293ff859259b69e1403e63e933084d894e08878115f33d0344ea17f429043",
+        "step Then": "h1:d68e544e78b44fa16416d58d3eaf4fd4e1e290ed6f8c83eaf111594952c411ce",
+        "step When": "h1:eaa2fe2f849a494ecb983cba1fdd0f396b1c63209545da7702cc1113e2b3369e"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.write",
+      "now": {
+        "heading": "h1:66fbca566bfcaf1a1af40c295506c678671c1b43a77bfe3f432bd163ed6c8672",
+        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
+        "row h1:06b490a1556c2ba0171b828b94e453c39f8620398df93ed7c13d8890e9c499ff": "h1:2fde5dfd469c317079c72957715555d35015276080aac04e0a8eb32a874069e9",
+        "row h1:eacdea67edd6ad94c3ab84245a557e38b065a66cddfefdccaed7eb98135d130e": "h1:26509c0f3fe4d1632f4f93d0ae3809707fe5af6f6e5b450118bd15e2f9bf02ba",
+        "section Rationale": "h1:475d82a21b7316ac5f1825167df1fada1c43e2c2fed56dc94f97e73a4aa5cf0a",
+        "step Otherwise": "h1:c3d92924a0e96f75a356e50252af638c09ffe3805edbe94c7f0e78c6bb3c68ed",
+        "step Provided": "h1:9703d813ff86a21c984870c93fccc2b6674e811da1031ac7dd23e7f3a3e7bb2f",
+        "step Then": "h1:f1cc7481c158f268fef60a7fc14fdab0b398a744fb4b871f2e147325ea1183a2",
+        "step When": "h1:4be6d81e9e701c72a3ac0dc29fcf028487cf73d8862e49cf46bb452ce4207b2e"
+      },
+      "baseline": {
+        "heading": "h1:66fbca566bfcaf1a1af40c295506c678671c1b43a77bfe3f432bd163ed6c8672",
+        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
+        "row h1:06b490a1556c2ba0171b828b94e453c39f8620398df93ed7c13d8890e9c499ff": "h1:2fde5dfd469c317079c72957715555d35015276080aac04e0a8eb32a874069e9",
+        "row h1:eacdea67edd6ad94c3ab84245a557e38b065a66cddfefdccaed7eb98135d130e": "h1:26509c0f3fe4d1632f4f93d0ae3809707fe5af6f6e5b450118bd15e2f9bf02ba",
+        "section Rationale": "h1:7841876d7491d8ca980cc0081df5e8a0c01592036754734ac6ef39eb96ec1ef6",
+        "step Otherwise": "h1:c3d92924a0e96f75a356e50252af638c09ffe3805edbe94c7f0e78c6bb3c68ed",
+        "step Provided": "h1:9703d813ff86a21c984870c93fccc2b6674e811da1031ac7dd23e7f3a3e7bb2f",
+        "step Then": "h1:8d078a3d112229135ae49df515c2b4850cf444b8392c274e7d93182ff723be2a",
+        "step When": "h1:4be6d81e9e701c72a3ac0dc29fcf028487cf73d8862e49cf46bb452ce4207b2e"
+      }
+    },
+    {
+      "id": "system.cli.check-result",
+      "now": {
+        "body": "h1:e8bc0c4cb29e5d8c961bfb82a6bc455b8a013b67e5bdd0ffe45df212e8806d98",
+        "heading": "h1:62b4a6df379bd411f5f72ca4372e5f6b4f927f4115a52b8e810e95f9e50255d1"
+      },
+      "baseline": {
+        "body": "h1:40b9ccbbdd4d684849ccd5e2690c862cddfd322d4fb4c020e33b7eb89f2a409d",
+        "heading": "h1:62b4a6df379bd411f5f72ca4372e5f6b4f927f4115a52b8e810e95f9e50255d1"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: judge still changes only .coherence.json, and only on exit 0; which fingerprints it records there writes no other file",
+      "parts": {
+        "heading": "h1:3b5e904d5274d79b1756b54f4c015772874b18535a6c8a51d6519ba30e5cad66",
+        "section Property": "h1:04f656068950f6019c706dcab31da37c4a095db43789e70dfa319ecf50024a85",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.judge.touched",
+        "system.cli.check-result",
+        "baseline.judge.candidate"
+      ],
+      "text": "`check_result` defines its findings, including those with an `id` and `status`, as part of 'a run of the coherence check', and its own example mixes a new finding with a dismissal. But baseline.judge.touched treats any input that closes a finding as 'not a check' and keeps every touched element as recorded before. Meanwhile baseline.judge.candidate still records the judgements in that same input with their current fingerprints. So in one run the agent's reading counts for the candidates but not for the touched elements it judged them against.",
+      "status": "resolved",
+      "reason": "edited in 8054159"
+    }
+  ]
+}
