@@ -1,5 +1,8 @@
 # Notes for building an amendment
 
+Proviso's command: `go run ./cmd/proviso`, from the repository's root,
+so that the skills always run the checked-out code.
+
 Commands, in the order integration runs them, all from the integration
 worktree:
 

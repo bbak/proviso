@@ -19,6 +19,12 @@ sees the other's work. Never pass one agent's code, tests, decisions or
 report to the other. What one agent's work teaches flows back through
 the tree, as a change the engineer decides, and reaches both as a pack.
 
+## Proviso's command
+
+Wherever this skill says `proviso`, run Proviso's command: the one
+`.proviso/build.md` names, or `proviso` from the path if it names none.
+Look nowhere else.
+
 ## 1. Check the start
 
 - The current branch is the amendment's branch, not the default branch,
