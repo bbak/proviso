@@ -19,6 +19,15 @@ func TestFiles(t *testing.T) {
 		if bytes.Contains(f.Data, []byte("\r")) {
 			t.Errorf("%s holds a carriage return", f.Path)
 		}
+		if strings.HasPrefix(f.Path, ".claude/") {
+			// A kit file that is not installed, or a kit path, would point to
+			// nothing on the agent host.
+			for _, ref := range []string{"reading.md", "proviso: ", "agents/", "notes/", "tree/", "skills/"} {
+				if bytes.Contains(f.Data, []byte(ref)) {
+					t.Errorf("%s refers to %q of the kit", f.Path, ref)
+				}
+			}
+		}
 		if strings.HasPrefix(f.Path, ".claude/agents/") {
 			if bytes.Contains(f.Data, []byte("proviso: reading.md")) || !bytes.Contains(f.Data, []byte(reading)) {
 				t.Errorf("%s: reading guide not in place", f.Path)
@@ -41,13 +50,6 @@ func TestFiles(t *testing.T) {
 		}
 		if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
 			t.Errorf("%s not named %s", f.Path, name)
-		}
-		// A kit file that is not installed, or a kit path, would point to
-		// nothing on the agent host.
-		for _, ref := range []string{"reading.md", "proviso: ", "agents/", "notes/", "tree/", "skills/"} {
-			if bytes.Contains(f.Data, []byte(ref)) {
-				t.Errorf("%s refers to %q of the kit", f.Path, ref)
-			}
 		}
 	}
 	if skills != 3 {
