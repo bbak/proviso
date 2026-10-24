@@ -27,3 +27,13 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: agent definitions
+
+## <a id="install.skill"></a> skill
+
+- Definition: The instructions an agent host follows for one step of an
+  amendment, such as a `SKILL.md` in a folder of `.claude/skills/`: when
+  it applies, which commands of Proviso it runs and which agents it
+  starts, and what it leaves to the engineer.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: skills
