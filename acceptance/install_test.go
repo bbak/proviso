@@ -97,14 +97,18 @@ func sharedBlock(a, b string) (string, int) {
 var (
 	linkTarget = regexp.MustCompile(`\]\(([^)\s]+)`)
 	importPath = regexp.MustCompile(`(?m)(?:^|\s)@([\w./-]+)`)
+	// notesPath is a path to a file below .proviso/, without a trailing
+	// full stop.
+	notesPath = regexp.MustCompile(`\.proviso/[\w./-]*[\w-]`)
 )
 
 func TestInstallInitAgents(t *testing.T) {
 	t.Parallel()
-	rows := []struct{ name, definition, agent string }{
-		{"row1 the testing agent's definition", ".claude/agents/proviso-tester.md", "proviso-tester"},
-		{"row2 the coding agent's definition", ".claude/agents/proviso-coder.md", "proviso-coder"},
-		{"row3 the checking agent's definition", ".claude/agents/proviso-checker.md", "proviso-checker"},
+	// notes are the engineers' notes to the agent, "" for none.
+	rows := []struct{ name, definition, agent, notes string }{
+		{"row1 the testing agent's definition", ".claude/agents/proviso-tester.md", "proviso-tester", ".proviso/tester.md"},
+		{"row2 the coding agent's definition", ".claude/agents/proviso-coder.md", "proviso-coder", ".proviso/coder.md"},
+		{"row3 the checking agent's definition, and no engineers' notes", ".claude/agents/proviso-checker.md", "proviso-checker", ""},
 	}
 	definitions := make([]string, len(rows))
 	for i, row := range rows {
@@ -175,6 +179,15 @@ func TestInstallInitAgents(t *testing.T) {
 				}
 				if !found {
 					t.Errorf("install.init.agents: %s refers to %s, which installed_files does not name and which is not in the repository", row.definition, ref)
+				}
+			}
+
+			// No file below .proviso/ but the notes to that agent,
+			// however the definition names it: as a link, an import,
+			// in code or in prose.
+			for _, m := range notesPath.FindAllString(def, -1) {
+				if m != row.notes {
+					t.Errorf("install.init.agents: %s refers to %s, which is not the notes to %s", row.definition, m, row.agent)
 				}
 			}
 		})
