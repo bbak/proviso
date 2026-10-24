@@ -268,10 +268,11 @@ func TestBaselineVerifyStale(t *testing.T) {
 	})
 	t.Run("row3 touched, its baseline changed by a merge of the mainline", func(t *testing.T) {
 		t.Parallel()
-		// The branch changes the Then and the Provided step; the mainline
-		// accepts the Provided step alone, so the branch's own text stays
-		// the same.
-		r := mergedMainline(t, []change{iLimitThen, iLimitProvided}, []change{iLimitProvided})
+		// The branch changes the Then step and the Rationale; the mainline
+		// accepts the Rationale alone, so the branch's own text stays the
+		// same. The two edits stand lines apart, so that git merges them
+		// without a conflict.
+		r := mergedMainline(t, []change{iLimitThen, iLimitRatio}, []change{iLimitRatio})
 		r.verify().only(t, "stale cart.add.limit")
 	})
 	t.Run("row4 touched only after the check", func(t *testing.T) {
