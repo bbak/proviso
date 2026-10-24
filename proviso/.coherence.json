@@ -1,0 +1,929 @@
+{
+  "touched": [
+    {
+      "id": "baseline",
+      "now": {
+        "heading": "h1:cc9ea7f7c64e772c81eb80854c0e7db8f504943549c0675d893a983b8f545152",
+        "section Goal": "h1:fe221457f4fcda0814d23cec763ac5579be58352e5b247920f878628776f903f",
+        "section Rationale": "h1:deda35249d99a0026d50be4bb22195e95e118b39d8f1de9fcf865d5e2cfcb0d3"
+      },
+      "baseline": {
+        "heading": "h1:cc9ea7f7c64e772c81eb80854c0e7db8f504943549c0675d893a983b8f545152",
+        "section Goal": "h1:f55d3ae0b82b428934adc08268a852872ef9435b1bd1bae9938864b6dc490abc",
+        "section Rationale": "h1:deda35249d99a0026d50be4bb22195e95e118b39d8f1de9fcf865d5e2cfcb0d3"
+      }
+    },
+    {
+      "id": "baseline.candidate",
+      "now": {
+        "field Aliases": "h1:ba159dbf9d2f740f56bc2ea7245187ee726da4263440b055ceb89485f4dbcf38",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:40fb17c578f88c8160817e5982cb2dc2efc393a287155dc2b2b98074193a1c34",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:dda18a0e21ae47c53b4309434cbc02ae8bf764fa83a6defbb719431242722aa7"
+      },
+      "baseline": {
+        "field Aliases": "h1:ba159dbf9d2f740f56bc2ea7245187ee726da4263440b055ceb89485f4dbcf38",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:b45112b910ab247c6e838256ab839b1fd1eb44f30aa18196b21ad73665afb80f",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:dda18a0e21ae47c53b4309434cbc02ae8bf764fa83a6defbb719431242722aa7"
+      }
+    },
+    {
+      "id": "baseline.diff.exit",
+      "now": {
+        "heading": "h1:74a202ea8582ebd6ffd96608b12a74322135ab15cae67ca51cbce994c43f6dfb",
+        "row h1:42685c5bd22a32f2a7bbf533c7a59ba918b7596f5ff8e0b9b7c2cd4c75e7e6c9": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:7219aee1c27d0522f07c575ee04853ce9d3bf2264927ca9ff6877922cba6f03c": "h1:f1ca3ea877e389599d207c2b1c3b7eb4c2d10266e8d42b3bc635f8972a1fc94c",
+        "row h1:af0afdd4bdde25f862f9b0ec3e7e18fd049a4dd9628be9ff732411c018312b9f": "h1:e9f9fe85b9d91a256c0beae71cf5e21774b74ae04a57c350d1e695b089fe80e2",
+        "section Rationale": "h1:908320d157bcdd190044c8e4286d8c885ca850b4405999021e5de73459fb01a5",
+        "step Otherwise": "h1:4c15992c03709f6546a3effe6fbc8671e71f1b4cd3b62268a4e6a8a4549b9e7a",
+        "step Provided": "h1:062ba8aa192c0fd620c44dfeb36e12e9a40c7265098bd05b8f56fe307771fe98",
+        "step Then": "h1:7f201a305a553bc52617f87fbb643c0e3f9a7f372bc69ee331cfe63da1094cbb",
+        "step When": "h1:526f166a43d6df9789387f3027a1f347f2838a0fbdfdec22f11cb00077844341"
+      },
+      "baseline": {
+        "heading": "h1:74a202ea8582ebd6ffd96608b12a74322135ab15cae67ca51cbce994c43f6dfb",
+        "row h1:42685c5bd22a32f2a7bbf533c7a59ba918b7596f5ff8e0b9b7c2cd4c75e7e6c9": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:7219aee1c27d0522f07c575ee04853ce9d3bf2264927ca9ff6877922cba6f03c": "h1:f1ca3ea877e389599d207c2b1c3b7eb4c2d10266e8d42b3bc635f8972a1fc94c",
+        "row h1:af0afdd4bdde25f862f9b0ec3e7e18fd049a4dd9628be9ff732411c018312b9f": "h1:e9f9fe85b9d91a256c0beae71cf5e21774b74ae04a57c350d1e695b089fe80e2",
+        "section Rationale": "h1:01ade153630b3254738ce141ecffaf9cf1bd2cdbc5bc4a9a54d1456c1466893f",
+        "step Otherwise": "h1:4c15992c03709f6546a3effe6fbc8671e71f1b4cd3b62268a4e6a8a4549b9e7a",
+        "step Provided": "h1:062ba8aa192c0fd620c44dfeb36e12e9a40c7265098bd05b8f56fe307771fe98",
+        "step Then": "h1:7f201a305a553bc52617f87fbb643c0e3f9a7f372bc69ee331cfe63da1094cbb",
+        "step When": "h1:526f166a43d6df9789387f3027a1f347f2838a0fbdfdec22f11cb00077844341"
+      }
+    },
+    {
+      "id": "baseline.finding",
+      "now": {
+        "field Aliases": "h1:8aa3c4ce3ccdfe89f32935d164b3fb04ea01afa7a71f17c5be4f777cb7968cbc",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:36d15b8f0db5ec65183e79460b88c0ae97278318a360b69733f1c8de296b9243",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:8bf18252cb6dadd5f42fca108271e688696209cdb6fae22e32318b204e6eb37d"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.impact.listed",
+      "now": {
+        "heading": "h1:7529b8848e278006c6a1ac9ace1638e9ff5945bde21bb7fece4a7318f84fb98b",
+        "row h1:2f8a2f9f9a1f4b87053bfd8ce0787dbfd0cf3afc19767343d4b3cd35b82f0348": "h1:0e72d9ba6ce501992ccf2b9068d23905d96da40bba8bd64febf8c529fde84efa",
+        "row h1:419685e51bb30e406a58c21485474da721a7f8e8ca03781b37c980c93b5d8ba1": "h1:794acd7e8fe2afed60068c41d80a9135374ea0e93c404e08daf68bc90427e77e",
+        "row h1:e05294edde4d85376c2518af57d7338958e087b7a3c4a760bff8135dfb1f59ba": "h1:d126846ab1ca010580fe59192bdd85ea43dc4670fd25ed740aa59f350a510154",
+        "section Rationale": "h1:53b9b60d1c604f6a8742136908712c9ad441cc42693343c9eb67df588ae85c4c",
+        "step Otherwise": "h1:72821f438d34552cb0b1fff11930ce7f6fb290d4e07fd9e4371d43050daabb9b",
+        "step Provided": "h1:4a902cdfd368f40f9a5d50578fddf76f383fe83102553a163c945e86bb11665a",
+        "step Then": "h1:8452eea81ada7392d9392e416991358d51b26cf382a7d5c8fbe699344d4ea27d",
+        "step When": "h1:96f9b6ef81086ba5037612d6970b5aade2e6108c8c24d2e2030a8b3ce897a68c"
+      },
+      "baseline": {
+        "heading": "h1:7529b8848e278006c6a1ac9ace1638e9ff5945bde21bb7fece4a7318f84fb98b",
+        "row h1:2f8a2f9f9a1f4b87053bfd8ce0787dbfd0cf3afc19767343d4b3cd35b82f0348": "h1:0e72d9ba6ce501992ccf2b9068d23905d96da40bba8bd64febf8c529fde84efa",
+        "row h1:419685e51bb30e406a58c21485474da721a7f8e8ca03781b37c980c93b5d8ba1": "h1:794acd7e8fe2afed60068c41d80a9135374ea0e93c404e08daf68bc90427e77e",
+        "row h1:e05294edde4d85376c2518af57d7338958e087b7a3c4a760bff8135dfb1f59ba": "h1:d126846ab1ca010580fe59192bdd85ea43dc4670fd25ed740aa59f350a510154",
+        "section Rationale": "h1:53b9b60d1c604f6a8742136908712c9ad441cc42693343c9eb67df588ae85c4c",
+        "step Otherwise": "h1:72821f438d34552cb0b1fff11930ce7f6fb290d4e07fd9e4371d43050daabb9b",
+        "step Provided": "h1:4a902cdfd368f40f9a5d50578fddf76f383fe83102553a163c945e86bb11665a",
+        "step Then": "h1:8452eea81ada7392d9392e416991358d51b26cf382a7d5c8fbe699344d4ea27d",
+        "step When": "h1:96f9b6ef81086ba5037612d6970b5aade2e6108c8c24d2e2030a8b3ce897a68c"
+      }
+    },
+    {
+      "id": "baseline.impact.order",
+      "now": {
+        "heading": "h1:2b6d1819e0aa51ba6265ac943611bfdb0bda0d4ce7511b30c50606d8183f39ec",
+        "row h1:364056d2f8db23d82cffb09e6fb3bfedd7dd82c3eb6f25f7fb692a951140813c": "h1:be1bba2f8a89f843a1eea377b92a1ddbf9f1dc5793e63a02aa7588f66f8fd3bd",
+        "row h1:747b8febad324fb14be3f67f3b0f61c749c2b546b73f55e1e08a3b41ecb3c05f": "h1:f5c51ae674bfa0df414956bf8800e0446406cad0f0f0eccc59641ca4e11d714e",
+        "step Then": "h1:37bf8aeee25cc8ca824cd75938a071623a97bb671ae74d309328f1511424c3ab",
+        "step When": "h1:df68c0dfc9a511af27a762e680566b4f16c91d126f0b7c0c0b70420484568acd"
+      },
+      "baseline": {
+        "heading": "h1:2b6d1819e0aa51ba6265ac943611bfdb0bda0d4ce7511b30c50606d8183f39ec",
+        "row h1:364056d2f8db23d82cffb09e6fb3bfedd7dd82c3eb6f25f7fb692a951140813c": "h1:be1bba2f8a89f843a1eea377b92a1ddbf9f1dc5793e63a02aa7588f66f8fd3bd",
+        "row h1:747b8febad324fb14be3f67f3b0f61c749c2b546b73f55e1e08a3b41ecb3c05f": "h1:f5c51ae674bfa0df414956bf8800e0446406cad0f0f0eccc59641ca4e11d714e",
+        "step Then": "h1:37bf8aeee25cc8ca824cd75938a071623a97bb671ae74d309328f1511424c3ab",
+        "step When": "h1:df68c0dfc9a511af27a762e680566b4f16c91d126f0b7c0c0b70420484568acd"
+      }
+    },
+    {
+      "id": "baseline.impact.output",
+      "now": {
+        "heading": "h1:a4b3568daf74c8f5eea702a7916919534cb96564eacce1111830134c892b7554",
+        "row h1:5b1d2024fd3b198e431d6215084428bdd8814b6e5bbe1769b6519c21672c01d8": "h1:1b4fa5b25112e1cb18728570cc111c9b703b36235ec36babd6afa82905a197ff",
+        "row h1:749397ed543298261c9beb67b81e9f8b86346db5c2612a83c482b89ccff831c6": "h1:e716492199d1274ec394d8bb6a89ade9ee3b80f2737abf9e51c27df5d1a4fce2",
+        "row h1:ab0d30a615d26f519cdc15e1f563778c2ee806f7206d3eff45c9aafdae21eb81": "h1:ffd9d4c5ebe835716e7c51dfebd4b187c62e7c62f17150ee6742597817f9ba77",
+        "row h1:e229c514bbb04279352277d97f0385e6bc8ce308f423bd4cebd92c0584efc9d5": "h1:b949ef7ed06f88ff6f4676ed51641a4c4344659c66de56db9fa6720b306685e9",
+        "step Given": "h1:5ce3bbfb1546f3fbea9be61fabfa3629589ba62af6a47d4b8dda391d453c01a2",
+        "step Otherwise": "h1:50ce0362c206de26e7f5a982bcf7ea73e546c2bc1f5daa35f4abadd3c2aaf3b8",
+        "step Provided": "h1:435daf1b3524a2214dd061553545cfb4c35938673ed446f8358f4c6451ba4f57",
+        "step Then": "h1:42793d5bbce3fa9453cd36657b7e2833bd3b48829abbb5521db389d7404a8448",
+        "step When": "h1:d5a3187bd7379db5b577520cfeaf2e5ed01e66fb18e6616509f8469a5dcba67a"
+      },
+      "baseline": {
+        "heading": "h1:a4b3568daf74c8f5eea702a7916919534cb96564eacce1111830134c892b7554",
+        "row h1:5b1d2024fd3b198e431d6215084428bdd8814b6e5bbe1769b6519c21672c01d8": "h1:1b4fa5b25112e1cb18728570cc111c9b703b36235ec36babd6afa82905a197ff",
+        "row h1:749397ed543298261c9beb67b81e9f8b86346db5c2612a83c482b89ccff831c6": "h1:e716492199d1274ec394d8bb6a89ade9ee3b80f2737abf9e51c27df5d1a4fce2",
+        "row h1:ab0d30a615d26f519cdc15e1f563778c2ee806f7206d3eff45c9aafdae21eb81": "h1:ffd9d4c5ebe835716e7c51dfebd4b187c62e7c62f17150ee6742597817f9ba77",
+        "row h1:e229c514bbb04279352277d97f0385e6bc8ce308f423bd4cebd92c0584efc9d5": "h1:b949ef7ed06f88ff6f4676ed51641a4c4344659c66de56db9fa6720b306685e9",
+        "step Given": "h1:5ce3bbfb1546f3fbea9be61fabfa3629589ba62af6a47d4b8dda391d453c01a2",
+        "step Otherwise": "h1:50ce0362c206de26e7f5a982bcf7ea73e546c2bc1f5daa35f4abadd3c2aaf3b8",
+        "step Provided": "h1:435daf1b3524a2214dd061553545cfb4c35938673ed446f8358f4c6451ba4f57",
+        "step Then": "h1:42793d5bbce3fa9453cd36657b7e2833bd3b48829abbb5521db389d7404a8448",
+        "step When": "h1:d5a3187bd7379db5b577520cfeaf2e5ed01e66fb18e6616509f8469a5dcba67a"
+      }
+    },
+    {
+      "id": "baseline.impact.scope",
+      "now": {
+        "heading": "h1:6edbaad1973c641b3926c9e404712844aed24502cfcbd0a791087a81d887c726",
+        "row h1:17f97bb24164e917f2483d2a2c8a315c8c4d1497143f4f69a4c8227dc536ac99": "h1:c3eb4e933371236c03a9b9872e7092d491231c4209c675dd03af02214023a035",
+        "row h1:32a3ecfecb448b14e25f96e3283d3d882e7baf08e8ab337bd13cb84808dd2d00": "h1:82409a4157b554d4c494b4433b16cd599fd06b9e81055c07313ba61af8f5719d",
+        "row h1:8461d2a434ab339a44027dc923606f4dbc821221acad817910a9b82c34c875ed": "h1:60de47d7aec741f4d6b1106b4ed8ded1d6e26c4bc88524dafae8f0f67717f696",
+        "row h1:a7f7387db9283f2fca4de8a52563aadd2ccff617c18c331f3b14314a7eb39556": "h1:e7d30e497578419e45e93572aa0a11ab140859f26ac8073c6033778f2aae0513",
+        "row h1:dc370498bed5dc1735fcdc7d2d38f9c41ff3b56bcb6666413b964f101fc2e6bf": "h1:f65446c04d379bd1dc0445410161fae94f13c0be015ea6e286b3aacfa45ed138",
+        "row h1:e03e2d18f4840f8ea1a89d864208bccab465dab2d0cb5dcbcb4c5225c5ccb58f": "h1:91c6970bf3dcdb1eacb9ff59e9ab38b51efcf4460379223fe5a66a28f5a83e19",
+        "section Rationale": "h1:420d5deb4f7a93a6000b4f3da769f8678acb55227d499ff5d46ddfcc4e68bae7",
+        "step Otherwise": "h1:4f1c66afe328b51ea9bd5fd885b181fefadfc29298f8d1f8a612594ecdb71748",
+        "step Provided": "h1:7d0bfd1b857d4f75cfd2aa87bd43e0ad75234ddb080ca4aaad24344a5fb7e250",
+        "step Then": "h1:dbba1ec0ce9f148fc0e5486d5731595893dc70b615e7957ee3a2224d09ca422f",
+        "step When": "h1:cd305c0ceeb5708a21d16378fe9229f5f3ab05ee83b7fa07767bdfe03fab921e"
+      },
+      "baseline": {
+        "heading": "h1:6edbaad1973c641b3926c9e404712844aed24502cfcbd0a791087a81d887c726",
+        "row h1:17f97bb24164e917f2483d2a2c8a315c8c4d1497143f4f69a4c8227dc536ac99": "h1:c3eb4e933371236c03a9b9872e7092d491231c4209c675dd03af02214023a035",
+        "row h1:32a3ecfecb448b14e25f96e3283d3d882e7baf08e8ab337bd13cb84808dd2d00": "h1:82409a4157b554d4c494b4433b16cd599fd06b9e81055c07313ba61af8f5719d",
+        "row h1:8461d2a434ab339a44027dc923606f4dbc821221acad817910a9b82c34c875ed": "h1:60de47d7aec741f4d6b1106b4ed8ded1d6e26c4bc88524dafae8f0f67717f696",
+        "row h1:a7f7387db9283f2fca4de8a52563aadd2ccff617c18c331f3b14314a7eb39556": "h1:e7d30e497578419e45e93572aa0a11ab140859f26ac8073c6033778f2aae0513",
+        "row h1:dc370498bed5dc1735fcdc7d2d38f9c41ff3b56bcb6666413b964f101fc2e6bf": "h1:f65446c04d379bd1dc0445410161fae94f13c0be015ea6e286b3aacfa45ed138",
+        "row h1:e03e2d18f4840f8ea1a89d864208bccab465dab2d0cb5dcbcb4c5225c5ccb58f": "h1:91c6970bf3dcdb1eacb9ff59e9ab38b51efcf4460379223fe5a66a28f5a83e19",
+        "section Rationale": "h1:420d5deb4f7a93a6000b4f3da769f8678acb55227d499ff5d46ddfcc4e68bae7",
+        "step Otherwise": "h1:4f1c66afe328b51ea9bd5fd885b181fefadfc29298f8d1f8a612594ecdb71748",
+        "step Provided": "h1:7d0bfd1b857d4f75cfd2aa87bd43e0ad75234ddb080ca4aaad24344a5fb7e250",
+        "step Then": "h1:dbba1ec0ce9f148fc0e5486d5731595893dc70b615e7957ee3a2224d09ca422f",
+        "step When": "h1:cd305c0ceeb5708a21d16378fe9229f5f3ab05ee83b7fa07767bdfe03fab921e"
+      }
+    },
+    {
+      "id": "baseline.judge",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:dc45c3f34690964aa1474782aaee749a20da3ac8aa8c079bbc680b450a7e4116",
+        "section Goal": "h1:02f603fd1b352ebfc7b4b1a7c50429cda438c8d7e24082206b3548908b88748a",
+        "section Rationale": "h1:6174f4a05a162bb324fd721ea626c8fabcfb77c85cf585703e8ef28ca400bfc8"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.amendment",
+      "now": {
+        "heading": "h1:e9c3b38f8421f187e5f9989ae813c5c643cc6e5083bfd61d3a16ec77e466bded",
+        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:d12cf10648334264e87945acf8353bd95dfbc9c4971295818354f4ce4c8caaa6",
+        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:2cf216c16f82dc109cd657da8c14793be87c744b1d85bfa9329ac27004adca73",
+        "section Rationale": "h1:25c21744151fd53d88d1db65f5201369c6bb1d0f1dbc9abeda9694e03e9eef68",
+        "step Otherwise": "h1:5401c4321d8088afcd93f6c69eb9b4a5730d0dc9bdb116b766ace92bd30d54a6",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:68f99edfb88360c64a576ff7cd71447859e8d9d73b70dca6b4d26195315a80cb",
+        "step When": "h1:15c6a6ed66f7222e7ef844495a2be1f2bd4c86a9df656e431eaaaf45af4015bc"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.candidate",
+      "now": {
+        "heading": "h1:616db2cf7961929304a6523c9a6784de6a37575b0790cfbb4b2d94284bf4605c",
+        "row h1:575ca3a16f79ab60efb80d4ebba2e99dca9511eda1d6b18b3aedfc4fe2507d23": "h1:d2db423c623eee72c15843b351ac112f73f48ccad3f8abcf7b8a8f4f69a5d732",
+        "row h1:91c23080facd647532de9b70f5458a244e7b46b79c69ffc67471e3608403a288": "h1:943a327abe9959f7d6da440adc032d3d3acab03c18a4ff7bea14522309f2914b",
+        "row h1:b5d133b46e6d9cc23007832019b674822d0813695bc9920418dced2b003ebee7": "h1:3783a7c2dd9b8f9d393cf18aff502312fe038384bd37126df1cad740a5a62e9a",
+        "row h1:bb210fa2568a177755a97ac9b31c71f24752a0da363d002c8c64ddb5247e0fe0": "h1:18727002fa2c63212b8330c324525a947f6267a1f0e51d8c1339090262804e59",
+        "step Otherwise": "h1:5546727a97618fa2f6f8ec04fe7e8d123c06c250a10dc8d9db8380b66465775a",
+        "step Provided": "h1:e6ccecce4fed33a389e673080fe4cc72d6ac4cb9a296dc9d36fbd4f9b2c9e94a",
+        "step Then": "h1:cf516ee849d2d745909815f1a82c5cad82b06b81ceed92de00693daf6c4a6234",
+        "step When": "h1:558bcc0f305d6cf1bb684fa7674ace9124651c0a9d8dcf73337bb35b7dee269f"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.close-finding",
+      "now": {
+        "heading": "h1:3f41ffd664c42a12b0e61e64b84e426bd8333f8a503631dfa6e8497fca2c546c",
+        "row h1:38568d421998b6533feca34f22df9a9dccfb122e359d4fdfa1f9de4f4cb8dab4": "h1:5ea70813c540f50ac3e8413fbadee017db8cf2e03c506e56a4ecf2977fb0d779",
+        "row h1:4a4c3241ed7f83d2d19fdaeccf0006975db73b3ee4f10884a2fb3667f914113c": "h1:158438bf8b881e16bc48a3ea63e772f8a5036b4af31900158756dc891537773c",
+        "row h1:d2f4e0e3c247517e534bbfc7d80ecd9de66d06aa3d7397169105a8b7863a8f8e": "h1:02f063bb97acd0a5ffba905c847a1fccdec7530f55dfa15341d067921f6a9202",
+        "row h1:fdc3b59b482d532f0039fc34a74498813cf2ae32a6d79d85761b6ec16b0d3f7c": "h1:b677b4620736353ba10f3c9336e2e22ec6fc7e57f2eb2cdcc3a25eb7a4b88f8e",
+        "step Otherwise": "h1:58dca46ca7a4ee2c5cecc7d251bd5467188426947c0c1fc1789995c71b5c6a0b",
+        "step Provided": "h1:3b85193f3ea09699adfbb10897bd3dcfcfd304e208b3c78e5eef4e482f7f545a",
+        "step Then": "h1:c161fd432d6481721fc8c080e83fc63d74c765da4eafb71eb19c658a16930568",
+        "step When": "h1:542a5685310232583ce5549c4c289b67ca40109e38f79833dc54f24d7539e497"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.input",
+      "now": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:2dc32b58dab8a65a954875399ac0c1ebf38170d63c5dbef9c0c0123458cc9c1d"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.new-finding",
+      "now": {
+        "heading": "h1:ce69ec65772baa1ee5dd83b673ffa4bcb34314fb437fe7c92b149cd82f2a4c50",
+        "row h1:58873119fdf98067bd883351b8a4ae911a416cdbbfb9eab63fc6deb94f9cefd3": "h1:855bad1d37b75c5a3a580816158f221e2c09e7047c38db71fee4c4b7e9c8eddf",
+        "row h1:66874db1e45023b06edcefea7cf0195887587e4767ae99d01913232309cd0094": "h1:21d08ee9e034487c34a97485019ef04aa65231677065c09dd4072efcc9e5d863",
+        "row h1:758cb62570dac10e24da28ec50743bbb6718b552dc546a3ac0d90bf82b505490": "h1:c27c4efe88d4efa93b54dca9f7d1186c3d39bc40fedf0383be2094c56ab1d7d5",
+        "row h1:e05c2ce0872b30c55e917acb8d4719601cdec62b32b66cd2776ff6c371c47e5c": "h1:2f7516956928e7703b5a0e79ab96776208c6a431237aacf4771f4ffabd5148c1",
+        "step Otherwise": "h1:76eedf7f4a0de14bc2006a239a9a244ce9149c3428c698439680003e28c253df",
+        "step Provided": "h1:c21c9464c08f9938c89ce0263381603e7cfb2f3c5ac02d1a4e7968b7d490f3a5",
+        "step Then": "h1:4c2cc1be1ed18ccf70f569a855b9937924f218f68baf48d2771082f882972926",
+        "step When": "h1:b29c693b4dfeb60a309f254419ae91734526bdd8435eb2f7356a99410db78386"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.unreadable",
+      "now": {
+        "heading": "h1:7d531c5dfb9d585df212d0f89f11a2f5938576714641ce6581ea9bda37727c34",
+        "row h1:66fb29dc3ead38412b33ed4d891438b1d844dbc5c0303ae7707ad2ea73895dab": "h1:1166933176b1e7ad23ba6a93eb045759efd798e8336afec170ecb5262ef49a70",
+        "row h1:949911acb373e997dbc41fb395689ce74f88a5aac76481ee40180e3aec326ebe": "h1:11662d2d68ac57da0884272b5da9e108838cf0564ce4a1e287211e27bde8f44f",
+        "row h1:bfb02e7f8db4733dbb11299ba53febd4e70c0bf16b197c21287c50f07c309c07": "h1:45bd9da40ea39a9d10dccf773977b4f6db785ca47c33343cba55f11e63766774",
+        "section Rationale": "h1:d5f8c78be2b1235d9b8fdfb0ffa644293a74dd348ddbe977b86a305e2c365605",
+        "step Otherwise": "h1:15247df68bc082c95bf834c204259c7f1f0e8a70468628b0999564cad88169e6",
+        "step Provided": "h1:5c8fff99b3a9f314d517b098dbfd9ceae0cd157478416e2d27969484995532ea",
+        "step Then": "h1:8de2be295857ba157b4d3e1c51ea3b2e2f9ece940c2139cf08e36e30576f456d",
+        "step When": "h1:4f447f43777a4478a7e6240a1a9bccf5cc41a1a9f83407f3c612d74b553f42d8"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.judge.write",
+      "now": {
+        "heading": "h1:66fbca566bfcaf1a1af40c295506c678671c1b43a77bfe3f432bd163ed6c8672",
+        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
+        "row h1:06b490a1556c2ba0171b828b94e453c39f8620398df93ed7c13d8890e9c499ff": "h1:2fde5dfd469c317079c72957715555d35015276080aac04e0a8eb32a874069e9",
+        "row h1:eacdea67edd6ad94c3ab84245a557e38b065a66cddfefdccaed7eb98135d130e": "h1:26509c0f3fe4d1632f4f93d0ae3809707fe5af6f6e5b450118bd15e2f9bf02ba",
+        "section Rationale": "h1:7841876d7491d8ca980cc0081df5e8a0c01592036754734ac6ef39eb96ec1ef6",
+        "step Otherwise": "h1:c3d92924a0e96f75a356e50252af638c09ffe3805edbe94c7f0e78c6bb3c68ed",
+        "step Provided": "h1:9703d813ff86a21c984870c93fccc2b6674e811da1031ac7dd23e7f3a3e7bb2f",
+        "step Then": "h1:8d078a3d112229135ae49df515c2b4850cf444b8392c274e7d93182ff723be2a",
+        "step When": "h1:4be6d81e9e701c72a3ac0dc29fcf028487cf73d8862e49cf46bb452ce4207b2e"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.manifest.write",
+      "now": {
+        "heading": "h1:3392d8e86a503d76abb3f44f1fcc892798009abc7fd22b5c48104ea0fa7b25e8",
+        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
+        "row h1:3429c4ee8be5a4d28f5f2de6b45e77ba16dea268a34ff9edd29b9cb2d6d3e758": "h1:fe483f9a675ee2425ab9b51619bb2d2a7d279183a8a349ed2bc40e8f982aa855",
+        "row h1:538b22981b2d26bc812e081e0612b6bb879054c9da0301abbb0bf6c04f0fb77d": "h1:93d60c9d57cb0314fb9c7f18ccc837c1c33f78f26ba6d35ebb48f2e1339dc6eb",
+        "row h1:bf96dd218864e7f4fff6c58be23e5dcc9a4746ae92dde77e1ee28f20a8506c6b": "h1:59b7886f785b368d945e1870364c1e9926b82bf32011764b4576315a6f34c989",
+        "row h1:c336e14d0c0139ba54552e4dab55674f014f2f7e96d97d73c520dd7b48b69bce": "h1:00d00695b78e3c23790726c5510567b93572d2194e8000b5bc432eef7b308779",
+        "step Otherwise": "h1:c5e153d88e3568306580dd1932f6349372b890257ebfb09f8ccaf34d955cec82",
+        "step Provided": "h1:ac81460fa76d0c12b8703d409809ce57d550d14c18c998459cb097c2439a11f0",
+        "step Then": "h1:3b14c9664680f077da567fd0b087c8e494315aac0cda43848e1b074b4aec2fc5",
+        "step When": "h1:89605b8366b688954aab407fb77e02b7088a535bbf1d88d6ea01348b741efdab"
+      },
+      "baseline": {
+        "heading": "h1:3392d8e86a503d76abb3f44f1fcc892798009abc7fd22b5c48104ea0fa7b25e8",
+        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
+        "row h1:3429c4ee8be5a4d28f5f2de6b45e77ba16dea268a34ff9edd29b9cb2d6d3e758": "h1:fe483f9a675ee2425ab9b51619bb2d2a7d279183a8a349ed2bc40e8f982aa855",
+        "row h1:bf96dd218864e7f4fff6c58be23e5dcc9a4746ae92dde77e1ee28f20a8506c6b": "h1:59b7886f785b368d945e1870364c1e9926b82bf32011764b4576315a6f34c989",
+        "row h1:c336e14d0c0139ba54552e4dab55674f014f2f7e96d97d73c520dd7b48b69bce": "h1:00d00695b78e3c23790726c5510567b93572d2194e8000b5bc432eef7b308779",
+        "step Otherwise": "h1:289b344709733a75896a0d691e745b4a100ee365a400a065d2b908e9406e711e",
+        "step Provided": "h1:ac81460fa76d0c12b8703d409809ce57d550d14c18c998459cb097c2439a11f0",
+        "step Then": "h1:74cbb13f7ccdb49cc1d3a51aa4e7624ff98a7fff030493ce542caa7724303785",
+        "step When": "h1:89605b8366b688954aab407fb77e02b7088a535bbf1d88d6ea01348b741efdab"
+      }
+    },
+    {
+      "id": "baseline.run",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:d25db2ead21f60637b7b4d884e278d5adf6fa62ddbb13fe74b6448441ed8f45b",
+        "section Goal": "h1:6450a4cba795a83d711588dbe1947616ff9f55b45e269e67cb00f8ff40d76e3c",
+        "section Rationale": "h1:ff0cdcbf7fd8718e850609ee9392503631cd8db25eaf96d20afbecfd5eda83fc"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:d25db2ead21f60637b7b4d884e278d5adf6fa62ddbb13fe74b6448441ed8f45b",
+        "section Goal": "h1:ae28a172e17148d0656a6ad3b8ae08dd5f8475b87c48d5d1388e78732921b2dc",
+        "section Rationale": "h1:ea14e0a144de3df6d72ab879d1c1df96d5f1ed1c9abc69705c575bafc50f5353"
+      }
+    },
+    {
+      "id": "baseline.run.lint",
+      "now": {
+        "heading": "h1:19ecd0acbcc255c575111f9be6afb6acfaff889257fe4ffc816e3796d3bef030",
+        "row h1:351110243b10d03927e149d87fc4d2f36ee3e961dd496a469a2a3e3b18f9e8a1": "h1:fcdbf6d460f7c84befb983adcbbedc8536e9507635e6408d88eabde0acef0b85",
+        "row h1:576eeb1623b2be0929f569c782f85d7c969050bcc04a4a80f4d368a96b9b0da4": "h1:9572eeeaa051bc1c4dd44e9873451ec674c5651851e0cadb4b1677e19eb1e03b",
+        "row h1:83d093840b69ac888397254e91aac38d0bd916dcc9774f8e1c0b54350c546997": "h1:f2f687f68520aad5564d2ff4e12ee12838908da2c8672f31b722be9e552ef1d0",
+        "row h1:c51c3329760f8b5e90dcf00d983562c237219a75a9db74bfbfc5f987f304dbd9": "h1:51ede648d871cd56a2a0699209f109f7799f535286609f8c09174225a241daf4",
+        "row h1:dbf136094eca4da8a8094b3e4e27fb573f615c46b3e0b361500d94a5f901531a": "h1:bde69b6f242e4cafe0cfb402f8b6b1c65341d72220bf34c4bea190844c9c223e",
+        "step Otherwise": "h1:724e797995912fbf25539d2ac21bed1fcb31bdf4ddf4e1a187eb893babb21c91",
+        "step Provided": "h1:6ac6bd17134cb321471b8b629369b32634350b99204ca25937c18aa67ba7548b",
+        "step Then": "h1:fbdfda727671623d5b9c51c0b5d106e13e98b23efc0e001d13c8748620cc529e",
+        "step When": "h1:179b053d5129cd273e0455dc14a2e180fad969e2951c37136e0cf663d68ee45c"
+      },
+      "baseline": {
+        "heading": "h1:19ecd0acbcc255c575111f9be6afb6acfaff889257fe4ffc816e3796d3bef030",
+        "row h1:351110243b10d03927e149d87fc4d2f36ee3e961dd496a469a2a3e3b18f9e8a1": "h1:fcdbf6d460f7c84befb983adcbbedc8536e9507635e6408d88eabde0acef0b85",
+        "row h1:576eeb1623b2be0929f569c782f85d7c969050bcc04a4a80f4d368a96b9b0da4": "h1:9572eeeaa051bc1c4dd44e9873451ec674c5651851e0cadb4b1677e19eb1e03b",
+        "row h1:83d093840b69ac888397254e91aac38d0bd916dcc9774f8e1c0b54350c546997": "h1:f2f687f68520aad5564d2ff4e12ee12838908da2c8672f31b722be9e552ef1d0",
+        "row h1:c51c3329760f8b5e90dcf00d983562c237219a75a9db74bfbfc5f987f304dbd9": "h1:51ede648d871cd56a2a0699209f109f7799f535286609f8c09174225a241daf4",
+        "row h1:dbf136094eca4da8a8094b3e4e27fb573f615c46b3e0b361500d94a5f901531a": "h1:bde69b6f242e4cafe0cfb402f8b6b1c65341d72220bf34c4bea190844c9c223e",
+        "step Otherwise": "h1:b5c6454ddfb833bb6c1fbd7db8656a7a4d14e49d8a05b25bd316a243917b2b9b",
+        "step Provided": "h1:6ac6bd17134cb321471b8b629369b32634350b99204ca25937c18aa67ba7548b",
+        "step Then": "h1:fbdfda727671623d5b9c51c0b5d106e13e98b23efc0e001d13c8748620cc529e",
+        "step When": "h1:6aeff4c665198e75ea13a9ecdad63c98ae22cc1660f3ed2b8cabf42700a754c1"
+      }
+    },
+    {
+      "id": "baseline.run.writes",
+      "now": {
+        "heading": "h1:3b5e904d5274d79b1756b54f4c015772874b18535a6c8a51d6519ba30e5cad66",
+        "section Property": "h1:04f656068950f6019c706dcab31da37c4a095db43789e70dfa319ecf50024a85",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      },
+      "baseline": {
+        "heading": "h1:10aa778ea39b51669bf644bae53060e93387f0ee9fcc09bb2b4f3d641960f19c",
+        "section Property": "h1:38fa46ca2e8da9d215c66eab4fecf10e2236c8f0a0b5a462991d267cf3a58a25",
+        "section Ranges over": "h1:896794260792e6dcdaf54980768e8fb97728831eeb6e19d120d24e6131cacb66",
+        "section Rationale": "h1:9aad8824531885f5c7bb1ad0b3efb8524c7c29ce6b7311d27b8076b0ca6cc7b3"
+      }
+    },
+    {
+      "id": "baseline.verify",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8df8dc897d2d4b4a36e60bf4620340586a440122d5f05f177fedcfc462162453",
+        "section Goal": "h1:acfe8ddda088edba777e1ee9690c290f0e90a56fcf49284b9d3dc27cd56cde20",
+        "section Rationale": "h1:161d94b0d0ee5f0ca0a1aaeb7d45241dbb697e9614655a1e37caa565572b5c42"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.exit",
+      "now": {
+        "heading": "h1:e4f296184d05c65a211bf144e76b4a8856d4bad8d1ed26df6cab962fe20a643e",
+        "row h1:a4731078914b3d7bbfef985993b395a0d8d1d7119425cf408c088b5e6131e26a": "h1:8108e00236f7dc16b712be1e8cd53988f2e2839b3fafa927ae627db87309661e",
+        "row h1:aee087f8489a92aeebd56631c05eae210b27c25cccea2a301c90cda52ebc4471": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:e190c8d7345695fa05930034d5cb9081c8cad00a1d0e5beee9328fc2f095db3e": "h1:443dec4ccbf3be67c25c04eb7e266b2db6498d4f41eb1864dc2b9bdd5f12ea8f",
+        "step Otherwise": "h1:6e39c72d43b14c24b24fe82e1ac1f34041c0166cfb9bc31fff458ad7fb554170",
+        "step Provided": "h1:ee3179b65a0c0c5ed48a58b77303c5885a5fcbf52db40eb2a52af2b9f511fbb5",
+        "step Then": "h1:72f543340d8ee7505f299f88e9171180144145fd9b3d4b7c74b30bf715813204",
+        "step When": "h1:d1518484110dd3189a8fd1dd83b3a51520b57422b496924865d41d23048db7fe"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.leftover",
+      "now": {
+        "heading": "h1:6f1ce6b514712f76f7411101e98c1253187689e7e3c80abaec7c805491eeaf73",
+        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:7f652fa457faf75c6802b7d8fe1c56f8f0f23ca1da47b59ba1afb03510c01a72",
+        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:9d31569e73d9ff331a15948fd12dc3e9327179d540edbfbcd10f5dedfade5f1d",
+        "section Rationale": "h1:901c499b7ee66a525c2d4275487d2d2e0e21dadcf04bb21bf478ead3b4fcb179",
+        "step Otherwise": "h1:0fed52bb2a1564382fa7d452b12ca2f0598235325ecaedae528d36d48a6f9693",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:526b55bbd28d701924c741fd725124f40768452729514abeb3f100aa363eb97a",
+        "step When": "h1:a7e773faadc3bb49035098af2d8ac635af0a03c41fada323a25f040915fa2a6c"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.missing",
+      "now": {
+        "heading": "h1:8f32aeceda7b0adb2a06152a5f801c37d7ab4cce85066346fe823be5a8d90fbf",
+        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:fcad28d1643f89bdcbbdd701cbac8174e3651c44a721a98a1b48df0a24bf3d00",
+        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:8a15ae3e770d9bb079f13307e5582df2e5b84be80cd1f5a1da0b9952ea3cee2c",
+        "step Otherwise": "h1:8cadd1b0aebbc8b72e4a11b896cea16971dd154a5bcf60873e50942ae0584217",
+        "step Provided": "h1:062ba8aa192c0fd620c44dfeb36e12e9a40c7265098bd05b8f56fe307771fe98",
+        "step Then": "h1:52e014b693bff44e0a4269e2cac234e1dab5fc3789358556a740b84b6fb75f27",
+        "step When": "h1:acb6dd73234200b949df56fa2b99de4828c8664bda8a10a3dcd82e3967c4d70e"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.open",
+      "now": {
+        "heading": "h1:306f2b42b3f7f7dc2c6357637a4d961be84677b36b3c3c62043d8f07f1dbe7c6",
+        "row h1:1c07eb4ef823f613ea4a6cbaad46f394995978f484827b47a22a8c1445944331": "h1:6b6750872556b8ec3f451653cb64a1dbccf7bbf98fef43f70256f48628a84674",
+        "row h1:7d67dccb6daf9745b35ec21b436c675c49c37d5df894c0866363a9ad94ab8159": "h1:60364849a67d5ce560aa684fe16206b339eaa4221fb2742b6f13d1d378ea35e9",
+        "row h1:a6970129e2aa6557bfe3bb8264836e90ec523ab032b3d09607633681e90f5834": "h1:f65b0b59c2bdbc2ba0194eb1065c4f136c7e4463abab8d20e32607a6c9d0ae5f",
+        "step Otherwise": "h1:d012f66ddb6d3a52c65801ac8e38947a933cb7d72d7757de9af43d315017f8b0",
+        "step Provided": "h1:5d16d138d7ae4865581346a9c506211e6725511ed77cafc32030d8a91b253f24",
+        "step Then": "h1:e6b2224bbfe4bb6aa7ed2c6b8c168de2114cb5b21fd2013652f8780d8595d556",
+        "step When": "h1:fc04a203dc61c1e9f250c0ee166d1bb859b5415db88909b7864364f37bbc77cd"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.order",
+      "now": {
+        "heading": "h1:6e53ae0e95253a5fb907aa130c818350229f46f3c3a568e98dac01fa029fa19a",
+        "row h1:5e3d4c8d80cc2caaa91a0c33d997174d7181e362c5ad065939d19190a9536fa4": "h1:47ecce41735c7ee1c06741acaa9c3fa19507c0b4d4f32d86b1cd95fdc93782cd",
+        "row h1:c75df92f00cea4f75be225a7a6cedc32dc1ab975d7cf90ead30e80d25fdb7f51": "h1:c9f393efc7e08b6b0a36bf659dcef77973cd73d5964e10037fdfe86219896ea4",
+        "step Then": "h1:a9ca543684118b123819d1bbe59c8a3192d9a81feb8c3c044b141cdf2f912bed",
+        "step When": "h1:1a9115a1060a9f3f36dfb047e4b8a9a22f291d6fdbc4c6ddd38e2e1d14dfcece"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.output",
+      "now": {
+        "heading": "h1:90faf0761e462aad427c5ac82fd6d9fd46953f56a3beac0a34b02d7b75f00f48",
+        "row h1:0e8bb237a8209ff70342aa111a584112d9b1889c87c6312436d0117588974415": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:4d026473ec852bfbd8c085f8ec03b61f9f8c2b0b6cc5a35d65e15488b587356a": "h1:f438e81a7645403c66e84895bad63f73c5fd3a28e1a0ac34b04e8eceda505b49",
+        "row h1:7a328cde20c447b7259641f54d95021e7d196424c096fca6c0ac55b8cb788b06": "h1:d521e8aaa4b64581b655d21e3c67615cde45e7ece68f6f5eaa74b7feb421b97f",
+        "row h1:e83e798717af1e11613a6fc27bd3ae5db48e02d942b19476e72a9f70c8ec2cd8": "h1:fd58a543d846ef4a413119e7b9adf3765e28d7940baec624c06f0ac8fa5e915a",
+        "step Given": "h1:ce544c8237985b3cd44628a255d5d6135682a7f4ef2dd64590cc4208b4d7e720",
+        "step Otherwise": "h1:b378bdaf751a7c276c2334855181a9fd5a80732387562e9e20864825bc592397",
+        "step Provided": "h1:2970036abf2c0b2e480d5b4e13553cbd5d5183f1a2ef4daa83e27b52d3a82674",
+        "step Then": "h1:862cb5621782748be26887ec1a94d018abc7918b002f1837b4af11e750d85ed7",
+        "step When": "h1:747d372eca4103e013cc5bf9f89e03931c5b12417bfa0685882785653f2c7bdc"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.stale",
+      "now": {
+        "heading": "h1:8ee33340d97d0c84ab8832714bae5509c4bf77909e8a89073dd3e0f3434c7e45",
+        "row h1:137d233d1c289293504db8a954cc288c15932cc0bb7d79bca3bd11371f4c8089": "h1:7f90374d8582ec40fa87e0acf0bdf40b8641fa734e53678bf46894c67230f1f9",
+        "row h1:19e326539c3b678a9de2aa354d558845c2a08ef8e844697bf8b43a11ec5182d9": "h1:798bda4b498e404ce283b48d4726e298bc83d3fe9768fef5c4fa83c15e2cda98",
+        "row h1:22b4e432d00e7435a33decd3a1a1f5fa4a69437cd665fc2444f2c261183bbba0": "h1:df02e06fc939cd213b97eedf54037b64587bcae34ee14b73651e4f478fc0b2e1",
+        "row h1:a98ef9345a32a027a8b744c30ae99e5a19193da45865fcb8a54dd641874df6a1": "h1:3ac5e07985dc0b5864df2411395796f7a58cd5fcaf46a17e2bbe9a519d31a28f",
+        "row h1:f991cd3815ec06378d18d951504d4d1b3e374282eadff6adab8a630e9ff2e5a8": "h1:0e0f617ada2c9b352e9c89003d7aab7e74d0a5789e18985b3ff355daff0abcec",
+        "section Rationale": "h1:9ae47ef6a806b9077d77ca900cda4fb101e43753e26a6b4c1732d1ccf65bd685",
+        "step Otherwise": "h1:01f215d8583b17974202ffc828177ff5dc78b29e6cc93309695869505686ca73",
+        "step Provided": "h1:c20667a99a9598c214a2ddcc2c812569959338d1f336b877cc617585251d52da",
+        "step Then": "h1:493c73d394d4044d54e10012d9376a2fa9bfb271e6b6db9c5aa6319eeb5a8504",
+        "step When": "h1:7e551f587db1442410e429a97a33811098fe1a406f00024be6037eca8b045668"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "baseline.verify.unjudged",
+      "now": {
+        "heading": "h1:0322c1e4901e86cd4fdbec827dffda91a3fdabc88078ec227297f1b429e446ca",
+        "row h1:1dece6f70c53c6d9483557204f4c975b20b4fde99a1ffc48917cf25f92b29f8f": "h1:2a4fb4e8c8d0e2bd7e1c5c4281c51b46c495517374d1398fdd6ed320e823d200",
+        "row h1:21f184de0438f1d45613516f57433774ecf672eedee14669488f45aa9e6b3b74": "h1:36392e3ca0389bae3728b2671be0a3c34e8cb28b93f72867044d338d6dc8e541",
+        "step Otherwise": "h1:ab45cf6fdd4338c2985df84cec45b8d77895a75592c3726e5e34d232c52b2bfe",
+        "step Provided": "h1:4de5d0d4d065056d8ddb06222fd1a0e06e69455f51b13047dc0a60d13397ef8e",
+        "step Then": "h1:40da90c93a8751be40a7ff314fe2e556e17017f492b18fcd9f80e001020cac15",
+        "step When": "h1:586981bacc120da0fe02f68378368af44d0b6ad3df41066c9215afee732082d9"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.check-result",
+      "now": {
+        "body": "h1:40b9ccbbdd4d684849ccd5e2690c862cddfd322d4fb4c020e33b7eb89f2a409d",
+        "heading": "h1:62b4a6df379bd411f5f72ca4372e5f6b4f927f4115a52b8e810e95f9e50255d1"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.judge",
+      "now": {
+        "body": "h1:f17ded1a0ac1bef3c63f01f218572d7a76743b9611042ab0b1bff2a3f9e134fc",
+        "heading": "h1:10e86c6514d40f2a3e861b31847340ee8c8ed181029a17b042f137121d28863e"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.judge.exit-status",
+      "now": {
+        "body": "h1:f4156789c04bca42fd3f132c13f0a80d2d5bce7f845c42522d27dc23703eaeb5",
+        "heading": "h1:6102e44d6fc6f40b350b53728321acb8b0849819025843ed02cff62b932f7d73"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.verification",
+      "now": {
+        "body": "h1:c3e2ce0a15b887a2c076bda680d394df89748593f2d314a4b8646f9777474342",
+        "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.verify",
+      "now": {
+        "body": "h1:50353ce4d5304a7e829130057e1320b207b87b99ea02ff25319f762b1d7a297b",
+        "heading": "h1:a12dd3a7fd3203a452eb34d91a9be20569d5e337a3384347068895c07f3e0c5a"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.verify.exit-status",
+      "now": {
+        "body": "h1:6bddf0d932dfb7050946b58111db8bb3681663cff88a4a6db1aacda1a57fb6ff",
+        "heading": "h1:6102e44d6fc6f40b350b53728321acb8b0849819025843ed02cff62b932f7d73"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.cli.verify.json",
+      "now": {
+        "body": "h1:b18c6e658275cbcd4c9f0e70d19f1fdc8f882e744decc15d29ea286a4d18a125",
+        "heading": "h1:02bd175f329720378ce83dd56a1b6b1f5291a60182d6c54b5e0d1e8d248a267a"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.coherence-file",
+      "now": {
+        "body": "h1:d5948237ccff808ae52b5e896d079f29d46d2ac9cae5a4f34967402be51207f6",
+        "heading": "h1:2cab392b0b4dd8db5166dcf9bf659ba08bde1f19341a5fe7e15e60de21c8ac2a"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.judgement",
+      "now": {
+        "field Aliases": "h1:b0f2fa6c539c2ec1a20c3f37f94b37249cd154d3bf53069bf6928aa8e9338f65",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:01578b8bc270a96244ad5ae3e660445a3f1f29479a08d0cd4c0c07a07d85dcef",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:a9c9cca61f97e3d9bf484cdbc870b7ca7e37d77bfe4dfd464bff5d505f2de3d7"
+      },
+      "baseline": {
+        "field Aliases": "h1:b0f2fa6c539c2ec1a20c3f37f94b37249cd154d3bf53069bf6928aa8e9338f65",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:5f76846e52f8d6dbb6a0311a5eacc48b8d4f324a2905fb5df7991f4b13cc2b20",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:a9c9cca61f97e3d9bf484cdbc870b7ca7e37d77bfe4dfd464bff5d505f2de3d7"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.diff.added",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:9e335c02cb45cb173a1e62e3eb96cbb4252621503a5d9a238c53c637c889f5e2",
+        "row h1:6d0c25df2931e1200b145564300e215d47324ced8825b37a117a1919976efc8e": "h1:2dec3c4446457033126718aea09d367c192fc0773997fec8f9fc437c27857db0",
+        "row h1:87f46c1a96521b9a1ee40497868856e9f516710657a8748c3e9657084aeb3cfe": "h1:e56552066d68278227dffd46443d112037c242ef3670c5423c1ced79c0bf477e",
+        "row h1:f37b9df6d1aa7539b2b5b9d424b1150541f1ce9d51e1023c98fb64a97fe454a5": "h1:3fef2292d243ba6b47bda78c34e1b79f03b2828dfee63ae678e4b6c959489b13",
+        "step Otherwise": "h1:103f83892cef171b6aafe902577e2b3b21e5b7bb92f513353f4ce7821fddcc1c",
+        "step Provided": "h1:f219f95866e756e738352a1607ff11a66eb4f2300feca25b93f091f6a2b0d191",
+        "step Then": "h1:a7b175041308174b3b85c662fe448c449e222c53358fa5623835bd95f7ddb092",
+        "step When": "h1:da7f807958e6ee97eb91c25946b6bd4a4f10b2c60484822d3fc629cd1fa9a5bc"
+      }
+    },
+    {
+      "id": "baseline.diff.baseline",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:1d4bd298530d184f4f3f78a9a2f223d554f7c0dda3e59aab51597cbf283a4dd6",
+        "row h1:90da12da09a01a6b02eaaa482069b68cf81d69e8478a6a0023f85682faf1ac4b": "h1:2aa7dfbd5c6693086119012b6d0c040b974593e0c8998f77370b54ae74f6c6ff",
+        "row h1:ee70c76966ec4e41a9944e0380c143b508a7d1bcc8bafb5a16ffb4f84dc3ab77": "h1:bbe5c050f5d4e9a388607d79bb4ca7cfbdc2d0c2f4b32c667eafb7e5716bd74f",
+        "step Otherwise": "h1:124d2d77769b2d636bd286360eb76c0d2a1bb88628b6157ec8f4c6f7a1f05cb3",
+        "step Provided": "h1:bcc6fc3a9bc438a26136702081a4627413631e3aaf96139248fd2dfea2d15115",
+        "step Then": "h1:6cc9d57331f02b4428d9e8b34ad4755cfc6dba387378034d37dfa7b3df3ce489",
+        "step When": "h1:0e15020ff37b4ca2b29affcaa481c498117816b87d59a17301f1b4e6e45a489b"
+      }
+    },
+    {
+      "id": "baseline.diff.changed",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:44ca609fd236b00ace7fa48801552de396ace01938b942de046c1d96b5f7c8bb",
+        "row h1:10666913cc2d0d3f0bdf2116fda341bfe81dbb99f522689e7cffa3bd02448615": "h1:d92c59165cb2ddded404eb46dba4fa2adbd573399735d4687fb9af4f5631da05",
+        "row h1:359f425af5bf1bb3fc0ddb8a7507b2fdc1080aa6e586de6dc2c32bf4441dc9c5": "h1:1510a57c673c88614bb08c37a8d40acadbd9af79f6f2baa03d7c86aa3d5b4c69",
+        "row h1:732f8a62127bbac703c2c0a56c101af2577cb3b5d98e92b0490787490d802a5a": "h1:061e9f6f90ba32792085d09f5a67871b49bb12c5053b60940fd243bfdc59213a",
+        "row h1:ae28726fe33793feab67c93d276e26f03542368e7a716061beb6d786da9d37ec": "h1:af0e39a236c27cffc583a98bf2fd36f34211999842aae1e05a9f4c5801968521",
+        "row h1:ea9b106c3627de0b666fefe129cfee56882e329e8af9edf98b5197e9499e56ec": "h1:9676ed611e7ec675fe8f8a37daa350382c6f961f9922f7efad8f0ee3c4a30307",
+        "row h1:f37b9df6d1aa7539b2b5b9d424b1150541f1ce9d51e1023c98fb64a97fe454a5": "h1:03f0e969d8dccd8f87e7b36acad3313bf32746afe465ecc6df9045c2ae9705c2",
+        "row h1:f84152fa5fd341b0837cfda362132519659e0f35bae22ecf41a92b5235cdcc86": "h1:3d16e43615de53b3c17f8b4789344c78b547389c3e9e53cbb3fef56323faf085",
+        "step Otherwise": "h1:a7e41f7d0c2e1a247e6d5cbdcd846cf651d61a61f57e581aecda32c78443c11a",
+        "step Provided": "h1:ebd61aff556d0e03f8eb064e7241113824757f089e849792a76e4611219500b5",
+        "step Then": "h1:64dd7bd8f4afa0a0847596687e10cb67c5886eda732c3c18a9a3fba0f0c301c0",
+        "step When": "h1:f5f150e92a2f0a6d2a33fe4781116d91d3e2ad10511b9f44ad409bd1a801be12"
+      }
+    },
+    {
+      "id": "baseline.diff.dependency",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:7dec7b3008e2452468d6a3198b53c0463120551df6266e67ac8e447ebef03251",
+        "row h1:006997c31bd7e02c3b9a46a5a8350b0d73e5ec904127bbe8e0d1cf443b33c32e": "h1:fec300bbde77d08adb8c2a6c8f99304ff56c015af797305b367f5b91948fc08b",
+        "row h1:0aab68aa04510bdedc2ea00e5e43fd6973cac8e70432f517b8f700acd90a4d0e": "h1:e7fe1a34f2d492aed2eff0c1d2cb1658bc8f04b133a038c9caae13469d8bc903",
+        "row h1:1683b97ea7b8a552e44c86d2035ce4f4f457fc9d53948ea0b64f6955ba9063ac": "h1:68ad2245edae63bb6421d13a23c2bb6ce6e005761ebe89d77faf396d6ddd1c8c",
+        "row h1:43ac26a9681a7f61128b72ef1903d2ad1b7ac474e4edc274f42944a8bf41990b": "h1:1142f38294f33dffe19a88acee34617edbb7165e27f39c8e32e9c2c0d9968d58",
+        "row h1:658dffe126ac0acb5f7789a527e7afcbc44da70363bfc0bcc60e68807c015f44": "h1:63110c64f6823512c115c2785f4cf10b743d48c05a769e6e08ba73e462c3ae71",
+        "row h1:91b0c93be0c9c2fac3e4fce0275083180327e64fdd3d21b4ae47080c421a65b3": "h1:3085075aad597da836724d8b25c265cb2486fd16201e60aaf3f9211908abc4ba",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:e7941b639a6a5331edaca7c6a526ff9eb3681e33b17219e7eb0d717aa73b597a",
+        "row h1:dadec99e187de8a53537e3def6b45a3ccdc2f0a4b682d6e2f9eb7cd2f209e0a3": "h1:0aa3da4d5f1c39f6d5cdfd2cd080256dc45a803f47f2c06d380bbd5eee1fda87",
+        "section Rationale": "h1:27c222300c770cd741c26dc7c91c3e37820e70628b8656d04f9f195d76830168",
+        "step Otherwise": "h1:dc7f2de521b9c2d5a6dd1d4e0e5f046f0bc60399ffa51626a00d85aecc4ff467",
+        "step Provided": "h1:97218acdf995ee384ab822fb4ce3474aca8709deacb0c28b8be920303593bad5",
+        "step Then": "h1:0f671915249f820af6e51d92f3f7202bbd62ff1a927e3ab35ef31dddf72635af",
+        "step When": "h1:8c7ef74ec57968781ad9bd0f929941baf41c52f954620da50146814f2ca866f8"
+      }
+    },
+    {
+      "id": "baseline.diff.former",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      }
+    },
+    {
+      "id": "baseline.diff.malformed",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:88b50dd59dfa6d470cf1b3206102d38151861aa2a834481c8bda67ab8873b789",
+        "row h1:1e08305eab3455b1169db822d0a9ae65232b3d46e9ee59ae45adbcf5c6769e74": "h1:6a77c8fd8a8173f6fb4739296a522c20f367d76c38c37124de2f799bdf6b6699",
+        "row h1:3bf01c75d89ef979ca02a927ac357c5b80c1876da1ad63356ba93423a47c1c30": "h1:80b83d7cb996fe88309678d16a0e7f5eb75e366edeff94e82e136e46ba44ce4f",
+        "row h1:e9454ea33c047844c0875a776cb2d4a10b9f73178c6659f6ab08f3a371456150": "h1:ccb5b13334d8642e9a84037867f7fbd5b413fc7be97620642b5fd80457a6ca40",
+        "section Rationale": "h1:50502e87b69d962c86304424b1636f065fba726c42e60417ac1f71a022f63891",
+        "step Otherwise": "h1:b9af8bd610d1bac8270da55dda48a8d9c25c8f2843766bb262603a0bd7634b3a",
+        "step Provided": "h1:305df770d18a6337f5c2fd180bf29c4c67f4ed38ddd86adb875a91b6c604f524",
+        "step Then": "h1:59253366ff5850cbe9cf1a457f97600906901fae9c58afff32aa7c49f67c906a",
+        "step When": "h1:9915c97407882fd3309ac9f0b7ce123bff12e0b1b805fd90bade2f091d5879d6"
+      }
+    },
+    {
+      "id": "baseline.diff.order",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:fdad325b099a3148480c0c9b69abeb16428db72704099dfa625e4338e4ad0997",
+        "row h1:54a1a4b8e1d86c73798e6b1fddb3c7d45daf94120f4fbde0b2185a741a76c0ea": "h1:329c6c7254a3a5efc6b4cdcdd3d153ce50f4b7eb331b1433bf95bf634ec7ef1e",
+        "row h1:e3e0d600857ad94cbb3b62291f4bd38734af4229183794467758d955c05ef0af": "h1:2632acd946f912e59891c3b75be0bbf074507990fd25ac05e6c8280099e58cd1",
+        "step Then": "h1:6d6fc2eac90088ee8e10ec1ceb02b41b846af1a3feabbac24a8f6536db3c4622",
+        "step When": "h1:9a1426c7ce635d04ee38928bb98b030c93a60f6f05164cf9f1d93d2b24a24949"
+      }
+    },
+    {
+      "id": "baseline.diff.output",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      }
+    },
+    {
+      "id": "baseline.diff.removed",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:8d9ddde85d5c0750a50e848e653414784694b634122b1434a7cf344f27a6633a",
+        "row h1:27b445daf5037d17e64d2d6cc03aae6cfef7b6f2ecd61e220894565283e01d5b": "h1:236cc987da9c4f7933aec7be3edec00e3f9fac0d1d7258d68e4137012d2c1917",
+        "row h1:509d8a0cbf32c466a6b159d71ce49c975148ee3bfb015a641012aee97fa603e8": "h1:db8b6992773590a12051d1b0c3df562d64da9e41ef059863ddd812623c3463b7",
+        "row h1:cf37c220b7b3281a937e91f9d4509898483eb2f5caba847009724286e5463ea4": "h1:a79d7535094ef4d826b4b872b139847dc65cbc7d2bbd025a1f52e4ef318ebc42",
+        "step Otherwise": "h1:fb40f127d08ae09edbca4c78dbf477700857d42b69f4c9e0425d0497804738c9",
+        "step Provided": "h1:288aa4765b37a4cc39f4d3f24d63632eea96de171447c20edceaafdb0a96fa06",
+        "step Then": "h1:ba40e2179aa438e92c1698248245b141adccc8575a453638cbed42e842ac90ba",
+        "step When": "h1:03839513e6fd624ba8a0978d1ed81fea939c69aebbfe1b28d01a4322c0db0418"
+      }
+    },
+    {
+      "id": "baseline.diff.since",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:b956b9c4df346accf9a9a661919be712f8aef7fa912d8d57e6fafbee1f03bfee",
+        "row h1:173e4f989319de97f7ce57117a2608fe1096e77e1f5fb442563ba3674b60b9fc": "h1:b6c3422eebbe760b2de34b95dc89efc01072c3bb245444f2cc7f8528d7fc5eca",
+        "row h1:4e63d1b2ea095e86c7afdbfbbadda1eca82feea0b133b72c971ab0116cd3418d": "h1:2e434775de2b42a205b6104585c2f26c16c53bf0e3da34970148bfa947655697",
+        "row h1:9f91ed7727980da2ab616d1b1b4e6d0c2cb176bcec58e011f8a5351c61d873d8": "h1:2d1caf1ac87d129b5759d511bf25b1a8db85163625ec6e24a27760cb07b244d5",
+        "row h1:d586ab291f3fa786eaa9e42de4af4c86e9f4a6903116a7fc42e47b2d1cca9335": "h1:6a0657d6bcdc0117b9484bfca34f94cca1252ff9a88857c0002f431d823a0908",
+        "row h1:d837b4e427451e8d7a7fba3110665f8eedc5a00e42c0e9acd12e8b7574135614": "h1:2afcdf1124bb2d6f174996296a0647755645b6eade73c8b4ce7e815a6328bf20",
+        "row h1:dcf52cd88535957734b27b2fb2cfc9597d0441f0f0a9299e2e804dfee8699ab8": "h1:940293a59d70744767ecd8cac2640443f996854b7209ba7365e268d52361dc27",
+        "section Rationale": "h1:4095760fe75386508290ca576e5f2228f72d3a59b91f960ab415cecdc8889736",
+        "step Otherwise": "h1:b8880e427f6cae557a678efd91091bfc94c3163d902277a9b23e8815d05cea7c",
+        "step Provided": "h1:b18857709ec2e755681b8731ebcc2a950038c4b368a749e0ea424adc657c2de4",
+        "step Then": "h1:567eef01e6d4046e7d3ad2d774fc069cd30fd05f18023b94a00e275f3778b390",
+        "step When": "h1:df3410eded9b281f5ff0a2c7e78cd66f62a85b4079207838b9bbafbd87eba323"
+      }
+    },
+    {
+      "id": "baseline.diff.undecided",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:62bdeaa3cc0bc4306fd414f69f68010aa7415a37698e5885aa4c238be59d5076",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:9359a5917780300a2069761a78f5fb881f29af489c2b41d0d3688fb835f29cde",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:234e2389bcd55af0158f8567dea51145e0d66e851ec7be6bd7dd0a599b6536bb",
+        "step Otherwise": "h1:e09b4dc4ed475d9536a2664d7faa15b2185a34cdf9074683ca8944f4c430eac8",
+        "step Provided": "h1:3be8d7edee42d63e35dc99e5c385291ce5864762bcc48a08b64c2de3fea20c3c",
+        "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
+        "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
+      }
+    },
+    {
+      "id": "baseline.impact.event-head",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:49aff609f658cad55ebaac9a842e4a013f10685cfeb3633f761615d443ae8db6",
+        "row h1:384af7fc196c02632ff9574f6fb66fbf9fa5cc88cddfbd3abddc1e686771b9e3": "h1:349faa85d0bbb5cf41513544ff1958f74415d06a4c3f8ce0815bb3857ddd203c",
+        "row h1:7a3758492f591741c6e85dee64def4f0aa13f1f647368d0638c84fe1435993d0": "h1:e53e2f8840011c19757d93c7f4e9c2090fb89633e16e612bdfdcca4bdc88a348",
+        "row h1:802d592c6473a510e33649fcc4add5af9b7668c5aedb12a20bd9479b1ba40253": "h1:781a88c87c8995805689db68075c1a6462b6379b2685e70bedb8f8409dd4c3b1",
+        "row h1:b70b513c75b8c9f531726c2a5a6fee4471d8c204bc6912bc22188bd84592a76d": "h1:880879afb1011cda1a31f7c546b75f9bd2dfdecc74b1436e9a0d3a2964c7efc4",
+        "row h1:fdce807ddb845bd68dd8084d521d51dfc5946bd839a8834b871ae22fc02d65c3": "h1:9239cbcd1c405ef0560e1698f4bcbff9c7c6aa7454592c9fb9b8f4d14b3dd056",
+        "step Then": "h1:d8e797d1bc8ea05032f86f861b74b1db4d865ee9119a5d5835621cd1352a8148",
+        "step When": "h1:9a3d57e49287e8a90afb5436806c65e3fbaeee57be9fa35f66828009f2f73805"
+      }
+    },
+    {
+      "id": "baseline.impact.events",
+      "reason": "untouched: it shares its event head with baseline.impact.scope, which changed only through the definition of candidate; that definition now says what a judgement holds, not how candidates are found, so finding them is as it was",
+      "parts": {
+        "heading": "h1:dc56ee705c4869539006dc4f5d763bb2adb92dbdc1a84ff7896a0c9f7e21e827",
+        "row h1:c3179e747860af68e0583ac01a8c14b3cf2cff219a38cb1ef122fe21950024c3": "h1:c711ff182698306248fc957a7276438f68b1277af8ad3e119b1d6022762fa504",
+        "row h1:f81fb25b4d439c551763cf39379586f23b09dba0868e0e103494d6c0682bc924": "h1:64fad629a617ee8a0c64008ff0d070153d5f0a8d15e9e9a8d53639f98691b2b7",
+        "section Rationale": "h1:0c2af8368774818f94d6bea6bd24878769ff86373a51d34b677adea14a455a0c",
+        "step Otherwise": "h1:31f91867031cbf2728cbe384c5e85055709003f986da0ea1c79f6a46238a251d",
+        "step Provided": "h1:6e1a002f42999d3d06a8165b990bd714f68a933f178f59868134775da44aa009",
+        "step Then": "h1:d92c4e8eb8879f04f61389223fa57b82fdf994c1534f59b54497bf6adc9a4526",
+        "step When": "h1:cd305c0ceeb5708a21d16378fe9229f5f3ab05ee83b7fa07767bdfe03fab921e"
+      }
+    },
+    {
+      "id": "baseline.impact.ranges",
+      "reason": "untouched: it shares its event head with baseline.impact.scope, which changed only through the definition of candidate; that definition now says what a judgement holds, not how candidates are found, so finding them is as it was",
+      "parts": {
+        "heading": "h1:a1c7918943bfdff27da37e09da62d3b40734fb08c52f0e4f28c7cf5dbfa06336",
+        "row h1:010f29884c73c775830ea2e7775f04cdfb518fc5941492548e7f80a98165af5d": "h1:39af8e8dcdbe5ed4f7c20b0a9a7a8766ebd85636f9f95815f82a74f12280894f",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:173432d48e66e087985e8c03a87a6c08817c32e4ba8ecb81bbdf840fe56e17b3",
+        "row h1:f81fb25b4d439c551763cf39379586f23b09dba0868e0e103494d6c0682bc924": "h1:64fad629a617ee8a0c64008ff0d070153d5f0a8d15e9e9a8d53639f98691b2b7",
+        "section Rationale": "h1:34734f5920d5961d74dd3c83108f42df0326e2b3a4ab5c5efb9c12506fcd14ff",
+        "step Otherwise": "h1:4e9bf6d0440a2b904b3eadf093d48096301655422c650fb7117764e6883d3440",
+        "step Provided": "h1:c7344afbeafb7e30a353d28dd8192b15e342aea42f54687b689ecd4f7d85dedf",
+        "step Then": "h1:01f26eabc4148877ef02a1541f34c37dda4438f218823b47440d317b2d0908b0",
+        "step When": "h1:cd305c0ceeb5708a21d16378fe9229f5f3ab05ee83b7fa07767bdfe03fab921e"
+      }
+    },
+    {
+      "id": "baseline.pack.chain",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:1dbc25163e71890edc1faa5a01512d84fad05949468053485625d74d2871c218",
+        "row h1:2ff2cae93f97581d7bb2fe5ee64def1bf12239ff5b3aacaa11510c00a85960e8": "h1:98760e724a200544ce551bd01353ec35eb31d77ff67aad3fc8505fcb807ff1b5",
+        "row h1:61dd748dfce959ab3d763ee5d7f45b7c1af1fe51b03dbeb7d604f7603870ed12": "h1:33029bb88335702fd7d266f060baf04a0fc9e35f6bf00ada45569ef3805ed3b9",
+        "row h1:839342fa6825ea1cda9127795781660334ecbd16076f23497a3608fd4e4e06f9": "h1:9eb27faf5cbc4e4ac4851156376d332700d37b9f6488983d434948887c69ffdd",
+        "row h1:9aae21c97fda471428723f1f23ac2a9c5cd18309c51ccb862d61ef5950423809": "h1:8f0ba468d91b3656a1a7d62f88f1b9ac36e76d59f546d5e0a8c3527ad2ea11ec",
+        "row h1:bb21eda0b11d05cf7c56a308b5e1d15b647cfd3ab3fdce428520e28821de2b9b": "h1:177a29090661090a926269137f21bb65e7c77377b900e357c17469d8fc6a51ef",
+        "step Otherwise": "h1:e0203255228fc513ebf4580f0d81aa31165c4f6e302adca2e0a427a36e0edb71",
+        "step Provided": "h1:d42abce22068e91edcc939994707deafbf602c68944ab0ec511dcf87d2c086da",
+        "step Then": "h1:d96168d8ad82818e4078a442a94a9a1cfbeff18c1e9c93d58bebc18d91fcdd42",
+        "step When": "h1:e7a14b688c592f311473b0614010079b38f15169c3a4a80862364ad918f56a4d"
+      }
+    },
+    {
+      "id": "baseline.pack.contents",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:4104d894f21877ef0418da61bd1547575c70601bc59cad5c582254008a9df51b",
+        "row h1:c083820eeeb30742fc1077f939499e0e9c3fa31f2a43ba8cdb32175c290ddd61": "h1:7c7878508dcb97f9a8ab939466de7cff4b77af5656280e899ba1d475dcd23931",
+        "row h1:dce3b13e63f40aa82b50319fa16b70a6c4e5798eacdd834c49b653367b29f22a": "h1:ead8fed76953f57da9cf232cf4d4d55069d72825b3737e3e74d4155c449d807f",
+        "row h1:f2e5fc352032168f42b20f9bc1df50c1558a7975f876a1812bab320b07dcb8ec": "h1:92c608a79af09470b216a30df9c6e67318a872d82ab328b0d10ee87273700a3e",
+        "step Then": "h1:28cf739cbdaaf362dd749cf1348d6891ed42c56b935678d93f147d381ed881d9",
+        "step When": "h1:2a2c7e505a6c45bf506f39272da45a1b124e3ccb6c2a79b7cc01f6ff9597ad22"
+      }
+    },
+    {
+      "id": "baseline.pack.frames",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:0b8f28b01e28c5d1af39da8a6dfe1ee6cbb78b50ae242c93951c4a1f0324efbe",
+        "row h1:0a86e3681b1b41f371e50b97d1c4ecabfa0b3fe9547e7e5d97ca2d2b23886bc3": "h1:633ed16554ea46c6d1b2f5aae3e675c5e6465a5d61748f58108f6ff07ed9e868",
+        "row h1:32a3ecfecb448b14e25f96e3283d3d882e7baf08e8ab337bd13cb84808dd2d00": "h1:65e38c651128e94224264658140984c5358bd356622b54271c61237933f011bc",
+        "row h1:839342fa6825ea1cda9127795781660334ecbd16076f23497a3608fd4e4e06f9": "h1:46babf5dd81a95302f7ff29a7bff5620ebccf37032c68ee3666e84a456937021",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:1e4991434a1f469d9fd714f4291fef139101c2f2c10ad598e73e9fe0c00a08b5",
+        "step Otherwise": "h1:d7b71e78fcb93ce17f849c093f34ef756ad2b755ca409e8deb9c7ba7a425b93e",
+        "step Provided": "h1:cd07ae6c0eafa670e6d476ab41ff835e5193967365e6d696151d2dd0a94de11e",
+        "step Then": "h1:54042979dd9239308aefafb002622478410faa9ed24eec067fddd232947b86de",
+        "step When": "h1:70ae4310b67575e63027cd7e7ca27b161492807162d7a6ea2e04542422ff7d9f"
+      }
+    },
+    {
+      "id": "baseline.pack.once",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:fc4555d1d307c2f6d207994012652e6b3936c5ec6755769b8c2a18383e35c28a",
+        "row h1:1b43afdfc6e6a65fb13f1d1bff96600970f73ba03a5ab33df813d46a1ce05462": "h1:616f0dd96e83cfdadac7692d83d295e1007f3f5cba2cd568b075f1937fd161c2",
+        "row h1:874ef20e778b472b27da69afdf7c5cfad7745d2aec6ad9dc5c02477e2b711660": "h1:4783103630e4568c116dc5b95a4565c9ee951c88d8ec41e2a3485bff13b39639",
+        "row h1:b5973e420e64ef8e8206d92719fcc2f49eebd200659c91e70fd016beb061ad25": "h1:fa7f5323d7b3b1f229a07acbfda278878914b90cc1270c34317d07d90ed2c639",
+        "row h1:d5df9fc04accbadd18945de4fe1034a586d249d9e088f50461df5f6516939e18": "h1:a87317c8e83f62466e31a470de0f33cb623c2def865d1462a669e68260e3748e",
+        "row h1:e03e2d18f4840f8ea1a89d864208bccab465dab2d0cb5dcbcb4c5225c5ccb58f": "h1:ea7d4da8c8f91f9e5e44e578707874dc23f4e211f4b040f5f98ed69da767ab7f",
+        "section Rationale": "h1:a6ec2e5925301607f8e13d0577759f784c33616519179f44840850906085196b",
+        "step Otherwise": "h1:733595b3302b3d1756fb043df8383318aa957b085653e89f1daed380bdfba12b",
+        "step Provided": "h1:8a316825307875320555f7115bf7302460965827d25fa66ea7ab290cff925564",
+        "step Then": "h1:9f63ef0c9e0c8c76bcb62785063beb25b4166dff72af6b0901dd8aec07269895",
+        "step When": "h1:2f3ee2f191a63c2c6b56d301afd93819a7952736fa5003d67a7e6fe25516a34b"
+      }
+    },
+    {
+      "id": "baseline.pack.order",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:03d25fde7f984c318ad8a5bb0692584bba77d80a2c1f1d4f2266bdb4b386db3a",
+        "row h1:6a4bc1dd372cc8764ed17890b948e8ce6fc0ec4af08bcd2489299569e246443c": "h1:c7062fd87ac9245d822ead849d2355d9381e5e8a98e5ee13a34ee069c645bfb9",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:fbd341d4b42787104748e1f02c49aca434fc077ec2419076f3fdaf2b4aaf32fe",
+        "step Then": "h1:c53db797ac0f66c8d94d5912eaaa1b5c6198a3ee80309a4fae60bfb82c9450dd",
+        "step When": "h1:fa91016298467ee761dd5f8341e8dcbde12fa10c7202ef9f5e43f289fb081b1a"
+      }
+    },
+    {
+      "id": "baseline.pack.output",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:881dcf44a8d3e978280d845814bda19183b9e018ccdf0005349a7132d696a478": "h1:bb8321fb8a39e7b0a7d15954f04e18a1d644460dffb824742aa74d312086ab38",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      }
+    },
+    {
+      "id": "baseline.parts.fingerprint",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:5c7e47a6139f840ffb9616058262dbfef9e6ff57fdce4ea5fb2b0b536d16caba",
+        "row h1:00d352cbd22f731ceaa11a557c757922bc9189637c9aa847e747f25b9318b48b": "h1:55016cf41134b81425ed95754543044998712726201db7953b445fe9e61210f9",
+        "row h1:321b6a583fd855652317ac3de3b69f4ad59b5c43d983d3feacc6a10d3123b22b": "h1:e7d5a88a745a7a4c09415aec9dfc5a285a73799b217a10b5dbb0a214abfa6a6d",
+        "row h1:5f445b3faf268695ee13e070d4a6fcdef7ca882c03dcf4273c9e31d4d065a5cb": "h1:c8b74c3ec20e4a9b1bab78c232e4897d567a08bfeb941db306d61942cd75f327",
+        "row h1:7bc9259a2138cd919c455b19fff358fa2c2690a74b05fa4cb6b29d0cc421e325": "h1:0464a9a3b0a0b4e6610a145907b2119ede9a1949761a37b094958437a33306da",
+        "step Then": "h1:fe3131622c62ac2c095924f31125011809424fc445289a47f669fdf0f2cb6645",
+        "step When": "h1:48d151e27aa18c74116038f7e7dc0c6ca1f32b5b02202f2a49a2e7bc1e6fce83"
+      }
+    },
+    {
+      "id": "baseline.parts.row-key",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:145af7db742c3be3546a7c782bc1d6981e189489ba6a945141412e40304fa406",
+        "row h1:03c07fcad5fe95098b812dfe41dc9a7106b0caa433613a6356d0dd9f7c2a9151": "h1:ae39c64bea645c7fdcf6bca7a99d4ad4ce1a66eb14bcbdb31dbbc29e888765ff",
+        "row h1:33fb9c0976ffbbc1f93f91c95fe1acd575e5c5ec45ad0fdaf4dd64904e712d9e": "h1:96114488009a138b9421b3ae3daff34576a9d46a9ec3122e6dce45bdd20caa89",
+        "row h1:a596ce681c9f18529eb72c7ea911f4f6ac005d42c8f3aa0bde8f2d287923ae0d": "h1:02ce9801d238842385856861096304d98d567338bcfd89f4d4c7d4ce3eeac7b5",
+        "row h1:f3aefe60715f7afac751bf3b419285aefa06d8f298eca00d832802ae244857e3": "h1:3ba350e641c2dcc719057eb0b6305b7586cfe00eb9a258aae111ca03bfb5fc35",
+        "section Rationale": "h1:98dc0921de9b80cffa933d27297ae17d34c206837abe049841708087ef9f0972",
+        "step Otherwise": "h1:69de2b387e2e15082507ec84d95f8ecb59734532f0577fdc1a8ec5410e275402",
+        "step Provided": "h1:b55d0e2aa8ade456aef27e611b6ad01bdc6025af4b7db0e36cad6a52d194b028",
+        "step Then": "h1:a73993d0c89ec0e4f560d7e07e99a24fb0c81d9ada8890d162bf4bee7aa20a50",
+        "step When": "h1:3a6887f3b5626b376afca3e567b6270e13d89fc9049455d7a868d2e0379f3fc4"
+      }
+    },
+    {
+      "id": "baseline.parts.split",
+      "reason": "untouched: it reads only the tree, the manifest and git, and writes nothing; the coherence file the amendment lets judge write and manifest remove is a dot-file lint skips, so it is no element and no part, and the new Goal clause about the coherence check adds verify beside it without changing what it does",
+      "parts": {
+        "heading": "h1:1beb1f3720f2493ab8a3be6122bd5ed06eb8c1cc81d578c7e06de8dc495af513",
+        "row h1:2811a5f1d6eaeaeaaf1cd6e4beeb37c5c1413b63e4f0f4204a7f29695f3b4a7e": "h1:e55e4637def765d01e6a8e9b568650e0061560038503744aedbddd8de44eb880",
+        "row h1:478b7de4919aac34725395c43a06765a2d7c4a4c50c53f98d4f006cc3b0e59c9": "h1:9652751c8877831ba937f71f96cd40e4824cb72339c39acc30922ccfaebcb5ef",
+        "row h1:52984fa4dac991407911772a1b1ee6189d14df9f1004515bcf6347ba47901a38": "h1:26e3cc2c124329dc91556aecfdbf7d3c4ae96ebb03329752904d41b2ce65e33d",
+        "row h1:a6c8a8acd2875adca7a8e4f473ab31c0eca29421d5b7ef2bae2bbb9dfd9b61e0": "h1:e303b3603079668799be328bf4842da92c40478d1025989108c7f56026843363",
+        "row h1:e7bebf2074d79461e40c8986a608c7d0abd128bc34780a07602ac04dbc1285eb": "h1:0a08930387189094620aa781e46bd8e968edc4734170910a4d883eb65685baf9",
+        "step Then": "h1:603a59aae7158a1d222079a2f79dfe995966f5407b5cec5a7a50dd051c9506f5",
+        "step When": "h1:7083bccc7322643e9d80417118087f47c209550106c44662c257505c24c092d7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.judge",
+        "baseline.judge.new-finding"
+      ],
+      "text": "The Rationale of baseline.judge said a finding that names nothing is refused, while row 2 of baseline.judge.new-finding records a finding without elements.",
+      "status": "resolved",
+      "reason": "edited in 10362ff"
+    }
+  ]
+}
