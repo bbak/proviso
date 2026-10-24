@@ -92,6 +92,12 @@ your own recommendation with the reason. The engineer either:
 
 Record a decision only when the engineer has made it.
 
+Then bring every point the checker could not judge, one at a time:
+what it says, and your recommendation. The engineer either lets it go,
+or makes it a finding: record it with `proviso judge` as
+`{"findings": [{"kind": "<kind>", "elements": ["<identifier>"], "text": "<text>"}]}`,
+and bring it like any other finding.
+
 ## 6. Again, until verify passes
 
 Run `proviso verify --json`. An edit leaves elements `stale` or
