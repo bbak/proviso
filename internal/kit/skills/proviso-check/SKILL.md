@@ -87,6 +87,10 @@ your own recommendation with the reason. The engineer either:
   run `proviso lint`, commit with `docs:`, and record
   `{"findings": [{"id": "<id>", "status": "resolved", "reason": "edited in <commit>"}]}`
   with `proviso judge`;
+  if the edit changes a rule, an invariant, a constraint, a contract
+  element or a parameter, it has to be built: once every finding of this
+  run is decided, hand over to `proviso-build`, and go on with step 6
+  when it has finished;
 - **dismisses it:** record `"status": "dismissed"` with the engineer's
   reason, in the engineer's words.
 
