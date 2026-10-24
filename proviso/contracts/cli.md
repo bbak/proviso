@@ -461,8 +461,9 @@ enum: [0, 1, 2]
 
 ## <a id="system.cli.check-result"></a> check_result
 
-What `judge` reads: the judgements and findings of a run of the
-coherence check, in UTF-8.
+What `judge` reads, in UTF-8: either a run of the coherence check, its
+judgements and new findings, or the engineer's decisions on findings
+recorded before, by their `id`; never both.
 
 ```yaml
 type: object
@@ -523,6 +524,8 @@ properties:
   dismissed it, which needs a `reason`.
 - A member left out is an empty list.
 
+A run of the coherence check:
+
 ```json
 {
   "judgements": [
@@ -531,7 +534,16 @@ properties:
   ],
   "findings": [
     { "kind": "gap", "elements": ["baseline.impact.events"],
-      "text": "No rule says what happens when a When has no step text." },
+      "text": "No rule says what happens when a When has no step text." }
+  ]
+}
+```
+
+A decision of the engineer:
+
+```json
+{
+  "findings": [
     { "id": "f3", "status": "dismissed", "reason": "decided in system.git" }
   ]
 }

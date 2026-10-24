@@ -41,6 +41,7 @@ Otherwise `judge` writes to "stderr" why <input> is no `check_result`
 | not JSON | no | exit status 1 | |
 | a finding with both a `kind` and an `id` | no | exit status 1 | it is new or it changes one, not both |
 | one element in two judgements | no | exit status 1 | which reason holds would be a guess |
+| a judgement and a finding with an `id` | no | exit status 1 | a check and a decision are recorded apart |
 
 ## <a id="baseline.judge.amendment"></a> Rule: Judge needs an amendment to judge
 
@@ -173,7 +174,7 @@ Otherwise every [touched element] keeps what `coherence_file` recorded for it be
 | one judgement and one new finding | yes | every touched element recorded as it is now | |
 | no judgements and no findings | yes | every touched element recorded as it is now | the check of an amendment without candidates |
 | `f1` resolved, `lint.run.exit` edited since the last run | no | `lint.run.exit` keeps what was recorded before | the edit was read by no agent |
-| `f2` dismissed, with one new finding | no | every touched element keeps what was recorded before | |
+| `f2` dismissed | no | every touched element keeps what was recorded before | |
 
 ## <a id="baseline.judge.unreadable"></a> Rule: A coherence file that cannot be read stops the command
 
