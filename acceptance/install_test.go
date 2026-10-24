@@ -181,6 +181,107 @@ func TestInstallInitAgents(t *testing.T) {
 	}
 }
 
+// TestInstallInitSkills checks install.init.skills. What the kit holds is not
+// visible from outside, so "as the kit holds it" is checked as: named as the
+// row says, byte for byte the same in two repositories of other names, and
+// no copy of another skill. "Refers to no other file of the kit" is checked
+// as: no link or import names a file that is not in the repository after
+// init, and the skill carries no reading guide, the kit's file the agent
+// definitions share.
+func TestInstallInitSkills(t *testing.T) {
+	t.Parallel()
+	rows := []struct{ name, skill, named string }{
+		{"row1 the skill that builds an amendment", ".claude/skills/proviso-build/SKILL.md", "proviso-build"},
+		{"row2 the skill that checks an amendment", ".claude/skills/proviso-check/SKILL.md", "proviso-check"},
+		{"row3 the skill that accepts an amendment", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept"},
+	}
+	agents := []string{
+		".claude/agents/proviso-checker.md",
+		".claude/agents/proviso-coder.md",
+		".claude/agents/proviso-tester.md",
+	}
+	for _, row := range rows {
+		t.Run(row.name, func(t *testing.T) {
+			t.Parallel()
+			r := freshRepo(t, "shop", false)
+			o := r.init()
+			o.exits(t, 0)
+			o.says(t, "written", row.skill)
+			raw := r.read(row.skill)
+			skill := strings.ReplaceAll(raw, "\r\n", "\n")
+
+			// Named as the agent host reads it: YAML front matter with
+			// the skill's name.
+			lines := strings.Split(skill, "\n")
+			named := false
+			if lines[0] == "---" {
+				nameLine := regexp.MustCompile(`^name:\s*["']?` + regexp.QuoteMeta(row.named) + `["']?\s*$`)
+				for _, l := range lines[1:] {
+					if l == "---" {
+						break
+					}
+					named = named || nameLine.MatchString(l)
+				}
+			}
+			if !named {
+				t.Errorf("install.init.skills: %s does not start with front matter naming it %s", row.skill, row.named)
+			}
+
+			// As the kit holds it: the same bytes in a repository of
+			// another name, in another state.
+			other := freshRepo(t, "cash-ops", true)
+			other.init().exits(t, 0)
+			if other.read(row.skill) != raw {
+				t.Errorf("install.init.skills: %s differs between the repositories shop and cash-ops", row.skill)
+			}
+
+			// The skill of that name: no copy of another skill.
+			for _, s := range rows {
+				if s.skill != row.skill && r.read(s.skill) == raw {
+					t.Errorf("install.init.skills: %s is the same as %s", row.skill, s.skill)
+				}
+			}
+
+			// No reading guide: no block the agent definitions share.
+			between, _ := sharedBlock(r.read(agents[0]), r.read(agents[1]))
+			guide, _ := sharedBlock(between, r.read(agents[2]))
+			if block, n := sharedBlock(skill, guide); n >= guideLines {
+				t.Errorf("install.init.skills: %s carries the reading guide the agent definitions share, %d lines that are not blank:\n%s", row.skill, n, block)
+			}
+
+			// No reference to a file that is not there.
+			var refs []string
+			for _, m := range linkTarget.FindAllStringSubmatch(skill, -1) {
+				target := strings.SplitN(m[1], "#", 2)[0]
+				if target == "" || strings.Contains(target, ":") {
+					continue
+				}
+				refs = append(refs, target)
+			}
+			for _, m := range importPath.FindAllStringSubmatch(skill, -1) {
+				if strings.Contains(m[1], "/") || strings.HasSuffix(m[1], ".md") {
+					refs = append(refs, m[1])
+				}
+			}
+			for _, ref := range refs {
+				candidates := []string{
+					filepath.Join(r.dir, filepath.FromSlash(filepath.Dir(row.skill)), filepath.FromSlash(ref)),
+					filepath.Join(r.dir, filepath.FromSlash(ref)),
+				}
+				found := false
+				for _, c := range candidates {
+					if _, err := os.Stat(c); err == nil {
+						found = true
+					}
+				}
+				if !found {
+					t.Errorf("install.init.skills: %s refers to %s, which is not in the repository", row.skill, ref)
+				}
+			}
+		})
+	}
+}
+
 func TestInstallInitExisting(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 proviso/system.md, in a repository without proviso/", func(t *testing.T) {
