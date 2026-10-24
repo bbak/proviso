@@ -20,6 +20,10 @@ import (
 // ManifestName is the name of the manifest in the spec root.
 const ManifestName = "manifest.sum"
 
+// CoherenceName is the name of coherence_file in the spec root. It starts
+// with a dot, so Load skips it.
+const CoherenceName = ".coherence.json"
+
 // RootName is the name of the folder that holds a spec tree.
 const RootName = "proviso"
 

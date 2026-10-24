@@ -369,3 +369,63 @@ func TestSince(t *testing.T) {
 		})
 	}
 }
+
+func TestJudgeAndVerify(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system})
+	coherence := filepath.Join("proviso", ".coherence.json")
+	call := func(input string, args ...string) (int, string, string) {
+		stdin = strings.NewReader(input)
+		defer func() { stdin = os.Stdin }()
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	if status, out, _ := call("", "verify"); status != 1 || !strings.HasPrefix(out, "missing: ") {
+		t.Errorf("without a check: %d %q", status, out)
+	}
+	if status, out, errOut := call("not json", "judge"); status != 1 || out != "" || !strings.Contains(errOut, "no check_result") {
+		t.Errorf("not JSON: %d %q %q", status, out, errOut)
+	}
+	if _, err := os.Stat(coherence); err == nil {
+		t.Error("a refused check result is recorded")
+	}
+	if status, _, _ := call("{}", "judge", "--json"); status != 2 {
+		t.Error("judge takes no --json")
+	}
+	if status, out, errOut := call("{}", "judge"); status != 0 || out != "" || errOut != "" {
+		t.Fatalf("judge: %d %q %q", status, out, errOut)
+	}
+	data, err := os.ReadFile(coherence)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status, out, _ := call("", "verify", "--json"); status != 0 || !strings.Contains(out, `"problems": []`) {
+		t.Errorf("covered: %d %q", status, out)
+	}
+	if status, out, _ := call("", "verify"); status != 0 || out != "" {
+		t.Errorf("covered, text: %d %q", status, out)
+	}
+	os.WriteFile(coherence, append([]byte("<<<<<<< HEAD\n"), data...), 0o644)
+	for _, cmd := range []string{"judge", "verify"} {
+		if status, out, errOut := call("{}", cmd); status != 2 || out != "" || !strings.Contains(errOut, "cannot be read") {
+			t.Errorf("%s on a damaged file: %d %q %q", cmd, status, out, errOut)
+		}
+	}
+	os.WriteFile(coherence, data, 0o644)
+	if status, _, errOut := call("", "manifest"); status != 0 {
+		t.Fatalf("manifest: %d %q", status, errOut)
+	}
+	if _, err := os.Stat(coherence); err == nil {
+		t.Error("manifest leaves the coherence file")
+	}
+	if status, out, _ := call("", "verify"); status != 0 || out != "" {
+		t.Errorf("accepted: %d %q", status, out)
+	}
+	if status, _, errOut := call("{}", "judge"); status != 1 || !strings.Contains(errOut, "no amendment") {
+		t.Errorf("nothing to judge: %d %q", status, errOut)
+	}
+	os.WriteFile(coherence, data, 0o644)
+	if status, out, _ := call("", "verify", "--json"); status != 1 || !strings.Contains(out, `"kind": "leftover"`) {
+		t.Errorf("leftover: %d %q", status, out)
+	}
+}
