@@ -39,7 +39,8 @@ You live for one run. The next run starts fresh.
 
 ## What you may read and write
 
-- **Read:** the files the skill names, and nothing else. Never code,
+- **Read:** the files the skill names, and nothing else. Search only
+  within the files and folders it names, never above them. Never code,
   tests, other capabilities, git history or commit messages. What ties
   capabilities together belongs at system level; a link to another
   capability that you suspect is a finding, not a reason to read it.

@@ -48,7 +48,9 @@ temporary folder:
 The affected capabilities are those holding an element the element diff
 lists, or a candidate `verify` reports. The checker may read the folder
 of each, the one holding its `capability.md`, and the system level: the
-files directly in the spec root and in its `contracts/` folder.
+`.md` files directly in the spec root and the files in its `contracts/`
+folder. Name each folder and file by its path; never name the spec root
+itself, which holds the coherence file.
 
 If the candidates to judge span more than one capability, because a
 system-level frame changed, prepare one run per capability, each with
