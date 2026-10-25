@@ -70,6 +70,30 @@ Otherwise nothing is taken for "Not in this amendment"
 | `repo/proviso/`, with an empty `.amendment.md` | no | nothing taken | |
 | `repo/proviso/`, with `.amendment.md` holding only blank lines | no | nothing taken | |
 
+## <a id="baseline.pack.note-unreadable"></a> Rule: An amendment note that cannot be read stops the pack
+
+### Rationale
+
+A note `pack` cannot read would leave out of the pack what the
+amendment deliberately leaves out, and the agents would build it
+without anyone seeing why.
+
+```guarded
+When      `pack` reads the `amendment_note` <note>
+Provided  <note> is a file `pack` can read, in UTF-8
+Then      `pack` goes on with the text of <note>
+  And     everything else stays as it was
+Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read
+  And     `pack` exits with `pack.exit-status` 2
+  And     nothing goes to "stdout"
+```
+
+| note | provided | outcome | why |
+| --- | --- | --- | --- |
+| a file holding "- refunds" | yes | read | |
+| a folder named `.amendment.md` | no | exit status 2 | |
+| a file holding bytes that are not UTF-8 | no | exit status 2 | the JSON could not carry it unchanged |
+
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
 ```guarded
