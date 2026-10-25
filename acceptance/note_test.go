@@ -271,3 +271,54 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 		r.pack().stopped(t)
 	})
 }
+
+// writeNoteFolder makes the amendment note of the repository a folder
+// holding a file.
+func (r *repo) writeNoteFolder() {
+	r.t.Helper()
+	dir := filepath.Join(r.root(), noteName)
+	if err := os.Mkdir(dir, 0o755); err != nil {
+		r.t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "item.md"), []byte("- refunds\n"), 0o644); err != nil {
+		r.t.Fatal(err)
+	}
+}
+
+// TestSystemAmendmentNoteEntry checks system.amendment-note's "anything of
+// that name counts as the note" through manifest and verify; for pack, see
+// TestBaselinePackNoteUnreadable.
+func TestSystemAmendmentNoteEntry(t *testing.T) {
+	t.Parallel()
+	t.Run("derived: manifest removes a folder named .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		// baseline.manifest.write; that nothing else changed is checked by
+		// manifestIn.
+		r := amendedRepo(t, iLimitThen)
+		r.writeNoteFolder()
+		r.manifest()
+		if r.hasNote() {
+			t.Errorf("want the folder %s removed", noteName)
+		}
+	})
+	t.Run("derived: a folder named .amendment.md beside an unchanged tree is left over", func(t *testing.T) {
+		t.Parallel()
+		// baseline.verify.leftover
+		r, _ := accepted(t, impactTree())
+		r.writeNoteFolder()
+		r.verify().only(t, "leftover")
+	})
+	t.Run("derived: a folder named .amendment.md beside a changed tree, without a check", func(t *testing.T) {
+		t.Parallel()
+		// baseline.verify.leftover, then baseline.verify.missing
+		r := amendedRepo(t, iLimitThen)
+		r.writeNoteFolder()
+		r.verify().only(t, "missing")
+	})
+	t.Run("derived: a folder named .amendment.md beside a covered tree", func(t *testing.T) {
+		t.Parallel()
+		r := covered(t, iLimitThen)
+		r.writeNoteFolder()
+		r.verify().only(t)
+	})
+}

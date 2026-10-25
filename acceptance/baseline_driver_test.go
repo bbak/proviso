@@ -101,9 +101,11 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 // after a run of `judge` that exited with 0).
 func checkWrites(t *testing.T, before, after map[string]string, allowed ...string) {
 	t.Helper()
+	// An entry allowed may be a folder, such as an amendment note, whose
+	// entries go with it.
 	isAllowed := func(p string) bool {
 		for _, a := range allowed {
-			if a != "" && p == a {
+			if a != "" && (p == a || strings.HasPrefix(p, a+"/")) {
 				return true
 			}
 		}
