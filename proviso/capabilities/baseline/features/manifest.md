@@ -52,6 +52,7 @@ Provided  each of <entries> can be removed
 Then      each of <entries> is removed, a folder with everything in it and a link without what it points to
   And     `manifest` exits with `manifest.exit-status` 0
 Otherwise `manifest` writes to "stderr" which of <entries> it could not remove
+  And     each of <entries> that can be removed is removed
   And     `manifest` exits with `manifest.exit-status` 2
   And     `manifest_file` stays as written
 ```
@@ -63,3 +64,4 @@ Otherwise `manifest` writes to "stderr" which of <entries> it could not remove
 | `repo/proviso/` | `.amendment.md`, a folder holding a file | yes | the folder and its file removed, exit status 0 | anything of that name is the note |
 | `repo/proviso/` | `.amendment.md`, a link to `capabilities/x.md` | yes | the link removed, `capabilities/x.md` unchanged, exit status 0 | the tree stays as recorded |
 | `repo/proviso/` | `.coherence.json`, which cannot be removed | no | exit status 2, `manifest.sum` written | |
+| `repo/proviso/` | `.coherence.json`, which cannot be removed, and `.amendment.md`, which can | no | `.amendment.md` removed, exit status 2 | the one that fails holds up no other |

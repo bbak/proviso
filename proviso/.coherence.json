@@ -32,18 +32,35 @@
       }
     },
     {
+      "id": "baseline.manifest.remove",
+      "now": {
+        "heading": "h1:38a789133a8aec5a27f821586d1b6af053fa2e0673da8b49c18f21d08b5463a3",
+        "row h1:0350727c0763451c75bec9931a08b7f8b3b36d559a9b6176b205b519910af831": "h1:d173bfa131aa9a4aa4fcc074fba5e807d0cfb87143c2c7c175b11dc1484cf693",
+        "row h1:204975d82f48fb14070139c87f56f77f335c81e7a85f437b3d31c967f8821f5a": "h1:d89e92f8ef7cfb7eb1305c2c64b54841f1994b004a9d1cbede02b5a4b38dfc84",
+        "row h1:92f4c44914c9fa069f5a2f127c8a09370f472c61ee73e7d5adf9b52f6746cbb6": "h1:6d3b9a5da877bc84f963699555e46fc8fec29dcb5affc338c139fda3c8cf9730",
+        "row h1:aa674fb6bc6b6ad11ec0a14e4051e5ec5a6b0bbb08deaaacf49be76837877f77": "h1:c7b24f047b48ed2cb28b2f193a426bd25fc998c387a9bead3e064ddbf83a3a13",
+        "row h1:ee30afc147c15aaec090530ac275fde61e6e7c91ccd3ecd7919ce92bdfff29b3": "h1:1a8c8707502fae32e69f977607bc3419012fb888e4425e9c44d89294848325e8",
+        "section Rationale": "h1:ad37e2088f4a9744294dd2280339dc1cead1754587b3a04707a445bc5ae613d0",
+        "step Otherwise": "h1:d966855859a1aab172a04edec8471619f24bdff2b25bb31e43fe60ecdd12e1b4",
+        "step Provided": "h1:dfe06f8633d34674a69c2d3a41851b7379a51ef1df8f9583ebcd0a1550cdeca4",
+        "step Then": "h1:1c08ad0a190683c82471925e2f75ad2e10a472e161c356cc4f50a76bdfe8d8ae",
+        "step When": "h1:2a0a2d34357980357548f846b8b428c73126a07126803c11d9f20333c45a8f67"
+      },
+      "baseline": {}
+    },
+    {
       "id": "baseline.manifest.write",
       "now": {
         "heading": "h1:3392d8e86a503d76abb3f44f1fcc892798009abc7fd22b5c48104ea0fa7b25e8",
         "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
-        "row h1:1bba6c37efd0726d31e7ee11728a5b784063ad86df7716e145f8a2979f138360": "h1:aa1fc46e94d40654d97e8200f8e41b91524320f951a7cbec7dc9322aa207453c",
+        "row h1:1bba6c37efd0726d31e7ee11728a5b784063ad86df7716e145f8a2979f138360": "h1:a4c1a903c288cf16c8e1e5b1df5869c5157bbd046db62e9c4e97a532224525f2",
         "row h1:3429c4ee8be5a4d28f5f2de6b45e77ba16dea268a34ff9edd29b9cb2d6d3e758": "h1:fe483f9a675ee2425ab9b51619bb2d2a7d279183a8a349ed2bc40e8f982aa855",
-        "row h1:538b22981b2d26bc812e081e0612b6bb879054c9da0301abbb0bf6c04f0fb77d": "h1:93d60c9d57cb0314fb9c7f18ccc837c1c33f78f26ba6d35ebb48f2e1339dc6eb",
+        "row h1:538b22981b2d26bc812e081e0612b6bb879054c9da0301abbb0bf6c04f0fb77d": "h1:727941a5a7cf22529a7425143cd7644e4314a51774b54b2a83d4f4fd0bd4de8b",
         "row h1:bf96dd218864e7f4fff6c58be23e5dcc9a4746ae92dde77e1ee28f20a8506c6b": "h1:59b7886f785b368d945e1870364c1e9926b82bf32011764b4576315a6f34c989",
         "row h1:c336e14d0c0139ba54552e4dab55674f014f2f7e96d97d73c520dd7b48b69bce": "h1:00d00695b78e3c23790726c5510567b93572d2194e8000b5bc432eef7b308779",
         "step Otherwise": "h1:df615d3a0bd8a1b9d8cbe31d893cc0399a0f64c2e6fe45f8477c28ea13af939e",
         "step Provided": "h1:ac81460fa76d0c12b8703d409809ce57d550d14c18c998459cb097c2439a11f0",
-        "step Then": "h1:24a0abf61f7c2acd510b9cd35ba53d388ef4c02307770f9746fed9ae5971740f",
+        "step Then": "h1:ec4eb289cd35cd107d489bcf1d63221cda9ffcdc811b3941de9a1e271db6e289",
         "step When": "h1:89605b8366b688954aab407fb77e02b7088a535bbf1d88d6ea01348b741efdab"
       },
       "baseline": {
@@ -151,7 +168,7 @@
       "id": "baseline.run.writes",
       "now": {
         "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
-        "section Property": "h1:7f23c2ce74ed4543d74a19e2b69d7f669c88e266a53f32a780973bde7c380d2b",
+        "section Property": "h1:1d9906adc1c868231bc19269c830d593b44ddeb7775b0c9d4ddc993ecd5e6407",
         "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
         "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
       },
@@ -765,65 +782,6 @@
       }
     },
     {
-      "id": "baseline.parts.fingerprint",
-      "reason": "untouched: the amended invariant widens its exception only for runs of manifest; for runs of diff, impact, pack, judge and verify its property is as before, and these rules write no file but what they wrote before",
-      "parts": {
-        "heading": "h1:5c7e47a6139f840ffb9616058262dbfef9e6ff57fdce4ea5fb2b0b536d16caba",
-        "row h1:00d352cbd22f731ceaa11a557c757922bc9189637c9aa847e747f25b9318b48b": "h1:55016cf41134b81425ed95754543044998712726201db7953b445fe9e61210f9",
-        "row h1:321b6a583fd855652317ac3de3b69f4ad59b5c43d983d3feacc6a10d3123b22b": "h1:e7d5a88a745a7a4c09415aec9dfc5a285a73799b217a10b5dbb0a214abfa6a6d",
-        "row h1:5f445b3faf268695ee13e070d4a6fcdef7ca882c03dcf4273c9e31d4d065a5cb": "h1:c8b74c3ec20e4a9b1bab78c232e4897d567a08bfeb941db306d61942cd75f327",
-        "row h1:7bc9259a2138cd919c455b19fff358fa2c2690a74b05fa4cb6b29d0cc421e325": "h1:0464a9a3b0a0b4e6610a145907b2119ede9a1949761a37b094958437a33306da",
-        "step Then": "h1:fe3131622c62ac2c095924f31125011809424fc445289a47f669fdf0f2cb6645",
-        "step When": "h1:48d151e27aa18c74116038f7e7dc0c6ca1f32b5b02202f2a49a2e7bc1e6fce83"
-      }
-    },
-    {
-      "id": "baseline.parts.row-key",
-      "reason": "untouched: the amended invariant widens its exception only for runs of manifest; for runs of diff, impact, pack, judge and verify its property is as before, and these rules write no file but what they wrote before",
-      "parts": {
-        "heading": "h1:145af7db742c3be3546a7c782bc1d6981e189489ba6a945141412e40304fa406",
-        "row h1:03c07fcad5fe95098b812dfe41dc9a7106b0caa433613a6356d0dd9f7c2a9151": "h1:ae39c64bea645c7fdcf6bca7a99d4ad4ce1a66eb14bcbdb31dbbc29e888765ff",
-        "row h1:33fb9c0976ffbbc1f93f91c95fe1acd575e5c5ec45ad0fdaf4dd64904e712d9e": "h1:96114488009a138b9421b3ae3daff34576a9d46a9ec3122e6dce45bdd20caa89",
-        "row h1:a596ce681c9f18529eb72c7ea911f4f6ac005d42c8f3aa0bde8f2d287923ae0d": "h1:02ce9801d238842385856861096304d98d567338bcfd89f4d4c7d4ce3eeac7b5",
-        "row h1:f3aefe60715f7afac751bf3b419285aefa06d8f298eca00d832802ae244857e3": "h1:3ba350e641c2dcc719057eb0b6305b7586cfe00eb9a258aae111ca03bfb5fc35",
-        "section Rationale": "h1:98dc0921de9b80cffa933d27297ae17d34c206837abe049841708087ef9f0972",
-        "step Otherwise": "h1:69de2b387e2e15082507ec84d95f8ecb59734532f0577fdc1a8ec5410e275402",
-        "step Provided": "h1:b55d0e2aa8ade456aef27e611b6ad01bdc6025af4b7db0e36cad6a52d194b028",
-        "step Then": "h1:a73993d0c89ec0e4f560d7e07e99a24fb0c81d9ada8890d162bf4bee7aa20a50",
-        "step When": "h1:3a6887f3b5626b376afca3e567b6270e13d89fc9049455d7a868d2e0379f3fc4"
-      }
-    },
-    {
-      "id": "baseline.parts.split",
-      "reason": "untouched: the amended invariant widens its exception only for runs of manifest; for runs of diff, impact, pack, judge and verify its property is as before, and these rules write no file but what they wrote before",
-      "parts": {
-        "heading": "h1:1beb1f3720f2493ab8a3be6122bd5ed06eb8c1cc81d578c7e06de8dc495af513",
-        "row h1:2811a5f1d6eaeaeaaf1cd6e4beeb37c5c1413b63e4f0f4204a7f29695f3b4a7e": "h1:e55e4637def765d01e6a8e9b568650e0061560038503744aedbddd8de44eb880",
-        "row h1:478b7de4919aac34725395c43a06765a2d7c4a4c50c53f98d4f006cc3b0e59c9": "h1:9652751c8877831ba937f71f96cd40e4824cb72339c39acc30922ccfaebcb5ef",
-        "row h1:52984fa4dac991407911772a1b1ee6189d14df9f1004515bcf6347ba47901a38": "h1:26e3cc2c124329dc91556aecfdbf7d3c4ae96ebb03329752904d41b2ce65e33d",
-        "row h1:a6c8a8acd2875adca7a8e4f473ab31c0eca29421d5b7ef2bae2bbb9dfd9b61e0": "h1:e303b3603079668799be328bf4842da92c40478d1025989108c7f56026843363",
-        "row h1:e7bebf2074d79461e40c8986a608c7d0abd128bc34780a07602ac04dbc1285eb": "h1:0a08930387189094620aa781e46bd8e968edc4734170910a4d883eb65685baf9",
-        "step Then": "h1:603a59aae7158a1d222079a2f79dfe995966f5407b5cec5a7a50dd051c9506f5",
-        "step When": "h1:7083bccc7322643e9d80417118087f47c209550106c44662c257505c24c092d7"
-      }
-    },
-    {
-      "id": "baseline.run.lint",
-      "reason": "untouched: the note's name starts with a dot, so lint skips it and what lint would find is unchanged",
-      "parts": {
-        "heading": "h1:19ecd0acbcc255c575111f9be6afb6acfaff889257fe4ffc816e3796d3bef030",
-        "row h1:351110243b10d03927e149d87fc4d2f36ee3e961dd496a469a2a3e3b18f9e8a1": "h1:fcdbf6d460f7c84befb983adcbbedc8536e9507635e6408d88eabde0acef0b85",
-        "row h1:576eeb1623b2be0929f569c782f85d7c969050bcc04a4a80f4d368a96b9b0da4": "h1:9572eeeaa051bc1c4dd44e9873451ec674c5651851e0cadb4b1677e19eb1e03b",
-        "row h1:83d093840b69ac888397254e91aac38d0bd916dcc9774f8e1c0b54350c546997": "h1:f2f687f68520aad5564d2ff4e12ee12838908da2c8672f31b722be9e552ef1d0",
-        "row h1:c51c3329760f8b5e90dcf00d983562c237219a75a9db74bfbfc5f987f304dbd9": "h1:51ede648d871cd56a2a0699209f109f7799f535286609f8c09174225a241daf4",
-        "row h1:dbf136094eca4da8a8094b3e4e27fb573f615c46b3e0b361500d94a5f901531a": "h1:bde69b6f242e4cafe0cfb402f8b6b1c65341d72220bf34c4bea190844c9c223e",
-        "step Otherwise": "h1:724e797995912fbf25539d2ac21bed1fcb31bdf4ddf4e1a187eb893babb21c91",
-        "step Provided": "h1:6ac6bd17134cb321471b8b629369b32634350b99204ca25937c18aa67ba7548b",
-        "step Then": "h1:fbdfda727671623d5b9c51c0b5d106e13e98b23efc0e001d13c8748620cc529e",
-        "step When": "h1:179b053d5129cd273e0455dc14a2e180fad969e2951c37136e0cf663d68ee45c"
-      }
-    },
-    {
       "id": "baseline.verify.exit",
       "reason": "untouched: these rules read only coherence_file; verify only asks whether the note exists, which baseline.verify.leftover and baseline.verify.missing decide before these rules, and a single leftover still exits with 1",
       "parts": {
@@ -938,6 +896,38 @@
         "baseline.run.writes"
       ],
       "text": "`system.amendment-note` now counts anything named `.amendment.md` as the note, whatever it is, and says `manifest` removes it. But `baseline.manifest.write` only covers whether `manifest_file` can be written. No rule says what `manifest` does when the note is a folder (removed with its contents, or not), or when the note cannot be removed: its Then still promises exit status 0 with the note removed.",
+      "status": "resolved",
+      "reason": "edited in b19314a"
+    },
+    {
+      "id": "f6",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.manifest.remove",
+        "system.cli.manifest.exit-status"
+      ],
+      "text": "baseline.manifest.remove makes `manifest` exit with 2 after `manifest_file` was written, when an entry cannot be removed, and exit with 0 only once every entry is removed. But `manifest.exit-status` still defines 0 as \"the manifest was written\" and 2 as \"the manifest could not be written, or the command could not run\". A written manifest with a failed removal fits neither definition, and the written manifest alone no longer earns 0.",
+      "status": "resolved",
+      "reason": "edited in fd5efcc"
+    },
+    {
+      "id": "f7",
+      "kind": "gap",
+      "elements": [
+        "baseline.manifest.remove"
+      ],
+      "text": "The Otherwise of baseline.manifest.remove names only the entries that could not be removed. It does not say what happens to the others: when `.amendment.md` can be removed and `.coherence.json` cannot, no rule says whether `.amendment.md` is removed or stays. The Examples have no such row.",
+      "status": "open"
+    },
+    {
+      "id": "f8",
+      "kind": "ignored",
+      "elements": [
+        "baseline.manifest.remove",
+        "system.coherence-file",
+        "baseline.run.writes"
+      ],
+      "text": "The Rationale of baseline.manifest.remove says whatever stands under the coherence file's name is removed, and a folder goes with everything in it. But `coherence_file` is defined as \"the file `.coherence.json`\", unlike `amendment_note`, which is \"the entry, whatever it is\". And baseline.run.writes exempts `.amendment.md` \"with everything in it\" but only `.coherence.json` itself. So removing a folder named `.coherence.json` with its contents would break the invariant, while reading the definition literally means such a folder is not the coherence file and is not removed.",
       "status": "open"
     }
   ]
