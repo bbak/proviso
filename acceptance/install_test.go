@@ -26,6 +26,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
 		"written .claude/skills/proviso-check/SKILL.md\n" +
+		"written .claude/skills/proviso-integrate/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
