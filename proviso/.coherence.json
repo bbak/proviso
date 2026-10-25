@@ -1,0 +1,198 @@
+{
+  "touched": [
+    {
+      "id": "install",
+      "now": {
+        "heading": "h1:569ca49f4aaf7846e952c1d4aeca72febd0b79fa1c4f9db08fd3127551218572",
+        "section Goal": "h1:e1445fbf14be889a5726459ca78144e2523c3e8de4e600455d2bd2de0a68dc3b",
+        "section Rationale": "h1:7d3e386a16f61087e9e38c8c8e72b2ecea83290816bdbbd371ee5444d105a66b"
+      },
+      "baseline": {
+        "heading": "h1:569ca49f4aaf7846e952c1d4aeca72febd0b79fa1c4f9db08fd3127551218572",
+        "section Goal": "h1:dc5895d1d5f40847c27045e42b66ba3fa6ae53d2acfa34923222860901d24677",
+        "section Rationale": "h1:7d3e386a16f61087e9e38c8c8e72b2ecea83290816bdbbd371ee5444d105a66b"
+      }
+    },
+    {
+      "id": "install.init.agents",
+      "now": {
+        "heading": "h1:39d1ce4efd85868878f853e5b31a65adf2ba899badb610d7f3cf07746d4802f2",
+        "row h1:0e1ad104e98c17b9f0001992619dcc23019745c9ec31c762939c97cbd87bc0f8": "h1:5f1abb26b69dc55193fdcfc19400ef029efffbc1c83dfe4194c2f3ed93443694",
+        "row h1:73d8e0a2b602667fe020f0986b9b5e87631fb3bd2887e4e5f6a6143cc9de80c7": "h1:46bb615940974e8b97d673d8469317c4a4b461bc3751f59ccf21dc55ec2d389f",
+        "row h1:c2fb72aa2d94ef4d9f38cc802ebaf2ee33dcb32abd951bc7a2bf89c1460645f8": "h1:b9c356ed1a87f9cfbddcd119d15a05a1808e14d16c013de8594df4f923521871",
+        "section Rationale": "h1:514131457b4fdbb10e0392786977873a5944f3c9ab757386cb7e942aaa6672b5",
+        "step Then": "h1:4bff40f928843f5d92705bd826b460f190ea6d9dc46068f55067f6e12890027f",
+        "step When": "h1:609be81547735118cc0e35a0a5f74a019e3cf3a215c25cead42861f6149e63e3"
+      },
+      "baseline": {
+        "heading": "h1:39d1ce4efd85868878f853e5b31a65adf2ba899badb610d7f3cf07746d4802f2",
+        "row h1:0e1ad104e98c17b9f0001992619dcc23019745c9ec31c762939c97cbd87bc0f8": "h1:5f1abb26b69dc55193fdcfc19400ef029efffbc1c83dfe4194c2f3ed93443694",
+        "row h1:73d8e0a2b602667fe020f0986b9b5e87631fb3bd2887e4e5f6a6143cc9de80c7": "h1:46bb615940974e8b97d673d8469317c4a4b461bc3751f59ccf21dc55ec2d389f",
+        "row h1:c2fb72aa2d94ef4d9f38cc802ebaf2ee33dcb32abd951bc7a2bf89c1460645f8": "h1:b9c356ed1a87f9cfbddcd119d15a05a1808e14d16c013de8594df4f923521871",
+        "section Rationale": "h1:514131457b4fdbb10e0392786977873a5944f3c9ab757386cb7e942aaa6672b5",
+        "step Then": "h1:4bff40f928843f5d92705bd826b460f190ea6d9dc46068f55067f6e12890027f",
+        "step When": "h1:609be81547735118cc0e35a0a5f74a019e3cf3a215c25cead42861f6149e63e3"
+      }
+    },
+    {
+      "id": "install.init.repository",
+      "now": {
+        "heading": "h1:9b66c1943cf43f32389c76a54385d12b9c3682253713ec3feca301a7d536e25f",
+        "row h1:1bce2d4a5ed09394438bae6a050335cbcdd3f733735b2cad196c164c146ba309": "h1:2a01ae7d140ae4dc963258cbfc9352750e5b35964e6e90da45f43434c407f22f",
+        "row h1:3743e6c636f6dca35e1588c78dcc2bb244157c2ac9172e207b64344fac43eb5f": "h1:55c210dd745f8f9f2b75bd086913097f72cab9ff0271f3d538a6c73243d49d1c",
+        "row h1:3f5a553f577eda0c54ee74b8faa6361575fd9850634b3e211c5fe4cb4cda48fc": "h1:12ea51213c078b9c793e35260522287ada28515f46ffb02212646b18bc967376",
+        "row h1:54db7d8faf34e5dc5acd29cd662d7116485325809a25a0b598e6bddd7db52ef3": "h1:7f3d6b399bfe9828666eb46a1700096616b7c76f94c2145d43c9737d8720e53e",
+        "row h1:f7b78b9a914fb2a88595a25c3b3fecfc8140b0aec1f4f834bd5dc3927f5ea134": "h1:5ec58716eda2f910c2eb9d3e293731159dfab17cfb6e7974b4f5b301e411fbfb",
+        "step Otherwise": "h1:8d60e9d3430001e202ca3c213484ace2639b413d76fcfb7955c3f50afe0ccbb4",
+        "step Provided": "h1:f8957b1de67530d62705f16154983531e3f7e912f0180e6b0bcf0f9f9455767b",
+        "step Then": "h1:9a7ed591060ebcd28b2a4c5f134178e1ad4c42eea1475b5360abc049916a4cb6",
+        "step When": "h1:567ebc02a3b7b68faaf4f5d4667c82e39ac911f1d92f8fd17c11ca8a3b74622a"
+      },
+      "baseline": {
+        "heading": "h1:9b66c1943cf43f32389c76a54385d12b9c3682253713ec3feca301a7d536e25f",
+        "row h1:1bce2d4a5ed09394438bae6a050335cbcdd3f733735b2cad196c164c146ba309": "h1:2a01ae7d140ae4dc963258cbfc9352750e5b35964e6e90da45f43434c407f22f",
+        "row h1:3743e6c636f6dca35e1588c78dcc2bb244157c2ac9172e207b64344fac43eb5f": "h1:55c210dd745f8f9f2b75bd086913097f72cab9ff0271f3d538a6c73243d49d1c",
+        "row h1:3f5a553f577eda0c54ee74b8faa6361575fd9850634b3e211c5fe4cb4cda48fc": "h1:12ea51213c078b9c793e35260522287ada28515f46ffb02212646b18bc967376",
+        "row h1:54db7d8faf34e5dc5acd29cd662d7116485325809a25a0b598e6bddd7db52ef3": "h1:7f3d6b399bfe9828666eb46a1700096616b7c76f94c2145d43c9737d8720e53e",
+        "row h1:f7b78b9a914fb2a88595a25c3b3fecfc8140b0aec1f4f834bd5dc3927f5ea134": "h1:5ec58716eda2f910c2eb9d3e293731159dfab17cfb6e7974b4f5b301e411fbfb",
+        "step Otherwise": "h1:8d60e9d3430001e202ca3c213484ace2639b413d76fcfb7955c3f50afe0ccbb4",
+        "step Provided": "h1:f8957b1de67530d62705f16154983531e3f7e912f0180e6b0bcf0f9f9455767b",
+        "step Then": "h1:9a7ed591060ebcd28b2a4c5f134178e1ad4c42eea1475b5360abc049916a4cb6",
+        "step When": "h1:567ebc02a3b7b68faaf4f5d4667c82e39ac911f1d92f8fd17c11ca8a3b74622a"
+      }
+    },
+    {
+      "id": "install.init.skills",
+      "now": {
+        "heading": "h1:8fee20b19d5a1589e3dabe033d6bdc65c655a0bab3f33bf242ca1c6320f6c707",
+        "row h1:358ebcc2ba931b7ad2e35a3a3d9ca54651a4e482a60914aadd2776cd66035031": "h1:5082a9a0853f32fc5e732b566f4124fdd9ca7f23e9d55dcadb5a7eb560845562",
+        "row h1:45eb70fa0a7af50b4f2b32198b020369e142762d0782d30b5021484f2498a39b": "h1:1e8d23ff04c6bc3389e7ca271b1f5d433aacd09b7c4647345055e861c962105c",
+        "row h1:ba22cfaf8ca13af087da180b6aa6006d2dcc51bab5a38955653b310cfb12c658": "h1:ca6f617761167313b04df62f0804b6b0b3074bae5e978b78f50d8bf91ac2db2b",
+        "row h1:e2974d4e343718e2212cf2c1de358ee9b8035736c43a9ffe3969ee2a28aec701": "h1:757f03d5e03647b6ff4a3822efcfc0c9cbefab874e966c86783cf03f8f6f9e84",
+        "section Rationale": "h1:32ea1692dd4cb01db481ddff3147457c6be2dfce4f7050673eeca58dba35325a",
+        "step Then": "h1:e994a23f65065e6cb3fc5b4ad775d3528cd73745d3c5e104d72cff3d13b928c5",
+        "step When": "h1:a995d6e6093a0d7101becb2c27eea0a99f9509109700f217abf8f46067d979bc"
+      },
+      "baseline": {
+        "heading": "h1:8fee20b19d5a1589e3dabe033d6bdc65c655a0bab3f33bf242ca1c6320f6c707",
+        "row h1:358ebcc2ba931b7ad2e35a3a3d9ca54651a4e482a60914aadd2776cd66035031": "h1:eb7eef603879481c6eff76d96dbfe66ffbc1d4cd3019d0c7febed9a129602d7a",
+        "row h1:45eb70fa0a7af50b4f2b32198b020369e142762d0782d30b5021484f2498a39b": "h1:eacaec5ad8f2777cb5183403a8046c7de95cc66ea520dd137b8caa579335d1cb",
+        "row h1:ba22cfaf8ca13af087da180b6aa6006d2dcc51bab5a38955653b310cfb12c658": "h1:9116a47da907e590e030c9806229f973e06716f235ad34c4745fd284b5ed941a",
+        "section Rationale": "h1:0d311f1827986d0bb13160028f9f3d962988194f96e4a0992ae82f430f7ec595",
+        "step Then": "h1:97d4b569adc03a995dfed4d1b3ac3ff93497a2739b3d6c429c0728c5de3f879d",
+        "step When": "h1:a995d6e6093a0d7101becb2c27eea0a99f9509109700f217abf8f46067d979bc"
+      }
+    },
+    {
+      "id": "install.installed-files",
+      "now": {
+        "body": "h1:9e3bf4973cb136f0948b8fb406170fbef90fbd3cd9b1b4564d0b08211a448624",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:0ac5ee5d2ab1a0d20fbb1dba39ba273b42ea56fbddd6907268dd74cecceddc31",
+        "heading": "h1:5d725a451dcfe56fa60bbbc82522e8a8b876d59cc3d0d81bf9329a9f9f1f9d9b"
+      },
+      "baseline": {
+        "body": "h1:dd943f2bb4d497e08b591f6092b886464acee85e32988adeb38973e5a847352a",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:4f8bef7772afda264b96c068570e62b149915831656947b0e677c9179d92158a",
+        "heading": "h1:5d725a451dcfe56fa60bbbc82522e8a8b876d59cc3d0d81bf9329a9f9f1f9d9b"
+      }
+    },
+    {
+      "id": "install.kit",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:4e6b3adb1a592217a9af4b0402c44b034651fe0cf183ce1d0cb90c4bd1fd57de",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:cbc8a597a67c465497550c4a4a7eebdb138442c06be06a78cc1ee8715658ff44"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:c9b5c2baafa69c07f84891b6fd1c291fb365c3b8210b7e6df039335d18dac9da",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:cbc8a597a67c465497550c4a4a7eebdb138442c06be06a78cc1ee8715658ff44"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "install.init.existing",
+      "reason": "untouched: it decides per path whether to write or skip and what stdout says, which holds the same for the added path .claude/skills/proviso-integrate/SKILL.md and does not depend on the content of any installed file",
+      "parts": {
+        "heading": "h1:a9210cfc3d94b405cb79c77e75374bab544ab8789b4fab4ecc65e66abf50f804",
+        "row h1:8ad4de2443b8bde9b0b8e59315a76c99aa468bb87637e9fd24b48f3a6d93ddb1": "h1:c9cd3a2ff362402a15c170fa7a7ec7082e6b73055b1d626bc21d52d5924a03a7",
+        "row h1:b945ee06aa001977cfa39efbd20863e6c264f9b466305cafb8eaae6836c5ba70": "h1:c47a40f156e1ac138999427cc629668598cb6df9543e99dcb412904f739c3fbd",
+        "row h1:bf74311ab559a6bbf46cc547985de10153ebc6129b9bbd633743e4ca94249144": "h1:272261aa15c186b219253ba12b7360785e85d1f8bed3bd2bae8381687e13c89e",
+        "row h1:e160675c3abfef7c5dec36aca2a9e747da5acb235ca516ca5b6312fa5d4d257a": "h1:eef1ccfb4a52b505a8ea7de05a075d6c649c8a83f7973f67bf0e0a7f8f72972a",
+        "row h1:f4c18fb730255a7593a9d73c0cb2c7290c59ac88b949efae189aec466c3accfb": "h1:b3f8b8bc83012d2720dd5947ce6d951063b3b2c0eb82f77f12fb50b7ae9f4909",
+        "step Otherwise": "h1:ed112ad4d7d834396bec865f4d96aa0108cf00efd4afa3553e394fb34171cad7",
+        "step Provided": "h1:69f3ec30d713af929c0e8dd7a51a750c76311b13d3393ca704079a474336d566",
+        "step Then": "h1:95aaf73706d0cde26d020d91b66cd0b2220e56250fc3f051571ac3e40c01f21c",
+        "step When": "h1:e79e8de137b560bedd89f56a7c35f69222af7699f8acae1e804d07f77945ff15"
+      }
+    },
+    {
+      "id": "install.init.exit",
+      "reason": "untouched: the exit status depends only on whether every installed file was written or skipped, whatever the set of paths or the content of the skills; the .claude-is-a-file example now also covers proviso-integrate and still gives exit status 2",
+      "parts": {
+        "heading": "h1:ac4bdebba42ccfc2015a76eddaeb13cc1a6725a9b1e8dfab9df168b5234b65df",
+        "row h1:0a85c38ef2e76eaa61543a7f960c9e492041bd22d43b8d0a9ec4a13431939cff": "h1:6c65f94d1e00dbc176f5d69eb973f47571430fb98d0f39af77274a13c47c00f8",
+        "row h1:395704992049ed7fcb5d65bb85bc897c8966b360d7302a5328955e43b0e742ee": "h1:e49706e362f25d795192ebf087502569294d218a385811a1ee930b8a36a74304",
+        "row h1:47705c20ef9386caa328d311e1078d4cb5db2cbc8d3a44d6bad9ca72bf646520": "h1:2d399f365b783d70115d9fee730c6e972f7ebf090875871cd8520163c344b87d",
+        "step Otherwise": "h1:d89978cde0f2fbabefc1496d781de3370f778af1296f7b5657c745b74ed264cc",
+        "step Provided": "h1:9fdfcd561420bb15d42f8c85bed4a22a461f9c07a35546b86aace0bd3c95a326",
+        "step Then": "h1:0367e305297e369ce9bb6879efdf97332f348767a704e41e25abf0c2f9695cd0",
+        "step When": "h1:e84b4f81c4e829352e15f1c5fa4e6830545d52cada9f7c7a51e5d61025511e49"
+      }
+    },
+    {
+      "id": "install.init.keeps",
+      "reason": "untouched: it reads only `installed_files` by name, so the added path `.claude/skills/proviso-integrate/SKILL.md` and its folders become allowed new entries, and it still holds that existing files stay byte for byte",
+      "parts": {
+        "heading": "h1:de87b1e3b01ce29fdb9b56da7599c5fda0e5d7a6817ef331154da510f8951211",
+        "section Property": "h1:a9dee47d75ae29452bebe0b701cfa696cc96a6fed20910a15a2a6339a407cdcb",
+        "section Ranges over": "h1:ec1e2df5e9e74e7ebebd55cb1b7075b3ca87d58aa0b536fec5afcfd316da5ee2",
+        "section Rationale": "h1:5921f26376536728c1409f7e909fa4c7ee70738cd83936d015398577e3876983"
+      }
+    },
+    {
+      "id": "install.init.line-endings",
+      "reason": "untouched: it concerns only system_skeleton and gitattributes_file in the spec root, which the amendment leaves alone; the added skill lies outside the spec tree",
+      "parts": {
+        "heading": "h1:8a70e0e580ceae784579559d8b90b1566e3c55b35db89910aa88393b79255c08",
+        "row h1:073beefaa56e56db60674e2a5ac9c63cffd09744e5faed5f2a013056c8e3c240": "h1:a6b71137d56e310d345293ee64675a1361d522199f8a96a4206e8699fc4132ad",
+        "row h1:5df3d3a13de7c265a677a2a8bd53a5abbe9076c37ea00f6b712344adb9a04ab2": "h1:dcedce8dc88ad4839b2e9b3d51f21689a6297669980abf8f9032ce938eb01d24",
+        "row h1:6e48c8e38b8698f587c76a19931c9a41ebb52863737ef1feaa064f3d375872fb": "h1:4e971842632c503e3a2fa3c54a5f878a36939667724a3742fe130a9910c2e99d",
+        "section Rationale": "h1:1f6e7d46e8bed1d4d38d8c8251b4bdf2aeee7357c0d9559eee085292ef05f4bc",
+        "step Then": "h1:37985b752fccfec47fb42eb42ad40f0b1ad0f1b49e061e378c05d92d4df57f19",
+        "step When": "h1:f73f965ed7fe4fb9b39154b5196a10feddc059437a2fdbb3c4473e0eba5103c6"
+      }
+    },
+    {
+      "id": "install.init.skeleton",
+      "reason": "untouched: it concerns only system_skeleton and gitattributes_file in the spec root, which the amendment leaves alone; the added skill lies outside the spec tree",
+      "parts": {
+        "heading": "h1:2a6454c329aefb4239a773e26a86ce876362a9acd8ed20ccca95fb94356f123f",
+        "row h1:a56d395f1ace993225b19dd9ee07aa509ff3f16a58e1b8d774345bc24eeb15d6": "h1:19d14a3c958988cd2f14bf98249e7d647acec2d93fd9cdd2b9feed4040246ffd",
+        "row h1:c239e565171c3e5351e972049863a3e6c41af6b9da67864d1fcf6b8c3ba42fd4": "h1:122287858669446bfbbd9e19ad97f39d97ce3c0b009f08163e866c757c9e612b",
+        "section Rationale": "h1:a08a15eea8f247d40f0f97880a191aa34cdd6515ec6534c0b339b0e014f6d5f8",
+        "step Then": "h1:88c85b22d1286db1fd45101e5f41f7aa36428c802074de28b4a8ed808a2bb957",
+        "step When": "h1:f18669a293bfa47f67b7cff0778ea4fd7f62a1f6b9fd1573882ce402143f7ac5"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "install",
+        "install.init.skills",
+        "install.installed-files"
+      ],
+      "text": "The install capability's Goal still lists the installed skills as those that 'build, check and accept an amendment'. The amendment installs `proviso-integrate`, which brings a request into the spec tree, so the Goal no longer covers what the capability installs.",
+      "status": "resolved",
+      "reason": "edited in a470740"
+    }
+  ]
+}
