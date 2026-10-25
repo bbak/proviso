@@ -54,11 +54,12 @@ func TestBaselineJudgeInput(t *testing.T) {
 			t.Fatalf("want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
 		}
 	})
-	t.Run("derived: the contract's example", func(t *testing.T) {
+	t.Run("derived: the contract's examples", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
 		r.judgeOK(checkResult{Findings: []findingIn{gap("one", "cart.pay.open"), gap("two"), gap("three")}})
-		// The example of check_result, on the elements of the impact tree.
+		// The examples of check_result, a run of the coherence check and a
+		// decision of the engineer, on the elements of the impact tree.
 		res := r.judgeRaw(`{
   "judgements": [
     { "reason": "untouched: nothing here reads the manifest",
@@ -66,14 +67,31 @@ func TestBaselineJudgeInput(t *testing.T) {
   ],
   "findings": [
     { "kind": "gap", "elements": ["cart.pay.open"],
-      "text": "No rule says what happens when a When has no step text." },
+      "text": "No rule says what happens when a When has no step text." }
+  ]
+}`)
+		if res.exit != 0 {
+			t.Fatalf("the run: want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		res = r.judgeRaw(`{
+  "findings": [
     { "id": "f3", "status": "dismissed", "reason": "decided in system.git" }
   ]
 }`)
 		if res.exit != 0 {
-			t.Fatalf("want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
+			t.Fatalf("the decision: want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
 		}
 		r.verify().only(t, append(unjudgedKeys("cart.add.never", "cart.bounded", "system.honest"), "open f1", "open f2", "open f4")...)
+	})
+	t.Run("derived: a decision with judgements given as an empty list", func(t *testing.T) {
+		t.Parallel()
+		// A member left out is an empty list, so this holds decisions only.
+		r := amendedRepo(t, iLimitThen)
+		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
+		if res := r.judgeRaw(`{"judgements": [], "findings": [{"id": "f1", "status": "resolved"}]}`); res.exit != 0 {
+			t.Fatalf("want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		r.verify().lacks(t, "open f1")
 	})
 	for _, kind := range []string{"contradiction", "ignored", "gap", "missed"} {
 		t.Run("derived: a finding of the kind "+kind, func(t *testing.T) {
@@ -91,6 +109,8 @@ func TestBaselineJudgeInput(t *testing.T) {
 		{"row3 not JSON", "this is no JSON"},
 		{"row4 a finding with both a kind and an id", `{"findings": [{"kind": "gap", "text": "A gap.", "id": "f1", "status": "resolved"}]}`},
 		{"row5 one element in two judgements", `{"judgements": [{"reason": "one", "elements": ["cart.add.full"]}, {"reason": "two", "elements": ["cart.add.full", "cart.bounded"]}]}`},
+		{"row6 a judgement and a finding with an id", `{"judgements": [{"reason": "untouched", "elements": ["cart.add.full"]}], "findings": [{"id": "f1", "status": "resolved"}]}`},
+		{"derived: a new finding and a finding with an id", `{"findings": [{"kind": "gap", "text": "Another gap."}, {"id": "f1", "status": "dismissed", "reason": "decided in system.git"}]}`},
 		{"derived: nothing on stdin", ""},
 		{"derived: a JSON array", `[]`},
 		{"derived: judgements not an array", `{"judgements": {"reason": "one", "elements": ["cart.add.full"]}}`},
@@ -326,6 +346,84 @@ func TestBaselineJudgeNewFinding(t *testing.T) {
 		r.set(amended(r.tr, iFullThen))
 		r.judgeAll(nil, gap("A new gap."))
 		r.verify().only(t, "open f1")
+	})
+}
+
+// checkedThenEdited records a check of the impact tree amended by
+// iLimitProvided, every candidate judged, with the findings fs, and then
+// edits the Then step of cart.add.limit, a touched element, so that the
+// check no longer covers it as it stands.
+func checkedThenEdited(t *testing.T, fs ...findingIn) *repo {
+	t.Helper()
+	r := amendedRepo(t, iLimitProvided)
+	r.judgeAll(nil, fs...)
+	r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+	r.verify().has(t, "stale cart.add.limit")
+	return r
+}
+
+// TestBaselineJudgeTouched checks baseline.judge.touched. lint.run.exit of
+// the spec's examples stands for cart.add.limit, as above. What a run
+// records for a touched element shows through verify: "stale" where the
+// record does not match the element as it stands now.
+func TestBaselineJudgeTouched(t *testing.T) {
+	t.Parallel()
+	t.Run("row1 one judgement and one new finding", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t)
+		r.judgeAll(nil, gap("A new gap."))
+		r.verify().only(t, "open f1")
+	})
+	t.Run("row2 no judgements and no findings", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t)
+		if res := r.judgeRaw("{}"); res.exit != 0 {
+			t.Fatalf("want exit status 0, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		r.verify().lacks(t, "stale cart.add.limit")
+	})
+	t.Run("row3 f1 resolved, lint.run.exit edited since the last run", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		o := r.verify()
+		o.has(t, "stale cart.add.limit")
+		o.lacks(t, "open f1")
+	})
+	t.Run("row4 f2 dismissed", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("The first gap."), gap("The second gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{dismissed("f2", "decided in system.git")}})
+		o := r.verify()
+		o.has(t, "stale cart.add.limit")
+		o.has(t, "open f1")
+		o.lacks(t, "open f2")
+	})
+	t.Run("derived: a touched element recorded for none stays so", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.open is touched only after the check, so the check
+		// recorded nothing for it.
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil, gap("A gap."))
+		r.set(amended(impactTree(), iLimitThen, iOpenThen))
+		r.verify().has(t, "stale cart.pay.open")
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().has(t, "stale cart.pay.open")
+	})
+	t.Run("derived: the next run that closes no finding checks the edit", func(t *testing.T) {
+		t.Parallel()
+		r := checkedThenEdited(t, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().has(t, "stale cart.add.limit")
+		r.judgeAll(nil)
+		r.verify().only(t)
+	})
+	t.Run("derived: a closing run with no edit since leaves nothing stale", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil, gap("A gap."))
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().only(t)
 	})
 }
 
