@@ -216,15 +216,18 @@ func lintRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writ
 
 // manifestRun writes manifest.sum into the spec root, so that a run that
 // fails leaves the former manifest as it was, and then removes the
-// coherence file, since the tree it checked is the baseline now.
+// coherence file and the amendment note, since the tree they served is the
+// baseline now.
 func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 	if err := replace(t.Root, tree.ManifestName, baseline.Write(res.Elements)); err != nil {
 		fmt.Fprintf(stderr, "proviso manifest: cannot write %s: %v\n", path.Join(tree.RootName, tree.ManifestName), err)
 		return exitCantRun
 	}
-	if err := os.Remove(filepath.Join(t.Root, tree.CoherenceName)); err != nil && !errors.Is(err, fs.ErrNotExist) {
-		fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, tree.CoherenceName), err)
-		return exitCantRun
+	for _, name := range []string{tree.CoherenceName, tree.NoteName} {
+		if err := os.Remove(filepath.Join(t.Root, name)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, name), err)
+			return exitCantRun
+		}
 	}
 	return exitClean
 }
@@ -393,13 +396,17 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, 
 	if !ok {
 		return exitCantRun
 	}
+	note, ok := readNote(t, stderr)
+	if !ok {
+		return exitCantRun
+	}
 	packed := baseline.Pack(entries, res.Elements)
 	var buf bytes.Buffer
 	var err error
 	if asJSON {
-		err = report.PackJSON(&buf, reportRoot(t.Root), revision, entries, packed)
+		err = report.PackJSON(&buf, reportRoot(t.Root), revision, entries, note, packed)
 	} else {
-		err = report.PackText(&buf, revision, entries, packed)
+		err = report.PackText(&buf, revision, entries, note, packed)
 	}
 	if err == nil {
 		_, err = buf.WriteTo(stdout)
@@ -409,6 +416,39 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, 
 		return exitCantRun
 	}
 	return exitClean
+}
+
+// readNote reads amendment_note, following baseline.pack.note: its text as
+// the file holds it, or "" where the spec root holds none or one that
+// holds only whitespace. It writes to stderr why it could not read it.
+func readNote(t *tree.Tree, stderr io.Writer) (string, bool) {
+	p := filepath.Join(t.Root, tree.NoteName)
+	info, err := os.Lstat(p)
+	if errors.Is(err, fs.ErrNotExist) {
+		return "", true
+	}
+	var data []byte
+	if err == nil && !info.Mode().IsRegular() {
+		err = errors.New("it is not a regular file")
+	}
+	if err == nil {
+		data, err = os.ReadFile(p)
+	}
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso pack: %s cannot be read: %v\n", path.Join(tree.RootName, tree.NoteName), err)
+		return "", false
+	}
+	if strings.TrimSpace(string(data)) == "" {
+		return "", true
+	}
+	return string(data), true
+}
+
+// hasNote reports whether the spec root holds an amendment_note, whatever
+// it holds.
+func hasNote(t *tree.Tree) bool {
+	_, err := os.Lstat(filepath.Join(t.Root, tree.NoteName))
+	return err == nil
 }
 
 // coherence derives what judge and verify start from: the element diff
@@ -502,7 +542,7 @@ func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	if !ok {
 		return exitCantRun
 	}
-	problems := baseline.Verify(c, entries, candidates, base)
+	problems := baseline.Verify(c, hasNote(t), entries, candidates, base)
 	var buf bytes.Buffer
 	var err error
 	if asJSON {

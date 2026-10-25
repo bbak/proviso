@@ -72,10 +72,10 @@ func TestJudgeAndVerify(t *testing.T) {
 	if fmt.Sprint(ids(cands)) != "[c.f.inv c.g.a c.g.inv c.inv system.inv]" {
 		t.Fatalf("candidates %v", ids(cands))
 	}
-	if got := Verify(nil, entries, cands, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Missing}}) {
+	if got := Verify(nil, false, entries, cands, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Missing}}) {
 		t.Errorf("without a file: %v", got)
 	}
-	if got := Verify(nil, nil, nil, base); got != nil {
+	if got := Verify(nil, false, nil, nil, base); got != nil {
 		t.Errorf("an unchanged tree without a file: %v", got)
 	}
 	in, _ := ParseCheckResult([]byte(`{"judgements": [{"reason": "untouched", "elements": ["c.g.a", "c.inv"]}], "findings": [{"kind": "gap", "elements": ["c.f.r"], "text": "a gap"}]}`))
@@ -90,13 +90,22 @@ func TestJudgeAndVerify(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	got := Verify(parsed, entries, cands, base)
+	got := Verify(parsed, false, entries, cands, base)
 	want := []Problem{{Kind: Unjudged, Element: "c.f.inv"}, {Kind: Unjudged, Element: "c.g.inv"}, {Kind: Unjudged, Element: "system.inv"}, {Kind: OpenKind, Finding: "f1", Text: "a gap"}}
 	if fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Errorf("got %v\nwant %v", got, want)
 	}
-	if got := Verify(parsed, nil, nil, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Leftover}}) {
+	if got := Verify(parsed, false, nil, nil, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Leftover}}) {
 		t.Errorf("leftover: %v", got)
+	}
+	if got := Verify(nil, true, nil, nil, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Leftover}}) {
+		t.Errorf("leftover note: %v", got)
+	}
+	if got := Verify(parsed, true, nil, nil, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Leftover}}) {
+		t.Errorf("leftover, both: %v", got)
+	}
+	if got := Verify(nil, true, entries, cands, base); fmt.Sprint(got) != fmt.Sprint([]Problem{{Kind: Missing}}) {
+		t.Errorf("a note without a check: %v", got)
 	}
 
 	in, _ = ParseCheckResult([]byte(`{"judgements": [{"reason": "also untouched", "elements": ["c.f.inv", "c.g.inv", "system.inv", "c.g.a"]}], "findings": [{"kind": "missed", "text": "x"}]}`))
@@ -108,7 +117,7 @@ func TestJudgeAndVerify(t *testing.T) {
 	if c, err = Judge(c, in, entries, cands, now, base); err != nil {
 		t.Fatal(err)
 	}
-	if got := Verify(c, entries, cands, base); len(got) != 1 || got[0].Finding != "f2" {
+	if got := Verify(c, false, entries, cands, base); len(got) != 1 || got[0].Finding != "f2" {
 		t.Errorf("after the second run: %v", got)
 	}
 	if c.Judgements[1].ID != "c.g.a" || c.Judgements[1].Reason != "also untouched" {
@@ -121,7 +130,7 @@ func TestJudgeAndVerify(t *testing.T) {
 		replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
 		replace(m, "capabilities/c/invariants.md", "\np\n", "\nq\n")
 	})
-	got = Verify(c, entries2, cands2, base)
+	got = Verify(c, false, entries2, cands2, base)
 	var stale []string
 	for _, p := range got {
 		if p.Kind == Stale {
@@ -172,7 +181,7 @@ func TestProblemOrder(t *testing.T) {
 		{ID: "f2", Kind: "gap", Elements: []string{}, Text: "b", Status: Open},
 	}}
 	entries, cands, _, base := amendment(t, nil)
-	got := Verify(c, entries, cands[:1], base)
+	got := Verify(c, false, entries, cands[:1], base)
 	if got[0].Kind != Unjudged || got[1].Kind != Stale || got[len(got)-2].Finding != "f2" || got[len(got)-1].Finding != "f10" {
 		t.Errorf("%v", got)
 	}
@@ -202,7 +211,7 @@ func TestJudgeClosingKeepsTouched(t *testing.T) {
 		t.Errorf("closing a finding recorded the touched elements anew:\n%v\nwant %v", c.Touched, first.Touched)
 	}
 	var stale []string
-	for _, p := range Verify(c, entries2, cands2, base) {
+	for _, p := range Verify(c, false, entries2, cands2, base) {
 		if p.Kind == Stale {
 			stale = append(stale, p.Element)
 		}
@@ -220,7 +229,7 @@ func TestJudgeClosingKeepsTouched(t *testing.T) {
 	if len(c.Touched) != len(entries2) {
 		t.Errorf("touched %v", c.Touched)
 	}
-	for _, p := range Verify(c, entries2, cands2, base) {
+	for _, p := range Verify(c, false, entries2, cands2, base) {
 		if p.Kind == Stale {
 			t.Errorf("stale after a check: %v", p)
 		}

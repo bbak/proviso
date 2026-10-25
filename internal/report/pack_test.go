@@ -24,7 +24,7 @@ func TestPackText(t *testing.T) {
 	}
 	packed := []baseline.Packed{{Heading: baseline.HeadingSystem, Element: sys}, {Heading: baseline.HeadingContext, Element: term}}
 	var buf bytes.Buffer
-	if err := PackText(&buf, "1edea75", entries, packed); err != nil {
+	if err := PackText(&buf, "1edea75", entries, "- refunds\n", packed); err != nil {
 		t.Fatal(err)
 	}
 	want := "# System\n\n" +
@@ -41,6 +41,8 @@ func TestPackText(t *testing.T) {
 		"## <a id=\"c.f.r\"></a> Rule: R\n\nnow\n\n" +
 		"Removed `c.f.t`.\n\n" +
 		"```text\n## <a id=\"c.f.t\"></a> Rule: T\n```\n\n" +
+		"# Not in this amendment\n\n" +
+		"- refunds\n\n" +
 		"# Context\n\n" +
 		"## <a id=\"system.thing\"></a> thing\n"
 	if buf.String() != want {
@@ -48,18 +50,19 @@ func TestPackText(t *testing.T) {
 	}
 
 	buf.Reset()
-	if err := PackJSON(&buf, "C:/repo/proviso", "", entries, packed); err != nil {
+	if err := PackJSON(&buf, "C:/repo/proviso", "", entries, "", packed); err != nil {
 		t.Fatal(err)
 	}
 	var p struct {
 		Revision *string
+		Note     *string
 		Diff     []map[string]any
 		Elements []struct{ ID, Heading, File string }
 	}
 	if err := json.Unmarshal(buf.Bytes(), &p); err != nil {
 		t.Fatal(err)
 	}
-	if p.Revision != nil || len(p.Diff) != 3 || p.Diff[2]["change"] != "removed" || len(p.Elements) != 2 || p.Elements[1].Heading != "context" || p.Elements[0].File != sys.File {
+	if p.Revision != nil || p.Note != nil || len(p.Diff) != 3 || p.Diff[2]["change"] != "removed" || len(p.Elements) != 2 || p.Elements[1].Heading != "context" || p.Elements[0].File != sys.File {
 		t.Errorf("%s", buf.String())
 	}
 }

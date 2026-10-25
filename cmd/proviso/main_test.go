@@ -223,9 +223,27 @@ func TestPackCommand(t *testing.T) {
 	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system {
 		t.Errorf("an empty element diff: %d %q", status, out)
 	}
-	if status, out, _ := call("pack", "--json"); status != 0 || !strings.Contains(out, `"diff": []`) || !strings.Contains(out, `"heading": "system"`) {
+	if status, out, _ := call("pack", "--json"); status != 0 || !strings.Contains(out, `"diff": []`) || !strings.Contains(out, `"note": null`) || !strings.Contains(out, `"heading": "system"`) {
 		t.Errorf("json: %d %s", status, out)
 	}
+	note := filepath.Join("proviso", ".amendment.md")
+	os.WriteFile(note, []byte("\n  \n"), 0o644)
+	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system {
+		t.Errorf("a blank note: %d %q", status, out)
+	}
+	os.WriteFile(note, []byte("- refunds"), 0o644)
+	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system+"\n# Not in this amendment\n\n- refunds\n" {
+		t.Errorf("a note: %d %q", status, out)
+	}
+	if status, out, _ := call("pack", "--json"); status != 0 || !strings.Contains(out, `"note": "- refunds"`) {
+		t.Errorf("a note, json: %d %s", status, out)
+	}
+	os.Remove(note)
+	os.Mkdir(note, 0o755)
+	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
+		t.Errorf("a folder for a note: %d %q %q", status, out, errOut)
+	}
+	os.Remove(note)
 	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644)
 	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
 		t.Errorf("malformed: %d %q %q", status, out, errOut)
@@ -412,12 +430,30 @@ func TestJudgeAndVerify(t *testing.T) {
 		}
 	}
 	os.WriteFile(coherence, data, 0o644)
+	note := filepath.Join("proviso", ".amendment.md")
+	os.WriteFile(note, []byte("- refunds\n"), 0o644)
+	if status, out, _ := call("", "verify"); status != 0 || out != "" {
+		t.Errorf("covered, with a note: %d %q", status, out)
+	}
 	if status, _, errOut := call("", "manifest"); status != 0 {
 		t.Fatalf("manifest: %d %q", status, errOut)
 	}
 	if _, err := os.Stat(coherence); err == nil {
 		t.Error("manifest leaves the coherence file")
 	}
+	if _, err := os.Stat(note); err == nil {
+		t.Error("manifest leaves the amendment note")
+	}
+	os.WriteFile(note, nil, 0o644)
+	if status, out, _ := call("", "verify"); status != 1 || !strings.HasPrefix(out, "leftover: ") {
+		t.Errorf("a note left over: %d %q", status, out)
+	}
+	os.WriteFile(coherence, data, 0o644)
+	if status, out, _ := call("", "verify"); status != 1 || strings.Count(out, "leftover") != 1 {
+		t.Errorf("both left over: %d %q", status, out)
+	}
+	os.Remove(coherence)
+	os.Remove(note)
 	if status, out, _ := call("", "verify"); status != 0 || out != "" {
 		t.Errorf("accepted: %d %q", status, out)
 	}

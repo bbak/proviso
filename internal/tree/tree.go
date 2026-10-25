@@ -24,6 +24,10 @@ const ManifestName = "manifest.sum"
 // with a dot, so Load skips it.
 const CoherenceName = ".coherence.json"
 
+// NoteName is the name of amendment_note in the spec root. It starts with
+// a dot, so Load skips it.
+const NoteName = ".amendment.md"
+
 // RootName is the name of the folder that holds a spec tree.
 const RootName = "proviso"
 
