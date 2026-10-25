@@ -24,6 +24,7 @@ var installedFiles = []string{
 	".claude/skills/proviso-accept/SKILL.md",
 	".claude/skills/proviso-build/SKILL.md",
 	".claude/skills/proviso-check/SKILL.md",
+	".claude/skills/proviso-integrate/SKILL.md",
 	".proviso/build.md",
 	".proviso/coder.md",
 	".proviso/tester.md",
