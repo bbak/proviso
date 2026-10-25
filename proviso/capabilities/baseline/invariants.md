@@ -18,7 +18,7 @@ however it ends.
 
 Every file and folder under the [spec root] is byte for byte and entry
 for entry as it was before the run, except `manifest.sum`,
-`.coherence.json` and `.amendment.md` after a run of `manifest` that
-exits with 0, and `.coherence.json` after a run of `judge` that exits
-with 0. The git repository holding the [spec root] is as it was before
-the run.
+`.coherence.json`, and `.amendment.md` with everything in it, after a
+run of `manifest` that wrote `manifest.sum`, and `.coherence.json` after
+a run of `judge` that exits with 0. The git repository holding the
+[spec root] is as it was before the run.
