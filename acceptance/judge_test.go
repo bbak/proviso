@@ -469,6 +469,20 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					r.verify().exits(t, 2)
 				})
 			}
+			t.Run("derived: a folder named .coherence.json", func(t *testing.T) {
+				t.Parallel()
+				// system.coherence-file: the entry, whatever it is, and a
+				// folder holds nothing judge writes.
+				r := amendedRepo(t, iLimitThen)
+				if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+					t.Fatal(err)
+				}
+				if cmd == "judge" {
+					refused(t, r.judge(checkResult{}), 2)
+					return
+				}
+				r.verify().exits(t, 2)
+			})
 		})
 	}
 }
