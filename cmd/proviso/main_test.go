@@ -244,6 +244,13 @@ func TestPackCommand(t *testing.T) {
 		t.Errorf("a folder for a note: %d %q %q", status, out, errOut)
 	}
 	os.Remove(note)
+	os.WriteFile(note, []byte("- caf\xe9\n"), 0o644)
+	for _, args := range [][]string{{"pack"}, {"pack", "--json"}} {
+		if status, out, errOut := call(args...); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
+			t.Errorf("a note not in UTF-8, %v: %d %q %q", args, status, out, errOut)
+		}
+	}
+	os.Remove(note)
 	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644)
 	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
 		t.Errorf("malformed: %d %q %q", status, out, errOut)

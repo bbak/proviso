@@ -15,6 +15,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/bbak/proviso/internal/baseline"
 	"github.com/bbak/proviso/internal/git"
@@ -418,9 +419,10 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, 
 	return exitClean
 }
 
-// readNote reads amendment_note, following baseline.pack.note: its text as
-// the file holds it, or "" where the spec root holds none or one that
-// holds only whitespace. It writes to stderr why it could not read it.
+// readNote reads amendment_note, following baseline.pack.note and
+// baseline.pack.note-unreadable: its text as the file holds it, or ""
+// where the spec root holds none or one that holds only whitespace. It
+// writes to stderr why it could not read it, as a regular file in UTF-8.
 func readNote(t *tree.Tree, stderr io.Writer) (string, bool) {
 	p := filepath.Join(t.Root, tree.NoteName)
 	info, err := os.Lstat(p)
@@ -433,6 +435,9 @@ func readNote(t *tree.Tree, stderr io.Writer) (string, bool) {
 	}
 	if err == nil {
 		data, err = os.ReadFile(p)
+	}
+	if err == nil && !utf8.Valid(data) {
+		err = errors.New("it is not UTF-8")
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso pack: %s cannot be read: %v\n", path.Join(tree.RootName, tree.NoteName), err)
