@@ -18,8 +18,9 @@ neither which branch is the mainline nor who made the edit. What it
 lists is what a re-run of the check needs to look at, and no more.
 
 `verify` derives the element diff and the candidates as `impact` does,
-and reads `coherence_file`, if the spec root holds one, before anything
-else; one it cannot read stops it, as `baseline.judge.unreadable` says.
+and reads `coherence_file`, if the spec root holds one, before it
+derives anything else, once lint has found no error; one it cannot read
+stops it, as `baseline.judge.unreadable` says.
 Of
 `amendment_note`, it only asks whether the spec root holds one.
 

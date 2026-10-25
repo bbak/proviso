@@ -22,8 +22,8 @@ recorded, since it would cover nothing while seeming to.
 `judge` derives the element diff and the candidates as `impact` does,
 and records them in `coherence_file`, which only `judge` writes.
 `judge` reads `coherence_file`, if the spec root holds one, before it
-reads its input or derives the element diff; one it cannot read stops
-it, as `baseline.judge.unreadable` says.
+reads its input or derives the element diff, once lint has found no
+error; one it cannot read stops it, as `baseline.judge.unreadable` says.
 
 ## <a id="baseline.judge.input"></a> Rule: Judge reads a check result
 
