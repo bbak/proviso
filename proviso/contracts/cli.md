@@ -86,7 +86,8 @@ properties:
 ## <a id="system.cli.manifest"></a> manifest
 
 The command `proviso manifest`, run anywhere inside the system's
-repository. It writes `manifest.sum` into the spec root and nothing to
+repository. It writes `manifest.sum` into the spec root, removes the
+coherence file and the amendment note there, and writes nothing to
 standard output.
 
 ### <a id="system.cli.manifest.exit-status"></a> exit-status
@@ -98,8 +99,10 @@ type: integer
 enum: [0, 2]
 ```
 
-- `0`: the manifest was written.
-- `2`: the manifest could not be written, or the command could not run.
+- `0`: the manifest was written, and the coherence file and the
+  amendment note were removed.
+- `2`: the manifest could not be written, the coherence file or the
+  amendment note could not be removed, or the command could not run.
 
 ## <a id="system.cli.diff"></a> diff
 
