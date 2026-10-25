@@ -600,128 +600,6 @@
       }
     },
     {
-      "id": "baseline.judge.amendment",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:e9c3b38f8421f187e5f9989ae813c5c643cc6e5083bfd61d3a16ec77e466bded",
-        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:d12cf10648334264e87945acf8353bd95dfbc9c4971295818354f4ce4c8caaa6",
-        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:2cf216c16f82dc109cd657da8c14793be87c744b1d85bfa9329ac27004adca73",
-        "section Rationale": "h1:25c21744151fd53d88d1db65f5201369c6bb1d0f1dbc9abeda9694e03e9eef68",
-        "step Otherwise": "h1:5401c4321d8088afcd93f6c69eb9b4a5730d0dc9bdb116b766ace92bd30d54a6",
-        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
-        "step Then": "h1:68f99edfb88360c64a576ff7cd71447859e8d9d73b70dca6b4d26195315a80cb",
-        "step When": "h1:15c6a6ed66f7222e7ef844495a2be1f2bd4c86a9df656e431eaaaf45af4015bc"
-      }
-    },
-    {
-      "id": "baseline.judge.candidate",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:616db2cf7961929304a6523c9a6784de6a37575b0790cfbb4b2d94284bf4605c",
-        "row h1:575ca3a16f79ab60efb80d4ebba2e99dca9511eda1d6b18b3aedfc4fe2507d23": "h1:d2db423c623eee72c15843b351ac112f73f48ccad3f8abcf7b8a8f4f69a5d732",
-        "row h1:91c23080facd647532de9b70f5458a244e7b46b79c69ffc67471e3608403a288": "h1:943a327abe9959f7d6da440adc032d3d3acab03c18a4ff7bea14522309f2914b",
-        "row h1:b5d133b46e6d9cc23007832019b674822d0813695bc9920418dced2b003ebee7": "h1:3783a7c2dd9b8f9d393cf18aff502312fe038384bd37126df1cad740a5a62e9a",
-        "row h1:bb210fa2568a177755a97ac9b31c71f24752a0da363d002c8c64ddb5247e0fe0": "h1:18727002fa2c63212b8330c324525a947f6267a1f0e51d8c1339090262804e59",
-        "step Otherwise": "h1:5546727a97618fa2f6f8ec04fe7e8d123c06c250a10dc8d9db8380b66465775a",
-        "step Provided": "h1:e6ccecce4fed33a389e673080fe4cc72d6ac4cb9a296dc9d36fbd4f9b2c9e94a",
-        "step Then": "h1:cf516ee849d2d745909815f1a82c5cad82b06b81ceed92de00693daf6c4a6234",
-        "step When": "h1:558bcc0f305d6cf1bb684fa7674ace9124651c0a9d8dcf73337bb35b7dee269f"
-      }
-    },
-    {
-      "id": "baseline.judge.close-finding",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:3f41ffd664c42a12b0e61e64b84e426bd8333f8a503631dfa6e8497fca2c546c",
-        "row h1:38568d421998b6533feca34f22df9a9dccfb122e359d4fdfa1f9de4f4cb8dab4": "h1:5ea70813c540f50ac3e8413fbadee017db8cf2e03c506e56a4ecf2977fb0d779",
-        "row h1:4a4c3241ed7f83d2d19fdaeccf0006975db73b3ee4f10884a2fb3667f914113c": "h1:158438bf8b881e16bc48a3ea63e772f8a5036b4af31900158756dc891537773c",
-        "row h1:d2f4e0e3c247517e534bbfc7d80ecd9de66d06aa3d7397169105a8b7863a8f8e": "h1:02f063bb97acd0a5ffba905c847a1fccdec7530f55dfa15341d067921f6a9202",
-        "row h1:fdc3b59b482d532f0039fc34a74498813cf2ae32a6d79d85761b6ec16b0d3f7c": "h1:b677b4620736353ba10f3c9336e2e22ec6fc7e57f2eb2cdcc3a25eb7a4b88f8e",
-        "step Otherwise": "h1:58dca46ca7a4ee2c5cecc7d251bd5467188426947c0c1fc1789995c71b5c6a0b",
-        "step Provided": "h1:3b85193f3ea09699adfbb10897bd3dcfcfd304e208b3c78e5eef4e482f7f545a",
-        "step Then": "h1:c161fd432d6481721fc8c080e83fc63d74c765da4eafb71eb19c658a16930568",
-        "step When": "h1:542a5685310232583ce5549c4c289b67ca40109e38f79833dc54f24d7539e497"
-      }
-    },
-    {
-      "id": "baseline.judge.input",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
-        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
-        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
-        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
-        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
-        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
-        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
-        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
-        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
-        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
-        "step When": "h1:2dc32b58dab8a65a954875399ac0c1ebf38170d63c5dbef9c0c0123458cc9c1d"
-      }
-    },
-    {
-      "id": "baseline.judge.new-finding",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:ce69ec65772baa1ee5dd83b673ffa4bcb34314fb437fe7c92b149cd82f2a4c50",
-        "row h1:58873119fdf98067bd883351b8a4ae911a416cdbbfb9eab63fc6deb94f9cefd3": "h1:855bad1d37b75c5a3a580816158f221e2c09e7047c38db71fee4c4b7e9c8eddf",
-        "row h1:66874db1e45023b06edcefea7cf0195887587e4767ae99d01913232309cd0094": "h1:21d08ee9e034487c34a97485019ef04aa65231677065c09dd4072efcc9e5d863",
-        "row h1:758cb62570dac10e24da28ec50743bbb6718b552dc546a3ac0d90bf82b505490": "h1:c27c4efe88d4efa93b54dca9f7d1186c3d39bc40fedf0383be2094c56ab1d7d5",
-        "row h1:e05c2ce0872b30c55e917acb8d4719601cdec62b32b66cd2776ff6c371c47e5c": "h1:2f7516956928e7703b5a0e79ab96776208c6a431237aacf4771f4ffabd5148c1",
-        "step Otherwise": "h1:76eedf7f4a0de14bc2006a239a9a244ce9149c3428c698439680003e28c253df",
-        "step Provided": "h1:c21c9464c08f9938c89ce0263381603e7cfb2f3c5ac02d1a4e7968b7d490f3a5",
-        "step Then": "h1:4c2cc1be1ed18ccf70f569a855b9937924f218f68baf48d2771082f882972926",
-        "step When": "h1:b29c693b4dfeb60a309f254419ae91734526bdd8435eb2f7356a99410db78386"
-      }
-    },
-    {
-      "id": "baseline.judge.touched",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:2400ddae454bf3dbd2d66ca7672fb83ad21c832c9d3ef0fbdf5e5fe2361544a4",
-        "row h1:2613281f910cf989cfc3ed554be79956d77d3ebd929a959e9118b5b8b114b8fe": "h1:c65f095f2252a2612a32626503116b0ef0164c041939f65f4cf0d544fb986d3b",
-        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:75442eca253cec56b81c7e7a435dc2f5d06bcfb2809ed034c9bbaed6981ed921",
-        "row h1:34762a3c2691e8b123899b7159ac129f34389b8ebaaf5ce82777f18123cbe37b": "h1:c1b780c9cbfeda63901ca65157008634dfd1532a914099d4c5b85e961e2d9352",
-        "row h1:684c3506c4ad70fa4677b666665ca5552543f81d2068f9256158c4889d61c1e2": "h1:6dda28cc31111e20c67237939a7614fb12f5538eb605577c2e2e41725562883b",
-        "section Rationale": "h1:9e6686aad07926ac819f464f984f234751bf730174678ec798e0ebe585cabda4",
-        "step Otherwise": "h1:5b55d96f863fa8360d042d5f6224bff638cd3775d4e2e9d7ed6a7c46c92d1956",
-        "step Provided": "h1:03e293ff859259b69e1403e63e933084d894e08878115f33d0344ea17f429043",
-        "step Then": "h1:d68e544e78b44fa16416d58d3eaf4fd4e1e290ed6f8c83eaf111594952c411ce",
-        "step When": "h1:eaa2fe2f849a494ecb983cba1fdd0f396b1c63209545da7702cc1113e2b3369e"
-      }
-    },
-    {
-      "id": "baseline.judge.unreadable",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:7d531c5dfb9d585df212d0f89f11a2f5938576714641ce6581ea9bda37727c34",
-        "row h1:66fb29dc3ead38412b33ed4d891438b1d844dbc5c0303ae7707ad2ea73895dab": "h1:1166933176b1e7ad23ba6a93eb045759efd798e8336afec170ecb5262ef49a70",
-        "row h1:949911acb373e997dbc41fb395689ce74f88a5aac76481ee40180e3aec326ebe": "h1:11662d2d68ac57da0884272b5da9e108838cf0564ce4a1e287211e27bde8f44f",
-        "row h1:bfb02e7f8db4733dbb11299ba53febd4e70c0bf16b197c21287c50f07c309c07": "h1:45bd9da40ea39a9d10dccf773977b4f6db785ca47c33343cba55f11e63766774",
-        "section Rationale": "h1:d5f8c78be2b1235d9b8fdfb0ffa644293a74dd348ddbe977b86a305e2c365605",
-        "step Otherwise": "h1:15247df68bc082c95bf834c204259c7f1f0e8a70468628b0999564cad88169e6",
-        "step Provided": "h1:5c8fff99b3a9f314d517b098dbfd9ceae0cd157478416e2d27969484995532ea",
-        "step Then": "h1:8de2be295857ba157b4d3e1c51ea3b2e2f9ece940c2139cf08e36e30576f456d",
-        "step When": "h1:4f447f43777a4478a7e6240a1a9bccf5cc41a1a9f83407f3c612d74b553f42d8"
-      }
-    },
-    {
-      "id": "baseline.judge.write",
-      "reason": "untouched: judge reads and writes only coherence_file and never touches the amendment note; its exception in the invariant is unchanged",
-      "parts": {
-        "heading": "h1:66fbca566bfcaf1a1af40c295506c678671c1b43a77bfe3f432bd163ed6c8672",
-        "row h1:01a1a129755a879b9cd01700dd8919ec6889c646dccdbbd73e48c24617b7b520": "h1:18550844559ba3b1d9b434f7ce04b70fcfa85af2eea3c32a483a6d51e53f0db4",
-        "row h1:06b490a1556c2ba0171b828b94e453c39f8620398df93ed7c13d8890e9c499ff": "h1:2fde5dfd469c317079c72957715555d35015276080aac04e0a8eb32a874069e9",
-        "row h1:eacdea67edd6ad94c3ab84245a557e38b065a66cddfefdccaed7eb98135d130e": "h1:26509c0f3fe4d1632f4f93d0ae3809707fe5af6f6e5b450118bd15e2f9bf02ba",
-        "section Rationale": "h1:475d82a21b7316ac5f1825167df1fada1c43e2c2fed56dc94f97e73a4aa5cf0a",
-        "step Otherwise": "h1:c3d92924a0e96f75a356e50252af638c09ffe3805edbe94c7f0e78c6bb3c68ed",
-        "step Provided": "h1:9703d813ff86a21c984870c93fccc2b6674e811da1031ac7dd23e7f3a3e7bb2f",
-        "step Then": "h1:f1cc7481c158f268fef60a7fc14fdab0b398a744fb4b871f2e147325ea1183a2",
-        "step When": "h1:4be6d81e9e701c72a3ac0dc29fcf028487cf73d8862e49cf46bb452ce4207b2e"
-      }
-    },
-    {
       "id": "baseline.pack.chain",
       "reason": "untouched: the amendment note is no element, so it is never taken for System, Amendment, Frames or Context, and baseline.pack.note leaves everything else as it was",
       "parts": {
@@ -793,50 +671,6 @@
         "step Provided": "h1:ee3179b65a0c0c5ed48a58b77303c5885a5fcbf52db40eb2a52af2b9f511fbb5",
         "step Then": "h1:72f543340d8ee7505f299f88e9171180144145fd9b3d4b7c74b30bf715813204",
         "step When": "h1:d1518484110dd3189a8fd1dd83b3a51520b57422b496924865d41d23048db7fe"
-      }
-    },
-    {
-      "id": "baseline.verify.open",
-      "reason": "untouched: these rules read only coherence_file; verify only asks whether the note exists, which baseline.verify.leftover and baseline.verify.missing decide before these rules, and a single leftover still exits with 1",
-      "parts": {
-        "heading": "h1:306f2b42b3f7f7dc2c6357637a4d961be84677b36b3c3c62043d8f07f1dbe7c6",
-        "row h1:1c07eb4ef823f613ea4a6cbaad46f394995978f484827b47a22a8c1445944331": "h1:6b6750872556b8ec3f451653cb64a1dbccf7bbf98fef43f70256f48628a84674",
-        "row h1:7d67dccb6daf9745b35ec21b436c675c49c37d5df894c0866363a9ad94ab8159": "h1:60364849a67d5ce560aa684fe16206b339eaa4221fb2742b6f13d1d378ea35e9",
-        "row h1:a6970129e2aa6557bfe3bb8264836e90ec523ab032b3d09607633681e90f5834": "h1:f65b0b59c2bdbc2ba0194eb1065c4f136c7e4463abab8d20e32607a6c9d0ae5f",
-        "step Otherwise": "h1:d012f66ddb6d3a52c65801ac8e38947a933cb7d72d7757de9af43d315017f8b0",
-        "step Provided": "h1:5d16d138d7ae4865581346a9c506211e6725511ed77cafc32030d8a91b253f24",
-        "step Then": "h1:e6b2224bbfe4bb6aa7ed2c6b8c168de2114cb5b21fd2013652f8780d8595d556",
-        "step When": "h1:fc04a203dc61c1e9f250c0ee166d1bb859b5415db88909b7864364f37bbc77cd"
-      }
-    },
-    {
-      "id": "baseline.verify.stale",
-      "reason": "untouched: these rules read only coherence_file; verify only asks whether the note exists, which baseline.verify.leftover and baseline.verify.missing decide before these rules, and a single leftover still exits with 1",
-      "parts": {
-        "heading": "h1:8ee33340d97d0c84ab8832714bae5509c4bf77909e8a89073dd3e0f3434c7e45",
-        "row h1:137d233d1c289293504db8a954cc288c15932cc0bb7d79bca3bd11371f4c8089": "h1:7f90374d8582ec40fa87e0acf0bdf40b8641fa734e53678bf46894c67230f1f9",
-        "row h1:19e326539c3b678a9de2aa354d558845c2a08ef8e844697bf8b43a11ec5182d9": "h1:798bda4b498e404ce283b48d4726e298bc83d3fe9768fef5c4fa83c15e2cda98",
-        "row h1:22b4e432d00e7435a33decd3a1a1f5fa4a69437cd665fc2444f2c261183bbba0": "h1:df02e06fc939cd213b97eedf54037b64587bcae34ee14b73651e4f478fc0b2e1",
-        "row h1:a98ef9345a32a027a8b744c30ae99e5a19193da45865fcb8a54dd641874df6a1": "h1:3ac5e07985dc0b5864df2411395796f7a58cd5fcaf46a17e2bbe9a519d31a28f",
-        "row h1:f991cd3815ec06378d18d951504d4d1b3e374282eadff6adab8a630e9ff2e5a8": "h1:0e0f617ada2c9b352e9c89003d7aab7e74d0a5789e18985b3ff355daff0abcec",
-        "section Rationale": "h1:9ae47ef6a806b9077d77ca900cda4fb101e43753e26a6b4c1732d1ccf65bd685",
-        "step Otherwise": "h1:01f215d8583b17974202ffc828177ff5dc78b29e6cc93309695869505686ca73",
-        "step Provided": "h1:c20667a99a9598c214a2ddcc2c812569959338d1f336b877cc617585251d52da",
-        "step Then": "h1:493c73d394d4044d54e10012d9376a2fa9bfb271e6b6db9c5aa6319eeb5a8504",
-        "step When": "h1:7e551f587db1442410e429a97a33811098fe1a406f00024be6037eca8b045668"
-      }
-    },
-    {
-      "id": "baseline.verify.unjudged",
-      "reason": "untouched: these rules read only coherence_file; verify only asks whether the note exists, which baseline.verify.leftover and baseline.verify.missing decide before these rules, and a single leftover still exits with 1",
-      "parts": {
-        "heading": "h1:0322c1e4901e86cd4fdbec827dffda91a3fdabc88078ec227297f1b429e446ca",
-        "row h1:1dece6f70c53c6d9483557204f4c975b20b4fde99a1ffc48917cf25f92b29f8f": "h1:2a4fb4e8c8d0e2bd7e1c5c4281c51b46c495517374d1398fdd6ed320e823d200",
-        "row h1:21f184de0438f1d45613516f57433774ecf672eedee14669488f45aa9e6b3b74": "h1:36392e3ca0389bae3728b2671be0a3c34e8cb28b93f72867044d338d6dc8e541",
-        "step Otherwise": "h1:ab45cf6fdd4338c2985df84cec45b8d77895a75592c3726e5e34d232c52b2bfe",
-        "step Provided": "h1:4de5d0d4d065056d8ddb06222fd1a0e06e69455f51b13047dc0a60d13397ef8e",
-        "step Then": "h1:40da90c93a8751be40a7ff314fe2e556e17017f492b18fcd9f80e001020cac15",
-        "step When": "h1:586981bacc120da0fe02f68378368af44d0b6ad3df41066c9215afee732082d9"
       }
     }
   ],
@@ -929,7 +763,8 @@
         "baseline.run.writes"
       ],
       "text": "The Rationale of baseline.manifest.remove says whatever stands under the coherence file's name is removed, and a folder goes with everything in it. But `coherence_file` is defined as \"the file `.coherence.json`\", unlike `amendment_note`, which is \"the entry, whatever it is\". And baseline.run.writes exempts `.amendment.md` \"with everything in it\" but only `.coherence.json` itself. So removing a folder named `.coherence.json` with its contents would break the invariant, while reading the definition literally means such a folder is not the coherence file and is not removed.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 12a81f1"
     }
   ]
 }
