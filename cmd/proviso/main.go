@@ -224,9 +224,13 @@ func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso manifest: cannot write %s: %v\n", path.Join(tree.RootName, tree.ManifestName), err)
 		return exitCantRun
 	}
-	for _, name := range []string{tree.CoherenceName, tree.NoteName} {
-		if err := os.Remove(filepath.Join(t.Root, name)); err != nil && !errors.Is(err, fs.ErrNotExist) {
-			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, name), err)
+	// Anything named as the note is the note, a folder too.
+	for _, rm := range []struct {
+		name   string
+		remove func(string) error
+	}{{tree.CoherenceName, os.Remove}, {tree.NoteName, os.RemoveAll}} {
+		if err := rm.remove(filepath.Join(t.Root, rm.name)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, rm.name), err)
 			return exitCantRun
 		}
 	}
@@ -449,11 +453,12 @@ func readNote(t *tree.Tree, stderr io.Writer) (string, bool) {
 	return string(data), true
 }
 
-// hasNote reports whether the spec root holds an amendment_note, whatever
-// it holds.
+// hasNote reports whether the spec root holds an amendment_note: an entry
+// of its name, whatever it is and holds, even one that cannot be looked
+// at.
 func hasNote(t *tree.Tree) bool {
 	_, err := os.Lstat(filepath.Join(t.Root, tree.NoteName))
-	return err == nil
+	return !errors.Is(err, fs.ErrNotExist)
 }
 
 // coherence derives what judge and verify start from: the element diff

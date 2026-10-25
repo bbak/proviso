@@ -461,6 +461,16 @@ func TestJudgeAndVerify(t *testing.T) {
 	}
 	os.Remove(coherence)
 	os.Remove(note)
+	os.MkdirAll(filepath.Join(note, "inner"), 0o755)
+	if status, out, _ := call("", "verify"); status != 1 || !strings.HasPrefix(out, "leftover: ") {
+		t.Errorf("a folder for a note left over: %d %q", status, out)
+	}
+	if status, _, errOut := call("", "manifest"); status != 0 {
+		t.Errorf("manifest with a folder for a note: %d %q", status, errOut)
+	}
+	if _, err := os.Lstat(note); err == nil {
+		t.Error("manifest leaves a folder for a note")
+	}
 	if status, out, _ := call("", "verify"); status != 0 || out != "" {
 		t.Errorf("accepted: %d %q", status, out)
 	}
