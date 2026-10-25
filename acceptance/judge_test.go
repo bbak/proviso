@@ -469,6 +469,38 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					r.verify().exits(t, 2)
 				})
 			}
+			if cmd == "verify" {
+				// verify reads the coherence file before anything else,
+				// before it asks whether the file is left over.
+				t.Run("row4 a folder, beside a tree the manifest records", func(t *testing.T) {
+					t.Parallel()
+					r, _ := accepted(t, impactTree())
+					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+				t.Run("derived: a merge conflict left in it, beside a tree the manifest records", func(t *testing.T) {
+					t.Parallel()
+					r := amendedRepo(t, iLimitThen)
+					r.judgeAll(nil)
+					w := r.coherence()
+					r.set(impactTree())
+					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+				t.Run("derived: a folder, beside a tree the manifest records, with an amendment note", func(t *testing.T) {
+					t.Parallel()
+					r, _ := accepted(t, impactTree())
+					r.writeNote("- refunds" + string(rune(10)))
+					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+			}
 			t.Run("derived: a folder named .coherence.json", func(t *testing.T) {
 				t.Parallel()
 				// system.coherence-file: the entry, whatever it is, and a
