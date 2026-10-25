@@ -199,3 +199,4 @@ Otherwise the command writes to "stderr" that `coherence_file` cannot be read
 | written by `judge` | yes | read | |
 | `<<<<<<< HEAD` in it | no | exit status 2 | a merge conflict left in the file |
 | empty | no | exit status 2 | |
+| a folder, beside a tree the manifest records | no | exit status 2 | `verify` reads the file before it asks whether it is left over |
