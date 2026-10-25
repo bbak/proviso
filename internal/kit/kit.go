@@ -17,6 +17,11 @@ var files embed.FS
 // file of the kit.
 const readingMark = "<!-- proviso: reading.md -->\n"
 
+// writingMark is the line in a skill that edits the spec tree that the
+// shared writing guide replaces, so that the installed skill refers to no
+// other file of the kit. A skill without it carries no writing guide.
+const writingMark = "<!-- proviso: writing.md -->\n"
+
 // nameMark is the placeholder in the system skeleton that the system's
 // name replaces.
 const nameMark = "<name>"
@@ -35,8 +40,9 @@ func Files(system string) []File {
 	agent := func(name string) []byte {
 		return []byte(strings.Replace(read("agents/"+name), readingMark, reading, 1))
 	}
+	writing := read("skills/writing.md")
 	skill := func(name string) []byte {
-		return []byte(read("skills/" + name + "/SKILL.md"))
+		return []byte(strings.Replace(read("skills/"+name+"/SKILL.md"), writingMark, writing, 1))
 	}
 	out := []File{
 		{".claude/agents/proviso-checker.md", agent("proviso-checker.md")},
@@ -45,6 +51,7 @@ func Files(system string) []File {
 		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept")},
 		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build")},
 		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check")},
+		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate")},
 		{".proviso/build.md", []byte(read("notes/build.md"))},
 		{".proviso/coder.md", []byte(read("notes/coder.md"))},
 		{".proviso/tester.md", []byte(read("notes/tester.md"))},

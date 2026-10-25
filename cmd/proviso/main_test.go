@@ -283,7 +283,7 @@ func TestManifestRemoves(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	all := []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
+	all := []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
 	lines := func(verb string, paths ...string) string {
 		var b strings.Builder
 		for _, p := range paths {
@@ -300,8 +300,8 @@ func TestInit(t *testing.T) {
 		{"not a repository", map[string]string{"a.txt": "x"}, 2, ""},
 		{"fresh clone", map[string]string{".git/HEAD": "x"}, 0, lines("written", all...)},
 		{"worktree", map[string]string{".git": "gitdir: x"}, 0, lines("written", all...)},
-		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:11]...) + lines("skipped", all[11])},
-		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[6:]...)},
+		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:12]...) + lines("skipped", all[12])},
+		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[7:]...)},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
