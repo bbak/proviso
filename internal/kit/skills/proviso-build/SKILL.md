@@ -25,6 +25,8 @@ Wherever this skill says `proviso`, run Proviso's command: the one
 `.proviso/build.md` names, or `proviso` from the path if it names none.
 Look nowhere else.
 
+<!-- proviso: writing.md -->
+
 ## 1. Check the start
 
 - The current branch is the amendment's branch, not the default branch,
@@ -101,7 +103,7 @@ record a decision only when the engineer agrees.
 ## 7. The next round
 
 - **A gap the engineer decided** flows back into the tree on the
-  amendment's branch: edit, run `proviso lint`, commit with `docs:`. Then
+  amendment's branch, written and committed as the writing guide says. Then
   write `proviso pack --since <revision>`, with `<revision>` the commit
   of the agents' last round, to `pack-<n>.md`, and remember the new
   commit as this round's revision.

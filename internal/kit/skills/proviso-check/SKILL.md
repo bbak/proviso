@@ -17,6 +17,8 @@ Wherever this skill says `proviso`, run Proviso's command: the one
 `.proviso/build.md` names, or `proviso` from the path if it names none.
 Look nowhere else.
 
+<!-- proviso: writing.md -->
+
 ## Keep the check independent
 
 The checker judges the tree, not the work around it. Never pass it the
@@ -89,13 +91,15 @@ what it says, the elements it names, the checker's recommendation, and
 your own recommendation with the reason. The engineer either:
 
 - **resolves it by an edit:** make the edit on the amendment's branch,
-  run `proviso lint`, commit with `docs:`, and record
+  written and committed as the writing guide says, and record
   `{"findings": [{"id": "<id>", "status": "resolved", "reason": "edited in <commit>"}]}`
   with `proviso judge`;
   if the edit changes a rule, an invariant, a constraint, a contract
-  element or a parameter, it has to be built: once every finding of this
-  run is decided, hand over to `proviso-build`, and go on with step 6
-  when it has finished;
+  element or a parameter, and the amendment has been built before, it
+  has to be built again: once every finding of this run is decided,
+  hand over to `proviso-build`, and go on with step 6 when it has
+  finished. An amendment not built yet is built later, when the
+  engineer asks for it;
 - **dismisses it:** record `"status": "dismissed"` with the engineer's
   reason, in the engineer's words.
 
@@ -108,7 +112,8 @@ candidates `unjudged`: run again from step 2, with a fresh checker,
 which receives only what is left. When `verify` exits with 0:
 
 - commit `proviso/.coherence.json` on the amendment's branch, as
-  `docs: record the coherence check of <amendment>`;
+  `docs(spec): record the coherence check of <amendment>`, or as the
+  convention `.proviso/build.md` names;
 - report to the engineer: the runs, the judgements by reason, every
   finding and how it was closed.
 
