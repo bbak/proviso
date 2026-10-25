@@ -286,21 +286,10 @@ func (r *repo) writeNoteFolder() {
 }
 
 // TestSystemAmendmentNoteEntry checks system.amendment-note's "anything of
-// that name counts as the note" through manifest and verify; for pack, see
-// TestBaselinePackNoteUnreadable.
+// that name counts as the note" through verify; for pack, see
+// TestBaselinePackNoteUnreadable, for manifest TestBaselineManifestRemove.
 func TestSystemAmendmentNoteEntry(t *testing.T) {
 	t.Parallel()
-	t.Run("derived: manifest removes a folder named .amendment.md", func(t *testing.T) {
-		t.Parallel()
-		// baseline.manifest.write; that nothing else changed is checked by
-		// manifestIn.
-		r := amendedRepo(t, iLimitThen)
-		r.writeNoteFolder()
-		r.manifest()
-		if r.hasNote() {
-			t.Errorf("want the folder %s removed", noteName)
-		}
-	})
 	t.Run("derived: a folder named .amendment.md beside an unchanged tree is left over", func(t *testing.T) {
 		t.Parallel()
 		// baseline.verify.leftover

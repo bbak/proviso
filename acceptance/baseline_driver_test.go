@@ -96,9 +96,10 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 }
 
 // checkWrites checks baseline.run.writes: everything below base is as it was,
-// except the entries allowed, if not empty (manifest.sum, .coherence.json and
-// .amendment.md after a run of `manifest` that exited with 0, .coherence.json
-// after a run of `judge` that exited with 0).
+// except the entries allowed, if not empty, and everything in them
+// (manifest.sum, .coherence.json and .amendment.md after a run of `manifest`
+// that wrote manifest.sum, .coherence.json after a run of `judge` that exited
+// with 0).
 func checkWrites(t *testing.T, before, after map[string]string, allowed ...string) {
 	t.Helper()
 	// An entry allowed may be a folder, such as an amendment note, whose
@@ -130,10 +131,14 @@ func checkWrites(t *testing.T, before, after map[string]string, allowed ...strin
 
 // manifestIn runs `proviso manifest` in cwd. base is the directory the test
 // tree was written to; root, if not empty, is the spec root the command is
-// expected to work on, whose manifest.sum alone may change, and whose
-// .coherence.json and .amendment.md must be removed, and only if the command
-// exits with 0. prepare, if given, runs after the first snapshot and
-// before the command; what it returns runs before the second snapshot.
+// expected to work on. Its manifest.sum, .coherence.json and .amendment.md,
+// with everything in it, alone may change, and only if the run wrote
+// manifest.sum: it exited with 0, or manifest.sum differs from before (a run
+// that writes the same bytes again and then exits with 2 cannot be told from
+// one that wrote nothing; see the report). After exit status 0,
+// .coherence.json and .amendment.md must be gone. prepare, if given, runs
+// after the first snapshot and before the command; what it returns runs
+// before the second snapshot.
 func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run {
 	t.Helper()
 	before := snapshotAll(t, base)
@@ -146,18 +151,28 @@ func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run
 		undo()
 	}
 	after := snapshotAll(t, base)
+	relOf := func(name string) string {
+		rel, _ := filepath.Rel(base, filepath.Join(root, name))
+		return filepath.ToSlash(rel)
+	}
+	wrote := false
+	if root != "" {
+		m := relOf("manifest.sum")
+		_, ok := after[m]
+		wrote = r.exit == 0 || (ok && after[m] != before[m])
+	}
 	var allowed []string
-	if r.exit == 0 && root != "" {
+	if wrote {
 		for _, name := range []string{"manifest.sum", coherenceName, noteName} {
-			rel, _ := filepath.Rel(base, filepath.Join(root, name))
-			allowed = append(allowed, filepath.ToSlash(rel))
+			allowed = append(allowed, relOf(name))
 		}
-		// baseline.manifest.write: a coherence file and an amendment note
-		// are removed, not written.
+	}
+	if r.exit == 0 && root != "" {
+		// baseline.manifest.remove: a coherence file and an amendment
+		// note are removed, not written.
 		for _, name := range []string{coherenceName, noteName} {
-			rel, _ := filepath.Rel(base, filepath.Join(root, name))
-			if _, ok := after[filepath.ToSlash(rel)]; ok {
-				t.Errorf("baseline.manifest.write: manifest exited with 0, but %s is still in the spec root", name)
+			if _, ok := after[relOf(name)]; ok {
+				t.Errorf("baseline.manifest.remove: manifest exited with 0, but %s is still in the spec root", name)
 			}
 		}
 	}
@@ -171,10 +186,10 @@ func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run
 	if r.exit == 2 && strings.TrimSpace(r.stderr) == "" {
 		t.Errorf("exit status 2 with nothing on stderr")
 	}
-	if r.exit == 0 && root != "" {
+	if wrote {
 		b, err := os.ReadFile(filepath.Join(root, "manifest.sum"))
 		if err != nil {
-			t.Fatalf("baseline.manifest.write: exit status 0, but no manifest.sum in the spec root: %v", err)
+			t.Fatalf("baseline.manifest.write: manifest wrote manifest.sum, but there is none in the spec root in the spec root: %v", err)
 		}
 		checkManifestFormat(t, string(b))
 	}
