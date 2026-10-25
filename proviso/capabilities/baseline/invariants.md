@@ -1,6 +1,6 @@
 # Invariants
 
-## <a id="baseline.run.writes"></a> The baseline commands change nothing but the manifest and the coherence file
+## <a id="baseline.run.writes"></a> The baseline commands change nothing but the manifest, the coherence file and the amendment note
 
 ### Rationale
 
@@ -17,7 +17,8 @@ however it ends.
 ### Property
 
 Every file and folder under the [spec root] is byte for byte and entry
-for entry as it was before the run, except `manifest.sum` and
-`.coherence.json` after a run of `manifest` that exits with 0, and
-`.coherence.json` after a run of `judge` that exits with 0. The git
-repository holding the [spec root] is as it was before the run.
+for entry as it was before the run, except `manifest.sum`, and
+`.coherence.json` and `.amendment.md`, each with everything in it,
+after a run of `manifest` that wrote `manifest.sum`, and `.coherence.json` after
+a run of `judge` that exits with 0. The git repository holding the
+[spec root] is as it was before the run.

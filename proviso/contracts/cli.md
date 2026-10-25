@@ -86,7 +86,8 @@ properties:
 ## <a id="system.cli.manifest"></a> manifest
 
 The command `proviso manifest`, run anywhere inside the system's
-repository. It writes `manifest.sum` into the spec root and nothing to
+repository. It writes `manifest.sum` into the spec root, removes the
+coherence file and the amendment note there, and writes nothing to
 standard output.
 
 ### <a id="system.cli.manifest.exit-status"></a> exit-status
@@ -98,8 +99,10 @@ type: integer
 enum: [0, 2]
 ```
 
-- `0`: the manifest was written.
-- `2`: the manifest could not be written, or the command could not run.
+- `0`: the manifest was written, and the coherence file and the
+  amendment note were removed.
+- `2`: the manifest could not be written, the coherence file or the
+  amendment note could not be removed, or the command could not run.
 
 ## <a id="system.cli.diff"></a> diff
 
@@ -342,9 +345,9 @@ What `pack` writes by default: Markdown in UTF-8, read by the
 implementing agents and the checking agent. Unlike the text of the other commands, it is part
 of the contract.
 
-- **Four headings** of level 1 divide it, in this order: `# System`,
-  `# Amendment`, `# Frames` and `# Context`. A heading under which no
-  element appears is left out.
+- **Five headings** of level 1 divide it, in this order: `# System`,
+  `# Amendment`, `# Not in this amendment`, `# Frames` and `# Context`.
+  A heading under which nothing appears is left out.
 - **An element** appears as its own text as it stands now, from its
   heading to the next element's heading, as `text` in `element_diff`
   holds it, with a blank line before and after.
@@ -367,6 +370,8 @@ of the contract.
     separated by a comma and a space, and a full stop.
 - **The former text** of each changed or removed part follows its
   element, each after a line ``Former `<part>`:``.
+- **Under Not in this amendment,** the text of `amendment_note` stands
+  as the file holds it, with a blank line before and after.
 - **Former text** stands in a fenced block labelled `text`, its fence
   longer than any run of backticks in it, so that nothing in it reads
   as Markdown.
@@ -406,7 +411,7 @@ conventions as in `element_diff`.
 
 ```yaml
 type: object
-required: [root, revision, diff, elements]
+required: [root, revision, diff, note, elements]
 properties:
   root:
     type: string
@@ -414,6 +419,8 @@ properties:
     type: [string, "null"]
   diff:
     type: array
+  note:
+    type: [string, "null"]
   elements:
     type: array
     items:
@@ -435,6 +442,8 @@ properties:
 
 - `diff` holds the elements under Amendment, each exactly as an item of
   `elements` in `element_diff`.
+- `note` is the text `pack_text` holds under Not in this amendment, or
+  null where it has no such heading.
 - `elements` holds every other element of the pack, under the heading
   `heading` names, in the order of `pack_text`.
 - `file`, `line` and `text` mean what they mean in `element_diff`.
@@ -606,8 +615,8 @@ properties:
 ```
 
 - `kind` says what is wrong: the element diff lists elements but no
-  coherence check is recorded (`missing`); a check is recorded beside a
-  tree the manifest records (`leftover`); a candidate has no judgement
+  coherence check is recorded (`missing`); a check or an amendment note
+  is left beside a tree the manifest records (`leftover`); a candidate has no judgement
   (`unjudged`); an element changed since the check covered it
   (`stale`); a finding is neither resolved nor dismissed (`open`).
 - `element` is the identifier of the element an `unjudged` or `stale`

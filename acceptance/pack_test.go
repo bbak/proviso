@@ -383,7 +383,7 @@ func TestBaselinePackOutput(t *testing.T) {
 		exit0(t, o)
 		o.headingsAre(t, "System", "Amendment", "Frames", "Context")
 	})
-	t.Run("row3 an empty element diff, as text", func(t *testing.T) {
+	t.Run("row3 an empty element diff, without .amendment.md, as text", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, packTree())
 		o := r.pack()

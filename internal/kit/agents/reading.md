@@ -1,6 +1,6 @@
 ## How to read the pack
 
-The pack is Markdown with up to four headings:
+The pack is Markdown with up to five headings:
 
 - **System:** the system's Goal, Rationale, Scope, Out of scope and
   Design boundary.
@@ -9,6 +9,9 @@ The pack is Markdown with up to four headings:
   changed and their former text), `Removed` (with its former text) or
   `Changed through` (with the chain of changed meanings that reaches it),
   and `Not to be built` where it is undecided. This is your work.
+- **Not in this amendment:** what the amendment deliberately leaves
+  out. Build and test none of it, and do not list it as a decision the
+  pack did not make.
 - **Frames:** the features and capabilities holding those elements, and
   the invariants and constraints of their levels. They say what it is
   all for and how to build it.

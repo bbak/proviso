@@ -9,11 +9,19 @@ import (
 	"github.com/bbak/proviso/internal/baseline"
 )
 
+// The headings of pack_text that hold no elements of context_pack.
+const (
+	headingAmendment = "amendment"
+	headingNote      = "note"
+)
+
 // packHeadings are the headings of pack_text, in its order, with the
-// heading context_pack names; Amendment holds the element diff.
+// heading context_pack names; Amendment holds the element diff, Not in
+// this amendment the amendment note.
 var packHeadings = []struct{ title, heading string }{
 	{"System", baseline.HeadingSystem},
-	{"Amendment", ""},
+	{"Amendment", headingAmendment},
+	{"Not in this amendment", headingNote},
 	{"Frames", baseline.HeadingFrames},
 	{"Context", baseline.HeadingContext},
 }
@@ -21,20 +29,30 @@ var packHeadings = []struct{ title, heading string }{
 // PackText writes pack_text: under each heading its elements, each with a
 // blank line before and after, and under Amendment, before each element,
 // what happened to it, and after it the former text of its parts, the
-// revision the former text came from first, if any was needed. A heading
-// under which no element appears is left out.
-func PackText(w io.Writer, revision string, entries []*baseline.Entry, packed []baseline.Packed) error {
+// revision the former text came from first, if any was needed. Under Not
+// in this amendment, it writes the note, "" if there is none. A heading
+// under which nothing appears is left out.
+func PackText(w io.Writer, revision string, entries []*baseline.Entry, note string, packed []baseline.Packed) error {
 	var blocks []string // separated by a blank line
 	for _, h := range packHeadings {
 		var under []string
-		if h.heading == "" {
+		switch h.heading {
+		case headingAmendment:
 			if revision != "" && len(entries) > 0 {
 				under = append(under, fmt.Sprintf("Former text from `%s`.\n", revision))
 			}
 			for _, e := range entries {
 				under = append(under, amendment(e)...)
 			}
-		} else {
+		case headingNote:
+			if note != "" {
+				// The blank line after the note needs its last line ended.
+				if !strings.HasSuffix(note, "\n") {
+					note += "\n"
+				}
+				under = append(under, note)
+			}
+		default:
 			for _, p := range packed {
 				if p.Heading == h.heading {
 					under = append(under, p.Element.Text)
@@ -131,16 +149,21 @@ type jsonPack struct {
 	Root     string        `json:"root"`
 	Revision *string       `json:"revision"`
 	Diff     []jsonElement `json:"diff"`
+	Note     *string       `json:"note"`
 	Elements []jsonPacked  `json:"elements"`
 }
 
 // PackJSON writes the context_pack: the spec root the pack was assembled
 // from, the revision the former text came from, or null, the element diff,
-// and every other element of the pack, in the order of pack_text.
-func PackJSON(w io.Writer, root, revision string, entries []*baseline.Entry, packed []baseline.Packed) error {
+// the note, or null if there is none, and every other element of the
+// pack, in the order of pack_text.
+func PackJSON(w io.Writer, root, revision string, entries []*baseline.Entry, note string, packed []baseline.Packed) error {
 	p := jsonPack{Root: root, Diff: diffElements(entries), Elements: []jsonPacked{}}
 	if revision != "" {
 		p.Revision = &revision
+	}
+	if note != "" {
+		p.Note = &note
 	}
 	for _, x := range packed {
 		e := x.Element

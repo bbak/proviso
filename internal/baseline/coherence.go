@@ -468,15 +468,17 @@ type Problem struct {
 
 // Verify compares what coherence_file records, nil if the spec root holds
 // none, with the element diff and the candidates, and returns the
-// problems, ordered.
-func Verify(c *Coherence, entries []*Entry, candidates []Candidate, base Baseline) []Problem {
+// problems, ordered. note says whether the spec root holds an
+// amendment_note; beside an unchanged tree, it is left over as a
+// coherence file is.
+func Verify(c *Coherence, note bool, entries []*Entry, candidates []Candidate, base Baseline) []Problem {
 	switch {
-	case c == nil && len(entries) == 0:
+	case len(entries) == 0 && (c != nil || note):
+		return []Problem{{Kind: Leftover}}
+	case len(entries) == 0:
 		return nil
 	case c == nil:
 		return []Problem{{Kind: Missing}}
-	case len(entries) == 0:
-		return []Problem{{Kind: Leftover}}
 	}
 	var out []Problem
 	covered := map[string]Covered{}

@@ -46,6 +46,54 @@ Then      the system is taken for "System"
 | `lint.run.root`, removed | `system` and `lint.run.root` with its former text taken | its tests can be retired |
 | none: the tree is as the manifest records it | `system` taken | nothing to build is no failure |
 
+## <a id="baseline.pack.note"></a> Rule: The amendment note is in the pack
+
+### Rationale
+
+The agents read the pack and nothing else, so what the amendment
+deliberately leaves out reaches them there, as the engineers wrote it.
+`pack` copies the note; what it says is the engineers' concern.
+
+```guarded
+When      `pack` assembles the [context pack] of the [spec root] <root>
+Provided  <root> holds an `amendment_note` that holds more than whitespace
+Then      the text of that `amendment_note` is taken for "Not in this amendment", as the file holds it
+  And     everything else stays as it was
+Otherwise nothing is taken for "Not in this amendment"
+  And     everything else stays as it was
+```
+
+| root | provided | outcome | why |
+| --- | --- | --- | --- |
+| `repo/proviso/`, with `.amendment.md` holding "- refunds" | yes | "- refunds" taken | |
+| `repo/proviso/`, without `.amendment.md` | no | nothing taken | most amendments leave nothing out |
+| `repo/proviso/`, with an empty `.amendment.md` | no | nothing taken | |
+| `repo/proviso/`, with `.amendment.md` holding only blank lines | no | nothing taken | |
+
+## <a id="baseline.pack.note-unreadable"></a> Rule: An amendment note that cannot be read stops the pack
+
+### Rationale
+
+A note `pack` cannot read would leave out of the pack what the
+amendment deliberately leaves out, and the agents would build it
+without anyone seeing why.
+
+```guarded
+When      `pack` reads the `amendment_note` <note>
+Provided  <note> is a file `pack` can read, in UTF-8
+Then      `pack` goes on with the text of <note>
+  And     everything else stays as it was
+Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read
+  And     `pack` exits with `pack.exit-status` 2
+  And     nothing goes to "stdout"
+```
+
+| note | provided | outcome | why |
+| --- | --- | --- | --- |
+| a file holding "- refunds" | yes | read | |
+| a folder named `.amendment.md` | no | exit status 2 | |
+| a file holding bytes that are not UTF-8 | no | exit status 2 | the JSON could not carry it unchanged |
+
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
 ```guarded
@@ -137,4 +185,4 @@ Otherwise `pack` writes <pack> to "stdout" as `pack_text`
 | --- | --- | --- | --- | --- |
 | for one changed rule | `--json` | yes | a `context_pack`, exit status 0 | |
 | for one changed rule | none | no | `pack_text`, exit status 0 | |
-| for an empty element diff | none | no | `pack_text` with "System" only, exit status 0 | |
+| for an empty element diff, without `.amendment.md` | none | no | `pack_text` with "System" only, exit status 0 | |

@@ -16,6 +16,7 @@ package acceptance
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -469,6 +470,107 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					r.verify().exits(t, 2)
 				})
 			}
+			// lint stops the command first, before the coherence file is
+			// read.
+			t.Run("derived: <<<<<<< HEAD in it, in a tree with an error", func(t *testing.T) {
+				t.Parallel()
+				r := amendedRepo(t, iLimitThen)
+				r.judgeAll(nil)
+				w := r.coherence()
+				r.set(r.tr.with("proviso/notes.md", "# Notes"+string(rune(10))))
+				if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				lint := lintLines(t, r.dir)
+				if len(lint) == 0 {
+					t.Fatal("want lint to report the error")
+				}
+				var res run
+				if cmd == "judge" {
+					res = r.judge(checkResult{})
+				} else {
+					res = r.verify().json
+				}
+				if res.exit != 2 {
+					t.Fatalf("want exit status 2, got %d", res.exit)
+				}
+				for _, l := range lint {
+					if !strings.Contains(res.stderr, l) {
+						t.Errorf("want stderr to hold lint's line %q, got: %s", l, res.stderr)
+					}
+				}
+			})
+			if cmd == "judge" {
+				// judge reads the coherence file before its input and
+				// before it derives the element diff.
+				t.Run("row5 <<<<<<< HEAD in it, with input that is not JSON", func(t *testing.T) {
+					t.Parallel()
+					r := amendedRepo(t, iLimitThen)
+					r.judgeAll(nil)
+					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+r.coherence()), 0o644); err != nil {
+						t.Fatal(err)
+					}
+					refused(t, r.judgeRaw("not JSON"), 2)
+				})
+				t.Run("derived: <<<<<<< HEAD in it, beside a tree the manifest records", func(t *testing.T) {
+					t.Parallel()
+					// Before baseline.judge.amendment's exit status 1.
+					r := amendedRepo(t, iLimitThen)
+					r.judgeAll(nil)
+					w := r.coherence()
+					r.set(impactTree())
+					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
+						t.Fatal(err)
+					}
+					refused(t, r.judge(checkResult{}), 2)
+				})
+			}
+			if cmd == "verify" {
+				// verify reads the coherence file before anything else,
+				// before it asks whether the file is left over.
+				t.Run("row4 a folder, beside a tree the manifest records", func(t *testing.T) {
+					t.Parallel()
+					r, _ := accepted(t, impactTree())
+					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+				t.Run("derived: a merge conflict left in it, beside a tree the manifest records", func(t *testing.T) {
+					t.Parallel()
+					r := amendedRepo(t, iLimitThen)
+					r.judgeAll(nil)
+					w := r.coherence()
+					r.set(impactTree())
+					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+				t.Run("derived: a folder, beside a tree the manifest records, with an amendment note", func(t *testing.T) {
+					t.Parallel()
+					r, _ := accepted(t, impactTree())
+					r.writeNote("- refunds" + string(rune(10)))
+					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+						t.Fatal(err)
+					}
+					r.verify().exits(t, 2)
+				})
+			}
+			t.Run("derived: a folder named .coherence.json", func(t *testing.T) {
+				t.Parallel()
+				// system.coherence-file: the entry, whatever it is, and a
+				// folder holds nothing judge writes.
+				r := amendedRepo(t, iLimitThen)
+				if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
+					t.Fatal(err)
+				}
+				if cmd == "judge" {
+					refused(t, r.judge(checkResult{}), 2)
+					return
+				}
+				r.verify().exits(t, 2)
+			})
 		})
 	}
 }

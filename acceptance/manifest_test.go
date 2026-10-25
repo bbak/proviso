@@ -7,6 +7,7 @@ package acceptance
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -109,11 +110,33 @@ func TestBaselineManifestWrite(t *testing.T) {
 			t.Errorf("want %s removed", coherenceName)
 		}
 	})
-	t.Run("row5 without write permission", func(t *testing.T) {
+	t.Run("row5 with .coherence.json and .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil)
+		r.writeNote("- refunds\n")
+		// That the manifest is written and both files removed is checked
+		// for every run that exits with 0 (see manifestIn).
+		r.manifest()
+		if r.hasCoherence() || r.hasNote() {
+			t.Errorf("want %s and %s removed, got %s: %v, %s: %v", coherenceName, noteName, coherenceName, r.hasCoherence(), noteName, r.hasNote())
+		}
+	})
+	t.Run("derived: with .amendment.md only", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.writeNote("- refunds\n")
+		r.manifest()
+		if r.hasNote() {
+			t.Errorf("want %s removed", noteName)
+		}
+	})
+	t.Run("row6 without write permission", func(t *testing.T) {
 		t.Parallel()
 		former := manifestFor(plainParts())
-		// The coherence file stays as it was, too (see manifestIn).
-		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former, coherencePath, "{}\n").write(t)
+		// The coherence file and the amendment note stay as they were, too
+		// (see manifestIn).
+		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former, coherencePath, "{}\n", notePath, "- refunds\n").write(t)
 		root := filepath.Join(dir, "proviso")
 		undo, err := makeUnwritable(root)
 		if err != nil {
@@ -165,4 +188,140 @@ func TestBaselineManifestWrite(t *testing.T) {
 			t.Errorf("want the inner tree's manifest\n%s\ngot\n%s", want, got)
 		}
 	})
+}
+
+func TestBaselineManifestRemove(t *testing.T) {
+	t.Parallel()
+	// That the removed entries are gone after exit status 0, and that
+	// nothing else changed, is checked for every run (see manifestIn).
+	t.Run("row1 none", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.manifest()
+	})
+	t.Run("row2 .coherence.json and .amendment.md, both files", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil)
+		r.writeNote("- refunds\n")
+		r.manifest()
+		if r.hasCoherence() || r.hasNote() {
+			t.Errorf("want %s and %s removed", coherenceName, noteName)
+		}
+	})
+	t.Run("row3 .amendment.md, a folder holding a file", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.writeNoteFolder()
+		r.manifest()
+		if r.hasNote() {
+			t.Errorf("want the folder %s removed", noteName)
+		}
+	})
+	t.Run("row4 .amendment.md, a link to a file of the tree", func(t *testing.T) {
+		t.Parallel()
+		// capabilities/x.md: the feature file cart.add stands in. Where no
+		// symbolic link can be made, a junction to the folder of the
+		// features stands in for the link.
+		r := amendedRepo(t, iLimitThen)
+		link := filepath.Join(r.root(), noteName)
+		if err := os.Symlink(filepath.Join(r.dir, filepath.FromSlash(featurePath)), link); err != nil {
+			if err := makeJunction(link, filepath.Dir(filepath.Join(r.dir, filepath.FromSlash(featurePath)))); err != nil {
+				t.Skipf("cannot make a link here: %v", err)
+			}
+			t.Logf("a junction stands in for the link: %v", err)
+		}
+		// That what it points to is unchanged is checked by manifestIn.
+		r.manifest()
+		if r.hasNote() {
+			t.Errorf("want the link %s removed", noteName)
+		}
+		if _, err := os.Stat(filepath.Join(r.dir, filepath.FromSlash(featurePath))); err != nil {
+			t.Errorf("want %s unchanged: %v", featurePath, err)
+		}
+	})
+	t.Run("row5 .coherence.json, which cannot be removed", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil)
+		want := manifestOf(t, amended(impactTree(), iLimitThen))
+		prepare := lockCoherence(t, r)
+		res := manifestIn(t, r.dir, r.dir, r.root(), prepare)
+		if res.exit != 2 {
+			t.Fatalf("want exit status 2, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		b, err := os.ReadFile(filepath.Join(r.root(), "manifest.sum"))
+		if err != nil || string(b) != want {
+			t.Errorf("want manifest.sum written and left as written\n%s\ngot\n%s", want, b)
+		}
+		if !r.hasCoherence() {
+			t.Errorf("want %s, which could not be removed, still there", coherenceName)
+		}
+	})
+	t.Run("row6 .coherence.json, which cannot be removed, and .amendment.md, which can", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil)
+		r.writeNote("- refunds\n")
+		prepare := lockCoherence(t, r)
+		res := manifestIn(t, r.dir, r.dir, r.root(), prepare)
+		if res.exit != 2 {
+			t.Fatalf("want exit status 2, got %d\nstderr: %s", res.exit, res.stderr)
+		}
+		if r.hasNote() {
+			t.Errorf("want %s removed, though %s could not be", noteName, coherenceName)
+		}
+		if !r.hasCoherence() {
+			t.Errorf("want %s, which could not be removed, still there", coherenceName)
+		}
+	})
+	t.Run("derived: .coherence.json, a folder holding a file", func(t *testing.T) {
+		t.Parallel()
+		// system.coherence-file: the entry, whatever it is.
+		r := amendedRepo(t, iLimitThen)
+		dir := filepath.Join(r.root(), coherenceName)
+		if err := os.MkdirAll(filepath.Join(dir, "sub"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(dir, "sub", "f.json"), []byte("{}\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		r.manifest()
+		if r.hasCoherence() {
+			t.Errorf("want the folder %s removed", coherenceName)
+		}
+	})
+}
+
+// lockCoherence makes the coherence file of r one that cannot be removed,
+// and returns what manifestIn is to run around the command, if anything. On
+// Windows the file is held open without sharing its deletion; elsewhere it
+// is replaced by a folder that holds a file in a folder without write
+// permission, which counts as the coherence file, whatever it is.
+func lockCoherence(t *testing.T, r *repo) func() func() {
+	t.Helper()
+	if runtime.GOOS == "windows" {
+		return func() func() {
+			undo, err := makeCoherenceUnwritable(r.root())
+			if err != nil {
+				t.Fatal(err)
+			}
+			return undo
+		}
+	}
+	c := filepath.Join(r.root(), coherenceName)
+	os.Remove(c)
+	locked := filepath.Join(c, "locked")
+	if err := os.MkdirAll(locked, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(locked, "f"), []byte("x\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	os.Chmod(locked, 0o555)
+	t.Cleanup(func() { os.Chmod(locked, 0o755) })
+	if err := os.Remove(filepath.Join(locked, "f")); err == nil {
+		t.Skip("the folder stays writable without permission (running as root?)")
+	}
+	return nil
 }
