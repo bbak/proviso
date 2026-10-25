@@ -96,9 +96,9 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 }
 
 // checkWrites checks baseline.run.writes: everything below base is as it was,
-// except the entries allowed, if not empty (manifest.sum and .coherence.json
-// after a run of `manifest` that exited with 0, .coherence.json after a run
-// of `judge` that exited with 0).
+// except the entries allowed, if not empty (manifest.sum, .coherence.json and
+// .amendment.md after a run of `manifest` that exited with 0, .coherence.json
+// after a run of `judge` that exited with 0).
 func checkWrites(t *testing.T, before, after map[string]string, allowed ...string) {
 	t.Helper()
 	isAllowed := func(p string) bool {
@@ -129,7 +129,8 @@ func checkWrites(t *testing.T, before, after map[string]string, allowed ...strin
 // manifestIn runs `proviso manifest` in cwd. base is the directory the test
 // tree was written to; root, if not empty, is the spec root the command is
 // expected to work on, whose manifest.sum alone may change, and whose
-// .coherence.json must be removed, and only if the command exits with 0. prepare, if given, runs after the first snapshot and
+// .coherence.json and .amendment.md must be removed, and only if the command
+// exits with 0. prepare, if given, runs after the first snapshot and
 // before the command; what it returns runs before the second snapshot.
 func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run {
 	t.Helper()
@@ -145,15 +146,17 @@ func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run
 	after := snapshotAll(t, base)
 	var allowed []string
 	if r.exit == 0 && root != "" {
-		for _, name := range []string{"manifest.sum", coherenceName} {
+		for _, name := range []string{"manifest.sum", coherenceName, noteName} {
 			rel, _ := filepath.Rel(base, filepath.Join(root, name))
 			allowed = append(allowed, filepath.ToSlash(rel))
 		}
-		// baseline.manifest.write: a coherence file is removed, not
-		// written.
-		rel, _ := filepath.Rel(base, filepath.Join(root, coherenceName))
-		if _, ok := after[filepath.ToSlash(rel)]; ok {
-			t.Errorf("baseline.manifest.write: manifest exited with 0, but %s is still in the spec root", coherenceName)
+		// baseline.manifest.write: a coherence file and an amendment note
+		// are removed, not written.
+		for _, name := range []string{coherenceName, noteName} {
+			rel, _ := filepath.Rel(base, filepath.Join(root, name))
+			if _, ok := after[filepath.ToSlash(rel)]; ok {
+				t.Errorf("baseline.manifest.write: manifest exited with 0, but %s is still in the spec root", name)
+			}
 		}
 	}
 	checkWrites(t, before, after, allowed...)

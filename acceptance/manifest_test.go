@@ -109,11 +109,33 @@ func TestBaselineManifestWrite(t *testing.T) {
 			t.Errorf("want %s removed", coherenceName)
 		}
 	})
-	t.Run("row5 without write permission", func(t *testing.T) {
+	t.Run("row5 with .coherence.json and .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeAll(nil)
+		r.writeNote("- refunds\n")
+		// That the manifest is written and both files removed is checked
+		// for every run that exits with 0 (see manifestIn).
+		r.manifest()
+		if r.hasCoherence() || r.hasNote() {
+			t.Errorf("want %s and %s removed, got %s: %v, %s: %v", coherenceName, noteName, coherenceName, r.hasCoherence(), noteName, r.hasNote())
+		}
+	})
+	t.Run("derived: with .amendment.md only", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.writeNote("- refunds\n")
+		r.manifest()
+		if r.hasNote() {
+			t.Errorf("want %s removed", noteName)
+		}
+	})
+	t.Run("row6 without write permission", func(t *testing.T) {
 		t.Parallel()
 		former := manifestFor(plainParts())
-		// The coherence file stays as it was, too (see manifestIn).
-		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former, coherencePath, "{}\n").write(t)
+		// The coherence file and the amendment note stay as they were, too
+		// (see manifestIn).
+		dir := plainTree().edit(featurePath, "Buyers put goods", "Buyers put many goods").with(manifestPath, former, coherencePath, "{}\n", notePath, "- refunds\n").write(t)
 		root := filepath.Join(dir, "proviso")
 		undo, err := makeUnwritable(root)
 		if err != nil {

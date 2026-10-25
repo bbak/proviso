@@ -96,20 +96,60 @@ func TestBaselineVerifyExit(t *testing.T) {
 
 func TestBaselineVerifyLeftover(t *testing.T) {
 	t.Parallel()
-	t.Run("row1 changed", func(t *testing.T) {
+	// That "leftover" comes alone, so once, and with exit status 1, is
+	// checked for every run (see verifyIn).
+	t.Run("row1 changed, with .coherence.json", func(t *testing.T) {
 		t.Parallel()
 		o := covered(t, iLimitThen).verify()
 		o.lacks(t, "leftover")
 		o.lacks(t, "missing")
 		o.only(t)
 	})
-	t.Run("row2 none: the tree is as the manifest records it", func(t *testing.T) {
+	t.Run("row2 changed, with .amendment.md only", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.writeNote("- refunds\n")
+		o := r.verify()
+		o.lacks(t, "leftover")
+		o.only(t, "missing")
+	})
+	t.Run("row3 none, with .coherence.json", func(t *testing.T) {
 		t.Parallel()
 		// The check holds an open finding and leaves candidates unjudged;
 		// verify looks no further.
 		r := amendedRepo(t, iLimitThen)
 		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
 		r.set(impactTree())
+		r.verify().only(t, "leftover")
+	})
+	t.Run("row4 none, with .amendment.md only", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, impactTree())
+		r.writeNote("- refunds\n")
+		o := r.verify()
+		o.only(t, "leftover")
+		o.exits(t, 1)
+	})
+	t.Run("row5 none, with .coherence.json and .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		r := covered(t, iLimitThen)
+		r.writeNote("- refunds\n")
+		r.set(impactTree())
+		r.verify().only(t, "leftover")
+	})
+	t.Run("derived: changed, with .coherence.json and .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		// The amendment as it stands before acceptance: the note changes
+		// nothing of the comparison.
+		r := covered(t, iLimitThen)
+		r.writeNote("- refunds\n")
+		r.verify().only(t)
+	})
+	t.Run("derived: none, with an empty .amendment.md", func(t *testing.T) {
+		t.Parallel()
+		// Of the note, verify only asks whether the spec root holds one.
+		r, _ := accepted(t, impactTree())
+		r.writeNote("")
 		r.verify().only(t, "leftover")
 	})
 	t.Run("derived: a merge that skipped acceptance", func(t *testing.T) {
@@ -135,6 +175,16 @@ func TestBaselineVerifyMissing(t *testing.T) {
 		o := amendedRepo(t, iLimitThen).verify()
 		o.only(t, "missing")
 		o.exits(t, 1)
+	})
+	t.Run("derived: none, with .amendment.md only", func(t *testing.T) {
+		t.Parallel()
+		// Nothing is reported as "missing"; the note is left over (see
+		// baseline.verify.leftover).
+		r, _ := accepted(t, impactTree())
+		r.writeNote("- refunds\n")
+		o := r.verify()
+		o.lacks(t, "missing")
+		o.only(t, "leftover")
 	})
 }
 
