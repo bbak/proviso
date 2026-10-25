@@ -26,6 +26,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
 		"written .claude/skills/proviso-check/SKILL.md\n" +
+		"written .claude/skills/proviso-integrate/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -39,7 +40,8 @@ func TestSystemCliInit(t *testing.T) {
 
 // TestInstallInstalledFiles checks the rows of installed_files that the
 // other tests do not: the skills that accept, build and check an amendment
-// are written, and are no empty files. Their wording, and that of the stubs,
+// and the one that brings a request into the spec tree are written, and are
+// no empty files. Their wording, and that of the stubs,
 // is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
@@ -50,6 +52,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-accept/SKILL.md",
 		".claude/skills/proviso-build/SKILL.md",
 		".claude/skills/proviso-check/SKILL.md",
+		".claude/skills/proviso-integrate/SKILL.md",
 	}
 	for _, p := range append(skills, ".proviso/build.md") {
 		o.says(t, "written", p)
@@ -195,19 +198,33 @@ func TestInstallInitAgents(t *testing.T) {
 }
 
 // TestInstallInitSkills checks install.init.skills. What the kit holds is not
-// visible from outside, so "as the kit holds it" is checked as: named as the
-// row says, byte for byte the same in two repositories of other names, no
-// copy of another skill, and, unlike an agent definition, without the
-// reading guide the agent definitions share. "Refers to no file of the kit
-// that installed_files does not name" is checked as: every link or import
-// names a file that is in the repository after init, which an installed
-// file is and a file only the kit holds is not.
+// visible from outside, so "the kit's skill of that name" is checked as:
+// named as the row says, byte for byte the same in two repositories of other
+// names, no copy of another skill, and, unlike an agent definition, without
+// the reading guide the agent definitions share. "With the kit's writing
+// guide" is checked as: a block of at least guideLines lines that are not
+// blank, which the skill shares with every other skill that carries the
+// writing guide; a skill without it shares no such block with them. "Refers
+// to no file of the kit that installed_files does not name" is checked as:
+// every link or import names a file that is in the repository after init,
+// which an installed file is and a file only the kit holds is not.
 func TestInstallInitSkills(t *testing.T) {
 	t.Parallel()
-	rows := []struct{ name, skill, named string }{
-		{"row1 the skill that builds an amendment", ".claude/skills/proviso-build/SKILL.md", "proviso-build"},
-		{"row2 the skill that checks an amendment", ".claude/skills/proviso-check/SKILL.md", "proviso-check"},
-		{"row3 the skill that accepts an amendment", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept"},
+	// guide says whether the skill carries the writing guide.
+	rows := []struct {
+		name, skill, named string
+		guide              bool
+	}{
+		{"row1 the skill that builds an amendment, with the writing guide", ".claude/skills/proviso-build/SKILL.md", "proviso-build", true},
+		{"row2 the skill that checks an amendment, with the same writing guide", ".claude/skills/proviso-check/SKILL.md", "proviso-check", true},
+		{"row3 the skill that brings a request into the spec tree, with the same writing guide", ".claude/skills/proviso-integrate/SKILL.md", "proviso-integrate", true},
+		{"row4 the skill that accepts an amendment, and no writing guide", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
+	}
+	var writers []string
+	for _, row := range rows {
+		if row.guide {
+			writers = append(writers, row.skill)
+		}
 	}
 	agents := []string{
 		".claude/agents/proviso-checker.md",
@@ -262,6 +279,27 @@ func TestInstallInitSkills(t *testing.T) {
 			guide, _ := sharedBlock(between, r.read(agents[2]))
 			if block, n := sharedBlock(skill, guide); n >= guideLines {
 				t.Errorf("install.init.skills: %s carries the reading guide the agent definitions share, %d lines that are not blank:\n%s", row.skill, n, block)
+			}
+
+			// The same writing guide in every skill that edits the spec
+			// tree, and none in the others: the longest block this skill
+			// shares with all the other skills that carry it.
+			var others []string
+			for _, w := range writers {
+				if w != row.skill {
+					others = append(others, w)
+				}
+			}
+			shared := strings.ReplaceAll(r.read(others[0]), "\r\n", "\n")
+			for _, w := range others[1:] {
+				shared, _ = sharedBlock(shared, r.read(w))
+			}
+			block, n := sharedBlock(skill, shared)
+			if row.guide && n < guideLines {
+				t.Errorf("install.init.skills: %s shares no writing guide with %s; the longest block they all share has %d lines that are not blank:\n%s", row.skill, strings.Join(others, " and "), n, block)
+			}
+			if !row.guide && n >= guideLines {
+				t.Errorf("install.init.skills: %s carries the writing guide that %s share, %d lines that are not blank:\n%s", row.skill, strings.Join(others, " and "), n, block)
 			}
 
 			// No reference to a file that is not there.

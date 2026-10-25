@@ -30,7 +30,9 @@ another.
 - `proviso lint` exits with 0.
 - Read `.proviso/build.md`: whether acceptance goes through a pull
   request (a line such as `Acceptance: pull request`; without one, it
-  merges directly), and the commands of the project's checks.
+  merges directly), the commands of the project's checks, and a
+  convention for commit messages, if it names one; then the commit
+  below follows that convention instead of `feat: accept <amendment>`.
 
 Stop and say why if any of this fails.
 

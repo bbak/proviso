@@ -12,8 +12,8 @@ var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop")
-	if len(got) != 12 {
-		t.Fatalf("%d files, want 12", len(got))
+	if len(got) != 13 {
+		t.Fatalf("%d files, want 13", len(got))
 	}
 	reading := read("agents/reading.md")
 	for i, f := range got {
@@ -26,7 +26,7 @@ func TestFiles(t *testing.T) {
 		if strings.HasPrefix(f.Path, ".claude/") {
 			// A kit file that is not installed, or a kit path, would point to
 			// nothing on the agent host.
-			for _, ref := range []string{"reading.md", "proviso: ", "agents/", "notes/", "tree/", "skills/"} {
+			for _, ref := range []string{"reading.md", "writing.md", "proviso: ", "agents/", "notes/", "tree/", "skills/"} {
 				if bytes.Contains(f.Data, []byte(ref)) {
 					t.Errorf("%s refers to %q of the kit", f.Path, ref)
 				}
@@ -49,6 +49,7 @@ func TestFiles(t *testing.T) {
 			}
 		}
 	}
+	writing := read("skills/writing.md")
 	skills := 0
 	for _, f := range got {
 		if !strings.HasPrefix(f.Path, ".claude/skills/") {
@@ -56,15 +57,25 @@ func TestFiles(t *testing.T) {
 		}
 		skills++
 		name := strings.TrimSuffix(strings.TrimPrefix(f.Path, ".claude/skills/"), "/SKILL.md")
-		if want := read("skills/" + name + "/SKILL.md"); string(f.Data) != want {
-			t.Errorf("%s is not the kit's skill as the kit holds it", f.Path)
+		// The skills that edit the spec tree carry the writing guide where
+		// they mark it; proviso-accept never edits it and carries none.
+		kit := read("skills/" + name + "/SKILL.md")
+		want := kit
+		if name != "proviso-accept" {
+			if !strings.Contains(kit, writingMark) {
+				t.Errorf("%s: the kit's skill marks no writing guide", f.Path)
+			}
+			want = strings.Replace(kit, writingMark, writing, 1)
+		}
+		if string(f.Data) != want {
+			t.Errorf("%s is not the kit's skill with the writing guide where it marks it", f.Path)
 		}
 		if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
 			t.Errorf("%s not named %s", f.Path, name)
 		}
 	}
-	if skills != 3 {
-		t.Errorf("%d skills, want 3", skills)
+	if skills != 4 {
+		t.Errorf("%d skills, want 4", skills)
 	}
 	if sys := got[len(got)-1]; sys.Path != "proviso/system.md" || !bytes.HasPrefix(sys.Data, []byte("# <a id=\"system\"></a> shop\n")) {
 		t.Errorf("skeleton %s: %q", sys.Path, sys.Data)
