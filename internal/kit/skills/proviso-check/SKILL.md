@@ -79,7 +79,12 @@ run when split) and give it to `proviso judge` on standard input.
 
 ## 5. Bring the findings to the engineer
 
-Run `proviso verify --json`. For every `open` finding, one at a time:
+First bring every point the checker could not judge, one at a time:
+what it says, and your recommendation. The engineer either lets it go,
+or makes it a finding: record it with `proviso judge` as
+`{"findings": [{"kind": "<kind>", "elements": ["<identifier>"], "text": "<text>"}]}`.
+
+Then run `proviso verify --json`. For every `open` finding, one at a time:
 what it says, the elements it names, the checker's recommendation, and
 your own recommendation with the reason. The engineer either:
 
@@ -95,12 +100,6 @@ your own recommendation with the reason. The engineer either:
   reason, in the engineer's words.
 
 Record a decision only when the engineer has made it.
-
-Then bring every point the checker could not judge, one at a time:
-what it says, and your recommendation. The engineer either lets it go,
-or makes it a finding: record it with `proviso judge` as
-`{"findings": [{"kind": "<kind>", "elements": ["<identifier>"], "text": "<text>"}]}`,
-and bring it like any other finding.
 
 ## 6. Again, until verify passes
 
