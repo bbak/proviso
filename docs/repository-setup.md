@@ -54,7 +54,9 @@ stubs and never touches them again.
 - **`build.md`**, for the skills: the commands that build the system, run
   its unit tests and run its acceptance tests, in that order; skips that
   are expected; Proviso's command, if it is not `proviso` from the path;
-  and the line `Acceptance: pull request` if acceptance goes through one.
+  the line `Acceptance: pull request` if acceptance goes through one; and
+  your convention for commit messages, if it is not Conventional Commits
+  with `docs(spec):` for edits of the spec tree.
 - **`tester.md`**, for the testing agent: how the acceptance tests are
   written, run and kept fast, and commit conventions.
 - **`coder.md`**, for the coding agent: code conventions, commands, and

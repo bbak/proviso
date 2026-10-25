@@ -15,11 +15,42 @@ finds it.
 | Checking agent | whether each candidate stays as it is, with a reason | closes a finding, sees code, tests or reports |
 | Proviso | nothing; it computes | drives the agents |
 
-## 1. Bring the request into the tree
+## 1. Integrate: `proviso-integrate`
 
-Make the amendment's branch, and edit the tree on it: new and changed
-rules, glossary entries, invariants, constraints, contracts and
-parameters. Proviso tells you what the edit does:
+Ask Claude Code to integrate the request, in whatever form it came: a
+request file, a ticket, a sentence, existing scenarios. The skill, the
+Integrator, works through it with you in one session:
+
+1. makes the amendment's branch, or uses yours;
+2. reads the request, then the parts of the tree it concerns: what the
+   request says happens today is compared with the tree, and its words
+   with the glossaries;
+3. checks that what the business brought makes sense, on its own and
+   against the tree, before anything is written;
+4. asks you the engineering questions, one at a time with a
+   recommendation, and whether each thing left out is left out by this
+   amendment only or by the system for good;
+5. writes the tree, adding the rigour the notation needs without
+   changing what the business meant, and commits it;
+6. hands over to `proviso-check`;
+7. offers a business view: what was integrated, in plain sentences, for
+   the request's owner to check, with every open question as a concrete
+   case. You decide whether the owner gets it.
+
+It stops there; you decide when to build.
+
+**What you decide:** the engineering questions. Business questions,
+what the system should do and what a word means, are answered by
+neither you nor the skill: they go back to the request's owner, and the
+place stays `?` until the owner answers. Nothing the skill finds is
+mentioned once and dropped: every hole ends decided in the tree, or
+marked `?` with a question in `questions.md` naming whom to ask.
+
+### Editing by hand
+
+You can also edit the tree yourself: new and changed rules, glossary
+entries, invariants, constraints, contracts and parameters. Proviso
+tells you what the edit does:
 
 - `proviso lint`: errors in the notation.
 - `proviso diff`: the element diff, and which elements are not to be
@@ -43,7 +74,7 @@ built. The tree comes first on the branch, then tests and code.
 
 A skill that guides business requesters to a checkable request is in
 the works. Until then, requests arrive in whatever form the business
-writes them.
+writes them, and the Integrator takes them as they are.
 
 ## 2. Build: `proviso-build`
 
@@ -93,7 +124,8 @@ itself when it is missing or out of date. The skill:
   it with a reason in your own words. An edit is checked again by a new
   agent. An edit that changes behaviour, a rule, invariant, constraint,
   contract element or parameter, has to be built: once every finding of
-  the run is decided, the skill hands over to `proviso-build`.
+  the run is decided, the skill hands over to `proviso-build`, if the
+  amendment has been built already.
 
 The skill ends when `proviso verify` exits with 0, and commits the
 coherence file on the branch.

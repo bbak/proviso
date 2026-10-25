@@ -39,7 +39,7 @@ it wrote and what it left alone. It never replaces a file that exists.
 | --- | --- |
 | `proviso/system.md` | the start of the spec tree: the system, with six sections to decide |
 | `proviso/.gitattributes`, `proviso/.markdownlint.jsonc` | settings that keep the tree on line feeds and markdownlint content with the notation |
-| `.claude/skills/proviso-build/`, `proviso-check/`, `proviso-accept/` | the skills that build, check and accept an amendment |
+| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/` | the skills that bring a request into the tree, and build, check and accept an amendment |
 | `.claude/agents/proviso-tester.md`, `proviso-coder.md`, `proviso-checker.md` | the testing, coding and checking agents |
 | `.proviso/build.md`, `tester.md`, `coder.md` | your notes to the skills and the implementing agents |
 
@@ -100,10 +100,15 @@ branch:
 
 ```sh
 git add proviso
-git commit -m "docs: specify the first features"
+git commit -m "docs(spec): specify the first features"
 ```
 
-## Build, check and accept
+## Integrate, build, check and accept
+
+Instead of writing the tree yourself, you can ask Claude Code to
+**integrate a request**: `proviso-integrate` works it into the tree with
+you, asking the questions the tree needs answered, and hands over to the
+check. [Workflow](workflow.md) describes it.
 
 In Claude Code, on the amendment's branch, ask in turn:
 

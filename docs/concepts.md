@@ -73,6 +73,12 @@ diff and everything needed to read it, such as the glossary entries,
 invariants, constraints and parameters it uses, and `system.md`. Nothing
 else of the tree.
 
+**Business view.** What an amendment does, in plain sentences, for the
+request's owner, who never reads the tree: rendered after the check by
+a fresh agent from the pack, the candidates and the request, with every
+open question as a concrete case. It says what the tree says, and is
+never stored.
+
 **Amendment note.** `proviso/.amendment.md`, on the amendment's branch:
 a list of what this amendment deliberately leaves out, such as a part
 of the request kept for later. The pack carries it under "Not in this
@@ -121,8 +127,10 @@ branch.
 installs. Proviso owns them.
 
 **Skill.** Instructions the agent host follows for one step of an
-amendment: `proviso-build`, `proviso-check` and `proviso-accept`. A skill
-runs Proviso's commands for every mechanical step and starts the agents.
+amendment: `proviso-integrate`, `proviso-build`, `proviso-check` and
+`proviso-accept`. A skill runs Proviso's commands for every mechanical
+step and starts the agents. The skills that edit the tree share a
+**writing guide**: how to write it for the agents that build from it.
 
 **Agent definition.** The instructions of one agent, in the form the
 agent host reads: its role, what it may read and write, how it reads a

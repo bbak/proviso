@@ -42,11 +42,14 @@ notes in `.proviso/`. Name your project's build and test commands in
 
 ## Use it
 
-1. **Specify:** edit the tree on the amendment's branch. `proviso lint`
-   checks the notation, `proviso diff` shows what changed, and
-   `proviso impact` what it may affect. If the amendment deliberately
-   leaves something out, list it in `proviso/.amendment.md`. Commit the
-   tree, and the note if there is one.
+1. **Integrate:** ask Claude Code to integrate a request, in any form.
+   The Integrator works it into the tree with you on the amendment's
+   branch, asks the questions the tree needs answered, sends what only
+   the business can decide back as questions, and checks the result. Or
+   edit the tree yourself: `proviso lint` checks the notation,
+   `proviso diff` shows what changed, and `proviso impact` what it may
+   affect; what the amendment deliberately leaves out goes into
+   `proviso/.amendment.md`.
 2. **Build:** ask Claude Code to build the amendment. A testing agent
    and a coding agent build from the tree, apart from each other; every
    decision the tree did not make comes back to you.
@@ -62,9 +65,8 @@ branch unchecked.
 ## Status
 
 Proviso has been validated only on command-line applications written in
-Go, with Claude Code and primarily Claude Opus 5.5. A skill that brings
-a request into the tree, and one that guides business requesters to a
-checkable request, are in the works.
+Go, with Claude Code and primarily Claude Opus 5.5. A skill that guides
+business requesters to a checkable request is in the works.
 
 ## Documentation
 

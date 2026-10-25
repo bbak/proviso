@@ -50,10 +50,13 @@ sets out the findings behind this.
 1. **Request.** A business requester says what should change. The
    authoring skill, which guides a requester to a checkable request, is in
    the works.
-2. **Specification.** An engineer brings the request into the spec tree,
-   on the amendment's own branch: rules in Guarded Gherkin, a glossary,
+2. **Specification.** An engineer brings the request into the spec tree
+   with the Integrator, a skill that asks the tough questions, on the
+   amendment's own branch: rules in Guarded Gherkin, a glossary,
    contracts, invariants, constraints and parameters. Proviso lints the
    tree and lists what the amendment changed and what it may affect.
+   What only the business can answer goes back to it, with a business
+   view of what was integrated.
 3. **Build.** A testing agent and a coding agent build from the same
    context pack, each in its own worktree, without seeing each other's
    work. Whatever the tree does not decide comes back to the engineer and
@@ -66,8 +69,8 @@ sets out the findings behind this.
    tree becomes the new baseline. CI tells whether the tree on a branch
    is either the recorded baseline or an amendment its check covers.
 
-The agents call Proviso; Proviso never drives them. Three skills,
-installed into the repository, take an amendment through steps 3 to 5.
+The agents call Proviso; Proviso never drives them. Four skills,
+installed into the repository, take an amendment through steps 2 to 5.
 Claude Code is the first agent host they run on.
 
 ## Limits
