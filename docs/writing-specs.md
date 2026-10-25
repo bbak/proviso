@@ -4,7 +4,7 @@ How a spec tree is laid out and written, element by element, with a
 cash machine as the running example. `proviso lint` checks every point
 of the notation below and tells you what is wrong; this page explains
 what each part is for. The essay
-[Provided, Otherwise](https://medium.com/@__bbak/provided-otherwise-the-missing-guard-in-gherkin-af562aeaec7a)
+[Provided, Otherwise](https://medium.com/devops-dev/provided-otherwise-the-missing-guard-in-gherkin-af562aeaec7a)
 introduces Guarded Gherkin and the reasoning behind it, and
 [Proviso's own tree](https://github.com/bbak/proviso/tree/main/proviso)
 is a complete example.

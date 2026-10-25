@@ -12,9 +12,24 @@ system's code.
 
 ## Why
 
-Every specification leaves something unsaid, and a running system does
-something in every case anyway. Where the specification is silent,
-something else decides, often a tool's default that nobody chose. And
+Agents write code faster than anyone can review it. The work that
+remains sits at the two ends: saying what should be built, and checking
+that it was. At that volume, checking has to be automated as well:
+tests written by an agent, independent of the agent that writes the
+code. Such tests check something only if the specification tells the
+testing agent enough about the system's behaviour: what happens when a
+condition does not hold, where its boundaries lie, what each term means.
+Where it does not, the agent guesses, and its tests confirm the code
+instead of checking it. The Proviso Model is written for that reader:
+rules in Guarded Gherkin, with examples on both sides of every
+condition, and a glossary that defines their terms. The essay
+[Provided, Otherwise](https://medium.com/devops-dev/provided-otherwise-the-missing-guard-in-gherkin-af562aeaec7a)
+sets out this argument and the format.
+
+A format alone is not enough, though. Every specification leaves
+something unsaid, and a running system does something in every case
+anyway. Where the specification is silent, something else decides,
+often a tool's default that nobody chose. And
 where someone did decide, the decision often never reaches the
 specification: it stays with the change that made it, where the next
 reader does not look. Over many changes, specification and system drift
@@ -26,7 +41,7 @@ finding every rule a change may affect, resolving terms, telling a
 changed meaning from a reflowed line. Proviso is those mechanics.
 
 The essay [Decided Elsewhere](https://medium.com/@__bbak/decided-elsewhere-30bcfc233b6e)
-sets out the findings behind Proviso.
+sets out the findings behind this.
 
 ## How it works
 
