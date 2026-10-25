@@ -917,7 +917,8 @@
         "baseline.manifest.remove"
       ],
       "text": "The Otherwise of baseline.manifest.remove names only the entries that could not be removed. It does not say what happens to the others: when `.amendment.md` can be removed and `.coherence.json` cannot, no rule says whether `.amendment.md` is removed or stays. The Examples have no such row.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in de50622"
     },
     {
       "id": "f8",
