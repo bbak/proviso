@@ -185,4 +185,4 @@ Otherwise `pack` writes <pack> to "stdout" as `pack_text`
 | --- | --- | --- | --- | --- |
 | for one changed rule | `--json` | yes | a `context_pack`, exit status 0 | |
 | for one changed rule | none | no | `pack_text`, exit status 0 | |
-| for an empty element diff | none | no | `pack_text` with "System" only, exit status 0 | |
+| for an empty element diff, without `.amendment.md` | none | no | `pack_text` with "System" only, exit status 0 | |
