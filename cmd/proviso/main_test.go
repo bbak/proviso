@@ -261,6 +261,27 @@ func TestPackCommand(t *testing.T) {
 	}
 }
 
+func TestManifestRemoves(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/.coherence.json/inner/x": "x", "outside.md": "kept"})
+	note := filepath.Join("proviso", ".amendment.md")
+	if err := os.Symlink(filepath.Join("..", "outside.md"), note); err != nil {
+		t.Logf("no link, a folder instead: %v", err)
+		os.MkdirAll(filepath.Join(note, "inner"), 0o755)
+	}
+	var out, errOut bytes.Buffer
+	if status := run([]string{"manifest"}, &out, &errOut); status != 0 || errOut.Len() > 0 {
+		t.Fatalf("%d %q", status, errOut.String())
+	}
+	for _, p := range []string{note, filepath.Join("proviso", ".coherence.json")} {
+		if _, err := os.Lstat(p); err == nil {
+			t.Errorf("%s is left", p)
+		}
+	}
+	if data, err := os.ReadFile("outside.md"); err != nil || string(data) != "kept" {
+		t.Errorf("the link's target: %q %v", data, err)
+	}
+}
+
 func TestInit(t *testing.T) {
 	all := []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
 	lines := func(verb string, paths ...string) string {

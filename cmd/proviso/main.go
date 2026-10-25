@@ -224,17 +224,16 @@ func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso manifest: cannot write %s: %v\n", path.Join(tree.RootName, tree.ManifestName), err)
 		return exitCantRun
 	}
-	// Anything named as the note is the note, a folder too.
-	for _, rm := range []struct {
-		name   string
-		remove func(string) error
-	}{{tree.CoherenceName, os.Remove}, {tree.NoteName, os.RemoveAll}} {
-		if err := rm.remove(filepath.Join(t.Root, rm.name)); err != nil && !errors.Is(err, fs.ErrNotExist) {
-			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, rm.name), err)
-			return exitCantRun
+	// baseline.manifest.remove: whatever stands under either name goes, a
+	// folder with everything in it, a link without what it points to.
+	status := exitClean
+	for _, name := range []string{tree.CoherenceName, tree.NoteName} {
+		if err := os.RemoveAll(filepath.Join(t.Root, name)); err != nil {
+			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, name), err)
+			status = exitCantRun
 		}
 	}
-	return exitClean
+	return status
 }
 
 // replace writes the file name into the folder root. It writes a new file
