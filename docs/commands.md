@@ -97,13 +97,15 @@ proviso pack [--json] [--since <revision>]
 ```
 
 Writes the context pack of the amendment: the system, the element diff,
-and every element needed to read it. `--since <revision>` writes the
-pack of what changed since that revision, for an agent's later round.
+what the amendment note says the amendment leaves out, and every
+element needed to read it. `--since <revision>` writes the pack of what
+changed since that revision, for an agent's later round. A note that is
+not a readable file in UTF-8 stops it, rather than drop out of the pack.
 
 | Exit status | Meaning |
 | --- | --- |
 | 0 | the pack was written |
-| 2 | the command could not run |
+| 2 | the amendment note could not be read, or the command could not run |
 
 Specified in [baseline/features/pack.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/pack.md).
 
@@ -117,7 +119,8 @@ Records a check result, read from standard input, in
 `proviso/.coherence.json`. A result is either a check, the checking
 agent's judgements and new findings, or the engineer's decisions on
 recorded findings, never both. Proviso numbers the findings and adds
-the fingerprints of what the check covered.
+the fingerprints of what the check covered. A damaged coherence file is
+reported before anything wrong with the input.
 
 | Exit status | Meaning |
 | --- | --- |
@@ -134,10 +137,12 @@ proviso verify [--json]
 ```
 
 Tells whether the tree may become the baseline as it stands: either it
-is what the manifest records and no coherence file is left over, or the
-coherence check covers the amendment's final state. It lists each
-problem: a check `missing` or `leftover`, a candidate `unjudged`, an
-element `stale`, a finding `open`.
+is what the manifest records and no coherence file or amendment note is
+left over, or the coherence check covers the amendment's final state.
+It lists each problem: a check `missing`, a coherence file or note
+`leftover`, a candidate `unjudged`, an element `stale`, a finding
+`open`. A coherence file it cannot read stops it before anything is
+reported.
 
 | Exit status | Meaning |
 | --- | --- |
@@ -154,12 +159,16 @@ proviso manifest
 ```
 
 Records the tree as the baseline in `proviso/manifest.sum`, and removes
-the coherence file. Acceptance runs it; running it by hand records a
+the coherence file and the amendment note, whatever stands under their
+names. Acceptance runs it; running it by hand records a
 tree nobody checked.
 
 | Exit status | Meaning |
 | --- | --- |
-| 0 | the manifest was written |
-| 2 | the manifest could not be written, or the command could not run |
+| 0 | the manifest was written, and the coherence file and the note removed |
+| 2 | the manifest could not be written, the coherence file or the note could not be removed, or the command could not run |
+
+If a removal fails, the written manifest stays, and `verify` reports
+what is left over.
 
 Specified in [baseline/features/manifest.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/manifest.md).

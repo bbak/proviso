@@ -44,7 +44,9 @@ notes in `.proviso/`. Name your project's build and test commands in
 
 1. **Specify:** edit the tree on the amendment's branch. `proviso lint`
    checks the notation, `proviso diff` shows what changed, and
-   `proviso impact` what it may affect. Commit the tree.
+   `proviso impact` what it may affect. If the amendment deliberately
+   leaves something out, list it in `proviso/.amendment.md`. Commit the
+   tree, and the note if there is one.
 2. **Build:** ask Claude Code to build the amendment. A testing agent
    and a coding agent build from the tree, apart from each other; every
    decision the tree did not make comes back to you.

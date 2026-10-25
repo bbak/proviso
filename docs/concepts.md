@@ -73,6 +73,12 @@ diff and everything needed to read it, such as the glossary entries,
 invariants, constraints and parameters it uses, and `system.md`. Nothing
 else of the tree.
 
+**Amendment note.** `proviso/.amendment.md`, on the amendment's branch:
+a list of what this amendment deliberately leaves out, such as a part
+of the request kept for later. The pack carries it under "Not in this
+amendment", so the agents do not build more than asked. It holds
+nothing else: whatever decides behaviour belongs in the tree.
+
 ## Agents and checks
 
 **Implementing agents.** The **testing agent** and the **coding agent**.
@@ -100,11 +106,13 @@ it covered. An edit after the check makes the elements it touched
 **Acceptance.** The merge of an amendment into its **target**, the
 branch it is accepted into, usually `main`. It requires a coherence
 check that covers the amendment's final state, and rewrites the manifest
-in the same step, which removes the coherence file.
+in the same step, which removes the coherence file and the amendment
+note.
 
 **Verify.** `proviso verify` tells whether a branch's tree may be the
-baseline as it stands: either it is what the manifest records, or a
-coherence check covers it. It judges nothing, so CI can run it on every
+baseline as it stands: either it is what the manifest records, with no
+coherence file or amendment note left over, or a coherence check covers
+it. It judges nothing, so CI can run it on every
 branch.
 
 ## What Proviso installs

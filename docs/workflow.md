@@ -32,8 +32,14 @@ better edited now than found by the check. Leave a place `?` when the
 business has not decided it, and take the question back to them;
 nothing with an undecided place is built.
 
-Commit the tree before anything is built. The tree comes first on the
-branch, then tests and code.
+If the amendment deliberately leaves part of the request out, list it in
+`proviso/.amendment.md`, one item each, no headings. The pack carries
+the list to the agents, who then neither build it nor report it as a
+gap. Only what this amendment leaves out goes there; a lasting "the
+system never …" is a constraint in the tree.
+
+Commit the tree, and the note if there is one, before anything is
+built. The tree comes first on the branch, then tests and code.
 
 A skill that guides business requesters to a checkable request is in
 the works. Until then, requests arrive in whatever form the business
@@ -101,7 +107,7 @@ the check does not cover the amendment. Then, as `.proviso/build.md`
 says:
 
 - **Directly:** it merges into the target, rewrites the manifest, which
-  removes the coherence file, runs your project's checks, and commits
+  removes the coherence file and the amendment note, runs your project's checks, and commits
   `feat: accept <amendment>`. If a check fails, it aborts the merge.
 - **Through a pull request:** it rewrites the manifest on the
   amendment's branch, runs your checks, and commits as the branch's last
