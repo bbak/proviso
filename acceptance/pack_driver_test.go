@@ -19,8 +19,12 @@ import (
 )
 
 // The headings of pack_text, in their order, and how context_pack names
-// each but Amendment.
-var packHeadings = []string{"System", "Amendment", "Frames", "Context"}
+// each but Amendment and Not in this amendment.
+var packHeadings = []string{"System", "Amendment", notInAmendment, "Frames", "Context"}
+
+// notInAmendment is the heading of pack_text that holds the amendment note.
+const notInAmendment = "Not in this amendment"
+
 var packHeadingJSON = map[string]string{"System": "system", "Frames": "frames", "Context": "context"}
 
 type packElement struct {
@@ -35,6 +39,7 @@ type contextPack struct {
 	Root     string        `json:"root"`
 	Revision *string       `json:"revision"`
 	Diff     []diffElement `json:"diff"`
+	Note     *string       `json:"note"`
 	Elements []packElement `json:"elements"`
 }
 
@@ -65,6 +70,7 @@ type packOutcome struct {
 	cpOK       bool     // context_pack could be read
 	headings   []string // the headings of pack_text, in their order
 	revision   string   // the line Former text from under Amendment, if any
+	note       *string  // what stands under Not in this amendment, if the heading is there
 	items      []packItem
 	diff       diffOutcome
 }
@@ -107,7 +113,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 	// Each check reports what it finds and the others go on, so that one
 	// cause does not hide another.
 	o.cp, o.cpOK = parseContextPack(t, o.json.stdout)
-	o.headings, o.revision, o.items = parsePackText(t, o.text.stdout)
+	o.headings, o.revision, o.note, o.items = parsePackText(t, o.text.stdout)
 	if root != "" && o.cpOK {
 		checkRoot(t, outcome{report: report{Root: o.cp.Root}}, root)
 	}
@@ -149,6 +155,11 @@ func parseContextPack(t *testing.T, stdout string) (contextPack, bool) {
 		t.Errorf("system.cli.context-pack: revision missing")
 	} else if string(bytes.TrimSpace(rev)) != "null" && json.Unmarshal(rev, &s) != nil {
 		t.Errorf("system.cli.context-pack: revision is neither a string nor null: %s", rev)
+	}
+	if note, ok := raw["note"]; !ok {
+		t.Errorf("system.cli.context-pack: note missing")
+	} else if string(bytes.TrimSpace(note)) != "null" && json.Unmarshal(note, &s) != nil {
+		t.Errorf("system.cli.context-pack: note is neither a string nor null: %s", note)
 	}
 	for _, k := range []string{"diff", "elements"} {
 		if r := bytes.TrimSpace(raw[k]); len(r) == 0 || r[0] != '[' {
@@ -211,14 +222,16 @@ var (
 )
 
 // parsePackText reads stdout as pack_text and checks its layout: UTF-8, the
-// headings of level 1 among the four and in their order, each holding an
-// element; the line Former text from, if any, first under Amendment; a
+// headings of level 1 among the five and in their order, each holding an
+// element, or the note; the line Former text from, if any, first under
+// Amendment; the note under Not in this amendment, read as it stands,
+// between a blank line after the heading and one before the next; a
 // blank line before every heading, status line, element and line Former;
 // the line Not to be built right after a status line; the former
 // text of a part in a block fenced with backticks, labelled text, its fence
 // longer than any run of backticks in it. Line endings are read as line
 // feeds, or carriage returns and line feeds (see the report).
-func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
+func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []packItem) {
 	t.Helper()
 	if !utf8.ValidString(stdout) {
 		t.Errorf("system.cli.pack-text: not UTF-8")
@@ -231,6 +244,8 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
 	}
 	var headings []string
 	revision := ""
+	var note *string
+	var noteLines []string
 	var items []packItem
 	var cur *packItem
 	heading := ""
@@ -243,6 +258,12 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
 	inFormer := false // the open fence holds the former text of a part
 	for i := 0; i < len(lines); i++ {
 		l := lines[i]
+		// The note is not read as Markdown: it stands as the file holds it
+		// up to the next heading of pack_text.
+		if heading == notInAmendment && !isHeading[l] {
+			noteLines = append(noteLines, l)
+			continue
+		}
 		if fence != "" {
 			if closesFence(l, fence) {
 				fence = ""
@@ -272,6 +293,9 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
 			heading = strings.TrimPrefix(l, "# ")
 			headings = append(headings, heading)
 			cur = nil
+			if heading == notInAmendment {
+				note = ptr("")
+			}
 			continue
 		case heading == "Amendment" && revisionLine.MatchString(l):
 			blankBefore(i, "line Former text from")
@@ -351,7 +375,13 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, []packItem) {
 	if fence != "" {
 		t.Errorf("system.cli.pack-text: a fenced block %s is not closed", fence)
 	}
-	return headings, revision, items
+	if note != nil {
+		if len(noteLines) == 0 || noteLines[0] != "" {
+			t.Errorf("system.cli.pack-text: no blank line after the heading %q", notInAmendment)
+		}
+		*note = strings.Trim(strings.Join(noteLines, "\n"), "\n")
+	}
+	return headings, revision, note, items
 }
 
 // closesFence tells whether l closes the fenced block opened with fence.
@@ -383,12 +413,15 @@ func checkPackHeadings(t *testing.T, o packOutcome) {
 	for _, it := range o.items {
 		count[it.heading]++
 	}
+	if o.note != nil && strings.TrimSpace(*o.note) != "" {
+		count[notInAmendment]++
+	}
 	for i, h := range o.headings {
 		if i > 0 && rank[o.headings[i-1]] >= rank[h] {
 			t.Errorf("system.cli.pack-text: the heading %q after %q", h, o.headings[i-1])
 		}
 		if count[h] == 0 {
-			t.Errorf("system.cli.pack-text: no element appears under %q, which is not left out", h)
+			t.Errorf("system.cli.pack-text: nothing appears under %q, which is not left out", h)
 		}
 	}
 	seen := map[string]string{}
@@ -435,6 +468,16 @@ func checkPackAgrees(t *testing.T, o packOutcome) {
 	}
 	if strings.Join(amendText, " ") != strings.Join(amendJSON, " ") {
 		t.Errorf("system.cli.context-pack: diff %v, but pack_text holds %v under Amendment", amendJSON, amendText)
+	}
+	// note: the text under Not in this amendment, or null without the
+	// heading.
+	switch {
+	case o.note == nil && o.cp.Note != nil:
+		t.Errorf("system.cli.context-pack: pack_text has no heading %q, but note is %q", notInAmendment, *o.cp.Note)
+	case o.note != nil && o.cp.Note == nil:
+		t.Errorf("system.cli.context-pack: note is null, but pack_text holds under %q:\n%s", notInAmendment, *o.note)
+	case o.note != nil && strings.Trim(*o.cp.Note, "\n") != *o.note:
+		t.Errorf("system.cli.context-pack: note %q, but pack_text holds under %q:\n%s", *o.cp.Note, notInAmendment, *o.note)
 	}
 }
 
