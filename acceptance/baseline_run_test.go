@@ -142,9 +142,9 @@ func TestBaselineRunLint(t *testing.T) {
 // TestBaselineRunWrites checks the invariant baseline.run.writes over runs
 // of every kind, however they end: every file and folder below the test
 // directory, the git repository's .git included, is as it was, except
-// manifest.sum, .coherence.json and .amendment.md after a run of `manifest`
-// that exits with 0, and .coherence.json after a run of `judge` that exits
-// with 0. Every
+// manifest.sum, .coherence.json, and .amendment.md with everything in it,
+// after a run of `manifest` that wrote manifest.sum, and .coherence.json
+// after a run of `judge` that exits with 0. Every
 // other test checks it too, for each run it makes (see manifestIn, diffIn,
 // impactIn, packIn, judgeIn and verifyIn).
 func TestBaselineRunWrites(t *testing.T) {
