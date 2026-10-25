@@ -2,10 +2,12 @@
 
 ## <a id="system.amendment-note"></a> amendment_note
 
-The file `.amendment.md` in the spec root: what the amendment on its
-branch deliberately leaves out, for the agents that build it. Written
-by the engineers or a skill, read by `pack`, looked for by `verify`,
-removed by `manifest`.
+The entry `.amendment.md` in the spec root, whatever it is: what the
+amendment on its branch deliberately leaves out, for the agents that
+build it. Anything of that name counts as the note, so that one `pack`
+cannot read stops it rather than drop out of it. Written by the
+engineers or a skill, read by `pack`, looked for by `verify`, removed by
+`manifest`.
 
 - **It is committed on the amendment's branch,** like `coherence_file`,
   so that it reaches every round of the build, and CI.
