@@ -6,7 +6,7 @@
 
 Verifying tells whether the spec tree may become the baseline as it
 stands: either nothing changed since the manifest was written and no
-check is left over, or the coherence check covers the amendment's final
+check or amendment note is left over, or the coherence check covers the amendment's final
 state, with every candidate judged and no finding open.
 
 ## Rationale
@@ -18,14 +18,15 @@ neither which branch is the mainline nor who made the edit. What it
 lists is what a re-run of the check needs to look at, and no more.
 
 `verify` derives the element diff and the candidates as `impact` does,
-and reads `coherence_file`, if the spec root holds one.
+and reads `coherence_file`, if the spec root holds one. Of
+`amendment_note`, it only asks whether the spec root holds one.
 
 ## <a id="baseline.verify.missing"></a> Rule: Without a coherence file, only an unchanged tree passes
 
 ```guarded
 When      `verify` runs on a [spec root] without `coherence_file`, whose [element diff] lists the [elements] <elements>
 Provided  <elements> is empty
-Then      `verify` finds nothing to report
+Then      nothing is reported as "missing"
   And     `verify` reads no [judgement]
 Otherwise `verify` reports "missing"
   And     `verify` looks no further
@@ -33,30 +34,35 @@ Otherwise `verify` reports "missing"
 
 | elements | provided | outcome | why |
 | --- | --- | --- | --- |
-| none: the tree is as the manifest records it | yes | nothing reported | the mainline after an acceptance |
+| none: the tree is as the manifest records it | yes | nothing reported as "missing" | the mainline after an acceptance |
 | `lint.run.exit`, changed | no | "missing" | a hand edit whose check is missing |
 
-## <a id="baseline.verify.leftover"></a> Rule: A coherence file beside an unchanged tree is left over
+## <a id="baseline.verify.leftover"></a> Rule: A coherence file or an amendment note beside an unchanged tree is left over
 
 ### Rationale
 
-`manifest` removes `coherence_file` when it records the tree, so a file
-beside a tree the manifest records was not accepted: a merge that
-skipped acceptance, or an amendment whose edits were all undone.
+`manifest` removes `coherence_file` and `amendment_note` when it records
+the tree, so either file beside a tree the manifest records was not
+accepted: a merge that skipped acceptance, or an amendment whose edits
+were all undone. A note left over would also reach the next
+amendment's pack, and its agents would leave out what nobody excluded.
 
 ```guarded
-When      `verify` runs on a [spec root] with `coherence_file`, whose [element diff] lists the [elements] <elements>
+When      `verify` runs on a [spec root] with `coherence_file`, `amendment_note` or both, whose [element diff] lists the [elements] <elements>
 Provided  <elements> is not empty
-Then      `verify` compares what `coherence_file` records with the [spec tree]
-  And     nothing is reported for the file itself
-Otherwise `verify` reports "leftover"
+Then      `verify` compares what `coherence_file` records with the [spec tree], where the [spec root] holds one
+  And     nothing is reported for either file itself
+Otherwise `verify` reports "leftover", once
   And     `verify` looks no further
 ```
 
 | elements | provided | outcome | why |
 | --- | --- | --- | --- |
-| `lint.run.exit`, changed | yes | compared | |
-| none: the tree is as the manifest records it | no | "leftover" | |
+| `lint.run.exit`, changed, with `.coherence.json` | yes | compared | |
+| `lint.run.exit`, changed, with `.amendment.md` only | yes | nothing reported for the note | the check is missing, as `baseline.verify.missing` says |
+| none, with `.coherence.json` | no | "leftover" | |
+| none, with `.amendment.md` only | no | "leftover" | |
+| none, with `.coherence.json` and `.amendment.md` | no | "leftover", once | one problem, however many files |
 
 ## <a id="baseline.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
 

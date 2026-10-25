@@ -46,6 +46,30 @@ Then      the system is taken for "System"
 | `lint.run.root`, removed | `system` and `lint.run.root` with its former text taken | its tests can be retired |
 | none: the tree is as the manifest records it | `system` taken | nothing to build is no failure |
 
+## <a id="baseline.pack.note"></a> Rule: The amendment note is in the pack
+
+### Rationale
+
+The agents read the pack and nothing else, so what the amendment
+deliberately leaves out reaches them there, as the engineers wrote it.
+`pack` copies the note; what it says is the engineers' concern.
+
+```guarded
+When      `pack` assembles the [context pack] of the [spec root] <root>
+Provided  <root> holds an `amendment_note` that holds more than whitespace
+Then      the text of that `amendment_note` is taken for "Not in this amendment", as the file holds it
+  And     everything else stays as it was
+Otherwise nothing is taken for "Not in this amendment"
+  And     everything else stays as it was
+```
+
+| root | provided | outcome | why |
+| --- | --- | --- | --- |
+| `repo/proviso/`, with `.amendment.md` holding "- refunds" | yes | "- refunds" taken | |
+| `repo/proviso/`, without `.amendment.md` | no | nothing taken | most amendments leave nothing out |
+| `repo/proviso/`, with an empty `.amendment.md` | no | nothing taken | |
+| `repo/proviso/`, with `.amendment.md` holding only blank lines | no | nothing taken | |
+
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
 ```guarded
