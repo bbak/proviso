@@ -457,6 +457,9 @@ func TestJudgeAndVerify(t *testing.T) {
 			t.Errorf("%s on a damaged file: %d %q %q", cmd, status, out, errOut)
 		}
 	}
+	if status, out, errOut := call("not json", "judge"); status != 2 || out != "" || !strings.Contains(errOut, "cannot be read") {
+		t.Errorf("judge on a damaged file, with input that is no JSON: %d %q %q", status, out, errOut)
+	}
 	os.WriteFile(coherence, data, 0o644)
 	note := filepath.Join("proviso", ".amendment.md")
 	os.WriteFile(note, []byte("- refunds\n"), 0o644)

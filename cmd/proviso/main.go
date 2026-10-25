@@ -504,8 +504,13 @@ func readCoherence(cmd string, t *tree.Tree, stderr io.Writer) (*baseline.Cohere
 	return c, true
 }
 
-// judgeRun records the check_result on stdin in coherence_file.
+// judgeRun records the check_result on stdin in coherence_file. It reads
+// coherence_file first, before its input and the element diff.
 func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
+	before, ok := readCoherence("judge", t, stderr)
+	if !ok {
+		return exitCantRun
+	}
 	data, err := io.ReadAll(stdin)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso judge: cannot read standard input: %v\n", err)
@@ -524,10 +529,6 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "proviso judge: there is no amendment to judge: the spec tree is as the manifest records it")
 		return exitErrors
 	}
-	before, ok := readCoherence("judge", t, stderr)
-	if !ok {
-		return exitCantRun
-	}
 	after, err := baseline.Judge(before, in, entries, candidates, res.Elements, base)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso judge: %v; nothing is recorded\n", err)
@@ -541,13 +542,13 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 }
 
 // verifyRun writes the problems it finds comparing coherence_file with the
-// spec tree.
+// spec tree. It reads coherence_file first, before it derives anything.
 func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Writer) int {
-	entries, base, candidates, ok := coherence("verify", t, res, stderr)
+	c, ok := readCoherence("verify", t, stderr)
 	if !ok {
 		return exitCantRun
 	}
-	c, ok := readCoherence("verify", t, stderr)
+	entries, base, candidates, ok := coherence("verify", t, res, stderr)
 	if !ok {
 		return exitCantRun
 	}
