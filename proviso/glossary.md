@@ -314,3 +314,13 @@
   built.
 - Contact: Bruno Baketarić
 - Status: defined
+
+## <a id="system.line-ending"></a> line ending
+
+- Definition: The end of a line in a file Proviso reads: a line feed, or
+  a carriage return directly followed by a line feed. A carriage return
+  anywhere else belongs to the line. The last line of a file may have no
+  line ending.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: line endings

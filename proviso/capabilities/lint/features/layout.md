@@ -111,7 +111,7 @@ line feed alone, which every current editor keeps.
 ```guarded
 When      lint reads the file <file> of the [spec tree]
 Provided  <file> holds no carriage return
-Then      lint reports nothing about the line endings of <file>
+Then      lint reports nothing about the [line endings] of <file>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.line-ending` at the first line of <file> that holds a carriage return
   And     lint goes on with the rest of the [spec tree]

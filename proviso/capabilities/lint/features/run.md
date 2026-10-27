@@ -26,8 +26,8 @@ file.
 ```guarded
 When      someone runs `lint` in the directory <directory>
 Provided  <directory> or a directory above it holds a [spec root]
-Then      lint checks the [spec tree] of the [spec root] nearest to <directory>
-  And     lint reports what it finds there
+Then      lint goes on to read the files of the [spec tree] of the [spec root] nearest to <directory>
+  And     the rest of the run works on that [spec root]
 Otherwise lint writes to "stderr" that no [spec root] was found
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
@@ -35,10 +35,10 @@ Otherwise lint writes to "stderr" that no [spec root] was found
 
 | directory | provided | outcome | why |
 | --- | --- | --- | --- |
-| `repo/`, holding `proviso/system.md` | yes | checks `repo/proviso/` | |
-| `repo/cmd/proviso/`, below that `repo/` | yes | checks `repo/proviso/` | found upwards |
-| `repo/proviso/capabilities/lint/`, inside the tree | yes | checks `repo/proviso/` | found from inside the tree |
-| `repo/a/`, where `repo/a/proviso/system.md` and `repo/proviso/system.md` both exist | yes | checks `repo/a/proviso/` | the nearest wins |
+| `repo/`, holding `proviso/system.md` | yes | reads `repo/proviso/` | |
+| `repo/cmd/proviso/`, below that `repo/` | yes | reads `repo/proviso/` | found upwards |
+| `repo/proviso/capabilities/lint/`, inside the tree | yes | reads `repo/proviso/` | found from inside the tree |
+| `repo/a/`, where `repo/a/proviso/system.md` and `repo/proviso/system.md` both exist | yes | reads `repo/a/proviso/` | the nearest wins |
 | `repo/`, holding `proviso/` without `system.md` | no | exit status 2 | a folder named `proviso/` is not yet a spec root |
 | `repo/`, holding `Proviso/System.md` | no | exit status 2 | names are matched exactly, case included, on every platform |
 | `repo/`, holding `system.md` but no `proviso/` | no | exit status 2 | the file alone does not mark a spec root |
@@ -58,16 +58,18 @@ link, which could loop, read a file twice or reach outside the tree, so
 a link counts as unreadable wherever it stands and whatever its name,
 and so does a Windows junction or any other entry that is neither a
 regular file nor a folder, unless a hidden name has it skipped, which
-loses nothing, and the tree stays self-contained. A file the layout
-does not list is never read at all: it is reported as unknown, and
-leaves no part of the tree unread.
+loses nothing, and the tree stays self-contained. A folder standing
+where the layout lists a file hides that file as surely as a file
+without read permission, so it counts as unreadable too, whichever file
+it hides. A file the layout does not list is never read at all: it is
+reported as unknown, and leaves no part of the tree unread.
 
 ```guarded
 Given     lint has found the [spec root] for the run
-When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links and other entries that are neither a regular file nor a folder, not skipped as hidden, among them <unreadable>
+When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links, its other entries that are neither a regular file nor a folder, and its folders at the path of a file `tree_layout` lists, not skipped as hidden, among them <unreadable>
 Provided  <unreadable> is empty
-Then      lint checks the whole [spec tree]
-  And     lint reports what it finds
+Then      lint goes on to check the model version of the [spec tree]
+  And     no file of it is left unread
 Otherwise lint writes every file in <unreadable> to "stderr"
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
@@ -75,7 +77,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 
 | unreadable | provided | outcome | why |
 | --- | --- | --- | --- |
-| none | yes | the tree is checked | |
+| none | yes | goes on to the model version | |
 | `glossary.md`, without read permission | no | exit status 2, naming `glossary.md` | |
 | `a.md`, not valid UTF-8 | no | exit status 2, naming `a.md` | text that cannot be decoded cannot be read |
 | `shared`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared` | a link is never followed |
@@ -83,8 +85,12 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
 | `manifest.sum`, without read permission | no | exit status 2, naming `manifest.sum` | the model version is read only from a manifest that can be read |
-| none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
-| none, while `.shared.md` is a symbolic link with a hidden name | yes | the tree is checked, and the link is skipped | a hidden entry never holds spec content |
+| `manifest.sum`, a folder | no | exit status 2, naming `manifest.sum` | a folder where the manifest stands is no missing manifest |
+| `capabilities/lint/glossary.md`, a folder holding `a.md` | no | exit status 2, naming `capabilities/lint/glossary.md` | it hides the glossary |
+| `capabilities/lint/features/run.md`, an empty folder | no | exit status 2, naming `capabilities/lint/features/run.md` | any file the layout lists, empty folder or not |
+| none, while `notes.md`, not in the layout, has no read permission | yes | goes on to the model version, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
+| none, while `capabilities/lint/features/old/` is a folder holding `run.md` | yes | goes on to the model version, and `old/run.md` is reported as `file-unknown` | `old` is no name the layout lists for a file |
+| none, while `.shared.md` is a symbolic link with a hidden name | yes | goes on to the model version, and the link is skipped | a hidden entry never holds spec content |
 
 ## <a id="lint.run.model"></a> Rule: Lint checks only a tree of its own model version
 
@@ -100,8 +106,9 @@ binary's own version.
 ```guarded
 Given     lint has read every file of its [spec tree] that `tree_layout` lists
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
-Provided  <root> holds no `manifest_file`, or its first line, without its line ending, names `model_version`
+Provided  <root> holds no `manifest_file`, or its first line, without its [line ending], names `model_version`
 Then      lint checks the [spec tree]
+  And     lint reports what it finds
   And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
 Otherwise → lint.run.model-other
 ```
@@ -114,12 +121,13 @@ Otherwise → lint.run.model-other
 | `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
 | `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
 
 ## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
 
 ```guarded
 When      lint finds that the first line <line> of `manifest_file` does not name `model_version`
-Provided  <line>, without its line ending, is "model", a space and a whole number in decimal digits without a leading zero
+Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
 Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and `model_version` as the one lint reads
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
@@ -136,6 +144,8 @@ Otherwise lint writes to "stderr" that `manifest_file` names no model version
 | `model` | no | names no model version; exit status 2 | |
 | `model one` | no | names no model version; exit status 2 | |
 | `model 00` | no | names no model version; exit status 2 | a leading zero; never "needs 0, reads 0" |
+| `model 1`, followed by two carriage returns and a line feed | no | names no model version; exit status 2 | one carriage return stays in the line |
+| `model 0`, a carriage return and `foo` | no | names no model version; exit status 2 | a lone carriage return belongs to the line |
 | `<<<<<<< HEAD` | no | names no model version; exit status 2 | a merge conflict left in the file |
 
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
