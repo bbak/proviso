@@ -62,15 +62,17 @@
 ## <a id="install.version-stamp"></a> version stamp
 
 - Definition: The line `proviso-version: <version>` in the frontmatter
-  of an installed skill or agent definition, among the indented lines
-  directly below the line `metadata:`: the Proviso version of the
-  `init` that wrote the file. The frontmatter is the lines between a
-  first line `---` and the next line `---`. Each of these lines is read
-  without its line ending, a line feed or a carriage return and a line
-  feed. Spaces and tabs at the end of any of these lines, around the
-  colons, and as the indentation of `proviso-version`, of any depth,
-  change nothing. The agent host reads it as YAML; Proviso reads only
-  these lines.
+  of an installed skill or agent definition, among the lines directly
+  below the line `metadata:` that start with a space or a tab: the
+  Proviso version of the `init` that wrote the file. The frontmatter is
+  the lines between a first line `---` and the next line `---`; without
+  that next line there is none. `metadata:` starts its line; the first
+  line below it that starts with neither a space nor a tab, a blank one
+  included, ends the lines below it. Each of these lines is read without
+  its line ending, a line feed or a carriage return and a line feed.
+  Spaces and tabs at the end of any of these lines, around the colons,
+  and before `proviso-version`, change nothing. The agent host reads it
+  as YAML; Proviso reads only these lines.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: stamp, version stamps, stamps

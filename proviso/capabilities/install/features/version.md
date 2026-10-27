@@ -127,6 +127,9 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata: {proviso-version: 0.1.0}` on one line | yes | named as naming no Proviso version | Proviso reads only the stamp's own lines |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version: 0.1.0` at the top, not below `metadata:` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version:` below `metadata:`, with no version | yes | named as naming no Proviso version | an empty version names none |
+| `.claude/skills/proviso-build/SKILL.md`, its stamp below an indented `metadata:`, nested under another key | yes | named as naming no Proviso version | `metadata:` starts its line |
+| `.claude/skills/proviso-build/SKILL.md`, a blank line between `metadata:` and its stamp | yes | named as naming no Proviso version | a blank line ends the lines below `metadata:` |
+| `.claude/skills/proviso-build/SKILL.md`, a first line `---` and no later line `---` | yes | named as naming no Proviso version | without its closing line there is no frontmatter |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `[1]` | yes | named as naming no Proviso version | not a semantic version |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `v0.1.0` | yes | named as naming no Proviso version | the `v` belongs to the tag only |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1` | yes | named as naming no Proviso version | a semantic version has three numbers |
@@ -138,6 +141,7 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0`, with carriage returns and line feeds | no | handed over, with the stamp `0.1.0` | the line ending is not part of the line |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.1-dev` | no | handed over | a pre-release is a semantic version |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `dev` | no | handed over | |
+| `.claude/skills/proviso-build/SKILL.md`, an indented comment line between `metadata:` and its stamp `0.1.0` | no | handed over, with the stamp `0.1.0` | an indented line belongs to the lines below `metadata:` |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` with a tab as indentation, no space after the colon and spaces at the end | no | handed over, with the stamp `0.1.0` | whitespace changes nothing |
 
 ## <a id="install.version.stale"></a> Rule: A skill or agent installed by another version is named
