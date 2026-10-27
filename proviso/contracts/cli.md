@@ -661,8 +661,10 @@ proviso 0.1.0
 model 0
 ```
 
-On standard error it writes, outside the root of a git repository, one
-line of hint. In the root it writes, first, either one line saying that
+With an argument, it writes to standard error only that it takes no
+argument, and its usage, and checks nothing. Without one, it writes to
+standard error, outside the root of a git repository, one line of hint.
+In the root it writes, first, either one line saying that
 no skill or agent is installed, or one line for each skill or agent
 that `installed_files` names and that is missing, holds more than one
 stamp, names no Proviso version or was installed by another version, in
