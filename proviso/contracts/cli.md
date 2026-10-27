@@ -664,9 +664,9 @@ model 0
 On standard error it writes, outside the root of a git repository, one
 line of hint. In the root it writes, first, either one line saying that
 no skill or agent is installed, or one line for each skill or agent
-that `installed_files` names and that is missing, names no Proviso
-version or was installed by another version, in the byte order of their
-paths; then at most one line about the spec tree's manifest. In the
+that `installed_files` names and that is missing, holds more than one
+stamp, names no Proviso version or was installed by another version, in
+the byte order of their paths; then at most one line about the spec tree's manifest. In the
 root, nothing on standard error means everything fits. The wording of
 these lines is for people and not part of the contract.
 

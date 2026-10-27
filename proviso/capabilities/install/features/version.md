@@ -94,7 +94,7 @@ When      `version` checks the [agent definition] or [skill] <file>
 Provided  no entry exists at the path of <file>
 Then      `version` writes to "stderr" one line naming <file> as not installed
   And     `version` checks nothing else of <file>
-Otherwise → install.version.unstamped
+Otherwise → install.version.stamps
 ```
 
 | file | provided | outcome | why |
@@ -102,6 +102,31 @@ Otherwise → install.version.unstamped
 | `.claude/agents/proviso-coder.md`, deleted after `init` | yes | named as not installed | |
 | `.claude/agents/proviso-coder.md`, in place | no | handed over | |
 | `.claude/agents/proviso-coder.md`, a folder of that name | no | handed over | any entry counts, as for `init` |
+
+## <a id="install.version.stamps"></a> Rule: A skill or agent with more than one stamp is named
+
+### Rationale
+
+Proviso writes one stamp per file, so a second one is damage, from a
+hand edit or a merge, and the line says so rather than pick one. Every
+line `proviso-version:` below `metadata:` counts, whatever its version:
+the stamps are counted first, and only then is a version judged.
+
+```guarded
+When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
+Provided  <file> can be read as a file, and its frontmatter holds more than one [version stamp], whatever their versions
+Then      `version` writes to "stderr" one line naming <file> as holding more than one [version stamp]
+  And     `version` checks nothing else of <file>
+Otherwise → install.version.unstamped
+```
+
+| file | provided | outcome | why |
+| --- | --- | --- | --- |
+| `.claude/skills/proviso-build/SKILL.md`, two lines `proviso-version: 0.1.0` and `proviso-version: 0.2.0` below `metadata:` | yes | named as holding more than one stamp | |
+| `.claude/skills/proviso-build/SKILL.md`, two `metadata:` blocks, each stamped `0.1.0` | yes | named as holding more than one stamp | two stamps, even if equal |
+| `.claude/skills/proviso-build/SKILL.md`, the lines `proviso-version: 0.1.0` and `proviso-version:` below `metadata:` | yes | named as holding more than one stamp | an empty stamp counts too |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` once | no | handed over | |
+| `.claude/skills/proviso-build/SKILL.md`, without read permission | no | handed over | an unreadable file names no version |
 
 ## <a id="install.version.unstamped"></a> Rule: A skill or agent without a stamp is named
 
@@ -114,7 +139,7 @@ version, the forms a Proviso version takes, count.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
-Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v", or it holds more than one [version stamp]
+Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v"
 Then      `version` writes to "stderr" one line naming <file> as naming no [Proviso version]
   And     `version` checks nothing else of <file>
 Otherwise → install.version.stale
@@ -133,8 +158,6 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, stamped `[1]` | yes | named as naming no Proviso version | not a semantic version |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `v0.1.0` | yes | named as naming no Proviso version | the `v` belongs to the tag only |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1` | yes | named as naming no Proviso version | a semantic version has three numbers |
-| `.claude/skills/proviso-build/SKILL.md`, two lines `proviso-version: 0.1.0` and `proviso-version: 0.2.0` below `metadata:` | yes | named as naming no Proviso version | Proviso never writes two stamps, and picks none |
-| `.claude/skills/proviso-build/SKILL.md`, two `metadata:` blocks, each stamped `0.1.0` | yes | named as naming no Proviso version | two stamps, even if equal |
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata` without `proviso-version` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` | no | handed over | |
