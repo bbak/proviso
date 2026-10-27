@@ -132,8 +132,8 @@ named after that element. A top-level test that checks only the
 test trees is named `TestFixture` followed by letters and digits, the
 first a capital letter, naming the test tree, such as
 `TestFixtureLint`. The only other top-level test function is `TestMain`. No two identifiers in
-the spec tree give the same name, and none gives a name that starts
-with `TestFixture`.
+the spec tree give the same name, none gives `TestMain`, and none gives
+a name that starts with `TestFixture`.
 
 ## <a id="system.model-release"></a> A new model version starts with a minor or major release
 
