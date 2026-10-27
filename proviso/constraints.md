@@ -128,7 +128,8 @@ optionally followed by `_` and a suffix of letters and digits, such as
 `TestBaselineDiffFormer_Pack`. A top-level test that checks only the
 test trees is named `TestFixture` followed by letters and digits. The
 only other top-level test function is `TestMain`. No two identifiers in
-the spec tree give the same name.
+the spec tree give the same name, and none gives a name that starts
+with `TestFixture`.
 
 ## <a id="system.model-release"></a> A new model version starts with a minor or major release
 
