@@ -112,27 +112,27 @@ With this pattern, that is one anchored pattern for Go's test runner,
 such as `^TestBaselinePackNote(_.*)?$`: the suffix after an underscore
 keeps the tests of one element together when they are spread over
 several functions, and the anchor keeps out an element whose identifier
-merely starts the same way. A test of the test trees themselves checks no element,
-and every run needs it, since a broken test tree makes every other
-result meaningless.
+merely starts the same way. A test of the test trees themselves checks
+no element, and every run needs it, since a broken test tree makes every
+other result meaningless.
 
 ### Property
 
 Every top-level acceptance test that checks an element is named `Test`
-followed by the element's identifier, with the dots and hyphens
-dropped and each part between them that starts with a letter starting
-with a capital letter, while a digit stays as it is, such as
+followed by the element's identifier, with the dots and hyphens dropped
+and each part between them that starts with a letter starting with a
+capital letter, while a digit stays as it is, such as
 `TestInstallVersionStale` for `install.version.stale` and
-`TestLintRunRoot2` for `lint.run.root-2`;
-optionally followed by `_` and a suffix of letters and digits, such as
-`TestBaselineDiffFormer_Pack`. Every such test belongs to exactly one
-element, whose Examples rows and derived checks it holds; a check of
-another element within it is an addition and never replaces a test
-named after that element. A top-level test that checks only the
-test trees is named `TestFixture` followed by letters and digits, the
-first a capital letter, such as `TestFixtureLint`. The only other top-level test function is `TestMain`. No two identifiers in
-the spec tree give the same name, none gives `TestMain`, and none gives
-a name that starts with `TestFixture`.
+`TestLintRunRoot2` for `lint.run.root-2`; optionally followed by `_` and
+a suffix of letters and digits, such as `TestBaselineDiffFormer_Pack`.
+Every such test belongs to exactly one element, whose Examples rows and
+derived checks it holds; a check of another element within it is an
+addition and never replaces a test named after that element. A top-level
+test that checks only the test trees is named `TestFixture` followed by
+letters and digits, the first a capital letter, such as
+`TestFixtureLint`. The only other top-level test function is `TestMain`.
+No two identifiers in the spec tree give the same name, none gives
+`TestMain`, and none gives a name that starts with `TestFixture`.
 
 ## <a id="system.model-release"></a> A new model version starts with a minor or major release
 
