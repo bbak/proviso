@@ -114,7 +114,7 @@ version, the forms a Proviso version takes, count.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
-Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v"
+Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v", or it holds more than one [version stamp]
 Then      `version` writes to "stderr" one line naming <file> as naming no [Proviso version]
   And     `version` checks nothing else of <file>
 Otherwise → install.version.stale
@@ -130,6 +130,8 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, stamped `[1]` | yes | named as naming no Proviso version | not a semantic version |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `v0.1.0` | yes | named as naming no Proviso version | the `v` belongs to the tag only |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1` | yes | named as naming no Proviso version | a semantic version has three numbers |
+| `.claude/skills/proviso-build/SKILL.md`, two lines `proviso-version: 0.1.0` and `proviso-version: 0.2.0` below `metadata:` | yes | named as naming no Proviso version | Proviso never writes two stamps, and picks none |
+| `.claude/skills/proviso-build/SKILL.md`, two `metadata:` blocks, each stamped `0.1.0` | yes | named as naming no Proviso version | two stamps, even if equal |
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata` without `proviso-version` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` | no | handed over | |

@@ -67,9 +67,10 @@
   `init` that wrote the file. The frontmatter is the lines between a
   first line `---` and the next line `---`. Each of these lines is read
   without its line ending, a line feed or a carriage return and a line
-  feed. Spaces and tabs at the end of any of these lines, around the colons, and as the indentation of
-  `proviso-version`, of any depth, change nothing. The agent host reads
-  it as YAML; Proviso reads only these lines.
+  feed. Spaces and tabs at the end of any of these lines, around the
+  colons, and as the indentation of `proviso-version`, of any depth,
+  change nothing. The agent host reads it as YAML; Proviso reads only
+  these lines.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: stamp, version stamps, stamps
