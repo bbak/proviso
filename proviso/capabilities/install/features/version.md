@@ -265,8 +265,9 @@ Otherwise → install.version.manifest-model
 
 ### Rationale
 
-`version` judges the manifest's first line exactly as `lint` does, so
-that the two never disagree about whether a tree fits the binary.
+`version` judges the manifest's first line by the same rule as `lint`,
+so that the two agree on whether the model version a tree needs is the
+one the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
