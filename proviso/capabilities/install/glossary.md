@@ -69,10 +69,9 @@
   that next line there is none. `metadata:` starts its line; the first
   line below it that starts with neither a space nor a tab, a blank one
   included, ends the lines below it. Each of these lines is read without
-  its line ending, a line feed or a carriage return and a line feed.
-  Spaces and tabs at the end of any of these lines, around the colons,
-  and before `proviso-version`, change nothing. The agent host reads it
-  as YAML; Proviso reads only these lines.
+  its line ending. Spaces and tabs at the end of any of these lines,
+  around the colons, and before `proviso-version`, change nothing. The
+  agent host reads it as YAML; Proviso reads only these lines.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: stamp, version stamps, stamps

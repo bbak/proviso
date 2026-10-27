@@ -100,18 +100,20 @@ Otherwise lint reports the [error] `findings.name-malformed` at <entry>, once fo
 | `capabilities/lint/features/übersicht.md`, once composed and once as `u` followed by a mark | no (no other entry has the same name in NFC) | error, once, at the name both share | one file on macOS, two on Linux |
 | `capabilities/lint/features/run٢.md` | yes | nothing reported | a digit from another script |
 
-## <a id="lint.layout.line-ending"></a> Rule: Lines end with a line feed only
+## <a id="lint.layout.line-ending"></a> Rule: A file of the tree holds no carriage return
 
 ### Rationale
 
 Windows' line ending, a carriage return before the line feed, changes
 every line of a file without changing what it says. The tree uses the
-line feed alone, which every current editor keeps.
+line feed alone, which every current editor keeps. A carriage return
+anywhere else is invisible in most editors and is read differently by
+different tools.
 
 ```guarded
 When      lint reads the file <file> of the [spec tree]
 Provided  <file> holds no carriage return
-Then      lint reports nothing about the line endings of <file>
+Then      lint reports nothing about the carriage returns of <file>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.line-ending` at the first line of <file> that holds a carriage return
   And     lint goes on with the rest of the [spec tree]
@@ -121,6 +123,7 @@ Otherwise lint reports the [error] `findings.line-ending` at the first line of <
 | --- | --- | --- | --- |
 | `glossary.md`, every line ending in a line feed | yes | nothing reported | |
 | `glossary.md`, lines 3 and 7 ending in a carriage return and a line feed | no | error at line 3 | once per file, at the first |
+| `glossary.md`, line 5 holding a lone carriage return in the middle | no | error at line 5 | a carriage return within a line too |
 | `.markdownlint.jsonc`, ending its lines in a carriage return and a line feed | no | error at line 1 | every file lint reads |
 | `manifest.sum`, ending its lines in a carriage return and a line feed | no | error at line 1 | as checked out with `core.autocrlf` |
 

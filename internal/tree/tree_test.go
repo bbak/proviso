@@ -81,6 +81,27 @@ func TestLoad(t *testing.T) {
 	}
 }
 
+func TestLoadFolderAtListedFile(t *testing.T) {
+	root := t.TempDir()
+	write(t, root, map[string]string{
+		"system.md":                             "# x",
+		"manifest.sum/x":                        "",
+		"capabilities/lint/capability.md":       "# C",
+		"capabilities/lint/glossary.md/a.md":    "",
+		"capabilities/lint/features/old/run.md": "",
+	})
+	if err := os.MkdirAll(filepath.Join(root, "capabilities", "lint", "features", "run.md"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	tr := Load(root)
+	if want := []string{"capabilities/lint/features/run.md", "capabilities/lint/glossary.md", "manifest.sum"}; !slices.Equal(tr.Unreadable, want) {
+		t.Errorf("unreadable %v, want %v", tr.Unreadable, want)
+	}
+	if want := []string{"capabilities/lint/features/old/run.md"}; !slices.Equal(tr.Unknown, want) {
+		t.Errorf("unknown %v, want %v", tr.Unknown, want)
+	}
+}
+
 func TestClassify(t *testing.T) {
 	cases := map[string]Kind{
 		"system.md":                          System,

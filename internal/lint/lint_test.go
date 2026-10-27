@@ -387,6 +387,15 @@ func TestLineEnding(t *testing.T) {
 	if got, want := kinds(lintFiles(f)), []string{"line-ending@glossary.md:3"}; !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}
+
+	// A lone carriage return within a line counts too.
+	f = base()
+	lines = strings.SplitAfter(f["glossary.md"], "\n")
+	lines[4] = "a\rb " + lines[4]
+	f["glossary.md"] = strings.Join(lines, "")
+	if got := kinds(lintFiles(f)); !slices.Contains(got, "line-ending@glossary.md:5") {
+		t.Errorf("got %v, want line-ending@glossary.md:5", got)
+	}
 }
 
 func TestNameMalformed(t *testing.T) {

@@ -35,6 +35,8 @@ func TestRead(t *testing.T) {
 		{"empty counts", head + "metadata:\n  proviso-version: 0.1.0\n  proviso-version:\n---\n", []string{"0.1.0", ""}},
 		{"flow", head + "metadata: {proviso-version: 0.1.0}\n---\n", nil},
 		{"top", head + "proviso-version: 0.1.0\n---\n", nil},
+		{"lone carriage return at the end", head + "metadata:\n  proviso-version: 0.1.0\n---\r", nil},
+		{"carriage return within the stamp", head + "metadata:\n  proviso-version: 0.1.0\r \n---\n", []string{"0.1.0\r"}},
 		{"nested metadata", head + "other:\n  metadata:\n    proviso-version: 0.1.0\n---\n", nil},
 		{"blank line", head + "metadata:\n\n  proviso-version: 0.1.0\n---\n", nil},
 		{"unclosed", head + "metadata:\n  proviso-version: 0.1.0\n", nil},

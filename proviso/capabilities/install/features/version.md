@@ -273,7 +273,7 @@ one the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
-Provided  <line>, without its line ending, names `model_version`
+Provided  <line>, without its [line ending], names `model_version`
 Then      `version` writes no line about the [spec tree]
   And     everything else stays as it was
 Otherwise → install.version.manifest-other
@@ -286,12 +286,13 @@ Otherwise → install.version.manifest-other
 | `model 1` | no | handed over | |
 | empty | no | handed over | |
 | `model 00` | no | handed over | `model_version` is written without a leading zero |
+| `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
 
 ## <a id="install.version.manifest-other"></a> Rule: The model version the spec tree needs is named
 
 ```guarded
 When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name `model_version`
-Provided  <line>, without its line ending, is "model", a space and a whole number in decimal digits without a leading zero
+Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
 Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and `model_version` as the one it reads
   And     everything else stays as it was
 Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.sum" names no model version
@@ -306,4 +307,6 @@ Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.su
 | `model` | no | names no model version | |
 | `model one` | no | names no model version | |
 | `model 00` | no | names no model version | a leading zero; never "needs 0, reads 0" |
+| `model 1`, followed by two carriage returns and a line feed | no | names no model version | one carriage return stays in the line |
+| `model 0`, a carriage return and `foo` | no | names no model version | a lone carriage return belongs to the line |
 | `<<<<<<< HEAD` | no | names no model version | a merge conflict left in the file |

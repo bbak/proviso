@@ -253,6 +253,10 @@ func (t *Tree) walk(dir, disk string) {
 		}
 		mode := e.Type()
 		switch {
+		case mode == fs.ModeDir && isListed(rel):
+			// lint.run.unreadable: a folder at the path of a file the
+			// layout lists hides that file; nothing in it is read.
+			t.Unreadable = append(t.Unreadable, rel)
 		case mode == fs.ModeDir:
 			t.walk(rel, filepath.Join(disk, e.Name()))
 		case mode.IsRegular():
@@ -261,6 +265,12 @@ func (t *Tree) walk(dir, disk string) {
 			t.Unreadable = append(t.Unreadable, rel)
 		}
 	}
+}
+
+// isListed reports whether the layout lists a file at rel.
+func isListed(rel string) bool {
+	kind, _ := Classify(rel)
+	return kind != Unknown
 }
 
 func dirName(dir string) string {
