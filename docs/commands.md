@@ -84,7 +84,7 @@ place. It never writes the tree.
 | --- | --- |
 | 0 | no error |
 | 1 | at least one error |
-| 2 | lint could not run, such as for a file it cannot read |
+| 2 | lint could not run: no spec root was found, a file of the tree cannot be read (a folder where the layout lists a file counts), or the manifest records another model version or none |
 
 Specified in the features of [lint](https://github.com/bbak/proviso/tree/main/proviso/capabilities/lint/features).
 
