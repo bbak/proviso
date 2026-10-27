@@ -105,13 +105,14 @@ anything in `acceptance/`.
 
 ### Rationale
 
-A test found by its element's identifier can be run on its own, so a
-build runs only the tests of what an amendment touches and of what it
-may affect, and the whole suite once at its end. The test's name is
-what Go's test runner selects by. A suffix after an underscore keeps
-the tests of one element together when they are spread over several
-functions, without matching an element whose identifier merely starts
-the same way. A test of the test trees themselves checks no element,
+Proviso's engineers' notes tell a build how to run the acceptance tests
+of a list of identifiers, so that it runs only those of what an
+amendment touches and may affect, and the whole suite once at its end.
+With this pattern, that is one anchored pattern for Go's test runner,
+such as `^TestBaselinePackNote(_.*)?$`: the suffix after an underscore
+keeps the tests of one element together when they are spread over
+several functions, and the anchor keeps out an element whose identifier
+merely starts the same way. A test of the test trees themselves checks no element,
 and every run needs it, since a broken test tree makes every other
 result meaningless.
 
