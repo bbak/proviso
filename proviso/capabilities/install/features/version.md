@@ -250,12 +250,13 @@ Otherwise → install.version.manifest-other
 | `model 0`, ending in a carriage return and a line feed | yes | no line | the line ending is not part of the line |
 | `model 1` | no | handed over | |
 | empty | no | handed over | |
+| `model 00` | no | handed over | `model_version` is written without a leading zero |
 
 ## <a id="install.version.manifest-other"></a> Rule: The model version the spec tree needs is named
 
 ```guarded
 When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name `model_version`
-Provided  <line>, without its line ending, is "model", a space and a whole number
+Provided  <line>, without its line ending, is "model", a space and a whole number in decimal digits without a leading zero
 Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and `model_version` as the one it reads
   And     everything else stays as it was
 Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.sum" names no model version
@@ -269,4 +270,5 @@ Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.su
 | empty | no | names no model version | |
 | `model` | no | names no model version | |
 | `model one` | no | names no model version | |
+| `model 00` | no | names no model version | a leading zero; never "needs 0, reads 0" |
 | `<<<<<<< HEAD` | no | names no model version | a merge conflict left in the file |

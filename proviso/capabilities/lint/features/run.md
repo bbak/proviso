@@ -111,12 +111,13 @@ Otherwise → lint.run.model-other
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
 | `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
+| `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
 
 ## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
 
 ```guarded
 When      lint finds that the first line <line> of `manifest_file` does not name `model_version`
-Provided  <line>, without its line ending, is "model", a space and a whole number
+Provided  <line>, without its line ending, is "model", a space and a whole number in decimal digits without a leading zero
 Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and `model_version` as the one lint reads
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
@@ -132,6 +133,7 @@ Otherwise lint writes to "stderr" that `manifest_file` names no model version
 | empty | no | names no model version; exit status 2 | |
 | `model` | no | names no model version; exit status 2 | |
 | `model one` | no | names no model version; exit status 2 | |
+| `model 00` | no | names no model version; exit status 2 | a leading zero; never "needs 0, reads 0" |
 | `<<<<<<< HEAD` | no | names no model version; exit status 2 | a merge conflict left in the file |
 
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
