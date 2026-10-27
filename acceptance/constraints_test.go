@@ -4,9 +4,11 @@ package acceptance
 // by build or review; these are the parts a build can check.
 
 import (
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -49,4 +51,99 @@ func TestSystemGit(t *testing.T) {
 			t.Errorf("system.git: the binary links %s, a module beyond those agreed", p)
 		}
 	}
+}
+
+// TestSystemBuildVersion checks system.build-version as far as a build can:
+// a build given no version names its Proviso version dev, and a local build
+// through the Taskfile gives the next patch version after the latest tag,
+// with the pre-release dev, or no version where no tag exists. How a release
+// is built from its tag the pack does not say; the release version a binary
+// is given is checked by install.version.output. The module is copied into a
+// repository of its own, whose tags the steps set one after the other, so
+// the steps share it and run in order.
+func TestSystemBuildVersion(t *testing.T) {
+	t.Parallel()
+	skipWithoutGit(t)
+	if _, err := exec.LookPath("task"); err != nil {
+		t.Skip("Task is not installed")
+	}
+	out, err := exec.Command("go", "list", "-m", "-f", "{{.Dir}}").Output()
+	if err != nil {
+		t.Fatalf("go list -m: %v", err)
+	}
+	module := strings.TrimSpace(string(out))
+	dir := filepath.Join(t.TempDir(), "proviso")
+	err = filepath.WalkDir(module, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		rel, _ := filepath.Rel(module, p)
+		// .git may be a folder or, in a worktree, a file pointing to the
+		// module's own repository: neither is copied.
+		if rel == ".git" || rel == "bin" || rel == ".claude" {
+			if d.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		target := filepath.Join(dir, rel)
+		if d.IsDir() {
+			return os.MkdirAll(target, 0o755)
+		}
+		if !d.Type().IsRegular() {
+			return nil
+		}
+		b, err := os.ReadFile(p)
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(target, b, 0o644)
+	})
+	if err != nil {
+		t.Fatalf("copying the module: %v", err)
+	}
+	if _, err := os.Lstat(filepath.Join(dir, ".git")); err == nil {
+		t.Fatal("the copy of the module holds a .git entry; it would reach the module's own repository")
+	}
+	r := newRepoIn(t, dir, tree{})
+	r.commit("start")
+
+	name := "proviso"
+	if runtime.GOOS == "windows" {
+		name += ".exe"
+	}
+	outside := t.TempDir()
+	taskBuild := func(t *testing.T, want string) {
+		t.Helper()
+		cmd := exec.Command("task", "build")
+		cmd.Dir = dir
+		if msg, err := cmd.CombinedOutput(); err != nil {
+			t.Fatalf("task build: %v\n%s", err, msg)
+		}
+		got := execBinary(t, filepath.Join(dir, "bin", name), outside, "version")
+		if first := strings.SplitN(strings.ReplaceAll(got.stdout, "\r\n", "\n"), "\n", 2)[0]; first != "proviso "+want {
+			t.Errorf("system.build-version: want the local build to name its Proviso version %s, got %q", want, first)
+		}
+	}
+
+	t.Run("derived: a build given no version", func(t *testing.T) {
+		got := execBinary(t, binary, outside, "version")
+		if first := strings.SplitN(strings.ReplaceAll(got.stdout, "\r\n", "\n"), "\n", 2)[0]; first != "proviso dev" {
+			t.Errorf("system.build-version: want a build given no version to name its Proviso version dev, got %q", first)
+		}
+	})
+	t.Run("derived: through the Taskfile, no tag", func(t *testing.T) {
+		taskBuild(t, "dev")
+	})
+	t.Run("derived: through the Taskfile, a commit after v0.1.0", func(t *testing.T) {
+		r.t = t
+		r.git("tag", "v0.1.0")
+		r.commit("after the release")
+		taskBuild(t, "0.1.1-dev")
+	})
+	t.Run("derived: through the Taskfile, at v0.2.0, the latest tag", func(t *testing.T) {
+		r.t = t
+		r.git("tag", "v0.2.0")
+		taskBuild(t, "0.2.1-dev")
+	})
 }
