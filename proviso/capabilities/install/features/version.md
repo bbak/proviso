@@ -112,7 +112,7 @@ nobody knows which version installed it.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
-Provided  <file> cannot be read as a file, or it has no YAML frontmatter, or its frontmatter holds no [version stamp]
+Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] with a non-empty version
 Then      `version` writes to "stderr" one line naming <file> as naming no [Proviso version]
   And     `version` checks nothing else of <file>
 Otherwise → install.version.stale
@@ -122,10 +122,13 @@ Otherwise → install.version.stale
 | --- | --- | --- | --- |
 | `.claude/skills/proviso-build/SKILL.md`, installed before stamps existed | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, a folder of that name | yes | named as naming no Proviso version | |
-| `.claude/skills/proviso-build/SKILL.md`, its frontmatter not valid YAML | yes | named as naming no Proviso version | |
+| `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata: {proviso-version: 0.1.0}` on one line | yes | named as naming no Proviso version | Proviso reads only the stamp's own lines |
+| `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version: 0.1.0` at the top, not below `metadata:` | yes | named as naming no Proviso version | |
+| `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version:` below `metadata:`, with no version | yes | named as naming no Proviso version | an empty version names none |
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata` without `proviso-version` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` | no | handed over | |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` with a tab as indentation, no space after the colon and spaces at the end | no | handed over, with the stamp `0.1.0` | whitespace changes nothing |
 
 ## <a id="install.version.stale"></a> Rule: A skill or agent installed by another version is named
 
