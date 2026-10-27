@@ -101,9 +101,7 @@ When      lint starts to check the [spec tree] of the [spec root] <root> it has 
 Provided  <root> holds no `manifest_file`, or its first line, without its line ending, names `model_version`
 Then      lint checks the [spec tree]
   And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
-Otherwise lint writes to "stderr" the model version the [spec tree] needs and the one lint reads
-  And     lint exits with `lint.exit-status` 2
-  And     nothing goes to "stdout", not even an empty `report`
+Otherwise → lint.run.model-other
 ```
 
 | root | provided | outcome | why |
@@ -111,8 +109,30 @@ Otherwise lint writes to "stderr" the model version the [spec tree] needs and th
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
-| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | exit status 2 | a notation this lint does not know |
-| `repo/proviso/`, its `manifest.sum` empty | no | exit status 2 | no version is named |
+| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
+| `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
+
+## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
+
+```guarded
+When      lint finds that the first line <line> of `manifest_file` does not name `model_version`
+Provided  <line>, without its line ending, is "model", a space and a whole number
+Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and `model_version` as the one lint reads
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
+Otherwise lint writes to "stderr" that `manifest_file` names no model version
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
+```
+
+| line | provided | outcome | why |
+| --- | --- | --- | --- |
+| `model 1` | yes | the tree needs model 1, lint reads model 0; exit status 2 | |
+| `model 12` | yes | the tree needs model 12, lint reads model 0; exit status 2 | |
+| empty | no | names no model version; exit status 2 | |
+| `model` | no | names no model version; exit status 2 | |
+| `model one` | no | names no model version; exit status 2 | |
+| `<<<<<<< HEAD` | no | names no model version; exit status 2 | a merge conflict left in the file |
 
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
 
