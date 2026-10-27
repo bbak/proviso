@@ -296,10 +296,10 @@ Goods are not given away.
 `+ruleMD("billing.pay.r", "A buyer pays", block, table))
 }
 
-// TestLintBaselineClean is the ground every other test stands on: the
+// TestFixtureLint is the ground every other test stands on: the
 // baseline tree follows the notation, so lint reports nothing and exits
 // with 0.
-func TestLintBaselineClean(t *testing.T) {
+func TestFixtureLint(t *testing.T) {
 	t.Parallel()
 	check(t, baseline()).clean(t)
 }

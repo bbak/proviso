@@ -408,8 +408,8 @@ func TestBaselinePackOutput(t *testing.T) {
 	})
 }
 
-// TestBaselinePackFormer runs the cases of baseline.diff.former with `pack`.
-func TestBaselinePackFormer(t *testing.T) {
+// TestBaselineDiffFormer_Pack runs the cases of baseline.diff.former with `pack`.
+func TestBaselineDiffFormer_Pack(t *testing.T) {
 	t.Parallel()
 	formerThen := "Then      the shop takes the order\n  And     nothing else changes"
 	formerOf := func(t *testing.T, o packOutcome) string {

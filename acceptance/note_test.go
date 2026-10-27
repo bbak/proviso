@@ -285,10 +285,10 @@ func (r *repo) writeNoteFolder() {
 	}
 }
 
-// TestSystemAmendmentNoteEntry checks system.amendment-note's "anything of
+// TestSystemAmendmentNote_Entry checks system.amendment-note's "anything of
 // that name counts as the note" through verify; for pack, see
 // TestBaselinePackNoteUnreadable, for manifest TestBaselineManifestRemove.
-func TestSystemAmendmentNoteEntry(t *testing.T) {
+func TestSystemAmendmentNote_Entry(t *testing.T) {
 	t.Parallel()
 	t.Run("derived: a folder named .amendment.md beside an unchanged tree is left over", func(t *testing.T) {
 		t.Parallel()

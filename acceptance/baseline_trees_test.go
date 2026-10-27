@@ -191,9 +191,9 @@ func limitBlock() string {
 	return text
 }
 
-// TestBaselineFixtures checks the ground the baseline tests stand on: lint
+// TestFixtureBaseline checks the ground the baseline tests stand on: lint
 // reports no finding about their trees, or only asks.
-func TestBaselineFixtures(t *testing.T) {
+func TestFixtureBaseline(t *testing.T) {
 	t.Parallel()
 	for name, tr := range map[string]tree{"plain": plainTree(), "rich": richTree(), "diff": diffTree()} {
 		t.Run(name, func(t *testing.T) {
