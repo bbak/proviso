@@ -73,7 +73,9 @@ nothing steers its judgement.
 Commit the installed skills and agent definitions in `.claude/`, so
 that the whole team works with the same ones. Do not edit them: Proviso
 owns them, and they match the version of Proviso that installed them.
-Keep that version on everyone's path and in CI.
+Keep that version on everyone's path and in CI. `proviso version`, run
+in the repository's root, names every one that another version
+installed.
 
 ## Keep the tree readable everywhere
 

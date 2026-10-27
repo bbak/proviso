@@ -1,12 +1,12 @@
 # Commands
 
 Every command of `proviso`, with what it is for, its options and its
-exit statuses. Engineers run `init`, `lint`, `diff`, `impact` and
-`verify`; the skills run all of them, `pack`, `judge` and `manifest`
+exit statuses. Engineers run `init`, `version`, `lint`, `diff`, `impact`
+and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
 included.
 
-Every command but `init` runs anywhere inside the repository and works
-on the nearest spec root. The commands that compare with the baseline,
+Every command but `init` and `version` runs anywhere inside the
+repository and works on the nearest spec root. The commands that compare with the baseline,
 `manifest`, `diff`, `impact`, `pack`, `judge` and `verify`, run only on
 a tree that `lint` finds no error in, and exit with 2 otherwise.
 
@@ -33,6 +33,41 @@ what is missing. It runs only in the root of a git repository.
 | 2 | a file could not be written, or the directory is not a repository's root |
 
 Specified in [install/features/init.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/install/features/init.md).
+
+## version
+
+```sh
+proviso version
+```
+
+Prints two lines: Proviso's own version, which follows semantic
+versioning, and the version of the Proviso Model it reads, a whole
+number.
+
+```text
+proviso 0.1.0
+model 0
+```
+
+A local build through the Taskfile names the next patch after the
+latest release, such as `0.1.1-dev`; a build given no version says
+`dev`.
+
+Run in the root of a git repository, it also checks what `init`
+installed there, and warns on standard error about every skill or agent
+that is missing, carries no version stamp or more than one, or was
+installed by another version, naming the model version that one reads
+where it can tell; and about a `proviso/manifest.sum` that is missing,
+cannot be read, or records another model version or none. Silence means
+everything fits. Anywhere else it prints a hint instead. It never
+changes a file.
+
+| Exit status | Meaning |
+| --- | --- |
+| 0 | the version was written, warnings or not |
+| 2 | an argument was given |
+
+Specified in [install/features/version.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/install/features/version.md).
 
 ## lint
 
