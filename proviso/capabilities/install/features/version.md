@@ -133,9 +133,11 @@ Otherwise → install.version.unstamped
 ### Rationale
 
 A file that cannot be read and a file without a stamp tell the same:
-nobody knows which version installed it. Nor does a stamp whose version
-no build of Proviso could have, which is why only `dev` and a semantic
-version, the forms a Proviso version takes, count.
+nobody knows which version installed it. Nor does a stamp that is no
+version at all: only `dev` and a version of semantic versioning count, a
+wider set than the Proviso versions built today, so that a stamp from a
+build given any other semantic version still reads as the version it
+is.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
