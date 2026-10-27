@@ -67,6 +67,33 @@ func TestLintRunRoot(t *testing.T) {
 		}
 	})
 
+	// The rest of the run works on the nearest spec root: its files are
+	// read, and its manifest gives the model version, not the outer one's.
+	t.Run("derived: the nearest tree's file is unreadable, the outer tree is fine", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline()
+		for k, v := range baseline().with("proviso/capabilities/cart/features/a.md", "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n").prefixed("a") {
+			tr[k] = v
+		}
+		dir := tr.write(t)
+		o := lintIn(t, dir, filepath.Join(dir, "a"), nil)
+		if o.json.exit != 2 || !strings.Contains(o.json.stderr, "a.md") {
+			t.Errorf("want exit status 2 naming a.md of the nearest tree, got %d\nstderr: %s", o.json.exit, o.json.stderr)
+		}
+	})
+	t.Run("derived: the nearest tree's manifest names model 1, the outer one model 0", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline().with("proviso/manifest.sum", "model 0\n")
+		for k, v := range baseline().with("proviso/manifest.sum", "model 1\n").prefixed("a") {
+			tr[k] = v
+		}
+		dir := tr.write(t)
+		o := lintIn(t, dir, filepath.Join(dir, "a"), nil)
+		if o.json.exit != 2 {
+			t.Errorf("want exit status 2 for the nearest tree's model version, got %d\nstdout: %s", o.json.exit, o.json.stdout)
+		}
+	})
+
 	// lint.cli.report: every name in root is in NFC, also when the folder
 	// above the spec root is stored as u followed by a mark.
 	t.Run("derived: root in NFC", func(t *testing.T) {
@@ -134,6 +161,17 @@ func TestLintRunUnreadable(t *testing.T) {
 				}
 			}
 		}
+	}
+	// stoppedIn is stopped, with the test's directory dir taken out of
+	// stderr first, since its name holds the test's name.
+	stoppedIn := func(t *testing.T, o outcome, dir string, names ...string) {
+		t.Helper()
+		for _, r := range []*run{&o.json, &o.text} {
+			for _, d := range []string{dir, filepath.ToSlash(dir)} {
+				r.stderr = strings.ReplaceAll(r.stderr, d, "")
+			}
+		}
+		stopped(t, o, names...)
 	}
 
 	t.Run("row1 none", func(t *testing.T) {
@@ -212,7 +250,66 @@ func TestLintRunUnreadable(t *testing.T) {
 		})
 		stopped(t, o, "manifest.sum")
 	})
-	t.Run("row9 notes.md, not in the layout, without read permission", func(t *testing.T) {
+	// A folder at the path of a file tree_layout lists counts as
+	// unreadable: stderr names the folder, not what it holds.
+	folders := []struct {
+		name, path, holds string // holds: a file in the folder, "" for none
+	}{
+		{"row9 manifest.sum, a folder", "proviso/manifest.sum", ""},
+		{"row10 capabilities/cart/glossary.md, a folder holding a.md", glossaryPath, "a.md"},
+		{"row11 capabilities/cart/features/run.md, an empty folder", "proviso/capabilities/cart/features/run.md", ""},
+		{"derived: glossary.md of the spec root, a folder holding a.md", "proviso/glossary.md", "a.md"},
+	}
+	for _, c := range folders {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			tr := marked.without(c.path)
+			if c.holds != "" {
+				tr = tr.with(c.path+"/"+c.holds, glossaryMD)
+			}
+			dir := tr.write(t)
+			if err := os.MkdirAll(filepath.Join(dir, filepath.FromSlash(c.path)), 0o755); err != nil {
+				t.Fatal(err)
+			}
+			o := lintIn(t, dir, dir, nil)
+			stoppedIn(t, o, dir, path.Base(c.path))
+			if c.holds != "" {
+				for _, r := range []run{o.json, o.text} {
+					if strings.Contains(r.stderr, "/"+c.holds) || strings.Contains(r.stderr, `\`+c.holds) {
+						t.Errorf("want stderr to name the folder %s, not the file in it: %s", c.path, r.stderr)
+					}
+				}
+			}
+		})
+	}
+	// lint reads the whole tree before it checks the model version: an
+	// unreadable file stops the run, and is named, even where the manifest
+	// names another model version.
+	t.Run("derived: a.md not valid UTF-8, and manifest.sum starting with model 1", func(t *testing.T) {
+		t.Parallel()
+		dir := marked.with(aPath, invalid, "proviso/manifest.sum", "model 1\n").write(t)
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "a.md")
+	})
+	t.Run("derived: manifest.sum a folder, and a.md not valid UTF-8", func(t *testing.T) {
+		t.Parallel()
+		dir := marked.with(aPath, invalid).write(t)
+		if err := os.MkdirAll(filepath.Join(dir, "proviso", "manifest.sum"), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "a.md", "manifest.sum")
+	})
+	t.Run("row13 capabilities/cart/features/old/, a folder holding run.md", func(t *testing.T) {
+		t.Parallel()
+		old := "proviso/capabilities/cart/features/old/run.md"
+		dir := marked.with(old, featureMD).write(t)
+		o := lintIn(t, dir, dir, nil)
+		if o.json.exit == 2 {
+			t.Fatalf("want the tree checked, but lint could not run:\n%s", o.json.stderr)
+		}
+		o.has(t, "file-unknown", old, 1)
+		o.has(t, "file-unknown", "proviso/notes.md", 1)
+	})
+	t.Run("row12 notes.md, not in the layout, without read permission", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.write(t)
 		path := filepath.Join(dir, "proviso", "notes.md")
@@ -275,7 +372,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 	})
 	hidden := []struct{ name, link, target string }{
-		{"row10 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
+		{"row14 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
 		{"derived: .shared, a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
 	}
 	for _, c := range hidden {
@@ -553,6 +650,20 @@ func TestLintRunModel(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 00\n")))
 	})
+	t.Run("row7 manifest.sum starting with model 0, a carriage return and foo", func(t *testing.T) {
+		t.Parallel()
+		// A lone carriage return belongs to the line, so the line is no
+		// model 0; handed over, lint stops before it reports line-ending.
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 0\rfoo\n")))
+	})
+	t.Run("derived: manifest.sum starting with model 0, a carriage return and a line feed, in a tree with an error", func(t *testing.T) {
+		t.Parallel()
+		// The tree is checked and lint reports what it finds: the error
+		// and the line ending, exit status 1.
+		o := check(t, baseline().with("proviso/manifest.sum", "model 0\r\n", "proviso/notes.md", "# Notes\n"))
+		o.has(t, "line-ending", "proviso/manifest.sum", 1)
+		o.has(t, "file-unknown", "proviso/notes.md", 1)
+	})
 	// Lint checks nothing of the manifest beyond its first line but what it
 	// checks of every file it reads: the lines that follow are not checked
 	// as manifest lines, but the file must still be readable.
@@ -581,14 +692,17 @@ func TestLintRunModelOther(t *testing.T) {
 	rows := []struct {
 		name, line string
 		needs      string // the model version the tree needs, "" where none is named
+		not        string // a number the line holds that must not be named as needed
 	}{
-		{"row1 model 1", "model 1", "1"},
-		{"row2 model 12", "model 12", "12"},
-		{"row3 empty", "", ""},
-		{"row4 model", "model", ""},
-		{"row5 model one", "model one", ""},
-		{"row6 model 00", "model 00", ""},
-		{"row7 <<<<<<< HEAD", "<<<<<<< HEAD", ""},
+		{"row1 model 1", "model 1", "1", ""},
+		{"row2 model 12", "model 12", "12", ""},
+		{"row3 empty", "", "", ""},
+		{"row4 model", "model", "", ""},
+		{"row5 model one", "model one", "", ""},
+		{"row6 model 00", "model 00", "", ""},
+		{"row7 model 1, followed by two carriage returns and a line feed", "model 1\r\r", "", "1"},
+		{"row8 model 0, a carriage return and foo", "model 0\rfoo", "", ""},
+		{"row9 <<<<<<< HEAD", "<<<<<<< HEAD", "", ""},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
@@ -608,6 +722,8 @@ func TestLintRunModelOther(t *testing.T) {
 					}
 				} else if count(nums, modelVersion) > 1 {
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed: %q", row.line, modelVersion, r.stderr)
+				} else if row.not != "" && count(nums, row.not) > 0 && count(nums, modelVersion) > 0 {
+					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed and %s as read: %q", row.line, row.not, modelVersion, r.stderr)
 				}
 			}
 		})
