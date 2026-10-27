@@ -130,8 +130,7 @@ element, whose Examples rows and derived checks it holds; a check of
 another element within it is an addition and never replaces a test
 named after that element. A top-level test that checks only the
 test trees is named `TestFixture` followed by letters and digits, the
-first a capital letter, naming the test tree, such as
-`TestFixtureLint`. The only other top-level test function is `TestMain`. No two identifiers in
+first a capital letter, such as `TestFixtureLint`. The only other top-level test function is `TestMain`. No two identifiers in
 the spec tree give the same name, none gives `TestMain`, and none gives
 a name that starts with `TestFixture`.
 
