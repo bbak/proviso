@@ -133,6 +133,7 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata` without `proviso-version` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` | no | handed over | |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0`, with carriage returns and line feeds | no | handed over, with the stamp `0.1.0` | the line ending is not part of the line |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.1-dev` | no | handed over | a pre-release is a semantic version |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `dev` | no | handed over | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` with a tab as indentation, no space after the colon and spaces at the end | no | handed over, with the stamp `0.1.0` | whitespace changes nothing |
