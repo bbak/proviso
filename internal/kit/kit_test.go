@@ -3,15 +3,18 @@ package kit
 import (
 	"bytes"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
+
+	"github.com/bbak/proviso/internal/stamp"
 )
 
 // proviso matches a path below .proviso/.
 var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
-	got := Files("shop")
+	got := Files("shop", "0.1.1-dev")
 	if len(got) != 13 {
 		t.Fatalf("%d files, want 13", len(got))
 	}
@@ -22,6 +25,12 @@ func TestFiles(t *testing.T) {
 		}
 		if bytes.Contains(f.Data, []byte("\r")) {
 			t.Errorf("%s holds a carriage return", f.Path)
+		}
+		if f.Stamped != strings.HasPrefix(f.Path, ".claude/") {
+			t.Errorf("%s: stamped %v", f.Path, f.Stamped)
+		}
+		if v := stamp.Read(f.Data); f.Stamped && !slices.Equal(v, []string{"0.1.1-dev"}) || !f.Stamped && v != nil {
+			t.Errorf("%s: stamps %q", f.Path, v)
 		}
 		if strings.HasPrefix(f.Path, ".claude/") {
 			// A kit file that is not installed, or a kit path, would point to
@@ -60,12 +69,12 @@ func TestFiles(t *testing.T) {
 		// The skills that edit the spec tree carry the writing guide where
 		// they mark it; proviso-accept never edits it and carries none.
 		kit := read("skills/" + name + "/SKILL.md")
-		want := kit
+		want := stamp.Add(kit, "0.1.1-dev")
 		if name != "proviso-accept" {
 			if !strings.Contains(kit, writingMark) {
 				t.Errorf("%s: the kit's skill marks no writing guide", f.Path)
 			}
-			want = strings.Replace(kit, writingMark, writing, 1)
+			want = stamp.Add(strings.Replace(kit, writingMark, writing, 1), "0.1.1-dev")
 		}
 		if string(f.Data) != want {
 			t.Errorf("%s is not the kit's skill with the writing guide where it marks it", f.Path)
