@@ -101,6 +101,32 @@ built by the tests themselves. The coding agent's tests live beside its
 code in `cmd/` and `internal/`, and the coding agent never changes
 anything in `acceptance/`.
 
+## <a id="system.test-names"></a> An acceptance test is named after the element it checks
+
+### Rationale
+
+A test found by its element's identifier can be run on its own, so a
+build runs only the tests of what an amendment touches and of what it
+may affect, and the whole suite once at its end. The test's name is
+what Go's test runner selects by. A suffix after an underscore keeps
+the tests of one element together when they are spread over several
+functions, without matching an element whose identifier merely starts
+the same way. A test of the test trees themselves checks no element,
+and every run needs it, since a broken test tree makes every other
+result meaningless.
+
+### Property
+
+Every top-level acceptance test that checks an element is named `Test`
+followed by the element's identifier, each part between dots and
+hyphens starting with a capital letter and the dots and hyphens
+dropped, such as `TestInstallVersionStale` for `install.version.stale`;
+optionally followed by `_` and a suffix of letters and digits, such as
+`TestBaselineDiffFormer_Pack`. A top-level test that checks only the
+test trees is named `TestFixture` followed by letters and digits. The
+only other top-level test function is `TestMain`. No two identifiers in
+the spec tree give the same name.
+
 ## <a id="system.model-release"></a> A new model version starts with a minor or major release
 
 ### Rationale
