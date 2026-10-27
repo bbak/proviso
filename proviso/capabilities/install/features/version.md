@@ -144,7 +144,7 @@ Otherwise → install.version.stale
 
 ```guarded
 When      `version` compares the [version stamp] <stamp> of the [agent definition] or [skill] <file> with its own [Proviso version] <version>
-Provided  <stamp> differs from <version>
+Provided  <stamp> differs from <version>, compared as text
 Then      `version` writes to "stderr" one line naming <file>, <stamp> as the version that installed it, and the model version `model_releases` gives for <stamp>, where it gives one
   And     the line names no model version where `model_releases` gives none
 Otherwise `version` writes no line about <file>
@@ -156,6 +156,7 @@ Otherwise `version` writes no line about <file>
 | `.claude/agents/proviso-tester.md` | `0.1.0` | `0.2.0` | yes | named, installed by 0.1.0, which reads model 0 | |
 | `.claude/agents/proviso-tester.md` | `dev` | `0.2.0` | yes | named, installed by dev, no model | |
 | `.claude/agents/proviso-tester.md` | `0.1.0` | `0.1.1-dev` | yes | named, installed by 0.1.0, which reads model 0 | a local build is another version |
+| `.claude/agents/proviso-tester.md` | `0.1.0+build.5` | `0.1.0` | yes | named, installed by 0.1.0+build.5, no model | another build, though semantic versioning ranks them alike |
 | `.claude/agents/proviso-tester.md` | `0.2.0` | `0.2.0` | no | no line | |
 | `.claude/agents/proviso-tester.md` | `dev` | `dev` | no | no line | as in Proviso's own repository |
 
