@@ -34,7 +34,8 @@ every platform.
 
 ### <a id="lint.findings.line-ending"></a> line-ending
 
-A file in the spec tree whose lines end with a carriage return.
+A file in the spec tree that holds a carriage return, whether in a line
+ending or within a line.
 
 ### <a id="lint.findings.capability-file-missing"></a> capability-file-missing
 
