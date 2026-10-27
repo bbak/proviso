@@ -200,7 +200,7 @@ func TestManifest(t *testing.T) {
 }
 
 func TestCheckModel(t *testing.T) {
-	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 0\r\nx": true, "model 1\n": false, "": false, "model 0 \n": false, "model\n": false, "model 00\n": false} {
+	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 0\r\nx": true, "model 0\r": false, "model 0\rfoo\n": false, "model 1\r\r\n": false,"model 1\n": false, "": false, "model 0 \n": false, "model\n": false, "model 00\n": false} {
 		if err := CheckModel([]byte(in)); (err == nil) != ok {
 			t.Errorf("%q: %v", in, err)
 		}

@@ -34,10 +34,17 @@ var ModelReleases = []ModelRelease{
 // space and a whole number in decimal digits without a leading zero.
 var namedModel = regexp.MustCompile(`^model (0|[1-9][0-9]*)$`)
 
-// FirstLine returns the first line of a manifest without its line ending.
+// FirstLine returns the first line of a manifest without its line ending,
+// as system.line-ending defines it: a line feed, or a carriage return
+// directly followed by a line feed. Any other carriage return, one at the
+// end of a file without a line feed after it included, belongs to the
+// line.
 func FirstLine(data []byte) string {
-	first, _, _ := bytes.Cut(data, []byte("\n"))
-	return string(bytes.TrimSuffix(first, []byte("\r")))
+	first, _, found := bytes.Cut(data, []byte("\n"))
+	if found {
+		first = bytes.TrimSuffix(first, []byte("\r"))
+	}
+	return string(first)
 }
 
 // NamedModel returns the model version the first line of a manifest names,

@@ -40,7 +40,12 @@ var (
 func Read(data []byte) []string {
 	lines := strings.Split(string(data), "\n")
 	for i, l := range lines {
-		lines[i] = strings.TrimRight(strings.TrimSuffix(l, "\r"), " \t")
+		// system.line-ending: a carriage return ends a line only directly
+		// before a line feed, and the last line has none after it.
+		if i < len(lines)-1 {
+			l = strings.TrimSuffix(l, "\r")
+		}
+		lines[i] = strings.TrimRight(l, " \t")
 	}
 	if len(lines) == 0 || lines[0] != "---" {
 		return nil
