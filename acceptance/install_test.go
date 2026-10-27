@@ -105,13 +105,23 @@ var (
 	notesPath = regexp.MustCompile(`\.proviso/[\w./-]*[\w-]`)
 )
 
+// checkInitStamp checks that content, the file installed at file by init of
+// the Proviso version v, holds one version stamp, naming v, read as the
+// glossary defines the stamp.
+func checkInitStamp(t *testing.T, rule, file, content, v string) {
+	t.Helper()
+	if got := stampsOf(content); len(got) != 1 || got[0] != v {
+		t.Errorf("%s: want %s, written by init of %s, to hold one version stamp naming %s; its stamps: %q", rule, file, v, v, got)
+	}
+}
+
 func TestInstallInitAgents(t *testing.T) {
 	t.Parallel()
 	// notes are the engineers' notes to the agent, "" for none.
 	rows := []struct{ name, definition, agent, notes string }{
-		{"row1 the testing agent's definition", ".claude/agents/proviso-tester.md", "proviso-tester", ".proviso/tester.md"},
-		{"row2 the coding agent's definition", ".claude/agents/proviso-coder.md", "proviso-coder", ".proviso/coder.md"},
-		{"row3 the checking agent's definition, and no engineers' notes", ".claude/agents/proviso-checker.md", "proviso-checker", ""},
+		{"row1 the testing agent's definition, stamped with init's Proviso version", ".claude/agents/proviso-tester.md", "proviso-tester", ".proviso/tester.md"},
+		{"row2 the coding agent's definition, stamped with init's Proviso version", ".claude/agents/proviso-coder.md", "proviso-coder", ".proviso/coder.md"},
+		{"row3 the checking agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-checker.md", "proviso-checker", ""},
 	}
 	definitions := make([]string, len(rows))
 	for i, row := range rows {
@@ -141,6 +151,14 @@ func TestInstallInitAgents(t *testing.T) {
 			if !named {
 				t.Errorf("install.init.agents: %s does not start with front matter naming it %s", row.definition, row.agent)
 			}
+
+			// Stamped with the Proviso version of init, whichever it is.
+			checkInitStamp(t, "install.init.agents", row.definition, def, "dev")
+			versioned := freshRepo(t, "repo", false)
+			if o := execBinary(t, built(t, "0.1.0"), versioned.dir, "init"); o.exit != 0 {
+				t.Fatalf("init of 0.1.0 exited with %d: %s", o.exit, o.stderr)
+			}
+			checkInitStamp(t, "install.init.agents", row.definition, versioned.read(row.definition), "0.1.0")
 
 			// The same reading guide in every definition: one block that
 			// this definition shares with both others.
@@ -215,10 +233,10 @@ func TestInstallInitSkills(t *testing.T) {
 		name, skill, named string
 		guide              bool
 	}{
-		{"row1 the skill that builds an amendment, with the writing guide", ".claude/skills/proviso-build/SKILL.md", "proviso-build", true},
-		{"row2 the skill that checks an amendment, with the same writing guide", ".claude/skills/proviso-check/SKILL.md", "proviso-check", true},
-		{"row3 the skill that brings a request into the spec tree, with the same writing guide", ".claude/skills/proviso-integrate/SKILL.md", "proviso-integrate", true},
-		{"row4 the skill that accepts an amendment, and no writing guide", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
+		{"row1 the skill that builds an amendment, with the writing guide, stamped with init's Proviso version", ".claude/skills/proviso-build/SKILL.md", "proviso-build", true},
+		{"row2 the skill that checks an amendment, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-check/SKILL.md", "proviso-check", true},
+		{"row3 the skill that brings a request into the spec tree, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-integrate/SKILL.md", "proviso-integrate", true},
+		{"row4 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
 	}
 	var writers []string
 	for _, row := range rows {
@@ -257,6 +275,14 @@ func TestInstallInitSkills(t *testing.T) {
 			if !named {
 				t.Errorf("install.init.skills: %s does not start with front matter naming it %s", row.skill, row.named)
 			}
+
+			// Stamped with the Proviso version of init, whichever it is.
+			checkInitStamp(t, "install.init.skills", row.skill, skill, "dev")
+			versioned := freshRepo(t, "shop", false)
+			if o := execBinary(t, built(t, "0.1.0"), versioned.dir, "init"); o.exit != 0 {
+				t.Fatalf("init of 0.1.0 exited with %d: %s", o.exit, o.stderr)
+			}
+			checkInitStamp(t, "install.init.skills", row.skill, versioned.read(row.skill), "0.1.0")
 
 			// As the kit holds it: the same bytes in a repository of
 			// another name, in another state.

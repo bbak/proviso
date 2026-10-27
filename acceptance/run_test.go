@@ -194,7 +194,25 @@ func TestLintRunUnreadable(t *testing.T) {
 		dir := marked.with(aPath, invalid, bPath, strings.Replace(invalid, "cart.bad", "cart.worse", 1)).write(t)
 		stopped(t, lintIn(t, dir, dir, nil), "a.md", "b.md")
 	})
-	t.Run("row8 notes.md, not in the layout, without read permission", func(t *testing.T) {
+	t.Run("row8 manifest.sum without read permission", func(t *testing.T) {
+		t.Parallel()
+		dir := marked.with("proviso/manifest.sum", "model 0\n").write(t)
+		path := filepath.Join(dir, "proviso", "manifest.sum")
+		undo, err := makeUnreadable(path)
+		if err != nil {
+			t.Skipf("cannot make a file unreadable here: %v", err)
+		}
+		undo()
+		o := lintIn(t, dir, dir, func() func() {
+			undo, err := makeUnreadable(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return undo
+		})
+		stopped(t, o, "manifest.sum")
+	})
+	t.Run("row9 notes.md, not in the layout, without read permission", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.write(t)
 		path := filepath.Join(dir, "proviso", "notes.md")
@@ -257,7 +275,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 	})
 	hidden := []struct{ name, link, target string }{
-		{"row9 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
+		{"row10 .shared.md a link with a hidden name", "proviso/.shared.md", featurePath},
 		{"derived: .shared, a hidden link to a folder outside the tree", "proviso/.shared", "outside"},
 	}
 	for _, c := range hidden {
@@ -522,6 +540,7 @@ func TestLintRunModel(t *testing.T) {
 			t.Errorf("want only line-ending reported, got:\n%s", dump(o.report.Findings))
 		}
 	})
+	// Handed over to lint.run.model-other, which stops with exit status 2.
 	t.Run("row4 manifest.sum starting with model 1", func(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n")))
@@ -529,6 +548,10 @@ func TestLintRunModel(t *testing.T) {
 	t.Run("row5 manifest.sum empty", func(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "")))
+	})
+	t.Run("row6 manifest.sum starting with model 00", func(t *testing.T) {
+		t.Parallel()
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 00\n")))
 	})
 	// Lint checks nothing of the manifest beyond its first line but what it
 	// checks of every file it reads: the lines that follow are not checked
@@ -551,4 +574,42 @@ func TestLintRunModel(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n", "proviso/notes.md", "# Notes\n")))
 	})
+}
+
+func TestLintRunModelOther(t *testing.T) {
+	t.Parallel()
+	rows := []struct {
+		name, line string
+		needs      string // the model version the tree needs, "" where none is named
+	}{
+		{"row1 model 1", "model 1", "1"},
+		{"row2 model 12", "model 12", "12"},
+		{"row3 empty", "", ""},
+		{"row4 model", "model", ""},
+		{"row5 model one", "model one", ""},
+		{"row6 model 00", "model 00", ""},
+		{"row7 <<<<<<< HEAD", "<<<<<<< HEAD", ""},
+	}
+	for _, row := range rows {
+		t.Run(row.name, func(t *testing.T) {
+			t.Parallel()
+			dir := baseline().with("proviso/manifest.sum", row.line+"\n").write(t)
+			o := lintIn(t, dir, dir, nil)
+			// That nothing goes to stdout is checked for every run with
+			// exit status 2.
+			for _, r := range []run{o.json, o.text} {
+				if r.exit != 2 {
+					t.Errorf("want exit status 2, got %d\nstdout: %s", r.exit, r.stdout)
+				}
+				nums := numbers(r.stderr, dir, filepath.ToSlash(dir), "manifest.sum")
+				if row.needs != "" {
+					if count(nums, row.needs) == 0 || count(nums, modelVersion) == 0 {
+						t.Errorf("lint.run.model-other: want stderr to name model %s as the one the tree needs and model %s as the one lint reads: %q", row.needs, modelVersion, r.stderr)
+					}
+				} else if count(nums, modelVersion) > 1 {
+					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed: %q", row.line, modelVersion, r.stderr)
+				}
+			}
+		})
+	}
 }
