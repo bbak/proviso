@@ -226,10 +226,42 @@ func TestLintLayoutLineEnding(t *testing.T) {
 			}
 		}
 	})
+	t.Run("row3 glossary.md, line 5 holding a lone carriage return in the middle", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline()
+		tr[glossaryPath] = strings.Replace(glossaryMD, "A product placed", "A product\rplaced", 1)
+		if tr.line(glossaryPath, "placed in the cart") != 5 {
+			t.Fatalf("test tree: the carriage return is not on line 5 of %s", glossaryPath)
+		}
+		o := checkGoesOn(t, tr)
+		o.has(t, "line-ending", glossaryPath, 5)
+		if n := len(o.find("line-ending", glossaryPath, nil)); n != 1 {
+			t.Errorf("want line-ending once in %s, got:\n%s", glossaryPath, dump(o.report.Findings))
+		}
+	})
+	// Once per file, at the first line holding a carriage return, whether
+	// in a line ending or within a line.
+	t.Run("derived: a lone carriage return on line 5 before a CR LF on line 7", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline()
+		tr[glossaryPath] = strings.Replace(crlf(glossaryMD, 7), "A product placed", "A product\rplaced", 1)
+		o := checkGoesOn(t, tr)
+		o.has(t, "line-ending", glossaryPath, 5)
+		if n := len(o.find("line-ending", glossaryPath, nil)); n != 1 {
+			t.Errorf("want line-ending once in %s, got:\n%s", glossaryPath, dump(o.report.Findings))
+		}
+	})
+	t.Run("derived: a lone carriage return after the last line feed", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline()
+		tr[glossaryPath] = glossaryMD + "\r"
+		o := checkGoesOn(t, tr)
+		o.has(t, "line-ending", glossaryPath, strings.Count(glossaryMD, "\n")+1)
+	})
 	rows(t, "line-ending", []row{
-		{name: "row3 .markdownlint.jsonc ending its lines in CR LF", tree: baseline().with(settings, crlf("{\n  \"MD013\": false\n}\n")),
+		{name: "row4 .markdownlint.jsonc ending its lines in CR LF", tree: baseline().with(settings, crlf("{\n  \"MD013\": false\n}\n")),
 			file: settings, lines: lines(1)},
-		{name: "row4 manifest.sum ending its lines in CR LF", tree: baseline().with("proviso/manifest.sum", crlf("model 0\nsystem\theading\th1:"+strings.Repeat("0", 64)+"\n")),
+		{name: "row5 manifest.sum ending its lines in CR LF", tree: baseline().with("proviso/manifest.sum", crlf("model 0\nsystem\theading\th1:"+strings.Repeat("0", 64)+"\n")),
 			file: "proviso/manifest.sum", lines: lines(1)},
 		{name: "derived: a file the layout does not list is never read", tree: baseline().with("proviso/notes.md", crlf("# Notes\n\nSome notes.\n")), holds: true},
 		{name: "derived: a hidden file is skipped", tree: baseline().with("proviso/.notes.md", crlf("# Notes\n")), holds: true},

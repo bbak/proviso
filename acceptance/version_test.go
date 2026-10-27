@@ -296,6 +296,8 @@ func TestInstallVersionManifestModel(t *testing.T) {
 		{"row3 model 1", "model 1\n", false},
 		{"row4 empty", "", false},
 		{"row5 model 00", "model 00\n", false},
+		{"row6 model 0, a carriage return and foo", "model 0\rfoo\n", false},
+		{"derived: model 0 as the last line, without a line ending", "model 0", true},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
@@ -317,14 +319,17 @@ func TestInstallVersionManifestOther(t *testing.T) {
 	rows := []struct {
 		name, line string
 		needs      string // the model version the tree needs, "" where none is named
+		not        string // a number the line holds that must not be named as needed
 	}{
-		{"row1 model 1", "model 1", "1"},
-		{"row2 model 12", "model 12", "12"},
-		{"row3 empty", "", ""},
-		{"row4 model", "model", ""},
-		{"row5 model one", "model one", ""},
-		{"row6 model 00", "model 00", ""},
-		{"row7 <<<<<<< HEAD", "<<<<<<< HEAD", ""},
+		{"row1 model 1", "model 1", "1", ""},
+		{"row2 model 12", "model 12", "12", ""},
+		{"row3 empty", "", "", ""},
+		{"row4 model", "model", "", ""},
+		{"row5 model one", "model one", "", ""},
+		{"row6 model 00", "model 00", "", ""},
+		{"row7 model 1, followed by two carriage returns and a line feed", "model 1\r\r", "", "1"},
+		{"row8 model 0, a carriage return and foo", "model 0\rfoo", "", ""},
+		{"row9 <<<<<<< HEAD", "<<<<<<< HEAD", "", ""},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
@@ -342,6 +347,9 @@ func TestInstallVersionManifestOther(t *testing.T) {
 			// Names no model version: never "needs 0, reads 0".
 			if count(nums, modelVersion) > 1 {
 				t.Errorf("install.version.manifest-other: %q names no model version, but the line names model %s as needed: %q", row.line, modelVersion, o.manifestLine())
+			}
+			if row.not != "" && count(nums, row.not) > 0 && count(nums, modelVersion) > 0 {
+				t.Errorf("install.version.manifest-other: %q names no model version, but the line names model %s as needed and %s as read: %q", row.line, row.not, modelVersion, o.manifestLine())
 			}
 			if !strings.Contains(o.manifestLine(), "manifest.sum") {
 				t.Errorf("install.version.manifest-other: want the line to say that proviso/manifest.sum names no model version: %q", o.manifestLine())
@@ -477,6 +485,10 @@ func TestInstallVersionUnstamped(t *testing.T) {
 		{"row17 stamped dev", stampedAs(buildSkill, "dev"), false, "dev"},
 		{"row18 an indented comment line between metadata: and its stamp 0.1.0", skillAs("metadata:", "  # installed by proviso", "  proviso-version: 0.1.0"), false, ""},
 		{"row19 stamped 0.1.0 with a tab as indentation, no space after the colon and spaces at the end", skillAs("metadata:", "\tproviso-version:0.1.0   "), false, ""},
+		// install.version-stamp: a line is read without its line ending
+		// only; a carriage return before it belongs to the line, and is no
+		// space or tab, so the version is 0.1.0 and a carriage return.
+		{"derived: stamped 0.1.0, its line followed by two carriage returns and a line feed", strings.Replace(stampedAs(buildSkill, "0.1.0"), "0.1.0\n", "0.1.0\r\r\n", 1), true, ""},
 		{"derived: spaces and tabs around both colons", skillAs("metadata \t: ", " \t proviso-version \t:\t 0.1.0"), false, ""},
 		{"derived: a stamp among other lines below metadata:", skillAs("metadata:", "  author: the engineers", "  proviso-version: 0.1.0", "  team: payments"), false, ""},
 	}
