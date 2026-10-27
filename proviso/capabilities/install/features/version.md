@@ -108,11 +108,13 @@ Otherwise → install.version.unstamped
 ### Rationale
 
 A file that cannot be read and a file without a stamp tell the same:
-nobody knows which version installed it.
+nobody knows which version installed it. Nor does a stamp whose version
+no build of Proviso could have, which is why only `dev` and a semantic
+version, the forms a Proviso version takes, count.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
-Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] with a non-empty version
+Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v"
 Then      `version` writes to "stderr" one line naming <file> as naming no [Proviso version]
   And     `version` checks nothing else of <file>
 Otherwise → install.version.stale
@@ -125,9 +127,14 @@ Otherwise → install.version.stale
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata: {proviso-version: 0.1.0}` on one line | yes | named as naming no Proviso version | Proviso reads only the stamp's own lines |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version: 0.1.0` at the top, not below `metadata:` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `proviso-version:` below `metadata:`, with no version | yes | named as naming no Proviso version | an empty version names none |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `[1]` | yes | named as naming no Proviso version | not a semantic version |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `v0.1.0` | yes | named as naming no Proviso version | the `v` belongs to the tag only |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1` | yes | named as naming no Proviso version | a semantic version has three numbers |
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, its frontmatter holding `metadata` without `proviso-version` | yes | named as naming no Proviso version | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` | no | handed over | |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.1-dev` | no | handed over | a pre-release is a semantic version |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `dev` | no | handed over | |
 | `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0` with a tab as indentation, no space after the colon and spaces at the end | no | handed over, with the stamp `0.1.0` | whitespace changes nothing |
 
 ## <a id="install.version.stale"></a> Rule: A skill or agent installed by another version is named
@@ -179,7 +186,7 @@ Otherwise `version` gives no model version for <stamp>
 | 0 from `0.1.0`, 1 from `0.3.0` | `dev` | `0.4.2` | yes | model 1 | the last row holds for every later release |
 | 0 from `0.1.0` | `0.2.0` | `dev` | no (release version) | no model | |
 | 0 from `0.1.0` | `0.2.0` | `0.1.1-dev` | no (release version) | no model | a pre-release is no release |
-| 0 from `0.1.0` | `0.2.0` | `v0.1.0` | no (release version) | no model | the `v` belongs to the tag only |
+| 0 from `0.1.0` | `0.2.0` | `0.1.0+build.5` | no (release version) | no model | a release version has no build part |
 | 0 from `0.1.0` | `0.2.0` | `0.3.0` | no (no newer than the version) | no model | a later release may read a model this binary does not know |
 | 0 from `0.1.0` | `0.1.1-dev` | `0.1.1` | no (no newer than the version) | no model | 0.1.1 is newer than its own pre-release |
 | 0 from `0.1.0` | `0.2.0` | `0.0.9` | no (no older than the first release) | no model | before the first release |
