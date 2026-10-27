@@ -119,9 +119,11 @@ result meaningless.
 ### Property
 
 Every top-level acceptance test that checks an element is named `Test`
-followed by the element's identifier, each part between dots and
-hyphens starting with a capital letter and the dots and hyphens
-dropped, such as `TestInstallVersionStale` for `install.version.stale`;
+followed by the element's identifier, with the dots and hyphens
+dropped and each part between them that starts with a letter starting
+with a capital letter, while a digit stays as it is, such as
+`TestInstallVersionStale` for `install.version.stale` and
+`TestLintRunRoot2` for `lint.run.root-2`;
 optionally followed by `_` and a suffix of letters and digits, such as
 `TestBaselineDiffFormer_Pack`. A top-level test that checks only the
 test trees is named `TestFixture` followed by letters and digits. The
