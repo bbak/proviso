@@ -649,3 +649,32 @@ enum: [0, 2]
 - `0`: every installed file is in place, written or skipped.
 - `2`: the command could not run, or an installed file could not be
   written.
+
+## <a id="system.cli.version"></a> version
+
+The command `proviso version`, run anywhere; it takes no argument. On
+standard output it writes two lines, the Proviso version and the model
+version:
+
+```text
+proviso 0.1.0
+model 0
+```
+
+On standard error it writes a hint, outside the root of a git
+repository, or in the root one line for every installed skill or agent
+and for the spec tree that does not fit the binary: first the skills
+and agents, in the byte order of their paths, then the spec tree. Their
+wording is for people and not part of the contract.
+
+### <a id="system.cli.version.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: the version was written, whatever went to standard error.
+- `2`: an argument was given.

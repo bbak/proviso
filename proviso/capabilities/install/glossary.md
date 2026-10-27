@@ -38,3 +38,32 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: skills
+
+## <a id="install.release-version"></a> release version
+
+- Definition: A version of Proviso in the form
+  `<major>.<minor>.<patch>` of semantic versioning, in plain numbers,
+  without a leading `v` and without a pre-release or build part, such
+  as `0.1.0`: the version a release carries, its git tag without the
+  `v`.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: release versions
+
+## <a id="install.proviso-version"></a> Proviso version
+
+- Definition: The version a proviso binary was built with: the release
+  version of a release; for a local build after a release, the next
+  patch version with the pre-release `dev`, such as `0.1.1-dev`; or
+  `dev` for a build that was given none.
+- Contact: Bruno Baketarić
+- Status: defined
+
+## <a id="install.version-stamp"></a> version stamp
+
+- Definition: The member `proviso-version` of the map `metadata` in the
+  YAML frontmatter of an installed skill or agent definition: the
+  Proviso version of the `init` that wrote the file.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: stamp, version stamps, stamps
