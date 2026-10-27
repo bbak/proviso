@@ -2,10 +2,20 @@ version: '3'
 
 vars:
   BINARY: proviso
-  # No tags exist before the first release, so `--always` falls back to the
-  # commit. A VERSION file and goreleaser come with the first release.
+  # system.build-version: a local build is the next patch after the latest
+  # release tag v<major>.<minor>.<patch> reachable from HEAD, with the
+  # pre-release dev, such as 0.1.1-dev after v0.1.0; without a release tag
+  # it is given no version, and the binary names itself dev. Only a release
+  # build, from its tag, gives a release version.
   VERSION:
-    sh: git describe --tags --always --dirty 2>/dev/null || echo unknown
+    sh: |
+      for tag in $(git tag --merged HEAD --list 'v*' --sort=-v:refname 2>/dev/null); do
+        v=${tag#v}
+        case "$v" in
+          *[!0-9.]* | *.*.*.* | .* | *. | *..*) continue ;;
+          *.*.*) echo "${v%.*}.$(( ${v##*.} + 1 ))-dev"; break ;;
+        esac
+      done
 
 env:
   CGO_ENABLED: '0'
@@ -20,7 +30,7 @@ tasks:
   build:
     desc: Build the binary into bin/ (never into the root, where proviso/ is the spec tree)
     cmds:
-      - go build -trimpath -ldflags "-s -w -X main.version={{.VERSION}}" -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
+      - go build -trimpath -ldflags "-s -w{{if .VERSION}} -X main.version={{.VERSION}}{{end}}" -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
 
   test:
     desc: Run the coding agent's unit tests

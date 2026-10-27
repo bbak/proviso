@@ -649,3 +649,37 @@ enum: [0, 2]
 - `0`: every installed file is in place, written or skipped.
 - `2`: the command could not run, or an installed file could not be
   written.
+
+## <a id="system.cli.version"></a> version
+
+The command `proviso version`, run anywhere; it takes no argument. On
+standard output it writes two lines, the Proviso version and the model
+version:
+
+```text
+proviso 0.1.0
+model 0
+```
+
+With an argument, it writes to standard error only that it takes no
+argument, and its usage, and checks nothing. Without one, it writes to
+standard error, outside the root of a git repository, one line of hint.
+In the root it writes, first, either one line saying that
+no skill or agent is installed, or one line for each skill or agent
+that `installed_files` names and that is missing, holds more than one
+stamp, names no Proviso version or was installed by another version, in
+the byte order of their paths; then at most one line about the spec tree's manifest. In the
+root, nothing on standard error means everything fits. The wording of
+these lines is for people and not part of the contract.
+
+### <a id="system.cli.version.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: the version was written, whatever went to standard error.
+- `2`: an argument was given.

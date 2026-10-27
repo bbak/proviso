@@ -38,3 +38,41 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: skills
+
+## <a id="install.release-version"></a> release version
+
+- Definition: A version of Proviso in the form
+  `<major>.<minor>.<patch>` of semantic versioning, in plain numbers,
+  without a leading `v` and without a pre-release or build part, such
+  as `0.1.0`: the version a release carries, its git tag without the
+  `v`.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: release versions
+
+## <a id="install.proviso-version"></a> Proviso version
+
+- Definition: The version a proviso binary was built with: the release
+  version of a release; for a local build after a release, the next
+  patch version with the pre-release `dev`, such as `0.1.1-dev`; or
+  `dev` for a build that was given none.
+- Contact: Bruno Baketarić
+- Status: defined
+
+## <a id="install.version-stamp"></a> version stamp
+
+- Definition: The line `proviso-version: <version>` in the frontmatter
+  of an installed skill or agent definition, among the lines directly
+  below the line `metadata:` that start with a space or a tab: the
+  Proviso version of the `init` that wrote the file. The frontmatter is
+  the lines between a first line `---` and the next line `---`; without
+  that next line there is none. `metadata:` starts its line; the first
+  line below it that starts with neither a space nor a tab, a blank one
+  included, ends the lines below it. Each of these lines is read without
+  its line ending, a line feed or a carriage return and a line feed.
+  Spaces and tabs at the end of any of these lines, around the colons,
+  and before `proviso-version`, change nothing. The agent host reads it
+  as YAML; Proviso reads only these lines.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: stamp, version stamps, stamps

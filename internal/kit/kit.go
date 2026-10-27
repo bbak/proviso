@@ -7,6 +7,8 @@ import (
 	"embed"
 	"sort"
 	"strings"
+
+	"github.com/bbak/proviso/internal/stamp"
 )
 
 //go:embed agents notes skills tree
@@ -27,37 +29,40 @@ const writingMark = "<!-- proviso: writing.md -->\n"
 const nameMark = "<name>"
 
 // File is an installed file: its path relative to the directory init runs
-// in, with "/" as the separator, and its content.
+// in, with "/" as the separator, and its content. Stamped tells a skill or
+// agent definition, which carries a version stamp.
 type File struct {
-	Path string
-	Data []byte
+	Path    string
+	Data    []byte
+	Stamped bool
 }
 
 // Files returns the installed files in the byte order of their paths, the
-// system skeleton named system.
-func Files(system string) []File {
+// system skeleton named system, the skills and agent definitions stamped
+// with the Proviso version version.
+func Files(system, version string) []File {
 	reading := read("agents/reading.md")
 	agent := func(name string) []byte {
-		return []byte(strings.Replace(read("agents/"+name), readingMark, reading, 1))
+		return []byte(stamp.Add(strings.Replace(read("agents/"+name), readingMark, reading, 1), version))
 	}
 	writing := read("skills/writing.md")
 	skill := func(name string) []byte {
-		return []byte(strings.Replace(read("skills/"+name+"/SKILL.md"), writingMark, writing, 1))
+		return []byte(stamp.Add(strings.Replace(read("skills/"+name+"/SKILL.md"), writingMark, writing, 1), version))
 	}
 	out := []File{
-		{".claude/agents/proviso-checker.md", agent("proviso-checker.md")},
-		{".claude/agents/proviso-coder.md", agent("proviso-coder.md")},
-		{".claude/agents/proviso-tester.md", agent("proviso-tester.md")},
-		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept")},
-		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build")},
-		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check")},
-		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate")},
-		{".proviso/build.md", []byte(read("notes/build.md"))},
-		{".proviso/coder.md", []byte(read("notes/coder.md"))},
-		{".proviso/tester.md", []byte(read("notes/tester.md"))},
-		{"proviso/.gitattributes", []byte(read("tree/gitattributes"))},
-		{"proviso/.markdownlint.jsonc", []byte(read("tree/markdownlint.jsonc"))},
-		{"proviso/system.md", []byte(strings.Replace(read("tree/system.md"), nameMark, system, 1))},
+		{".claude/agents/proviso-checker.md", agent("proviso-checker.md"), true},
+		{".claude/agents/proviso-coder.md", agent("proviso-coder.md"), true},
+		{".claude/agents/proviso-tester.md", agent("proviso-tester.md"), true},
+		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept"), true},
+		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build"), true},
+		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check"), true},
+		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate"), true},
+		{".proviso/build.md", []byte(read("notes/build.md")), false},
+		{".proviso/coder.md", []byte(read("notes/coder.md")), false},
+		{".proviso/tester.md", []byte(read("notes/tester.md")), false},
+		{"proviso/.gitattributes", []byte(read("tree/gitattributes")), false},
+		{"proviso/.markdownlint.jsonc", []byte(read("tree/markdownlint.jsonc")), false},
+		{"proviso/system.md", []byte(strings.Replace(read("tree/system.md"), nameMark, system, 1)), false},
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Path < out[j].Path })
 	return out

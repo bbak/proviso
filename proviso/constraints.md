@@ -100,3 +100,38 @@ changed only by the testing agent. They run the binary as a black box,
 built by the tests themselves. The coding agent's tests live beside its
 code in `cmd/` and `internal/`, and the coding agent never changes
 anything in `acceptance/`.
+
+## <a id="system.model-release"></a> A new model version starts with a minor or major release
+
+### Rationale
+
+Every change to the notation breaks an older binary, so a model version
+never changes in a patch release, which promises to break nothing.
+Whether a change takes a minor or a major release is decided when it is
+released. Rising columns keep the lookup in `model_releases` to one row
+for every release.
+
+### Property
+
+Every first release in `model_releases` is a release version whose
+patch number is 0. From row to row, both the model version and the
+first release rise, and the last row names `model_version`.
+
+## <a id="system.build-version"></a> Only a release gives the binary a release version
+
+### Rationale
+
+A local build may hold changes no release has, so it must never pass
+for one; naming the release it builds on still tells which one that is.
+A pre-release of the next patch sorts after that release and before
+any later one, as semantic versioning orders them. The git tag is the
+only source of a release version, so nothing beside it has to be kept
+in step.
+
+### Property
+
+A release is built from its git tag `v<release version>` and gives the
+binary that release version. A local build through the Taskfile gives
+it the next patch version after the latest tag, with the pre-release
+`dev`, such as `0.1.1-dev` after `v0.1.0`, or no version where no tag
+exists. A build given no version names its Proviso version `dev`.

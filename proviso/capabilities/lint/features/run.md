@@ -82,6 +82,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `shared`, a Windows junction to a folder outside the tree | no | exit status 2, naming `shared` | neither a regular file nor a folder |
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
+| `manifest.sum`, without read permission | no | exit status 2, naming `manifest.sum` | the model version is read only from a manifest that can be read |
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
 | none, while `.shared.md` is a symbolic link with a hidden name | yes | the tree is checked, and the link is skipped | a hidden entry never holds spec content |
 
@@ -97,13 +98,12 @@ yet and has nothing to be compatible with, so it is read with the
 binary's own version.
 
 ```guarded
+Given     lint has read every file of its [spec tree] that `tree_layout` lists
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
 Provided  <root> holds no `manifest_file`, or its first line, without its line ending, names `model_version`
 Then      lint checks the [spec tree]
   And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
-Otherwise lint writes to "stderr" the model version the [spec tree] needs and the one lint reads
-  And     lint exits with `lint.exit-status` 2
-  And     nothing goes to "stdout", not even an empty `report`
+Otherwise → lint.run.model-other
 ```
 
 | root | provided | outcome | why |
@@ -111,8 +111,32 @@ Otherwise lint writes to "stderr" the model version the [spec tree] needs and th
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
-| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | exit status 2 | a notation this lint does not know |
-| `repo/proviso/`, its `manifest.sum` empty | no | exit status 2 | no version is named |
+| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
+| `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
+| `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
+
+## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
+
+```guarded
+When      lint finds that the first line <line> of `manifest_file` does not name `model_version`
+Provided  <line>, without its line ending, is "model", a space and a whole number in decimal digits without a leading zero
+Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and `model_version` as the one lint reads
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
+Otherwise lint writes to "stderr" that `manifest_file` names no model version
+  And     lint exits with `lint.exit-status` 2
+  And     nothing goes to "stdout", not even an empty `report`
+```
+
+| line | provided | outcome | why |
+| --- | --- | --- | --- |
+| `model 1` | yes | the tree needs model 1, lint reads model 0; exit status 2 | |
+| `model 12` | yes | the tree needs model 12, lint reads model 0; exit status 2 | |
+| empty | no | names no model version; exit status 2 | |
+| `model` | no | names no model version; exit status 2 | |
+| `model one` | no | names no model version; exit status 2 | |
+| `model 00` | no | names no model version; exit status 2 | a leading zero; never "needs 0, reads 0" |
+| `<<<<<<< HEAD` | no | names no model version; exit status 2 | a merge conflict left in the file |
 
 ## <a id="lint.run.output"></a> Rule: Lint writes text or a report
 

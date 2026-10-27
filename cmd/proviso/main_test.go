@@ -506,3 +506,89 @@ func TestJudgeAndVerify(t *testing.T) {
 		t.Errorf("leftover: %d %q", status, out)
 	}
 }
+
+func TestVersionCommand(t *testing.T) {
+	defer func(v string) { version = v }(version)
+	version = "0.2.0"
+	stamped := func(v string) string { return "---\nname: x\nmetadata:\n  proviso-version: " + v + "\n---\n" }
+	all := func(edit map[string]string) map[string]string {
+		files := map[string]string{".git/HEAD": "", "proviso/manifest.sum": "model 0\n"}
+		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md"} {
+			files[f] = stamped("0.2.0")
+		}
+		for k, v := range edit {
+			if v == "" {
+				delete(files, k)
+			} else {
+				files[k] = v
+			}
+		}
+		return files
+	}
+	const tester = ".claude/agents/proviso-tester.md"
+	cases := []struct {
+		name   string
+		files  map[string]string
+		stderr []string // substrings of the lines, in order; nil for nothing
+	}{
+		{"no repository", map[string]string{"x": "x"}, []string{"root of a git repository"}},
+		{"all fit", all(nil), nil},
+		{"before init", map[string]string{".git/HEAD": ""}, []string{"no Proviso skill", "manifest.sum does not exist"}},
+		{"other claude files", map[string]string{".git/HEAD": "", ".claude/settings.json": "{}", "proviso/manifest.sum": "model 0\n"}, []string{"no Proviso skill"}},
+		{"one skill only", map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/SKILL.md": stamped("0.2.0"), "proviso/manifest.sum": "model 0\n"}, []string{"proviso-checker.md is not installed", "proviso-coder.md is not", "proviso-tester.md is not", "proviso-accept/SKILL.md is not", "proviso-check/SKILL.md is not", "proviso-integrate/SKILL.md is not"}},
+		{"stale with model", all(map[string]string{tester: stamped("0.1.0")}), []string{tester + " was installed by Proviso 0.1.0, which reads model 0"}},
+		{"stale dev", all(map[string]string{tester: stamped("dev")}), []string{tester + " was installed by Proviso dev; this"}},
+		{"later release", all(map[string]string{tester: stamped("0.3.0")}), []string{tester + " was installed by Proviso 0.3.0; this"}},
+		{"two stamps", all(map[string]string{tester: "---\nmetadata:\n  proviso-version: 0.2.0\n  proviso-version: 0.2.0\n---\n"}), []string{tester + " holds more than one"}},
+		{"unstamped", all(map[string]string{tester: "---\nname: x\n---\n"}), []string{tester + " names no Proviso version"}},
+		{"v stamp", all(map[string]string{tester: stamped("v0.2.0")}), []string{tester + " names no Proviso version"}},
+		{"folder", all(map[string]string{tester: "", tester + "/x": "x"}), []string{tester + " names no Proviso version"}},
+		{"other model", all(map[string]string{"proviso/manifest.sum": "model 12\n"}), []string{"needs model version 12"}},
+		{"no model", all(map[string]string{"proviso/manifest.sum": "model 00\n"}), []string{"names no model version"}},
+		{"crlf manifest", all(map[string]string{"proviso/manifest.sum": "model 0\r\n"}), nil},
+		{"manifest folder", all(map[string]string{"proviso/manifest.sum": "", "proviso/manifest.sum/x": "x"}), []string{"cannot be read"}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			inRepo(t, c.files)
+			var out, errOut bytes.Buffer
+			if status := run([]string{"version"}, &out, &errOut); status != 0 || out.String() != "proviso 0.2.0\nmodel 0\n" {
+				t.Fatalf("status %d, stdout %q", status, out.String())
+			}
+			lines := strings.Split(strings.TrimSuffix(errOut.String(), "\n"), "\n")
+			if errOut.Len() == 0 {
+				lines = nil
+			}
+			if len(lines) != len(c.stderr) {
+				t.Fatalf("stderr %q, want %q", errOut.String(), c.stderr)
+			}
+			for i, l := range lines {
+				if !strings.Contains(l, c.stderr[i]) {
+					t.Errorf("line %q, want %q", l, c.stderr[i])
+				}
+			}
+		})
+	}
+	for _, args := range [][]string{{"version", "--json"}, {"version", "0.1.0"}} {
+		var out, errOut bytes.Buffer
+		if status := run(args, &out, &errOut); status != 2 || out.Len() > 0 || errOut.Len() == 0 {
+			t.Errorf("%q: status %d, stdout %q", args, status, out.String())
+		}
+	}
+}
+
+func TestInitStamps(t *testing.T) {
+	defer func(v string) { version = v }(version)
+	version = "0.1.1-dev"
+	inRepo(t, map[string]string{".git/HEAD": ""})
+	var out, errOut bytes.Buffer
+	if status := run([]string{"init"}, &out, &errOut); status != 0 {
+		t.Fatalf("init: %d %s", status, errOut.String())
+	}
+	out.Reset()
+	errOut.Reset()
+	run([]string{"version"}, &out, &errOut)
+	if !strings.HasSuffix(errOut.String(), "manifest.sum does not exist, so no model version is recorded for the spec tree\n") || strings.Count(errOut.String(), "\n") != 1 {
+		t.Errorf("stderr %q", errOut.String())
+	}
+}

@@ -18,3 +18,19 @@ Every run of `init`, however it ends.
 Every file that existed below the directory before the run is byte for
 byte as it was, and no entry is removed or renamed. The only entries
 added are the paths `installed_files` names and the folders above them.
+
+## <a id="install.version.reads-only"></a> Version changes nothing
+
+### Rationale
+
+`version` reads files the engineers may have changed, and may be run at
+any time, by people and by skills; it must never cost anyone an edit.
+
+### Ranges over
+
+Every run of `version`, however it ends.
+
+### Property
+
+Every entry below the directory `version` runs in is byte for byte as it
+was, and no entry is added, removed or renamed.
