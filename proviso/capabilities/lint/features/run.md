@@ -82,6 +82,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `shared`, a Windows junction to a folder outside the tree | no | exit status 2, naming `shared` | neither a regular file nor a folder |
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
+| `manifest.sum`, without read permission | no | exit status 2, naming `manifest.sum` | the model version is read only from a manifest that can be read |
 | none, while `notes.md`, not in the layout, has no read permission | yes | the tree is checked, and `notes.md` is reported as `file-unknown` | a file outside the layout is never read, so it leaves no part of the tree unread |
 | none, while `.shared.md` is a symbolic link with a hidden name | yes | the tree is checked, and the link is skipped | a hidden entry never holds spec content |
 
@@ -97,6 +98,7 @@ yet and has nothing to be compatible with, so it is read with the
 binary's own version.
 
 ```guarded
+Given     lint has read every file of its [spec tree] that `tree_layout` lists
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
 Provided  <root> holds no `manifest_file`, or its first line, without its line ending, names `model_version`
 Then      lint checks the [spec tree]
