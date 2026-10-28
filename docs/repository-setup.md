@@ -52,13 +52,17 @@ The files in `.proviso/` belong to the engineers. `proviso init` writes
 stubs and never touches them again.
 
 - **`build.md`**, for the skills: the commands that build the system, run
-  its unit tests and run its acceptance tests, in that order; skips that
-  are expected; Proviso's command, if it is not `proviso` from the path;
+  its unit tests and run its acceptance tests, in that order; how to run
+  the acceptance tests of a list of element identifiers, if your tests
+  are named so that they can be selected, which lets a build run only
+  the tests an amendment concerns until its last round; skips that are
+  expected; Proviso's command, if it is not `proviso` from the path;
   the line `Acceptance: pull request` if acceptance goes through one; and
   your convention for commit messages, if it is not Conventional Commits
   with `docs(spec):` for edits of the spec tree.
 - **`tester.md`**, for the testing agent: how the acceptance tests are
-  written, run and kept fast, and commit conventions.
+  written, named after the elements they check, run and kept fast, and
+  commit conventions.
 - **`coder.md`**, for the coding agent: code conventions, commands, and
   commit conventions.
 
