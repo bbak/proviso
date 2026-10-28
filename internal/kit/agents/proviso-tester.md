@@ -45,9 +45,13 @@ learnt in earlier rounds of it.
 
 ## How to test
 
-- One test per rule, named after its identifier, so that a rule can be
-  traced to its tests and its tests selected by name; one subtest per
-  Examples row, plus the frame tests the rule and its invariants imply.
+- One test per rule, named after its identifier in the form
+  `.proviso/tester.md` gives, so that a rule can be traced to its tests
+  and its tests selected by name; one subtest per Examples row, plus the
+  frame tests the rule and its invariants imply.
+- While you work, run the tests of the elements in the pack and the
+  tests you changed, as `.proviso/tester.md` says; the whole suite is
+  integration's to run.
 - Test an invariant as a property. Where a test can check a constraint,
   write that test.
 - For an element changed through a dependency, check its tests against

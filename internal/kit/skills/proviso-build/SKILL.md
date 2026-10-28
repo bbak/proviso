@@ -42,9 +42,10 @@ Stop and say why if any of this fails.
 ## 2. Read the engineers' notes
 
 Read `.proviso/build.md`: the commands that build the system, run its
-unit tests and run its acceptance tests, and what integration must
-watch, such as skips that are expected. If it is empty or missing, ask
-the engineer for them once, and offer to write the answer into it.
+unit tests and run its acceptance tests, how to run the acceptance tests
+of a list of element identifiers if it names that, and what integration
+must watch, such as skips that are expected. If it is empty or missing,
+ask the engineer for them once, and offer to write the answer into it.
 
 ## 3. Branches and worktrees
 
@@ -77,9 +78,11 @@ Their definitions say the rest. Wait until both have reported.
 
 In the integration worktree, merge the amendment's branch, then the
 code branch, then the tests branch. Run every command `.proviso/build.md`
-names, the acceptance tests last. Look at every failure and every skip:
-a skip that `.proviso/build.md` does not expect is a finding, like a
-failure.
+names, the acceptance tests last. Where it names how to run the
+acceptance tests of a list of identifiers, run only those of the
+elements `proviso diff` lists and the candidates `proviso impact` lists;
+otherwise run them all. Look at every failure and every skip: a skip
+that `.proviso/build.md` does not expect is a finding, like a failure.
 
 ## 6. Sort what you found
 
@@ -121,6 +124,9 @@ say so in its round.
 
 When the integration is green and no gap is open:
 
+- if the last integration ran only some of the acceptance tests, run
+  them all once in the integration worktree; a failure or an unexpected
+  skip is sorted as in step 6, and the next round follows;
 - move the amendment's branch to the integration branch, as a fast
   forward;
 - remove the three worktrees and the three `proviso/<amendment>/…`

@@ -9,7 +9,21 @@ worktree:
 1. `go vet ./...`
 2. `task build`
 3. `task test`
-4. `task acceptance`, about three minutes.
+4. `task acceptance`, about six minutes.
+
+The acceptance tests of a list of identifiers, with the fixture tests
+every such run needs:
+
+```sh
+go test -timeout 30m ./acceptance/... -run '^(TestFixture.*|<names>)$'
+```
+
+`<names>` joins with `|` one `<name>(_.*)?` per identifier, `<name>`
+being `Test` and the identifier with its dots and hyphens dropped and
+each part that starts with a letter capitalised, as `system.test-names`
+says: `install.version.stale` gives `TestInstallVersionStale(_.*)?`. An
+identifier without a test of that name, such as a glossary entry,
+selects nothing.
 
 Expected skips:
 
