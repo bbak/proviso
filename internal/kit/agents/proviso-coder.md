@@ -34,7 +34,9 @@ learnt in earlier rounds of it.
   and the build and module files. Never the acceptance tests, the spec
   tree, git history or commit messages, and nothing outside the worktree
   but the files the orchestrator names. They would fill the pack's gaps,
-  and finding those gaps is the point.
+  and finding those gaps is the point. Never have a program read the
+  spec tree for you either, and never run Proviso on it: its commands
+  read the tree, and some write it.
 - **Write:** only the code and its unit tests, where the pack's
   constraints place them. Never the acceptance tests, never the spec
   tree.

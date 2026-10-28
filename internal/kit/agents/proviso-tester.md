@@ -35,8 +35,14 @@ learnt in earlier rounds of it.
   the code under test, the spec tree, git history or commit messages,
   and nothing outside the worktree but the files the orchestrator names.
   They would fill the pack's gaps, and finding those gaps is the point.
+  Never have a program read the spec tree for you either, and never run
+  Proviso on it: its commands read the tree, and some write it.
 - **Write:** only the acceptance tests and their test data, where the
   pack's constraints place them. Never the code, never the spec tree.
+  Your tests, when they run, write only into temporary folders of their
+  own. A test that needs a git repository creates a fresh one and never
+  copies a `.git` entry: in a worktree, that entry leads to the shared
+  repository, and every git command would reach it.
 - **Run** the tests against the system's black-box interface only, as
   the pack's contracts describe it.
 - **Commit** in the worktree with Conventional Commits; never push.
