@@ -244,6 +244,30 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 		r.writeNote("- refunds \xff\xfe\n")
 		r.pack().stoppedNaming(t, noteName)
 	})
+	// A link is not followed, wherever it points.
+	linked := func(t *testing.T, target func(r *repo) string) {
+		t.Helper()
+		r, _ := accepted(t, packTree())
+		r.set(amended(packTree(), pCapThen))
+		to := target(r)
+		if err := os.WriteFile(to, []byte("- refunds\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Symlink(to, filepath.Join(r.root(), noteName)); err != nil {
+			t.Skipf("cannot create a symbolic link here: %v", err)
+		}
+		r.pack().stoppedNaming(t, noteName)
+	}
+	t.Run(`row4 a symbolic link to a file holding "- refunds"`, func(t *testing.T) {
+		t.Parallel()
+		outside := t.TempDir()
+		linked(t, func(*repo) string { return filepath.Join(outside, "note.md") })
+	})
+	t.Run(`derived: a symbolic link to a file holding "- refunds", in the spec root`, func(t *testing.T) {
+		t.Parallel()
+		// The target's name starts with a dot, so lint skips it.
+		linked(t, func(r *repo) string { return filepath.Join(r.root(), ".note.md") })
+	})
 	t.Run("derived: an empty folder named .amendment.md", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, packTree())

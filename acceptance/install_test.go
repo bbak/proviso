@@ -664,6 +664,33 @@ func TestInstallInitSkeleton(t *testing.T) {
 		t.Parallel()
 		skeleton(t, freshRepo(t, "cash-ops", true), "cash-ops")
 	})
+	// stored makes a repository in a folder of the name given, and skips
+	// where the file system does not keep the name in that form.
+	stored := func(t *testing.T, name string) *repo {
+		t.Helper()
+		r := freshRepo(t, name, true)
+		entries, err := os.ReadDir(filepath.Dir(r.dir))
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, e := range entries {
+			if e.Name() == name {
+				return r
+			}
+		}
+		t.Skipf("the file system does not store the name %q as given", name)
+		return nil
+	}
+	t.Run("row3 /home/me/übersicht, stored as u followed by a mark", func(t *testing.T) {
+		t.Parallel()
+		// U+0075 and the combining diaeresis U+0308; the heading holds
+		// the composed U+00FC.
+		skeleton(t, stored(t, "u\u0308bersicht"), "\u00fcbersicht")
+	})
+	t.Run("derived: /home/me/übersicht, stored composed", func(t *testing.T) {
+		t.Parallel()
+		skeleton(t, stored(t, "\u00fcbersicht"), "\u00fcbersicht")
+	})
 	t.Run("derived: a repository without a commit", func(t *testing.T) {
 		t.Parallel()
 		skeleton(t, freshRepo(t, "shop", false), "shop")
