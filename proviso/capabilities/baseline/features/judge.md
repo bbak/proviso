@@ -185,11 +185,12 @@ Otherwise every [touched element] keeps what `coherence_file` recorded for it be
 
 `coherence_file` is never edited by hand, so content that `judge` did
 not write is damage, such as a merge conflict left in it. Reading past
-it could pass an amendment whose check is missing.
+it could pass an amendment whose check is missing. A symbolic link is
+not followed: what it points to may lie outside the branch.
 
 ```guarded
 When      `judge` or `verify` reads the `coherence_file` <file>
-Provided  <file> holds what `judge` writes
+Provided  <file> is a regular file that holds what `judge` writes
 Then      the command takes what <file> records
   And     the command goes on
 Otherwise the command writes to "stderr" that `coherence_file` cannot be read
@@ -204,3 +205,4 @@ Otherwise the command writes to "stderr" that `coherence_file` cannot be read
 | empty | no | exit status 2 | |
 | a folder, beside a tree the manifest records | no | exit status 2 | `verify` reads the file before it asks whether it is left over |
 | `<<<<<<< HEAD` in it, with input that is not JSON | no | exit status 2 | the damaged file is reported before the input |
+| a symbolic link to a file written by `judge` | no | exit status 2 | a link is not followed |

@@ -572,6 +572,39 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 				}
 				r.verify().stoppedNaming(t, coherenceName)
 			})
+			// A link is not followed, wherever it points: the file judge
+			// wrote is moved to target and linked to from the spec root.
+			linked := func(t *testing.T, target func(r *repo) string) {
+				t.Helper()
+				r := amendedRepo(t, iLimitThen)
+				r.judgeAll(nil)
+				w := r.coherence()
+				to := target(r)
+				if err := os.WriteFile(to, []byte(w), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				p := filepath.Join(r.root(), coherenceName)
+				if err := os.Remove(p); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.Symlink(to, p); err != nil {
+					t.Skipf("cannot create a symbolic link here: %v", err)
+				}
+				if cmd == "judge" {
+					refused(t, r.judge(checkResult{}), 2, coherenceName)
+					return
+				}
+				r.verify().stoppedNaming(t, coherenceName)
+			}
+			t.Run("row6 a symbolic link to a file written by judge", func(t *testing.T) {
+				t.Parallel()
+				outside := t.TempDir()
+				linked(t, func(*repo) string { return filepath.Join(outside, "coherence.json") })
+			})
+			t.Run("derived: a symbolic link to a file written by judge, in the repository", func(t *testing.T) {
+				t.Parallel()
+				linked(t, func(r *repo) string { return filepath.Join(r.dir, "coherence.json") })
+			})
 		})
 	}
 }
