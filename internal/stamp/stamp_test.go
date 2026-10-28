@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/model"
 )
 
 func TestAdd(t *testing.T) {
@@ -62,10 +62,10 @@ func TestNames(t *testing.T) {
 }
 
 func TestModel(t *testing.T) {
-	one := []baseline.ModelRelease{{Model: 0, First: "0.1.0"}}
-	two := []baseline.ModelRelease{{Model: 0, First: "0.1.0"}, {Model: 1, First: "0.3.0"}}
+	one := []model.Release{{Model: 0, First: "0.1.0"}}
+	two := []model.Release{{Model: 0, First: "0.1.0"}, {Model: 1, First: "0.3.0"}}
 	cases := []struct {
-		rows       []baseline.ModelRelease
+		rows       []model.Release
 		own, stamp string
 		model      int
 		ok         bool
@@ -84,7 +84,7 @@ func TestModel(t *testing.T) {
 		{one, "0.10.0", "0.9.0", 0, true},
 	}
 	for _, c := range cases {
-		m, ok := model(c.rows, c.stamp, c.own)
+		m, ok := modelIn(c.rows, c.stamp, c.own)
 		if m != c.model || ok != c.ok {
 			t.Errorf("%v, %s, stamp %s: %d %v", c.rows, c.own, c.stamp, m, ok)
 		}
@@ -107,7 +107,7 @@ func TestCompare(t *testing.T) {
 // release version with patch 0, both columns rise, and the last row names
 // model_version.
 func TestModelReleases(t *testing.T) {
-	rows := baseline.ModelReleases
+	rows := model.Releases
 	patch0 := regexp.MustCompile(`\.0$`)
 	for i, r := range rows {
 		if !isRelease(r.First) || !patch0.MatchString(r.First) {
@@ -121,7 +121,7 @@ func TestModelReleases(t *testing.T) {
 			}
 		}
 	}
-	if rows[len(rows)-1].Model != baseline.ModelVersion {
+	if rows[len(rows)-1].Model != model.Version {
 		t.Error("the last row does not name model_version")
 	}
 }

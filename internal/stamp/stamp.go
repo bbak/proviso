@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/model"
 )
 
 // Key is the key of a version stamp below metadata:.
@@ -167,10 +167,10 @@ func cmpInt(a, b int) int {
 // install.version.model looks it up in model_releases for a binary of the
 // Proviso version own, and whether it finds one.
 func Model(stamp, own string) (int, bool) {
-	return model(baseline.ModelReleases, stamp, own)
+	return modelIn(model.Releases, stamp, own)
 }
 
-func model(rows []baseline.ModelRelease, stamp, own string) (int, bool) {
+func modelIn(rows []model.Release, stamp, own string) (int, bool) {
 	if !isRelease(stamp) || len(rows) == 0 {
 		return 0, false
 	}

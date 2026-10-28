@@ -8,27 +8,10 @@ import (
 	"strings"
 
 	"github.com/bbak/proviso/internal/lint"
+	"github.com/bbak/proviso/internal/model"
 )
 
-// ModelVersion is the parameter model_version: the version of the Proviso
-// Model this binary reads and writes.
-const ModelVersion = 0
-
-var modelLine = fmt.Sprintf("model %d", ModelVersion)
-
-// ModelRelease is a row of the parameter model_releases: a model version
-// and the first release version that reads it.
-type ModelRelease struct {
-	Model int
-	First string
-}
-
-// ModelReleases is the parameter model_releases. Each row holds from its
-// first release up to the next row's; the last row holds for every later
-// release.
-var ModelReleases = []ModelRelease{
-	{0, "0.1.0"},
-}
+var modelLine = fmt.Sprintf("model %d", model.Version)
 
 // namedModel matches a first line that names a model version: "model", a
 // space and a whole number in decimal digits without a leading zero.
@@ -66,9 +49,9 @@ func CheckModel(data []byte) error {
 		return nil
 	}
 	if v, ok := NamedModel(first); ok {
-		return fmt.Errorf("the spec tree needs model version %s, as the first line of %s says, and this proviso reads model version %d", v, "manifest.sum", ModelVersion)
+		return fmt.Errorf("the spec tree needs model version %s, as the first line of %s says, and this proviso reads model version %d", v, "manifest.sum", model.Version)
 	}
-	return fmt.Errorf("the first line of manifest.sum names no model version, so the version the spec tree needs is unknown; this proviso reads model version %d", ModelVersion)
+	return fmt.Errorf("the first line of manifest.sum names no model version, so the version the spec tree needs is unknown; this proviso reads model version %d", model.Version)
 }
 
 // Write returns the manifest of the elements: the model line, then one
