@@ -20,6 +20,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"golang.org/x/text/unicode/norm"
 )
 
 var binary string
@@ -336,7 +338,8 @@ func check(t *testing.T, tr tree) outcome {
 
 // checkRoot asserts that the report's root is the absolute path of the spec
 // root want, written with / as its separator and, on Windows, its drive
-// first, as an uppercase letter, as in C:/repo/proviso.
+// first, as an uppercase letter, as in C:/repo/proviso, and every name in
+// NFC, whatever form the names have on disk.
 func checkRoot(t *testing.T, o outcome, want string) {
 	t.Helper()
 	if strings.Contains(o.report.Root, `\`) {
@@ -344,6 +347,9 @@ func checkRoot(t *testing.T, o outcome, want string) {
 	}
 	if runtime.GOOS == "windows" && len(filepath.VolumeName(want)) == 2 && !hasDrive(o.report.Root) {
 		t.Errorf("lint.cli.report: root %q does not start with its drive, as an uppercase letter, as in C:/repo/proviso", o.report.Root)
+	}
+	if !norm.NFC.IsNormalString(o.report.Root) {
+		t.Errorf("lint.cli.report: root %q has a name not in NFC", o.report.Root)
 	}
 	got := filepath.FromSlash(o.report.Root)
 	if !filepath.IsAbs(got) {
@@ -354,7 +360,7 @@ func checkRoot(t *testing.T, o outcome, want string) {
 		if r, err := filepath.EvalSymlinks(p); err == nil {
 			p = r
 		}
-		p = filepath.Clean(p)
+		p = norm.NFC.String(filepath.Clean(p))
 		if runtime.GOOS == "windows" {
 			p = strings.ToLower(p)
 		}
