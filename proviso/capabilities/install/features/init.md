@@ -62,11 +62,13 @@ Otherwise `init` leaves that entry as it is, without reading it
 A tree begins with its system, and an engineer should see at once what
 to decide first. Every section of the skeleton is undecided, so lint
 asks for each instead of failing, and the element diff lists the system
-as not to be built until each is decided.
+as not to be built until each is decided. The name is taken in NFC,
+as Proviso reports every name, so that the same folder gives the same
+heading whichever form its name is stored in.
 
 ```guarded
 When      `init` writes `system_skeleton` in the directory <directory>, which holds no other [spec tree] file
-Then      the heading of the system names it with the last name of the path of <directory>
+Then      the heading of the system names it with the last name of the path of <directory>, in NFC
   And     `lint`, run in <directory>, exits with `lint.exit-status` 0, reporting each of the six [sections] of the system as [undecided]
   And     `diff`, run in <directory>, lists the system as added and not to be built
 ```
@@ -75,6 +77,7 @@ Then      the heading of the system names it with the last name of the path of <
 | --- | --- |
 | `C:/work/shop` | `# <a id="system"></a> shop`; lint exits with 0 and six asks; diff lists `system` as not to be built |
 | `/home/me/cash-ops` | `# <a id="system"></a> cash-ops`; lint exits with 0 and six asks; diff lists `system` as not to be built |
+| `/home/me/übersicht`, stored as `u` followed by a mark | `# <a id="system"></a> übersicht`, composed; lint exits with 0 and six asks; diff lists `system` as not to be built |
 
 ## <a id="install.init.line-endings"></a> Rule: The tree is checked out with line feeds
 

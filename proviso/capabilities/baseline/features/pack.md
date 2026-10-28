@@ -76,11 +76,12 @@ Otherwise nothing is taken for "Not in this amendment"
 
 A note `pack` cannot read would leave out of the pack what the
 amendment deliberately leaves out, and the agents would build it
-without anyone seeing why.
+without anyone seeing why. A symbolic link is not followed, as lint
+follows none: what it points to may lie outside the branch.
 
 ```guarded
 When      `pack` reads the `amendment_note` <note>
-Provided  <note> is a file `pack` can read, in UTF-8
+Provided  <note> is a regular file `pack` can read, in UTF-8
 Then      `pack` goes on with the text of <note>
   And     everything else stays as it was
 Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read
@@ -93,6 +94,7 @@ Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read
 | a file holding "- refunds" | yes | read | |
 | a folder named `.amendment.md` | no | exit status 2 | |
 | a file holding bytes that are not UTF-8 | no | exit status 2 | the JSON could not carry it unchanged |
+| a symbolic link to a file holding "- refunds" | no | exit status 2 | a link is not followed |
 
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
