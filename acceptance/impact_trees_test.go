@@ -326,7 +326,7 @@ var standsIn = map[string]string{
 	"billing.refund.full": refundPath, "system.honest": sysInvariantsPath,
 }
 
-func TestBaselineImpactFixture(t *testing.T) {
+func TestFixtureImpact(t *testing.T) {
 	t.Parallel()
 	check(t, impactTree()).clean(t)
 }

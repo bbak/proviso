@@ -380,9 +380,9 @@ func TestBaselineImpactOutput(t *testing.T) {
 	})
 }
 
-// TestBaselineImpactFormer runs the cases of baseline.diff.former that need
+// TestBaselineDiffFormer_Impact runs the cases of baseline.diff.former that need
 // former text with `impact`.
-func TestBaselineImpactFormer(t *testing.T) {
+func TestBaselineDiffFormer_Impact(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
 		t.Parallel()

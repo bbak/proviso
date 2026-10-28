@@ -104,7 +104,7 @@ var packStandsIn = map[string]string{
 	"billing.refund.full": refundPath, "billing.refund.add": refundPath,
 }
 
-func TestBaselinePackFixture(t *testing.T) {
+func TestFixturePack(t *testing.T) {
 	t.Parallel()
 	check(t, packTree()).clean(t)
 }
