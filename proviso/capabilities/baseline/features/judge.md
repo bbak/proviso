@@ -186,8 +186,7 @@ Otherwise every [touched element] keeps what `coherence_file` recorded for it be
 `coherence_file` is never edited by hand, so content that `judge` did
 not write is damage, such as a merge conflict left in it. Reading past
 it could pass an amendment whose check is missing. A symbolic link is
-not followed, as lint follows none: what it points to may lie outside
-the branch.
+not followed: what it points to may lie outside the branch.
 
 ```guarded
 When      `judge` or `verify` reads the `coherence_file` <file>

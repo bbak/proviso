@@ -63,8 +63,8 @@ A tree begins with its system, and an engineer should see at once what
 to decide first. Every section of the skeleton is undecided, so lint
 asks for each instead of failing, and the element diff lists the system
 as not to be built until each is decided. The name is taken in NFC,
-as Proviso reports every name, so that the same folder gives the same
-heading whichever form its name is stored in.
+so that the same folder gives the same heading whichever form its name
+is stored in.
 
 ```guarded
 When      `init` writes `system_skeleton` in the directory <directory>, which holds no other [spec tree] file

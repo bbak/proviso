@@ -76,8 +76,8 @@ Otherwise nothing is taken for "Not in this amendment"
 
 A note `pack` cannot read would leave out of the pack what the
 amendment deliberately leaves out, and the agents would build it
-without anyone seeing why. A symbolic link is not followed, as lint
-follows none: what it points to may lie outside the branch.
+without anyone seeing why. A symbolic link is not followed: what it
+points to may lie outside the branch.
 
 ```guarded
 When      `pack` reads the `amendment_note` <note>
