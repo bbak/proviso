@@ -683,6 +683,18 @@ func (o packOutcome) stopped(t *testing.T) {
 	}
 }
 
+// stoppedNaming asserts what stopped does, and that both runs name name on
+// stderr.
+func (o packOutcome) stoppedNaming(t *testing.T, name string) {
+	t.Helper()
+	o.stopped(t)
+	for _, r := range []run{o.json, o.text} {
+		if !strings.Contains(r.stderr, name) {
+			t.Errorf("want stderr to name %s, got: %s", name, r.stderr)
+		}
+	}
+}
+
 // under lists the identifiers of the elements under heading in pack_text, in
 // their order.
 func (o packOutcome) under(heading string) []string {

@@ -217,7 +217,8 @@ func TestSystemAmendmentNote(t *testing.T) {
 func TestBaselinePackNoteUnreadable(t *testing.T) {
 	t.Parallel()
 	// That a stopped pack writes to stderr and nothing to stdout is checked
-	// for every run (see packIn); what stderr says is free.
+	// for every run (see packIn); the wording on stderr is free, but it names
+	// the note.
 	t.Run(`row1 a file holding "- refunds"`, func(t *testing.T) {
 		t.Parallel()
 		without, with := packNote(t, "- refunds\n", pCapThen)
@@ -234,14 +235,14 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 		if err := os.WriteFile(filepath.Join(r.root(), noteName, "sub", "item.md"), []byte("- refunds\n"), 0o644); err != nil {
 			t.Fatal(err)
 		}
-		r.pack().stopped(t)
+		r.pack().stoppedNaming(t, noteName)
 	})
 	t.Run("row3 a file holding bytes that are not UTF-8", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, packTree())
 		r.set(amended(packTree(), pCapThen))
 		r.writeNote("- refunds \xff\xfe\n")
-		r.pack().stopped(t)
+		r.pack().stoppedNaming(t, noteName)
 	})
 	t.Run("derived: an empty folder named .amendment.md", func(t *testing.T) {
 		t.Parallel()
@@ -250,13 +251,13 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 		if err := os.Mkdir(filepath.Join(r.root(), noteName), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		r.pack().stopped(t)
+		r.pack().stoppedNaming(t, noteName)
 	})
 	t.Run("derived: not UTF-8, beside an empty element diff", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, packTree())
 		r.writeNote("\xc3\x28\n")
-		r.pack().stopped(t)
+		r.pack().stoppedNaming(t, noteName)
 	})
 	t.Run("derived: a file pack may not read", func(t *testing.T) {
 		t.Parallel()
@@ -268,7 +269,7 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 			t.Skipf("cannot take the read permission here: %v", err)
 		}
 		defer undo()
-		r.pack().stopped(t)
+		r.pack().stoppedNaming(t, noteName)
 	})
 }
 

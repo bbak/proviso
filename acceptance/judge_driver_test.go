@@ -441,6 +441,18 @@ func (o verifyOutcome) exits(t *testing.T, want int) {
 	}
 }
 
+// stoppedNaming asserts exit status 2 for both runs, each naming name on
+// stderr.
+func (o verifyOutcome) stoppedNaming(t *testing.T, name string) {
+	t.Helper()
+	o.exits(t, 2)
+	for _, r := range []run{o.json, o.text} {
+		if !strings.Contains(r.stderr, name) {
+			t.Errorf("want stderr to name %s, got: %s", name, r.stderr)
+		}
+	}
+}
+
 func (r *repo) verify() verifyOutcome {
 	r.t.Helper()
 	return verifyIn(r.t, r.dir, r.dir, r.root())

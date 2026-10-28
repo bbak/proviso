@@ -462,12 +462,13 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					}
 					// That nothing goes to stdout, and that the file stays
 					// as it was, is checked for every run (see judgeIn and
-					// verifyIn).
+					// verifyIn); the wording on stderr is free, but it
+					// names the file.
 					if cmd == "judge" {
-						refused(t, r.judge(checkResult{}), 2)
+						refused(t, r.judge(checkResult{}), 2, coherenceName)
 						return
 					}
-					r.verify().exits(t, 2)
+					r.verify().stoppedNaming(t, coherenceName)
 				})
 			}
 			// lint stops the command first, before the coherence file is
@@ -510,7 +511,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+r.coherence()), 0o644); err != nil {
 						t.Fatal(err)
 					}
-					refused(t, r.judgeRaw("not JSON"), 2)
+					refused(t, r.judgeRaw("not JSON"), 2, coherenceName)
 				})
 				t.Run("derived: <<<<<<< HEAD in it, beside a tree the manifest records", func(t *testing.T) {
 					t.Parallel()
@@ -522,7 +523,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
 						t.Fatal(err)
 					}
-					refused(t, r.judge(checkResult{}), 2)
+					refused(t, r.judge(checkResult{}), 2, coherenceName)
 				})
 			}
 			if cmd == "verify" {
@@ -534,7 +535,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
 						t.Fatal(err)
 					}
-					r.verify().exits(t, 2)
+					r.verify().stoppedNaming(t, coherenceName)
 				})
 				t.Run("derived: a merge conflict left in it, beside a tree the manifest records", func(t *testing.T) {
 					t.Parallel()
@@ -545,7 +546,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD"+string(rune(10))+w), 0o644); err != nil {
 						t.Fatal(err)
 					}
-					r.verify().exits(t, 2)
+					r.verify().stoppedNaming(t, coherenceName)
 				})
 				t.Run("derived: a folder, beside a tree the manifest records, with an amendment note", func(t *testing.T) {
 					t.Parallel()
@@ -554,7 +555,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
 						t.Fatal(err)
 					}
-					r.verify().exits(t, 2)
+					r.verify().stoppedNaming(t, coherenceName)
 				})
 			}
 			t.Run("derived: a folder named .coherence.json", func(t *testing.T) {
@@ -566,10 +567,10 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 					t.Fatal(err)
 				}
 				if cmd == "judge" {
-					refused(t, r.judge(checkResult{}), 2)
+					refused(t, r.judge(checkResult{}), 2, coherenceName)
 					return
 				}
-				r.verify().exits(t, 2)
+				r.verify().stoppedNaming(t, coherenceName)
 			})
 		})
 	}
