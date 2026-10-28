@@ -251,6 +251,13 @@ func TestPackCommand(t *testing.T) {
 		}
 	}
 	os.Remove(note)
+	os.WriteFile("refunds.md", []byte("- refunds"), 0o644)
+	if err := os.Symlink(filepath.Join("..", "refunds.md"), note); err != nil {
+		t.Logf("no link: %v", err)
+	} else if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
+		t.Errorf("a link for a note: %d %q %q", status, out, errOut)
+	}
+	os.Remove(note)
 	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644)
 	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
 		t.Errorf("malformed: %d %q %q", status, out, errOut)
@@ -416,6 +423,24 @@ func TestSince(t *testing.T) {
 	}
 }
 
+// A folder whose name is stored decomposed names the system composed.
+func TestInitSkeletonNFC(t *testing.T) {
+	inRepo(t, nil)
+	dir := "übersicht" // u followed by a combining diaeresis
+	if err := os.MkdirAll(filepath.Join(dir, ".git"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Chdir(dir)
+	var out, errOut bytes.Buffer
+	if status := run([]string{"init"}, &out, &errOut); status != 0 {
+		t.Fatalf("init: %d %s", status, errOut.String())
+	}
+	data, _ := os.ReadFile("proviso/system.md")
+	if want := "# <a id=\"system\"></a> übersicht\n"; !strings.HasPrefix(string(data), want) {
+		t.Errorf("heading %q, want %q", data, want)
+	}
+}
+
 func TestJudgeAndVerify(t *testing.T) {
 	inRepo(t, map[string]string{"proviso/system.md": system})
 	coherence := filepath.Join("proviso", ".coherence.json")
@@ -459,6 +484,18 @@ func TestJudgeAndVerify(t *testing.T) {
 	}
 	if status, out, errOut := call("not json", "judge"); status != 2 || out != "" || !strings.Contains(errOut, "cannot be read") {
 		t.Errorf("judge on a damaged file, with input that is no JSON: %d %q %q", status, out, errOut)
+	}
+	os.Remove(coherence)
+	os.WriteFile("judged.json", data, 0o644)
+	if err := os.Symlink(filepath.Join("..", "judged.json"), coherence); err != nil {
+		t.Logf("no link: %v", err)
+	} else {
+		for _, cmd := range []string{"judge", "verify"} {
+			if status, out, errOut := call("{}", cmd); status != 2 || out != "" || !strings.Contains(errOut, "cannot be read") {
+				t.Errorf("%s on a link: %d %q %q", cmd, status, out, errOut)
+			}
+		}
+		os.Remove(coherence)
 	}
 	os.WriteFile(coherence, data, 0o644)
 	note := filepath.Join("proviso", ".amendment.md")
