@@ -22,6 +22,7 @@ cmd/proviso/resource_windows_*.syso
 
 # Test artifacts
 *.test
+__pycache__/
 *.out
 coverage.*
 
