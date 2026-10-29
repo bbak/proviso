@@ -77,3 +77,10 @@ The [documentation](docs/index.md) covers
 [repository setup](docs/repository-setup.md) and the
 [commands](docs/commands.md). Proviso specifies itself: its own spec tree
 is in [`proviso/`](proviso/).
+
+## License
+
+Copyright 2026 Bruno Baketarić. Licensed under the
+[Apache License, Version 2.0](LICENSE). The binary contains code from
+other projects under their own licenses; see
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
