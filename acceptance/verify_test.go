@@ -263,17 +263,20 @@ func TestBaselineVerifyOrder(t *testing.T) {
 func TestBaselineVerifyOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written for problems, and nothing for none, is
-	// checked for every run (see verifyIn).
-	oneUnjudged := func(t *testing.T) verifyOutcome {
+	// checked for every run as text (see runVerify).
+	oneUnjudged := func(t *testing.T, text bool) verifyOutcome {
 		t.Helper()
 		// iNeverProp makes cart.add.full and cart.add.limit the candidates.
 		r := amendedRepo(t, iNeverProp)
 		r.judgeOK(judging("untouched", "cart.add.full"))
+		if text {
+			return r.verifyText()
+		}
 		return r.verify()
 	}
 	t.Run(`row1 one "unjudged", --json`, func(t *testing.T) {
 		t.Parallel()
-		o := oneUnjudged(t)
+		o := oneUnjudged(t, false)
 		o.only(t, "unjudged cart.add.limit")
 	})
 	t.Run("row2 none, --json", func(t *testing.T) {
@@ -290,14 +293,14 @@ func TestBaselineVerifyOutput(t *testing.T) {
 	})
 	t.Run(`row3 one "unjudged", as text`, func(t *testing.T) {
 		t.Parallel()
-		o := oneUnjudged(t)
+		o := oneUnjudged(t, true)
 		if strings.TrimSpace(o.text.stdout) == "" {
 			t.Errorf("want the problem as text, got nothing")
 		}
 	})
 	t.Run("row4 none, as text", func(t *testing.T) {
 		t.Parallel()
-		o := covered(t, iLimitThen).verify()
+		o := covered(t, iLimitThen).verifyText()
 		if o.text.stdout != "" {
 			t.Errorf("want nothing written, got %q", o.text.stdout)
 		}

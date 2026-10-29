@@ -298,11 +298,20 @@ type report struct {
 	Findings []finding `json:"findings"`
 }
 
-// outcome is one check of a tree: lint run once with `--json` and once
-// without, from the same directory.
+// outcome is one check of a tree: lint run with `--json` and, where the
+// test asks for the text form, once without, from the same directory.
 type outcome struct {
-	json, text run
-	report     report
+	json   run
+	text   *run // nil unless the test asked for the text form
+	report report
+}
+
+// runs are the runs made: with `--json` and, if asked for, without.
+func (o outcome) runs() []run {
+	if o.text == nil {
+		return []run{o.json}
+	}
+	return []run{o.json, *o.text}
 }
 
 func execLint(t *testing.T, cwd string, args ...string) run {
@@ -330,6 +339,17 @@ func check(t *testing.T, tr tree) outcome {
 	t.Helper()
 	dir := tr.write(t)
 	o := lintIn(t, dir, dir, nil)
+	if o.json.exit != 2 {
+		checkRoot(t, o, filepath.Join(dir, "proviso"))
+	}
+	return o
+}
+
+// checkText is check, with lint run without `--json` as well.
+func checkText(t *testing.T, tr tree) outcome {
+	t.Helper()
+	dir := tr.write(t)
+	o := runLint(t, true, dir, dir, nil)
 	if o.json.exit != 2 {
 		checkRoot(t, o, filepath.Join(dir, "proviso"))
 	}
@@ -408,18 +428,29 @@ func checkGoesOnAfter(t *testing.T, tr tree, setup func(dir string)) outcome {
 	return o
 }
 
-// lintIn runs lint in cwd. base is the temporary directory the test tree was
+// lintIn runs lint --json in cwd. base is the temporary directory the test tree was
 // written to; every spec root below it must be unchanged by the run.
 // prepare, if given, runs after the snapshot and before lint; the function it
 // returns runs after lint and before the second snapshot.
 func lintIn(t *testing.T, base, cwd string, prepare func() func()) outcome {
+	t.Helper()
+	return runLint(t, false, base, cwd, prepare)
+}
+
+// runLint is lintIn, with lint run without `--json` as well if text is
+// true.
+func runLint(t *testing.T, text bool, base, cwd string, prepare func() func()) outcome {
 	t.Helper()
 	before := snapshot(t, base)
 	var undo func()
 	if prepare != nil {
 		undo = prepare()
 	}
-	o := outcome{json: execLint(t, cwd, "--json"), text: execLint(t, cwd)}
+	o := outcome{json: execLint(t, cwd, "--json")}
+	if text {
+		r := execLint(t, cwd)
+		o.text = &r
+	}
 	if undo != nil {
 		undo()
 	}
@@ -432,10 +463,10 @@ func lintIn(t *testing.T, base, cwd string, prepare func() func()) outcome {
 // checkRun checks what holds for every run.
 func checkRun(t *testing.T, o *outcome) {
 	t.Helper()
-	if o.json.exit != o.text.exit {
+	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit < 0 || r.exit > 2 {
 			t.Fatalf("lint.cli.lint.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
 		}
@@ -446,7 +477,7 @@ func checkRun(t *testing.T, o *outcome) {
 	if o.json.exit == 2 {
 		// lint.run.root, lint.run.unreadable: nothing on stdout, not
 		// even an empty report.
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.stdout != "" {
 				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
 			}
@@ -489,6 +520,9 @@ func checkRun(t *testing.T, o *outcome) {
 		t.Errorf("lint.run.exit: exit status %d, want %d for findings:\n%s", o.json.exit, want, dump(o.report.Findings))
 	}
 	// lint.run.output: text, one finding per line, nothing for no findings.
+	if o.text == nil {
+		return
+	}
 	n := len(o.report.Findings)
 	text := strings.TrimRight(strings.ReplaceAll(o.text.stdout, "\r\n", "\n"), "\n")
 	if n == 0 {

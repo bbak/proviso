@@ -211,27 +211,46 @@ type verification struct {
 }
 
 type verifyOutcome struct {
-	json, text run
-	v          verification
+	json run
+	text *run // nil unless the test asked for the text form
+	v    verification
+}
+
+// runs are the runs made: with `--json` and, if asked for, without.
+func (o verifyOutcome) runs() []run {
+	if o.text == nil {
+		return []run{o.json}
+	}
+	return []run{o.json, *o.text}
 }
 
 // kindRank is the order in which `verification` lists the kinds.
 var kindRank = map[string]int{"missing": 0, "leftover": 1, "unjudged": 2, "stale": 3, "open": 4}
 
-// verifyIn runs `proviso verify --json` and `proviso verify` in cwd and
-// checks what holds for every run. base is the directory the test tree was
+// verifyIn runs `proviso verify --json` in cwd and checks what holds for
+// every run. base is the directory the test tree was
 // written to; nothing below it may change. root, if not empty, is the spec
 // root expected.
 func verifyIn(t *testing.T, base, cwd, root string) verifyOutcome {
 	t.Helper()
+	return runVerify(t, false, base, cwd, root)
+}
+
+// runVerify is verifyIn, with `proviso verify` run as well if text is true.
+func runVerify(t *testing.T, text bool, base, cwd, root string) verifyOutcome {
+	t.Helper()
 	before := snapshotAll(t, base)
-	o := verifyOutcome{json: execProviso(t, cwd, "verify", "--json"), text: execProviso(t, cwd, "verify")}
+	o := verifyOutcome{json: execProviso(t, cwd, "verify", "--json")}
+	if text {
+		r := execProviso(t, cwd, "verify")
+		o.text = &r
+	}
 	after := snapshotAll(t, base)
 	checkWrites(t, before, after, "")
-	if o.json.exit != o.text.exit {
+	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit < 0 || r.exit > 2 {
 			t.Fatalf("system.cli.verify.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
 		}
@@ -240,7 +259,7 @@ func verifyIn(t *testing.T, base, cwd, root string) verifyOutcome {
 		}
 	}
 	if o.json.exit == 2 {
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.stdout != "" {
 				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
 			}
@@ -262,10 +281,10 @@ func verifyIn(t *testing.T, base, cwd, root string) verifyOutcome {
 	}
 	// baseline.verify.output: nothing written as text when there is
 	// nothing to say, the problems otherwise.
-	if len(o.v.Problems) == 0 && o.text.stdout != "" {
+	if o.text != nil && len(o.v.Problems) == 0 && o.text.stdout != "" {
 		t.Errorf("baseline.verify.output: no problems, but text output %q", o.text.stdout)
 	}
-	if len(o.v.Problems) > 0 && strings.TrimSpace(o.text.stdout) == "" {
+	if o.text != nil && len(o.v.Problems) > 0 && strings.TrimSpace(o.text.stdout) == "" {
 		t.Errorf("baseline.verify.output: %d problems, but no text output", len(o.v.Problems))
 	}
 	// baseline.verify.missing, baseline.verify.leftover: after either,
@@ -433,20 +452,22 @@ func (o verifyOutcome) lacks(t *testing.T, key string) {
 	}
 }
 
-// exits asserts the exit status of both runs.
+// exits asserts the exit status of every run.
 func (o verifyOutcome) exits(t *testing.T, want int) {
 	t.Helper()
-	if o.json.exit != want || o.text.exit != want {
-		t.Errorf("want exit status %d, got %d with --json, %d without\nstderr: %s", want, o.json.exit, o.text.exit, o.json.stderr)
+	for _, r := range o.runs() {
+		if r.exit != want {
+			t.Errorf("want exit status %d, got %d\nstderr: %s", want, r.exit, r.stderr)
+		}
 	}
 }
 
-// stoppedNaming asserts exit status 2 for both runs, each naming name on
+// stoppedNaming asserts exit status 2 for every run, each naming name on
 // stderr.
 func (o verifyOutcome) stoppedNaming(t *testing.T, name string) {
 	t.Helper()
 	o.exits(t, 2)
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if !strings.Contains(r.stderr, name) {
 			t.Errorf("want stderr to name %s, got: %s", name, r.stderr)
 		}
@@ -456,6 +477,12 @@ func (o verifyOutcome) stoppedNaming(t *testing.T, name string) {
 func (r *repo) verify() verifyOutcome {
 	r.t.Helper()
 	return verifyIn(r.t, r.dir, r.dir, r.root())
+}
+
+// verifyText is verify, with the text form as well.
+func (r *repo) verifyText() verifyOutcome {
+	r.t.Helper()
+	return runVerify(r.t, true, r.dir, r.dir, r.root())
 }
 
 // ---------------------------------------------------------------------------

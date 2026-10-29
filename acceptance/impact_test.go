@@ -338,11 +338,13 @@ func TestBaselineImpactOrder(t *testing.T) {
 func TestBaselineImpactOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written for candidates, and nothing for none,
-	// is checked for every run (see impactIn).
+	// is checked for every run as text (see runImpact).
 	exit0 := func(t *testing.T, o impactOutcome) {
 		t.Helper()
-		if o.json.exit != 0 || o.text.exit != 0 {
-			t.Errorf("want exit status 0, got %d with --json, %d without", o.json.exit, o.text.exit)
+		for _, r := range o.runs() {
+			if r.exit != 0 {
+				t.Errorf("want exit status 0, got %d", r.exit)
+			}
 		}
 	}
 	t.Run("row1 two, --json", func(t *testing.T) {
@@ -363,7 +365,9 @@ func TestBaselineImpactOutput(t *testing.T) {
 	})
 	t.Run("row3 two, as text", func(t *testing.T) {
 		t.Parallel()
-		o, _ := impactOf(t, iNeverProp)
+		r, _ := accepted(t, impactTree())
+		r.set(amended(impactTree(), iNeverProp))
+		o := r.impactText()
 		if strings.TrimSpace(o.text.stdout) == "" {
 			t.Errorf("want the two candidates as text, got nothing")
 		}
@@ -372,7 +376,7 @@ func TestBaselineImpactOutput(t *testing.T) {
 	t.Run("row4 none, as text", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, impactTree())
-		o := r.impact()
+		o := r.impactText()
 		if o.text.stdout != "" {
 			t.Errorf("want nothing written, got %q", o.text.stdout)
 		}
@@ -464,11 +468,11 @@ func TestBaselineDiffFormer_Impact(t *testing.T) {
 	})
 }
 
-// impactStopped asserts exit status 2 for both runs; that nothing went to
+// impactStopped asserts exit status 2 for every run; that nothing went to
 // stdout is checked for every run with exit status 2.
 func impactStopped(t *testing.T, o impactOutcome) {
 	t.Helper()
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit != 2 {
 			t.Errorf("want exit status 2, got %d\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
 		}

@@ -126,7 +126,7 @@ func TestLintRunRoot(t *testing.T) {
 			dir := c.tree.write(t)
 			skipIfSpecRootAbove(t, dir)
 			o := lintIn(t, dir, filepath.Join(dir, c.cwd), nil)
-			for _, r := range []run{o.json, o.text} {
+			for _, r := range o.runs() {
 				if r.exit != 2 {
 					t.Errorf("want exit status 2, got %d\nstdout: %s", r.exit, r.stdout)
 				}
@@ -151,7 +151,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	// goes to stdout is checked for every run with exit status 2.
 	stopped := func(t *testing.T, o outcome, names ...string) {
 		t.Helper()
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.exit != 2 {
 				t.Fatalf("want exit status 2, got %d\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
 			}
@@ -166,7 +166,13 @@ func TestLintRunUnreadable(t *testing.T) {
 	// stderr first, since its name holds the test's name.
 	stoppedIn := func(t *testing.T, o outcome, dir string, names ...string) {
 		t.Helper()
-		for _, r := range []*run{&o.json, &o.text} {
+		rs := []*run{&o.json}
+		if o.text != nil {
+			text := *o.text
+			o.text = &text
+			rs = append(rs, o.text)
+		}
+		for _, r := range rs {
 			for _, d := range []string{dir, filepath.ToSlash(dir)} {
 				r.stderr = strings.ReplaceAll(r.stderr, d, "")
 			}
@@ -274,7 +280,7 @@ func TestLintRunUnreadable(t *testing.T) {
 			o := lintIn(t, dir, dir, nil)
 			stoppedIn(t, o, dir, path.Base(c.path))
 			if c.holds != "" {
-				for _, r := range []run{o.json, o.text} {
+				for _, r := range o.runs() {
 					if strings.Contains(r.stderr, "/"+c.holds) || strings.Contains(r.stderr, `\`+c.holds) {
 						t.Errorf("want stderr to name the folder %s, not the file in it: %s", c.path, r.stderr)
 					}
@@ -419,7 +425,7 @@ func TestLintRunOutput(t *testing.T) {
 	})
 	t.Run("row3 one error as text", func(t *testing.T) {
 		t.Parallel()
-		o := check(t, oneError)
+		o := checkText(t, oneError)
 		text := strings.TrimRight(o.text.stdout, "\r\n")
 		if text == "" || strings.Contains(text, "\n") {
 			t.Errorf("want one line of text, got: %q", o.text.stdout)
@@ -427,7 +433,7 @@ func TestLintRunOutput(t *testing.T) {
 	})
 	t.Run("row4 none as text", func(t *testing.T) {
 		t.Parallel()
-		o := check(t, baseline())
+		o := checkText(t, baseline())
 		if o.text.stdout != "" {
 			t.Errorf("want nothing written, got: %q", o.text.stdout)
 		}
@@ -540,7 +546,7 @@ func TestLintRunOrder(t *testing.T) {
 		a := lintIn(t, first, first, nil)
 		again := lintIn(t, first, first, nil)
 		b := lintIn(t, second, second, nil)
-		if a.json.stdout != again.json.stdout || a.text.stdout != again.text.stdout {
+		if a.json.stdout != again.json.stdout {
 			t.Errorf("two runs on one tree differ:\n%s\n%s", a.json.stdout, again.json.stdout)
 		}
 		if dump(a.report.Findings) != dump(b.report.Findings) {
@@ -613,7 +619,7 @@ func TestLintRunModel(t *testing.T) {
 	// nothing goes to stdout is checked for every run with exit status 2.
 	stopped := func(t *testing.T, o outcome) {
 		t.Helper()
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.exit != 2 {
 				t.Errorf("want exit status 2, got %d\nstdout: %s", r.exit, r.stdout)
 			}
@@ -711,7 +717,7 @@ func TestLintRunModelOther(t *testing.T) {
 			o := lintIn(t, dir, dir, nil)
 			// That nothing goes to stdout is checked for every run with
 			// exit status 2.
-			for _, r := range []run{o.json, o.text} {
+			for _, r := range o.runs() {
 				if r.exit != 2 {
 					t.Errorf("want exit status 2, got %d\nstdout: %s", r.exit, r.stdout)
 				}

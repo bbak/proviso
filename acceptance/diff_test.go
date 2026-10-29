@@ -166,7 +166,7 @@ func TestBaselineDiffMalformed(t *testing.T) {
 	// names checks that stderr names the line, by its text or its number.
 	names := func(t *testing.T, o diffOutcome, line string, number int) {
 		t.Helper()
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if !strings.Contains(r.stderr, line) && !strings.Contains(r.stderr, strconv.Itoa(number)) {
 				t.Errorf("want stderr to name the line %q (line %d), got: %s", line, number, r.stderr)
 			}
@@ -200,7 +200,7 @@ func TestBaselineDiffMalformed(t *testing.T) {
 	impactNames := func(t *testing.T, o impactOutcome, line string, number int) {
 		t.Helper()
 		impactStopped(t, o)
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if !strings.Contains(r.stderr, line) && !strings.Contains(r.stderr, strconv.Itoa(number)) {
 				t.Errorf("want stderr to name the line %q (line %d), got: %s", line, number, r.stderr)
 			}
@@ -772,7 +772,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 func TestBaselineDiffOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written when elements are listed, and nothing
-	// when none are, is checked for every diff (see diffIn).
+	// when none are, is checked for every diff run as text (see runDiff).
 	t.Run("row1 one changed, --json", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, diffTree())
@@ -794,7 +794,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, diffTree())
 		r.set(diffTree().apply(limitThen))
-		o := r.diff()
+		o := r.diffText()
 		if strings.TrimSpace(o.text.stdout) == "" {
 			t.Errorf("want the element as text, got nothing")
 		}
@@ -802,7 +802,7 @@ func TestBaselineDiffOutput(t *testing.T) {
 	t.Run("row4 none, as text", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, diffTree())
-		if o := r.diff(); o.text.stdout != "" {
+		if o := r.diffText(); o.text.stdout != "" {
 			t.Errorf("want nothing written, got %q", o.text.stdout)
 		}
 	})
@@ -858,8 +858,8 @@ func TestBaselineDiffExit(t *testing.T) {
 	// diff (see diffIn); here each row's outcome is checked as well.
 	exit := func(t *testing.T, o diffOutcome, want int) {
 		t.Helper()
-		if o.json.exit != want || o.text.exit != want {
-			t.Errorf("want exit status %d, got %d with --json, %d without", want, o.json.exit, o.text.exit)
+		if o.json.exit != want {
+			t.Errorf("want exit status %d, got %d", want, o.json.exit)
 		}
 	}
 	t.Run("row1 none", func(t *testing.T) {

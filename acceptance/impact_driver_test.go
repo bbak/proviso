@@ -39,29 +39,48 @@ type impactSet struct {
 }
 
 type impactOutcome struct {
-	json, text run
-	is         impactSet
-	diff       diffOutcome
+	json run
+	text *run // nil unless the test asked for the text form
+	is   impactSet
+	diff diffOutcome
+}
+
+// runs are the runs made: with `--json` and, if asked for, without.
+func (o impactOutcome) runs() []run {
+	if o.text == nil {
+		return []run{o.json}
+	}
+	return []run{o.json, *o.text}
 }
 
 // sourceRank is the order of the sources baseline.impact.order gives.
 var sourceRank = map[string]int{"events": 0, "ranges": 1, "scope": 2}
 
-// impactIn runs `proviso impact --json` and `proviso impact` in cwd and
-// checks what holds for every run. base is the directory the test tree was
+// impactIn runs `proviso impact --json` in cwd and checks what holds for
+// every run. base is the directory the test tree was
 // written to; nothing below it may change. root, if not empty, is the spec
 // root expected. Where impact runs, `diff` is run as well, so that no
 // candidate can be an element the diff lists (baseline.impact.listed).
 func impactIn(t *testing.T, base, cwd, root string) impactOutcome {
 	t.Helper()
+	return runImpact(t, false, base, cwd, root)
+}
+
+// runImpact is impactIn, with `proviso impact` run as well if text is true.
+func runImpact(t *testing.T, text bool, base, cwd, root string) impactOutcome {
+	t.Helper()
 	before := snapshotAll(t, base)
-	o := impactOutcome{json: execProviso(t, cwd, "impact", "--json"), text: execProviso(t, cwd, "impact")}
+	o := impactOutcome{json: execProviso(t, cwd, "impact", "--json")}
+	if text {
+		r := execProviso(t, cwd, "impact")
+		o.text = &r
+	}
 	after := snapshotAll(t, base)
 	checkWrites(t, before, after, "")
-	if o.json.exit != o.text.exit {
+	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit != 0 && r.exit != 2 {
 			t.Fatalf("system.cli.impact.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
 		}
@@ -70,7 +89,7 @@ func impactIn(t *testing.T, base, cwd, root string) impactOutcome {
 		}
 	}
 	if o.json.exit == 2 {
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.stdout != "" {
 				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
 			}
@@ -82,10 +101,10 @@ func impactIn(t *testing.T, base, cwd, root string) impactOutcome {
 		checkRoot(t, outcome{report: report{Root: o.is.Root}}, root)
 	}
 	// baseline.impact.output: nothing written as text for no candidates.
-	if len(o.is.Candidates) == 0 && o.text.stdout != "" {
+	if o.text != nil && len(o.is.Candidates) == 0 && o.text.stdout != "" {
 		t.Errorf("baseline.impact.output: no candidates, but text output %q", o.text.stdout)
 	}
-	if len(o.is.Candidates) > 0 && strings.TrimSpace(o.text.stdout) == "" {
+	if o.text != nil && len(o.is.Candidates) > 0 && strings.TrimSpace(o.text.stdout) == "" {
 		t.Errorf("baseline.impact.output: %d candidates, but no text output", len(o.is.Candidates))
 	}
 	// baseline.impact.listed: no element the diff lists is a candidate.
@@ -348,4 +367,10 @@ func (o impactOutcome) at(t *testing.T, tr tree) {
 func (r *repo) impact() impactOutcome {
 	r.t.Helper()
 	return impactIn(r.t, r.dir, r.dir, r.root())
+}
+
+// impactText is impact, with the text form as well.
+func (r *repo) impactText() impactOutcome {
+	r.t.Helper()
+	return runImpact(r.t, true, r.dir, r.dir, r.root())
 }

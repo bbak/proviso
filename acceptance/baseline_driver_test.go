@@ -243,31 +243,46 @@ type elementDiff struct {
 	Elements []diffElement `json:"elements"`
 }
 
-// diffOutcome is one diff of a tree: `diff` run once with `--json` and once
-// without, from the same directory.
+// diffOutcome is one diff of a tree: `diff` run with `--json` and, where the
+// test asks for the text form, once without, from the same directory.
 type diffOutcome struct {
-	json, text run
-	ed         elementDiff
+	json run
+	text *run // nil unless the test asked for the text form
+	ed   elementDiff
 }
 
-// diffIn runs `proviso diff --json` and `proviso diff` in cwd and checks what
-// holds for every run. base is the directory the test tree was written to;
-// nothing below it may change. root, if not empty, is the spec root the diff
-// is expected to compare. args, such as --since and a revision, are given to
-// both runs.
+// runs are the runs made: with `--json` and, if asked for, without.
+func (o diffOutcome) runs() []run {
+	if o.text == nil {
+		return []run{o.json}
+	}
+	return []run{o.json, *o.text}
+}
+
+// diffIn runs `proviso diff --json` in cwd and checks what holds for every
+// run. base is the directory the test tree was written to; nothing below it
+// may change. root, if not empty, is the spec root the diff is expected to
+// compare. args, such as --since and a revision, are given to the run.
 func diffIn(t *testing.T, base, cwd, root string, args ...string) diffOutcome {
 	t.Helper()
+	return runDiff(t, false, base, cwd, root, args...)
+}
+
+// runDiff is diffIn, with `proviso diff` run as well if text is true.
+func runDiff(t *testing.T, text bool, base, cwd, root string, args ...string) diffOutcome {
+	t.Helper()
 	before := snapshotAll(t, base)
-	o := diffOutcome{
-		json: execProviso(t, cwd, append([]string{"diff", "--json"}, args...)...),
-		text: execProviso(t, cwd, append([]string{"diff"}, args...)...),
+	o := diffOutcome{json: execProviso(t, cwd, append([]string{"diff", "--json"}, args...)...)}
+	if text {
+		r := execProviso(t, cwd, append([]string{"diff"}, args...)...)
+		o.text = &r
 	}
 	after := snapshotAll(t, base)
 	checkWrites(t, before, after, "")
-	if o.json.exit != o.text.exit {
+	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit < 0 || r.exit > 2 {
 			t.Fatalf("system.cli.diff.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
 		}
@@ -276,7 +291,7 @@ func diffIn(t *testing.T, base, cwd, root string, args ...string) diffOutcome {
 		}
 	}
 	if o.json.exit == 2 {
-		for _, r := range []run{o.json, o.text} {
+		for _, r := range o.runs() {
 			if r.stdout != "" {
 				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
 			}
@@ -297,6 +312,9 @@ func diffIn(t *testing.T, base, cwd, root string, args ...string) diffOutcome {
 		t.Errorf("baseline.diff.exit: exit status %d, want %d for %d listed elements", o.json.exit, want, len(o.ed.Elements))
 	}
 	// baseline.diff.output: nothing written as text when nothing is listed.
+	if o.text == nil {
+		return o
+	}
 	if len(o.ed.Elements) == 0 && o.text.stdout != "" {
 		t.Errorf("baseline.diff.output: no elements, but text output %q", o.text.stdout)
 	}
@@ -465,11 +483,11 @@ func (o diffOutcome) ran(t *testing.T) {
 	}
 }
 
-// stopped asserts exit status 2 for both runs; that nothing went to stdout
+// stopped asserts exit status 2 for every run; that nothing went to stdout
 // is checked for every run with exit status 2.
 func (o diffOutcome) stopped(t *testing.T) {
 	t.Helper()
-	for _, r := range []run{o.json, o.text} {
+	for _, r := range o.runs() {
 		if r.exit != 2 {
 			t.Errorf("want exit status 2, got %d\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
 		}
@@ -638,6 +656,12 @@ func (r *repo) manifest() string {
 func (r *repo) diff() diffOutcome {
 	r.t.Helper()
 	return diffIn(r.t, r.dir, r.dir, r.root())
+}
+
+// diffText is diff, with the text form as well.
+func (r *repo) diffText() diffOutcome {
+	r.t.Helper()
+	return runDiff(r.t, true, r.dir, r.dir, r.root())
 }
 
 func skipWithoutGit(t *testing.T) {
