@@ -2,6 +2,9 @@
 # the proof-of-concept authoring skill, which will be rewritten.
 .input/
 
+# Personal working notes, never versioned.
+transient/
+
 # Local build (task build). Never the root: proviso/ is the spec tree.
 bin/
 

@@ -2,8 +2,6 @@
 
 @proviso/system.md
 
-- The model, and with it the requirements for this tooling:
-  [model/IMPROVEMENTS.md](model/IMPROVEMENTS.md)
 - Docs, specs and code comments: English
 - Build and test with Task: `task build` (into `bin/`), `task test`,
   `task acceptance`, `task check` before every push
