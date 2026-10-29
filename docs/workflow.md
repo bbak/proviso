@@ -72,9 +72,14 @@ system never …" is a constraint in the tree.
 Commit the tree, and the note if there is one, before anything is
 built. The tree comes first on the branch, then tests and code.
 
-A skill that guides business requesters to a checkable request is in
-the works. Until then, requests arrive in whatever form the business
-writes them, and the Integrator takes them as they are.
+Requests arrive in whatever form the business writes them, and the
+Integrator takes them as they are. Best prepared is a request written
+with `proviso-request`, the skill for business requesters that each
+release carries as `proviso-request_<version>.skill.zip`: it asks the
+questions the Integrator would otherwise send back. When the business
+view goes to the request's owner with questions, the owner can bring it,
+with the request file, back to that skill, and answer everything in one
+session.
 
 ## 2. Build: `proviso-build`
 

@@ -47,9 +47,9 @@ sets out the findings behind this.
 
 ![The path of an amendment: request, specification, build, check, accept](images/pipeline.png)
 
-1. **Request.** A business requester says what should change. The
-   authoring skill, which guides a requester to a checkable request, is in
-   the works.
+1. **Request.** A business requester says what should change, best with
+   the skill `proviso-request`, which guides them to a checkable request
+   in their own AI assistant.
 2. **Specification.** An engineer brings the request into the spec tree
    with the Integrator, a skill that asks the tough questions, on the
    amendment's own branch: rules in Guarded Gherkin, a glossary,

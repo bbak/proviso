@@ -62,11 +62,21 @@ notes in `.proviso/`. Name your project's build and test commands in
 Run `proviso verify` in CI, so that no amendment reaches the target
 branch unchecked.
 
+## For business requesters
+
+Requesters never see the spec tree. The skill `proviso-request` guides
+them through a short session with their own AI assistant to one request
+file, which the Integrator reads best: what is wanted and why, the rules
+with examples, the words that need pinning down, and what is still
+open. Each release carries it as `proviso-request_<version>.skill.zip`,
+for any assistant that reads Agent Skills, such as Claude, ChatGPT,
+Microsoft Copilot or Gemini. Its check needs Python 3, which those
+assistants bring along; without it, the skill checks by reading.
+
 ## Status
 
 Proviso has been validated only on command-line applications written in
-Go, with Claude Code and primarily Claude Opus 5.5. A skill that guides
-business requesters to a checkable request is in the works.
+Go, with Claude Code and primarily Claude Opus 5.5.
 
 ## Documentation
 
@@ -77,6 +87,14 @@ The [documentation](docs/index.md) covers
 [repository setup](docs/repository-setup.md) and the
 [commands](docs/commands.md). Proviso specifies itself: its own spec tree
 is in [`proviso/`](proviso/).
+
+## Building Proviso
+
+Building Proviso needs [Go](https://go.dev/), [Task](https://taskfile.dev/)
+and [Python 3](https://www.python.org/), for the tests of the request
+skill's check; `task snapshot` also needs
+[GoReleaser](https://goreleaser.com/). `task build` builds the binary
+into `bin/`, and `task check` runs every check before a push.
 
 ## License
 
