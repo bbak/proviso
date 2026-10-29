@@ -30,7 +30,7 @@ tasks:
   build:
     desc: Build the binary into bin/ (never into the root, where proviso/ is the spec tree)
     cmds:
-      - go build -trimpath -ldflags "-s -w{{if .VERSION}} -X main.version={{.VERSION}}{{end}}" -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
+      - go build -trimpath{{if .VERSION}} -ldflags "-X main.version={{.VERSION}}"{{end}} -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
 
   snapshot:
     desc: Build the release archives into dist/ as a release would, without publishing them
