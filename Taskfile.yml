@@ -30,6 +30,7 @@ tasks:
   build:
     desc: Build the binary into bin/ (never into the root, where proviso/ is the spec tree)
     cmds:
+      - task: versioninfo
       - go build -trimpath{{if .VERSION}} -ldflags "-X main.version={{.VERSION}}"{{end}} -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
 
   snapshot:
@@ -42,6 +43,16 @@ tasks:
       MODEL_VERSION: '{{.MODEL_VERSION}}'
     cmds:
       - goreleaser release --snapshot --clean
+
+  versioninfo:
+    desc: Write the Windows version resource of the binary, with the version of a local build
+    internal: true
+    dir: cmd/{{.BINARY}}
+    cmds:
+      # One resource_windows_<arch>.syso per architecture, which go build
+      # links into a Windows binary only. A build given no version leaves
+      # the version fields empty.
+      - go tool goversioninfo -platform-specific{{if .VERSION}} -file-version={{.VERSION}} -product-version={{.VERSION}} -propagate-ver-strings{{end}} versioninfo.json
 
   test:
     desc: Run the coding agent's unit tests

@@ -3,6 +3,17 @@
 # locally by task snapshot, which publishes nothing.
 version: 2
 
+# The Windows version resource, written as task versioninfo writes it, but
+# with the release version.
+before:
+  hooks:
+    - >-
+      go -C cmd/proviso tool goversioninfo -platform-specific
+      -file-version={{ .Version }} -product-version={{ .Version }}
+      -ver-major={{ .Major }} -ver-minor={{ .Minor }} -ver-patch={{ .Patch }}
+      -product-ver-major={{ .Major }} -product-ver-minor={{ .Minor }} -product-ver-patch={{ .Patch }}
+      versioninfo.json
+
 builds:
   - main: ./cmd/proviso
     binary: proviso
