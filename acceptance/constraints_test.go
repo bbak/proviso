@@ -4,7 +4,6 @@ package acceptance
 // by build or review; these are the parts a build can check.
 
 import (
-	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -73,34 +72,33 @@ func TestSystemBuildVersion(t *testing.T) {
 	}
 	module := strings.TrimSpace(string(out))
 	dir := filepath.Join(t.TempDir(), "proviso")
-	err = filepath.WalkDir(module, func(p string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, _ := filepath.Rel(module, p)
-		// .git may be a folder or, in a worktree, a file pointing to the
-		// module's own repository: neither is copied.
-		if rel == ".git" || rel == "bin" || rel == ".claude" {
-			if d.IsDir() {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		target := filepath.Join(dir, rel)
-		if d.IsDir() {
-			return os.MkdirAll(target, 0o755)
-		}
-		if !d.Type().IsRegular() {
-			return nil
+	// Only the files git does not ignore are copied, as they stand in the
+	// working tree: whatever is ignored, such as builds and local notes,
+	// cannot reach the copy, and .git is never listed.
+	cmd := exec.Command("git", "ls-files", "-z", "--cached", "--others", "--exclude-standard")
+	cmd.Dir = module
+	out, err = cmd.Output()
+	if err != nil {
+		t.Fatalf("git ls-files: %v", err)
+	}
+	for _, rel := range strings.Split(strings.TrimSuffix(string(out), "\x00"), "\x00") {
+		p := filepath.Join(module, filepath.FromSlash(rel))
+		// A file deleted from the working tree, or one that is no regular
+		// file, is not copied.
+		if fi, err := os.Lstat(p); err != nil || !fi.Mode().IsRegular() {
+			continue
 		}
 		b, err := os.ReadFile(p)
 		if err != nil {
-			return err
+			t.Fatalf("copying the module: %v", err)
 		}
-		return os.WriteFile(target, b, 0o644)
-	})
-	if err != nil {
-		t.Fatalf("copying the module: %v", err)
+		target := filepath.Join(dir, filepath.FromSlash(rel))
+		if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(target, b, 0o644); err != nil {
+			t.Fatal(err)
+		}
 	}
 	if _, err := os.Lstat(filepath.Join(dir, ".git")); err == nil {
 		t.Fatal("the copy of the module holds a .git entry; it would reach the module's own repository")
