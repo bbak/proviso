@@ -194,12 +194,12 @@ func TestLintRunUnreadable(t *testing.T) {
 			}
 			return undo
 		})
-		stopped(t, o, "glossary.md")
+		stoppedIn(t, o, dir, "glossary.md")
 	})
 	t.Run("row3 a.md not valid UTF-8", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.with(aPath, invalid).write(t)
-		stopped(t, lintIn(t, dir, dir, nil), "a.md")
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "a.md")
 	})
 	t.Run("row4 shared, a link to a folder outside the tree", func(t *testing.T) {
 		t.Parallel()
@@ -208,7 +208,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		if err := os.Symlink(filepath.Join(dir, "outside"), link); err != nil {
 			t.Skipf("cannot create a symbolic link here: %v", err)
 		}
-		stopped(t, lintIn(t, dir, dir, nil), "shared")
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "shared")
 	})
 	t.Run("row5 shared, a Windows junction to a folder outside the tree", func(t *testing.T) {
 		t.Parallel()
@@ -216,7 +216,7 @@ func TestLintRunUnreadable(t *testing.T) {
 		if err := makeJunction(filepath.Join(dir, "proviso", "shared"), filepath.Join(dir, "outside")); err != nil {
 			t.Skipf("cannot create a junction here: %v", err)
 		}
-		stopped(t, lintIn(t, dir, dir, nil), "shared")
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "shared")
 	})
 	t.Run("row6 x.md a link to another feature in the tree", func(t *testing.T) {
 		t.Parallel()
@@ -225,12 +225,12 @@ func TestLintRunUnreadable(t *testing.T) {
 		if err := os.Symlink(filepath.Join(dir, filepath.FromSlash(featurePath)), link); err != nil {
 			t.Skipf("cannot create a symbolic link here: %v", err)
 		}
-		stopped(t, lintIn(t, dir, dir, nil), "x.md")
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "x.md")
 	})
 	t.Run("row7 a.md and b.md both unreadable", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.with(aPath, invalid, bPath, strings.Replace(invalid, "cart.bad", "cart.worse", 1)).write(t)
-		stopped(t, lintIn(t, dir, dir, nil), "a.md", "b.md")
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "a.md", "b.md")
 	})
 	t.Run("row8 manifest.sum without read permission", func(t *testing.T) {
 		t.Parallel()
@@ -248,7 +248,7 @@ func TestLintRunUnreadable(t *testing.T) {
 			}
 			return undo
 		})
-		stopped(t, o, "manifest.sum")
+		stoppedIn(t, o, dir, "manifest.sum")
 	})
 	// A folder at the path of a file tree_layout lists counts as
 	// unreadable: stderr names the folder, not what it holds.
