@@ -1,0 +1,47 @@
+# Release archives of proviso, built from the tag v<release version>
+# (system.build-version): by the release workflow when a tag is pushed, and
+# locally by task snapshot, which publishes nothing.
+version: 2
+
+builds:
+  - main: ./cmd/proviso
+    binary: proviso
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    goos: [windows, darwin, linux]
+    goarch: [amd64, arm64]
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - THIRD_PARTY_NOTICES.md
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+
+# A snapshot is a local build through the Taskfile, so it carries the
+# version the Taskfile gives such a build, as task build does.
+snapshot:
+  version_template: "{{ .Env.PROVISO_VERSION }}"
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - "^chore"
+      - "^test"
+      - "^docs"
+
+release:
+  header: |
+    Reads the Proviso Model, version {{ .Env.MODEL_VERSION }}.

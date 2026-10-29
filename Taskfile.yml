@@ -32,6 +32,17 @@ tasks:
     cmds:
       - go build -trimpath -ldflags "-s -w{{if .VERSION}} -X main.version={{.VERSION}}{{end}}" -o bin/{{.BINARY}}{{exeExt}} ./cmd/{{.BINARY}}
 
+  snapshot:
+    desc: Build the release archives into dist/ as a release would, without publishing them
+    vars:
+      MODEL_VERSION:
+        sh: go run ./cmd/{{.BINARY}} version | sed -n 's/^model //p'
+    env:
+      PROVISO_VERSION: '{{.VERSION | default "dev"}}'
+      MODEL_VERSION: '{{.MODEL_VERSION}}'
+    cmds:
+      - goreleaser release --snapshot --clean
+
   test:
     desc: Run the coding agent's unit tests
     cmds:

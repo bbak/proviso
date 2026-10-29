@@ -1,0 +1,31 @@
+# Publishes the release archives when a tag v<release version> is pushed.
+# Nothing else runs here: task check runs locally before the tag is set.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # The changelog reads the history back to the previous tag.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Read the model version
+        run: echo "MODEL_VERSION=$(go run ./cmd/proviso version | sed -n 's/^model //p')" >> "$GITHUB_ENV"
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
