@@ -35,6 +35,25 @@ archives:
       - LICENSE
       - THIRD_PARTY_NOTICES.md
       - README.md
+  # The request skill for business requesters, for every platform: a zip
+  # whose one folder is named like the skill, as the Agent Skills format
+  # wants it; the tests of its check stay behind.
+  - id: request
+    meta: true
+    name_template: "proviso-request_{{ .Version }}.skill"
+    formats: [zip]
+    wrap_in_directory: proviso-request
+    files:
+      - src: request.skill/SKILL.md
+        strip_parent: true
+      - src: request.skill/references/*.md
+        dst: references
+        strip_parent: true
+      - src: request.skill/scripts/lint_request.py
+        dst: scripts
+        strip_parent: true
+      - src: LICENSE
+        strip_parent: true
 
 checksum:
   name_template: checksums.txt

@@ -2,6 +2,7 @@ version: '3'
 
 vars:
   BINARY: proviso
+  PYTHON: '{{if eq OS "windows"}}python{{else}}python3{{end}}'
   # system.build-version: a local build is the next patch after the latest
   # release tag v<major>.<minor>.<patch> reachable from HEAD, with the
   # pre-release dev, such as 0.1.1-dev after v0.1.0; without a release tag
@@ -59,6 +60,11 @@ tasks:
     cmds:
       - go test ./cmd/... ./internal/... {{.CLI_ARGS}}
 
+  request:
+    desc: Run the tests of the request skill's check
+    cmds:
+      - '{{.PYTHON}} -m unittest discover -s request.skill/scripts {{.CLI_ARGS}}'
+
   acceptance:
     desc: Run the testing agent's acceptance tests (they build the binary themselves)
     cmds:
@@ -107,4 +113,5 @@ tasks:
       - task: spec
       - task: vet
       - task: test
+      - task: request
       - task: acceptance
