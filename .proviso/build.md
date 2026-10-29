@@ -9,7 +9,7 @@ worktree:
 1. `go vet ./...`
 2. `task build`
 3. `task test`
-4. `task acceptance`, about six minutes.
+4. `task acceptance`, about five minutes.
 
 The acceptance tests of a list of identifiers, with the fixture tests
 every such run needs:

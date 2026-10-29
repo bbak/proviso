@@ -17,6 +17,9 @@ tested.
     test, for example behind a `sync.Once`, and give each subtest a copy
     of the folder rather than running `git init`, `add` and `commit`
     again. Run the binary only as often as a check needs.
+  - **Run the text form only where it is checked.** A command with
+    `--json` runs with it; the run without `--json` belongs only in the
+    tests of an element about the text form.
   - **Never share a folder** between parallel subtests: each writes only
     to its own `t.TempDir()`.
 - **Names:** a test is named after the element it checks, as
