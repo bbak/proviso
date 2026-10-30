@@ -36,6 +36,11 @@ func TestSystemCliInit(t *testing.T) {
 	if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
 		t.Errorf("system.cli.init: want stdout\n%s\ngot\n%s", want, got)
 	}
+	t.Run("derived: it takes no argument", func(t *testing.T) {
+		t.Parallel()
+		r := freshRepo(t, "repo", false)
+		misused(t, provisoIn(t, r.dir, r.dir, "", "init", "proviso"), "init", "proviso")
+	})
 }
 
 // TestInstallInstalledFiles checks the rows of installed_files that the

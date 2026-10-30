@@ -38,6 +38,13 @@ func TestSystemCliVersion(t *testing.T) {
 		r := versionRepo(t, installedAs("0.2.0"))
 		r.version("0.2.0").reports(t, expect{})
 	})
+	t.Run("derived: with an argument, refused as every command refuses one, and nothing checked", func(t *testing.T) {
+		t.Parallel()
+		r := freshRepo(t, "repo", false)
+		r.init().exits(t, 0)
+		o := versionIn(t, "0.1.0", r.dir, r.dir, nil, "--since")
+		misused(t, o.run, "version", "--since")
+	})
 	t.Run("derived: one line per file in the byte order of their paths, then the manifest", func(t *testing.T) {
 		t.Parallel()
 		// One file of each kind: missing, more than one stamp, no Proviso
@@ -113,6 +120,8 @@ func TestInstallVersionOutput(t *testing.T) {
 			r := freshRepo(t, "repo", false)
 			r.init().exits(t, 0)
 			o := versionIn(t, "0.1.0", r.dir, r.dir, nil, c.arg)
+			// Handed over to cli.help.argument.
+			misused(t, o.run, "version", c.arg)
 			for _, l := range o.lines {
 				if n := names(l); len(n) != 0 {
 					t.Errorf("system.cli.version: an argument was given, so nothing is checked, but a line names %v: %q", n, l)
