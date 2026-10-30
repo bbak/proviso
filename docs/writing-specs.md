@@ -85,6 +85,40 @@ with a title, such as `# Glossary`, and its elements follow at level 2.
 In a feature file, which holds rules and invariants, headings start with
 `Rule:` or `Invariant:`; elsewhere the file gives the type.
 
+## How elements relate
+
+The levels hold one another; the siblings stand at the system level or
+in a capability's folder. The labelled links are the ones the notation
+makes explicit, and the ones an amendment's impact follows: when the
+element an arrow points to changes, the element it starts from may
+change in meaning.
+
+```mermaid
+flowchart LR
+  subgraph levels["Levels"]
+    direction TB
+    S[System] -- holds --> C[Capability]
+    C -- holds --> F[Feature]
+    F -- holds --> R[Rule]
+  end
+  subgraph siblings["Siblings, at system and capability level"]
+    G[Glossary entry]
+    P[Parameter]
+    K[Contract element]
+    Ref[Reference]
+    I[Invariant]
+    X[Constraint]
+  end
+  F -- holds --> I
+  R -- marks a term --> G
+  R -- refers to --> K
+  R -- refers to --> P
+  R -- hands over to --> R
+  K -- has member --> K
+  K -- Represents --> G
+  G -- Defined by --> Ref
+```
+
 ## System, capability, feature
 
 **The system** states its Goal, Rationale, Scope, Out of scope, Audience
