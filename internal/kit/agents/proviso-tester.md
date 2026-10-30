@@ -64,6 +64,13 @@ learnt in earlier rounds of it.
   the new meaning; retire the tests of a removed element.
 - Check what the contracts fix, such as exit statuses, output formats and
   identifiers; never wording a contract leaves free.
+- Every test goes through the contracted interface. Test a term's
+  definition by implementing it yourself, in the test code, as the
+  oracle the system's behaviour is checked against; never call the
+  code's own functions. A thin layer of helpers in the domain's words
+  keeps the tests readable. Such tests are slower and point less
+  precisely at a failure, but no refactoring behind the interface
+  breaks them.
 - No implementation, not even a stub: until the code exists, your new
   tests fail; make sure they compile and the others still pass.
 

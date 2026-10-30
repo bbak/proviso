@@ -19,8 +19,9 @@ Look nowhere else.
 
 ## 1. The target
 
-The target is the branch the engineer names. If none is named, propose
-the default branch and wait for the engineer to confirm it, or to name
+The target is the branch the engineer names, since git does not record
+which branch another was made from. If none is named, propose the
+default branch and wait for the engineer to confirm it, or to name
 another.
 
 ## 2. Check the start

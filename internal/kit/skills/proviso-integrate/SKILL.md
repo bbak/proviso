@@ -86,7 +86,9 @@ contracts of those capabilities and of the system. Then:
 Before you write anything, check what the business brought, on its own
 and against the tree:
 
-- the Goal holds together, and fits its capability's Goal;
+- the Goal holds together, and fits its capability's Goal; if the
+  amendment strains its feature or capability, as the writing guide
+  describes, suggest regrouping to the engineer;
 - the reason explains the rules;
 - the rules serve the Goal, and contradict neither each other nor the
   tree;
@@ -103,7 +105,8 @@ question. Never fix it quietly.
   with one item each and no headings; the second becomes a constraint
   or the system's Out of scope, once confirmed.
 - **Each possible invariant:** a statement that may hold beyond one
-  event. Ask about it with a case on another event; the business says
+  event. A requester cannot be expected to recognise one, so the
+  request has no place for it: look for it yourself. Ask about it with a case on another event; the business says
   what it means, the engineer what it ranges over.
 - **Each hole** the writing guide lists, and every engineering question
   the request raises.
@@ -114,6 +117,8 @@ Write the request into the tree as the writing guide says:
 
 - a reason that will still matter later goes into a Rationale; why the
   amendment is made now goes into the commit message;
+- for a new feature, draft its Goal and Rationale from what the request
+  wants and why, for the owner to confirm;
 - what happens today goes nowhere: the tree is today;
 - a rule number or a decisions log of the request goes nowhere;
 - the request itself is never stored in the tree.
@@ -142,7 +147,12 @@ engineer's to decide, as it says.
 ## 8. The business view
 
 Offer the engineer a business view: what was integrated, in the
-owner's words, for the owner to check. If the engineer wants one, with
+owner's words, for the owner to check. It comes after the check, so that
+no edit made for a finding is missing from it, and from a fresh agent
+that reads only what the tree says, not what its author meant: the
+owner checks the tree, including every change the request did not ask
+for. It is derived from the edit, never written beside it, so the two
+cannot drift apart. If the engineer wants one, with
 `<amendment>` the branch and `<n>` the number of this view, starting
 with 1, write into `<temp>/proviso/<repository>/<amendment>/view-<n>/`,
 in the system's temporary folder:

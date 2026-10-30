@@ -120,7 +120,10 @@ record a decision only when the engineer agrees.
   is one. An agent with nothing to change is not resumed.
 - Integrate again (step 5), and sort again (step 6).
 
-An agent lives for one amendment. If it cannot be resumed, such as in a
+An agent lives for one amendment: resumed within it, since what it
+learnt still holds, and fresh for the next, since an agent that
+remembers other parts of the tree fills a gap from memory instead of
+listing it. If it cannot be resumed, such as in a
 new session, start a fresh one with the full pack, `proviso pack`, and
 say so in its round.
 

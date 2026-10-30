@@ -36,6 +36,13 @@ Write for that reader.
   never reused once its element is removed, since history, commit
   messages and links outside the tree still name the old element by it.
   Search the tree and its history before you choose one.
+- The layout follows what the system does, not its packages. Moving
+  an element to another feature or capability changes no identifier and
+  no behaviour, so regrouping is cheap. Suggest it to the engineer when
+  a Goal can no longer be said in one to three sentences without joining
+  unrelated purposes with "and", when the rules form groups that share
+  no term and no event, or when amendments keep touching one part and
+  never the other.
 - Before you add a term, read the glossaries of the capability and the
   system. Reuse a term that means the same thing; never add a second
   term for it, and never redefine a system term in a capability.
@@ -75,6 +82,19 @@ text lines up, then its Examples table.
   for a literal value; `<name>` for a placeholder.
 - **An error** is named in the `Otherwise` by its kind, a contract
   element such as `` `error.not-composable` ``.
+- **Batches, streams and queues:** the event is processing one item, the
+  item its placeholder, such as "a file is read"; starting or finishing
+  the batch is an event only where it has outcomes of its own. Whatever
+  concerns the item or its relation to other items goes in `Provided`;
+  "everything else stays as it was" includes the other items. What holds
+  for the whole batch, such as "one malformed file never stops the
+  load", is an invariant over the item event. A later pass is an event
+  of its own, with the earlier pass as its `Given`.
+- **A matrix is data, not a decision:** a table-valued parameter and one
+  rule with a relational outcome, such as "the `tariff` for <region>
+  and <type>". A decision with more than two outcomes is a chain;
+  never write a decision table of rules, which would lose each guard's
+  Examples.
 
 ### Examples
 
@@ -87,6 +107,9 @@ text lines up, then its Examples table.
   a rule, go through every row of its table: rows with wrong outcomes,
   and rows left stale by a changed rule, are the most common errors in
   a tree, and the agents build exactly what the rows say.
+- Examples keep concrete values. When you change a parameter's value, go
+  through every row at its old and its new boundary, in every rule that
+  refers to it.
 
 ### Terms, parameters, invariants, constraints, contracts
 
@@ -95,16 +118,33 @@ text lines up, then its Examples table.
   `Contact`, `Status` (`defined`, or `open` with a `Question`) and
   `Aliases` for other names and forms.
 - **A parameter** has `Value`, `Unit`, `Configurable` and a one-line
-  `Rationale`, which a bare value always needs.
+  `Rationale`, which a bare value always needs. `Configurable` is `no`,
+  or names how it is set and its range, such as
+  `` yes: `--max-results`, 1–500 ``; the setting itself, a flag, key or
+  variable, is a contract element referring to the parameter. A value
+  may be a table; then the parameter has no `Value` or `Unit`, and the
+  table follows its fields.
 - **An invariant** holds across many events: `Rationale`, `Ranges over`
   and `Property`. Look for one in *always*, *never*, *every*, in the
-  same consequence repeated across rules, and in a lasting "the system
-  never …"; ask about it with a case on another event.
+  same consequence repeated across rules, in a rule without a guard whose
+  outcome would make sense for other events too, and in a lasting "the
+  system never …"; ask about it with a case on another event.
 - **A constraint** is checked by review or a build, never at run time:
   `Rationale` and `Property`.
 - **A contract** states shape only. Every operation, message, entity
   and member a rule refers to has its own heading and identifier;
-  behaviour stays in rules.
+  behaviour stays in rules. Prose says what an element means, a fenced
+  block its shape, never both. A block names its language on the fence;
+  a typed `yaml` or `json` block is a JSON Schema, from which the testing
+  agent derives shape tests; without one, shape gets example tests only.
+  Mermaid shows structure only, never a sequence or a state. A system
+  whose only interface is a screen contracts a seam below it, such as an
+  application API, for the tests to call.
+- **A reference** in `references.md` names an external standard with
+  `Version`, `Link` and `Contact`; a term the standard defines has
+  `Defined by` instead of `Definition`, and `Deviations` where the
+  system departs from it. Standards only: a library's behaviour is a
+  default nobody decided, and belongs in rules and Examples.
 - **When you widen what something counts as,** such as "anything of
   that name", follow it into every rule that handles it: each must
   still decide every case it now covers.
@@ -118,7 +158,9 @@ text lines up, then its Examples table.
 - A rationale states its reason itself. It never points to the request,
   a discussion, a design document or any other text beside the tree.
 - The reason for a decision goes into the Rationale of the element it
-  concerns; why the amendment is made now goes into the commit message.
+  concerns; why the amendment is made now goes into the commit message,
+  which stays bound to that amendment and is found by `git log` on the
+  element's file.
 
 ### Holes to look for
 
