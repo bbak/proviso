@@ -1,3 +1,8 @@
+---
+title: Repository setup
+nav_order: 6
+---
+
 # Repository setup
 
 What a repository needs beyond `proviso init`, so that every amendment

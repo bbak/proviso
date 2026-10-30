@@ -1,0 +1,9 @@
+title: Proviso
+description: Keeps one specification of a system true across many amendments.
+remote_theme: just-the-docs/just-the-docs@v0.12.0
+plugins:
+  - jekyll-remote-theme
+mermaid:
+  version: "12.2.0"
+aux_links:
+  GitHub: https://github.com/bbak/proviso

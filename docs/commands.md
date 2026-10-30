@@ -1,3 +1,8 @@
+---
+title: Commands
+nav_order: 7
+---
+
 # Commands
 
 Every command of `proviso`, with what it is for, its options and its

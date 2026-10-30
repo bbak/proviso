@@ -1,3 +1,8 @@
+---
+title: Writing specs
+nav_order: 5
+---
+
 # Writing specs
 
 How a spec tree is laid out and written, element by element, with a

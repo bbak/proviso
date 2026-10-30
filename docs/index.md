@@ -1,3 +1,8 @@
+---
+title: Home
+nav_order: 1
+---
+
 # Proviso
 
 Proviso keeps one specification of a system true across many changes.

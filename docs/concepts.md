@@ -1,3 +1,8 @@
+---
+title: Concepts
+nav_order: 3
+---
+
 # Concepts
 
 The terms the other pages use, in the order an engineer meets them. The
