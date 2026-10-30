@@ -96,7 +96,7 @@ Otherwise `verify` reports "undecided" for <element>
 | a rule with `Then      ?` | no (an undecided place) | "undecided" for the rule | |
 | a rule marking a term whose Status is `open` | no (an open term) | "undecided" for the rule | its meaning is not decided |
 | a feature with `- Contact: ?`, unchanged since the manifest | no (an undecided place) | "undecided" for the feature | the whole tree, not only what the amendment touched |
-| a glossary entry whose Status is `open`, marked by no rule, its Definition written | yes | nothing reported | an open term decides nothing until a rule marks it |
+| a glossary entry whose Status is `open`, with Definition `?` and a Question, marked by no rule | no (an undecided place) | "undecided" for the glossary entry | an open term is undecided itself, whether a rule marks it or not |
 
 ## <a id="baseline.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
 
