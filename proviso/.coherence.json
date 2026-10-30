@@ -1,0 +1,79 @@
+{
+  "touched": [
+    {
+      "id": "lint.field-names",
+      "now": {
+        "body": "h1:5c7c02c34ba5f57faa6a0fadd861430e8cf4dfb8c2f506f2c8a40451e04a1c2d",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:59a9692d117adbfb133f5fa9221598c90c62b757c621612e7aa43a926291a8ed",
+        "heading": "h1:c69e6ca1f58ecd9eced7c901c1ac8c03803bb10e9d38fb2e686ed20fa9afa49b"
+      },
+      "baseline": {
+        "body": "h1:5c7c02c34ba5f57faa6a0fadd861430e8cf4dfb8c2f506f2c8a40451e04a1c2d",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:a18059896f0ee8f7dd00ba2e600f7ddcd4c70fde4b0eb84979c167ec86aa82d9",
+        "heading": "h1:c69e6ca1f58ecd9eced7c901c1ac8c03803bb10e9d38fb2e686ed20fa9afa49b"
+      }
+    },
+    {
+      "id": "lint.identifiers",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8d6b1f41b51aaeea2c17b386ec89b98efd073af339b30b22cd003debc979e984",
+        "section Goal": "h1:c19870711a7658ff83b3652f4ee9961dbb22ad8f2a69d4433d86d7ac11105a39",
+        "section Rationale": "h1:7637ee70c14ce973322fa702f9822d782514ae89ed58067596f801f38e9e729c"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8d6b1f41b51aaeea2c17b386ec89b98efd073af339b30b22cd003debc979e984",
+        "section Goal": "h1:c19870711a7658ff83b3652f4ee9961dbb22ad8f2a69d4433d86d7ac11105a39",
+        "section Rationale": "h1:6087184ac14e0b20002d85ee43de4a8267ae8da9c4043dca5071d58d33a5a8c3"
+      }
+    },
+    {
+      "id": "lint.identifiers.placement",
+      "now": {
+        "heading": "h1:aff1b7439b02a8ce84ca2f728f581a684695c52c481365f903ea68c6c4669e90",
+        "row h1:21658188168be9c43f2e2b0cd2a77f6a47235244bfd4ead2f4da8981f9459f4a": "h1:de9bea259924fbabedaeaedba536ccb5590aab865c06a9c91ecf64bbe6a0fbcd",
+        "row h1:306b02c6c0340458ac5dd6c95e73c34eb8393d79f610ff8b2c6a4adf9329401e": "h1:a7e741108176200a7e19899fac1430b08c45b5dc868041d93659661f1a11426f",
+        "row h1:7641f1c3c1ba945107b5806c99b66108729a8b03d4ce7ec7bd5a0decbc03d90d": "h1:b2bd6a22a743d151cd5745842eccbe7c1cf9408db49595240eea63f93ba44081",
+        "row h1:96d7c8718052b09c1c5d24265c7a57c04893423988638f2211e45768d046b265": "h1:5932274ee9ebe919e1d512ac5797a4d848a4b4d330b16fa8ea2ef18e14eceb76",
+        "row h1:fcb2695ae545ffad25ffb4286d2841b8175f13b65fe6b562176fb100dcb84a80": "h1:0f61feb99eab65057bb3d8eaf5eb9c88c646b64054d41aaf49e4d7f39a738933",
+        "section Rationale": "h1:2e180e55e9805477a7bf86922c532028a40e28911ad02475191eb590cbe8eb3a",
+        "step Otherwise": "h1:787b1274ec03136c4b5bd0bc18ed0ce2e241981c58149e5c15236154ca69c00f",
+        "step Provided": "h1:17d74f2fb361fe099dfd6464d0dd41ea48f87f105c8be3385fc8fc262b3ceacf",
+        "step Then": "h1:83987cbe586812aa39fe6a8e9fb95875a9d15d588faf62d153e1260bea9f471f",
+        "step When": "h1:2f0d21dbf8ab84edf51f82a415654330503542e183e5122aace2b61458958de7"
+      },
+      "baseline": {
+        "heading": "h1:aff1b7439b02a8ce84ca2f728f581a684695c52c481365f903ea68c6c4669e90",
+        "row h1:21658188168be9c43f2e2b0cd2a77f6a47235244bfd4ead2f4da8981f9459f4a": "h1:de9bea259924fbabedaeaedba536ccb5590aab865c06a9c91ecf64bbe6a0fbcd",
+        "row h1:306b02c6c0340458ac5dd6c95e73c34eb8393d79f610ff8b2c6a4adf9329401e": "h1:a7e741108176200a7e19899fac1430b08c45b5dc868041d93659661f1a11426f",
+        "row h1:7641f1c3c1ba945107b5806c99b66108729a8b03d4ce7ec7bd5a0decbc03d90d": "h1:b2bd6a22a743d151cd5745842eccbe7c1cf9408db49595240eea63f93ba44081",
+        "row h1:96d7c8718052b09c1c5d24265c7a57c04893423988638f2211e45768d046b265": "h1:5932274ee9ebe919e1d512ac5797a4d848a4b4d330b16fa8ea2ef18e14eceb76",
+        "row h1:fcb2695ae545ffad25ffb4286d2841b8175f13b65fe6b562176fb100dcb84a80": "h1:0f61feb99eab65057bb3d8eaf5eb9c88c646b64054d41aaf49e4d7f39a738933",
+        "step Otherwise": "h1:787b1274ec03136c4b5bd0bc18ed0ce2e241981c58149e5c15236154ca69c00f",
+        "step Provided": "h1:17d74f2fb361fe099dfd6464d0dd41ea48f87f105c8be3385fc8fc262b3ceacf",
+        "step Then": "h1:83987cbe586812aa39fe6a8e9fb95875a9d15d588faf62d153e1260bea9f471f",
+        "step When": "h1:2f0d21dbf8ab84edf51f82a415654330503542e183e5122aace2b61458958de7"
+      }
+    },
+    {
+      "id": "lint.references",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:69824d3b0e70ca6aaa0da1613b65fd914c442bf1f7ad1bb22bcdfbdfe1a05e39",
+        "section Goal": "h1:e2ee0b89432f65384b084a29381de318ec487a3ffb9a21fc9992c12f4f741634",
+        "section Rationale": "h1:b1a58b055c52f2b27608c003d84ba50fea86022f3b256136052579e598101148"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:69824d3b0e70ca6aaa0da1613b65fd914c442bf1f7ad1bb22bcdfbdfe1a05e39",
+        "section Goal": "h1:e2ee0b89432f65384b084a29381de318ec487a3ffb9a21fc9992c12f4f741634",
+        "section Rationale": "h1:630af484f066fb2552202a65acdafb26f984f7346325fd9b3a18773ae33ef567"
+      }
+    }
+  ],
+  "judgements": [],
+  "findings": []
+}
