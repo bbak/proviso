@@ -86,7 +86,7 @@ properties:
 ## <a id="system.cli.manifest"></a> manifest
 
 The command `proviso manifest`, run anywhere inside the system's
-repository. It writes `manifest.sum` into the spec root, removes the
+repository; it takes no argument. It writes `manifest.sum` into the spec root, removes the
 coherence file and the amendment note there, and writes nothing to
 standard output.
 
@@ -451,7 +451,7 @@ properties:
 ## <a id="system.cli.judge"></a> judge
 
 The command `proviso judge`, run anywhere inside the system's
-repository. It reads a `check_result` from standard input, records it
+repository; it takes no argument. It reads a `check_result` from standard input, records it
 in `coherence_file` and writes nothing to standard output.
 
 ### <a id="system.cli.judge.exit-status"></a> exit-status
@@ -626,8 +626,8 @@ properties:
 
 ## <a id="system.cli.init"></a> init
 
-The command `proviso init`, run in the root of a git repository. It
-writes the installed files that are missing, and names each installed
+The command `proviso init`, run in the root of a git repository; it
+takes no argument. It writes the installed files that are missing, and names each installed
 file on standard output: one line each, in the byte order of their
 paths, `written` or `skipped`, a space and the path, as
 `installed_files` gives it.
