@@ -109,7 +109,7 @@ Otherwise → install.update.stamp
 | file | provided | outcome | why |
 | --- | --- | --- | --- |
 | `.claude/agents/proviso-coder.md`, deleted after `init` | yes | written | |
-| `.claude/agents/proviso-coder.md`, `.claude` being a file | yes | not written, exit status 2 | a folder cannot be made below a file |
+| `.claude/agents/proviso-coder.md`, `.claude/agents` being a file, the skills in place | yes | not written, exit status 2 | a folder cannot be made below a file |
 | `.claude/agents/proviso-coder.md`, in place | no | handed over | |
 | `.claude/agents/proviso-coder.md`, a folder of that name | no | handed over | any entry counts |
 
