@@ -17,6 +17,12 @@ a rule from the impact set, and so does a term used without its mark.
 Resolution follows the levels: a capability's own glossary, contracts
 and parameters first, then the system's.
 
+Inside a rule block, a backtick is always a reference and `"…"` always
+a literal, so that every backtick resolves and a literal holds anything
+without a false alarm. A reference is qualified from its top-level
+element, never shortened to what is unique today, since a new element
+would then break references that resolved before.
+
 ## <a id="lint.references.term"></a> Rule: A term mark resolves
 
 ```guarded

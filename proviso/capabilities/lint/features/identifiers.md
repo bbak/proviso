@@ -12,11 +12,22 @@ where tooling and links expect it.
 Identifiers are what everything else refers to: links, hand-overs, the
 manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
-reference to it ambiguous. Whether an identifier is permanent and never
-reused can only be checked against a baseline, so that check comes with
-the manifest, not here.
+reference to it ambiguous. Lint checks the identifiers as they stand. A
+renamed identifier shows in the element diff, as one element removed
+and one added. That a removed identifier is never reused is left to the
+authors: the manifest forgets a removed element, and within the tree,
+unique identifiers are all that references need.
 
 ## <a id="lint.identifiers.placement"></a> Rule: An anchor starts a heading
+
+### Rationale
+
+An anchor at the start of its heading is invisible when rendered, and a
+link to it from any file lands on the heading itself, on GitHub and in
+VS Code, dots included. The heading attribute `{#…}` is not used, since
+GitHub does not render it. An anchor on the line before its heading
+makes markdownlint report the heading, and a blank line between them
+would part the anchor from its element.
 
 ```guarded
 When      lint reads an [anchor] <anchor>
