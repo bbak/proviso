@@ -5,7 +5,6 @@ package stamp
 
 import (
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/bbak/proviso/internal/model"
@@ -85,8 +84,10 @@ func Names(version string) bool {
 }
 
 // version is a version of semantic versioning, read for its precedence.
+// Numeric identifiers stay text, so that no number is too large to
+// compare.
 type version struct {
-	core [3]int
+	core [3]string
 	pre  []string
 }
 
@@ -95,32 +96,33 @@ func parse(s string) (version, bool) {
 	if m == nil {
 		return version{}, false
 	}
-	var v version
-	for i := range v.core {
-		n, err := strconv.Atoi(m[i+1])
-		if err != nil {
-			return version{}, false // too large to compare
-		}
-		v.core[i] = n
-	}
+	v := version{core: [3]string{m[1], m[2], m[3]}}
 	if m[4] != "" {
 		v.pre = strings.Split(m[4], ".")
 	}
 	return v, true
 }
 
-// isRelease reports whether s is a release version: three plain numbers,
+// IsRelease reports whether s is a release version: three plain numbers,
 // with neither a pre-release nor a build part.
-func isRelease(s string) bool {
+func IsRelease(s string) bool {
 	v, ok := parse(s)
 	return ok && v.pre == nil && !strings.Contains(s, "+")
+}
+
+// Newer reports whether a is a version of semantic versioning newer than
+// the version b by its precedence; false where either is none.
+func Newer(a, b string) bool {
+	x, okA := parse(a)
+	y, okB := parse(b)
+	return okA && okB && compare(x, y) > 0
 }
 
 // compare orders a and b by the precedence of semantic versioning.
 func compare(a, b version) int {
 	for i := range a.core {
-		if a.core[i] != b.core[i] {
-			return cmpInt(a.core[i], b.core[i])
+		if c := cmpNum(a.core[i], b.core[i]); c != 0 {
+			return c
 		}
 	}
 	switch {
@@ -133,16 +135,15 @@ func compare(a, b version) int {
 	}
 	for i := 0; i < len(a.pre) && i < len(b.pre); i++ {
 		x, y := a.pre[i], b.pre[i]
-		nx, ex := strconv.Atoi(x)
-		ny, ey := strconv.Atoi(y)
+		nx, ny := numeric(x), numeric(y)
 		switch {
 		case x == y:
 			continue
-		case ex == nil && ey == nil:
-			return cmpInt(nx, ny)
-		case ex == nil:
+		case nx && ny:
+			return cmpNum(x, y)
+		case nx:
 			return -1
-		case ey == nil:
+		case ny:
 			return 1
 		case x < y:
 			return -1
@@ -151,6 +152,20 @@ func compare(a, b version) int {
 		}
 	}
 	return cmpInt(len(a.pre), len(b.pre))
+}
+
+// numeric reports whether an identifier holds digits only.
+func numeric(s string) bool {
+	return strings.Trim(s, "0123456789") == ""
+}
+
+// cmpNum orders two numeric identifiers, which semantic versioning writes
+// without leading zeros: the longer is the larger.
+func cmpNum(a, b string) int {
+	if c := cmpInt(len(a), len(b)); c != 0 {
+		return c
+	}
+	return strings.Compare(a, b)
 }
 
 func cmpInt(a, b int) int {
@@ -171,7 +186,7 @@ func Model(stamp, own string) (int, bool) {
 }
 
 func modelIn(rows []model.Release, stamp, own string) (int, bool) {
-	if !isRelease(stamp) || len(rows) == 0 {
+	if !IsRelease(stamp) || len(rows) == 0 {
 		return 0, false
 	}
 	s, _ := parse(stamp)

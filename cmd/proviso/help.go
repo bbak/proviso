@@ -7,9 +7,10 @@ import (
 )
 
 // helpPage is cli.cli.help.page: what Proviso is, every command with its
-// options, the commands engineers run first and then those the skills
-// run, the exit statuses the commands share, and where the documentation
-// is. Its wording is for people and not part of the contract.
+// options, first those engineers run and then those the skills run, in
+// the order the page names them, the exit statuses the commands share,
+// and where the documentation is. Its wording is for people and not part
+// of the contract.
 const helpPage = `proviso keeps one specification of a system true across many amendments.
 
 Usage: proviso <command> [options]
@@ -17,6 +18,9 @@ Usage: proviso <command> [options]
 Commands engineers run:
   init                Write the files a repository is missing; run in
                       the root of a git repository.
+  update              Bring the installed skills and agent definitions
+                      to this release; run in the root of a git
+                      repository.
   version             Write the Proviso version and the model version,
                       and check what is installed against them.
   lint [--json]       Check the spec tree against the model's notation.
@@ -55,6 +59,7 @@ const helpHint = `"proviso help" shows the help page`
 // it takes; "--since" takes a revision after it.
 var commandOptions = map[string][]string{
 	"init":     nil,
+	"update":   nil,
 	"version":  nil,
 	"lint":     {"--json"},
 	"manifest": nil,

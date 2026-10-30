@@ -1,7 +1,8 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
-// Model: `proviso init`, `proviso lint`, `proviso manifest`,
-// `proviso diff`, `proviso impact`, `proviso pack`, `proviso judge`,
-// `proviso verify`, `proviso version` and `proviso help`.
+// Model: `proviso init`, `proviso update`, `proviso lint`,
+// `proviso manifest`, `proviso diff`, `proviso impact`, `proviso pack`,
+// `proviso judge`, `proviso verify`, `proviso version` and
+// `proviso help`.
 package main
 
 import (
@@ -20,11 +21,11 @@ import (
 )
 
 // The exit statuses of the contracts lint.cli.lint.exit-status,
-// system.cli.init.exit-status, system.cli.manifest.exit-status,
-// system.cli.diff.exit-status, system.cli.impact.exit-status,
-// system.cli.pack.exit-status, system.cli.judge.exit-status,
-// system.cli.verify.exit-status, system.cli.version.exit-status and
-// cli.cli.help.exit-status.
+// system.cli.init.exit-status, install.cli.update.exit-status,
+// system.cli.manifest.exit-status, system.cli.diff.exit-status,
+// system.cli.impact.exit-status, system.cli.pack.exit-status,
+// system.cli.judge.exit-status, system.cli.verify.exit-status,
+// system.cli.version.exit-status and cli.cli.help.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem
@@ -68,6 +69,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return helpRun(stdout)
 	case "init":
 		return initRun(stdout, stderr)
+	case "update":
+		return updateRun(stdout, stderr)
 	case "version":
 		return versionRun(stdout, stderr)
 	}
