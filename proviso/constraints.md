@@ -75,7 +75,10 @@ Proviso needs git only for history: which revision holds the baseline,
 and what a file held there. The `git` command line is installed wherever
 engineers work with the tree, and calling it adds no dependency. Asking
 only those questions keeps every git call in one place, so that another
-version control system could answer them later.
+version control system could answer them later. Git is relied on, not
+avoided: an amendment's code lives on a branch anyway, and a store of
+Proviso's own to keep a change apart would put the change beside the
+tree, the very place decisions get lost.
 
 ### Property
 
@@ -107,7 +110,8 @@ anything in `acceptance/`.
 
 Proviso's engineers' notes tell a build how to run the acceptance tests
 of a list of identifiers, so that it runs only those of what an
-amendment touches and may affect, and the whole suite once at its end.
+amendment touches and may affect, and the whole suite once at its end,
+since a change to the code alone can break any test.
 With this pattern, that is one anchored pattern for Go's test runner,
 such as `^TestBaselinePackNote(_.*)?$`: the suffix after an underscore
 keeps the tests of one element together when they are spread over

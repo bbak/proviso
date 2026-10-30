@@ -52,7 +52,11 @@ Then      the system is taken for "System"
 
 The agents read the pack and nothing else, so what the amendment
 deliberately leaves out reaches them there, as the engineers wrote it.
-`pack` copies the note; what it says is the engineers' concern.
+`pack` copies the note; what it says is the engineers' concern. It holds
+only what the amendment leaves out: whatever decides behaviour belongs
+in the tree, where the check sees it. It is a file of its own rather
+than the commit message, which is written for people, so that the pack
+does not depend on how a message is worded.
 
 ```guarded
 When      `pack` assembles the [context pack] of the [spec root] <root>

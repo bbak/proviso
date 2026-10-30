@@ -108,6 +108,11 @@ The agent host reads only the installed definition, and the agent reads
 only what it is given; a definition that pointed to another file of the
 kit would point to nothing. The kit keeps the reading guide once for
 every agent that reads a context pack, and `init` puts it in place.
+What the agent host can enforce, such as the tools an agent may use,
+the definition enforces; the rest it states. An agent gets its
+instructions from its definition and the skill that starts it, never by
+finding a skill of its own, so that nothing it happens to find steers
+it.
 
 ```guarded
 When      `init` writes the [agent definition] <definition>

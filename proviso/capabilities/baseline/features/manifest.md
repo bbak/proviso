@@ -15,7 +15,10 @@ drift from the tree it records. One sorted line per part lets two
 amendments that touch different elements merge without a conflict. It
 holds fingerprints, never text: a copy of the tree would be a second
 source of truth, and the former text is in git, at the revision that
-wrote the manifest.
+wrote the manifest. Its fields are separated by tabs, since the name of
+a section holds spaces, and a fingerprint names its algorithm, `h1:`,
+so that another could follow without making an older manifest
+ambiguous.
 
 ## <a id="baseline.manifest.write"></a> Rule: The manifest records every part of every element
 

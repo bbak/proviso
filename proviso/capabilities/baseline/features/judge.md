@@ -17,7 +17,10 @@ adds both. A judgement says why a candidate stays as it is: a candidate
 the amendment does affect is edited, and the element diff lists it, or
 it is reported as a finding until it can be. A judgement or a finding
 that names an element the tree does not hold is refused rather than
-recorded, since it would cover nothing while seeming to.
+recorded, since it would cover nothing while seeming to. The check is
+recorded in a file, not in a commit message: a file survives a squash,
+the command line can read it, and an edit made by hand can get its
+check afterwards.
 
 `judge` derives the element diff and the candidates as `impact` does,
 and records them in `coherence_file`, which only `judge` writes.
