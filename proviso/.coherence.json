@@ -457,11 +457,12 @@
         "row h1:66f567c4c25d95e5386fcfb3e09e7fc9e7f36a7793a3cb9efa9a312f6756a7bc": "h1:486a049b15d6d28c57be0dc3fb55f386aca166b330dffff315f80223ca5c950f",
         "row h1:8741b001460c6d468c32bcad2efc4f322348e6567b57881d6f8948e3daf5e17b": "h1:9cf64f01c2b3155a97943054cf20bafa04e844e02cec29f29b4e5c6fc21defdc",
         "row h1:ad4794083902a2b884c0db08bcfe2597ddb94a365d9887ebdb6cdfffd99b290e": "h1:4dc7019325172c212522b6daca8081531e0d9def2bfbcc229ed3a73be857b800",
+        "row h1:cb1b75a3a76ced6eeb0ef0114cb233dd7583e4fddb9d488116f00b83a0ed976f": "h1:2df5ff008ac8416500ea22bb0720b30869eb329e9e9a594922d84ff6e2fc3235",
         "row h1:e577a8e6081f93c0c11eaf35beedbbfe4ba7749cb52da188be6d9970321b506a": "h1:702480e16dadc1ca6c11eee37a60a8dc72b2397cd742c9d66de30e31b10024c3",
         "row h1:ea988c737a1412dfb0b02c87ca8cfd7f0f48fbbf90c3a62e1529b8d892a7782b": "h1:2725c096267064b42c0485e9ee3b8d36f64fe3b2ab28f5dbb7019a2ac7007721",
-        "section Rationale": "h1:49f74507c7fa5d675a169e17e6e8ee560e8b1de2a3eb209c8f74160b0429dd3d",
+        "section Rationale": "h1:755b42fbc5e5ec7a36957fd5ef132ecfd9c8db0779145d54a59952341d3e8d91",
         "step Otherwise": "h1:209c56a27213c1dc03b5f14186ce07c1e1f172ce6c4d6fa898e9e4505cb92e8f",
-        "step Provided": "h1:cd0e41d6ef1b6b2c60656eb49a02566c28c948cb8edb7b14ad3b442a874445fb",
+        "step Provided": "h1:bfb7126e6ad36a8cd57ff6e855063da644b1b495d6ba13212f0b6f3309176e25",
         "step Then": "h1:bffb2a966ee5df8a2ed53fe74b82be50d7fb603bbdc7431243e2477a4422289e",
         "step When": "h1:04b8592babb0fdec5b654c1a4e84c14f345a9c4c7e9492be5828bf3187ce4322"
       },
@@ -2828,7 +2829,8 @@
         "cli.help.argument"
       ],
       "text": "cli.help.argument reads whatever non-empty argument follows --since as its revision, so `diff --since --json` or `pack --since -h` hands \"--json\" or \"-h\" to baseline.diff.since as <revision>. No rule or Examples row says whether such a revision is refused as an argument or put to git, where it could read as an option rather than a commit; the guard \"git knows <revision> as a commit\" leaves this undecided.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 923f903"
     }
   ]
 }
