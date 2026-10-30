@@ -1,7 +1,7 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
 // Model: `proviso init`, `proviso lint`, `proviso manifest`,
 // `proviso diff`, `proviso impact`, `proviso pack`, `proviso judge`,
-// `proviso verify` and `proviso version`.
+// `proviso verify`, `proviso version` and `proviso help`.
 package main
 
 import (
@@ -23,14 +23,13 @@ import (
 // system.cli.init.exit-status, system.cli.manifest.exit-status,
 // system.cli.diff.exit-status, system.cli.impact.exit-status,
 // system.cli.pack.exit-status, system.cli.judge.exit-status,
-// system.cli.verify.exit-status and system.cli.version.exit-status.
+// system.cli.verify.exit-status, system.cli.version.exit-status and
+// cli.cli.help.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem
 	exitCantRun = 2
 )
-
-const usage = "usage: proviso init | proviso lint [--json] | proviso manifest | proviso diff [--json] [--since <revision>] | proviso impact [--json] | proviso pack [--json] [--since <revision>] | proviso judge | proviso verify [--json] | proviso version"
 
 // version is the Proviso version of the binary, set at build time with
 // -ldflags "-X main.version=..."; "dev" for a build given none.
@@ -44,45 +43,33 @@ func main() {
 }
 
 func run(args []string, stdout, stderr io.Writer) int {
+	// cli.help.start: without a command, the page goes to stderr.
 	if len(args) == 0 {
-		fmt.Fprintln(stderr, usage)
+		io.WriteString(stderr, helpPage)
 		return exitCantRun
 	}
-	cmd, opts := args[0], args[1:]
+	// cli.help.command: commands are matched exactly.
+	name, opts := args[0], args[1:]
+	cmd := name
+	if cmd == "--help" || cmd == "-h" {
+		cmd = "help"
+	}
+	if _, ok := commandOptions[cmd]; !ok {
+		fmt.Fprintf(stderr, "proviso: %q is no command of Proviso; %s\n", name, helpHint)
+		return exitCantRun
+	}
+	// cli.help.argument: the arguments are read before anything else.
+	asJSON, since, ok := readArgs(cmd, name, opts, stderr)
+	if !ok {
+		return exitCantRun
+	}
 	switch cmd {
+	case "help":
+		return helpRun(stdout)
 	case "init":
-		if len(opts) > 0 {
-			fmt.Fprintf(stderr, "proviso init: unknown argument %q\n%s\n", opts[0], usage)
-			return exitCantRun
-		}
 		return initRun(stdout, stderr)
 	case "version":
-		if len(opts) > 0 {
-			fmt.Fprintf(stderr, "proviso version: takes no argument\n%s\n", usage)
-			return exitCantRun
-		}
 		return versionRun(stdout, stderr)
-	case "lint", "manifest", "diff", "impact", "pack", "judge", "verify":
-	default:
-		fmt.Fprintln(stderr, usage)
-		return exitCantRun
-	}
-	asJSON, since := false, ""
-	for i := 0; i < len(opts); i++ {
-		switch a := opts[i]; {
-		case a == "--json" && cmd != "manifest" && cmd != "judge":
-			asJSON = true
-		case a == "--since" && (cmd == "diff" || cmd == "pack") && since == "":
-			if i+1 == len(opts) || opts[i+1] == "" {
-				fmt.Fprintf(stderr, "proviso %s: --since needs a revision\n%s\n", cmd, usage)
-				return exitCantRun
-			}
-			i++
-			since = opts[i]
-		default:
-			fmt.Fprintf(stderr, "proviso %s: unknown argument %q\n%s\n", cmd, a, usage)
-			return exitCantRun
-		}
 	}
 	// baseline.diff.since: since a revision, manifest.sum is not read.
 	t, res, ok := check(cmd, since == "", stderr)
