@@ -83,12 +83,14 @@ Otherwise → cli.help.argument
 `--json` given twice asks for the same thing twice, so it is read
 twice; a second `--since` would ask for two revisions, and the command
 would have to choose one. The revision after `--since` belongs to that
-option and is not read as an argument of its own.
+option and is not read as an argument of its own. No revision git
+accepts starts with "-", so an argument that does is a forgotten
+revision, not one to ask git about.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
 Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since` and `verify.json` define
-  And     <rest> start with a revision that is not empty, where <argument> is "--since"
+  And     <rest> start with a revision that is not empty and does not start with "-", where <argument> is "--since"
   And     <before> hold no "--since", where <argument> is "--since"
 Then      <command> reads <argument>, with the revision after it where <argument> is "--since"
   And     <command> goes on with the arguments after them
@@ -111,4 +113,5 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | diff | none | --help | none | no (takes) | refused, exit status 2 | the page is `help`'s alone |
 | diff | none | --since | none | no (a revision after it) | refused, exit status 2 | |
 | pack | none | --since | `""` | no (a revision after it) | refused, exit status 2 | an empty revision names nothing |
+| diff | none | --since | --json | no (a revision after it) | refused, exit status 2 | an option is no revision |
 | diff | --since `HEAD~1` | --since | `HEAD~2` | no (no "--since" before it) | refused, exit status 2 | two revisions contradict |

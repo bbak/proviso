@@ -1,6 +1,37 @@
 {
   "touched": [
     {
+      "id": "baseline.diff.since",
+      "now": {
+        "heading": "h1:b956b9c4df346accf9a9a661919be712f8aef7fa912d8d57e6fafbee1f03bfee",
+        "row h1:173e4f989319de97f7ce57117a2608fe1096e77e1f5fb442563ba3674b60b9fc": "h1:b6c3422eebbe760b2de34b95dc89efc01072c3bb245444f2cc7f8528d7fc5eca",
+        "row h1:4e63d1b2ea095e86c7afdbfbbadda1eca82feea0b133b72c971ab0116cd3418d": "h1:2e434775de2b42a205b6104585c2f26c16c53bf0e3da34970148bfa947655697",
+        "row h1:9f91ed7727980da2ab616d1b1b4e6d0c2cb176bcec58e011f8a5351c61d873d8": "h1:2d1caf1ac87d129b5759d511bf25b1a8db85163625ec6e24a27760cb07b244d5",
+        "row h1:d586ab291f3fa786eaa9e42de4af4c86e9f4a6903116a7fc42e47b2d1cca9335": "h1:6a0657d6bcdc0117b9484bfca34f94cca1252ff9a88857c0002f431d823a0908",
+        "row h1:d837b4e427451e8d7a7fba3110665f8eedc5a00e42c0e9acd12e8b7574135614": "h1:2afcdf1124bb2d6f174996296a0647755645b6eade73c8b4ce7e815a6328bf20",
+        "row h1:dcf52cd88535957734b27b2fb2cfc9597d0441f0f0a9299e2e804dfee8699ab8": "h1:940293a59d70744767ecd8cac2640443f996854b7209ba7365e268d52361dc27",
+        "section Rationale": "h1:4095760fe75386508290ca576e5f2228f72d3a59b91f960ab415cecdc8889736",
+        "step Otherwise": "h1:b8880e427f6cae557a678efd91091bfc94c3163d902277a9b23e8815d05cea7c",
+        "step Provided": "h1:b18857709ec2e755681b8731ebcc2a950038c4b368a749e0ea424adc657c2de4",
+        "step Then": "h1:567eef01e6d4046e7d3ad2d774fc069cd30fd05f18023b94a00e275f3778b390",
+        "step When": "h1:4afacff9fe93f67613d8b4831fef1aad65989cf5c5c274775a90cb7a5aac25d1"
+      },
+      "baseline": {
+        "heading": "h1:b956b9c4df346accf9a9a661919be712f8aef7fa912d8d57e6fafbee1f03bfee",
+        "row h1:173e4f989319de97f7ce57117a2608fe1096e77e1f5fb442563ba3674b60b9fc": "h1:b6c3422eebbe760b2de34b95dc89efc01072c3bb245444f2cc7f8528d7fc5eca",
+        "row h1:4e63d1b2ea095e86c7afdbfbbadda1eca82feea0b133b72c971ab0116cd3418d": "h1:2e434775de2b42a205b6104585c2f26c16c53bf0e3da34970148bfa947655697",
+        "row h1:9f91ed7727980da2ab616d1b1b4e6d0c2cb176bcec58e011f8a5351c61d873d8": "h1:2d1caf1ac87d129b5759d511bf25b1a8db85163625ec6e24a27760cb07b244d5",
+        "row h1:d586ab291f3fa786eaa9e42de4af4c86e9f4a6903116a7fc42e47b2d1cca9335": "h1:6a0657d6bcdc0117b9484bfca34f94cca1252ff9a88857c0002f431d823a0908",
+        "row h1:d837b4e427451e8d7a7fba3110665f8eedc5a00e42c0e9acd12e8b7574135614": "h1:2afcdf1124bb2d6f174996296a0647755645b6eade73c8b4ce7e815a6328bf20",
+        "row h1:dcf52cd88535957734b27b2fb2cfc9597d0441f0f0a9299e2e804dfee8699ab8": "h1:940293a59d70744767ecd8cac2640443f996854b7209ba7365e268d52361dc27",
+        "section Rationale": "h1:4095760fe75386508290ca576e5f2228f72d3a59b91f960ab415cecdc8889736",
+        "step Otherwise": "h1:b8880e427f6cae557a678efd91091bfc94c3163d902277a9b23e8815d05cea7c",
+        "step Provided": "h1:b18857709ec2e755681b8731ebcc2a950038c4b368a749e0ea424adc657c2de4",
+        "step Then": "h1:567eef01e6d4046e7d3ad2d774fc069cd30fd05f18023b94a00e275f3778b390",
+        "step When": "h1:df3410eded9b281f5ff0a2c7e78cd66f62a85b4079207838b9bbafbd87eba323"
+      }
+    },
+    {
       "id": "baseline.judge.amendment",
       "now": {
         "heading": "h1:e9c3b38f8421f187e5f9989ae813c5c643cc6e5083bfd61d3a16ec77e466bded",
@@ -86,7 +117,7 @@
         "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
         "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
         "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
-        "step When": "h1:2dc32b58dab8a65a954875399ac0c1ebf38170d63c5dbef9c0c0123458cc9c1d"
+        "step When": "h1:17185c3262ffc0b5c7f0d5cf14c1adc2b0fba9adc7594b722d6071fa47879e2a"
       },
       "baseline": {
         "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
@@ -2774,7 +2805,8 @@
         "cli.help.argument"
       ],
       "text": "baseline.diff.since starts on 'someone runs diff with diff.since, or pack with pack.since', not limited to arguments the command takes. For `diff --since HEAD~1 --bogus`, its Then (compare with HEAD~1) and cli.help.argument's Otherwise (refuse, check nothing) both apply and cannot both hold.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 810c675"
     },
     {
       "id": "f6",
@@ -2785,6 +2817,17 @@
         "system.cli.judge"
       ],
       "text": "baseline.judge.input starts on 'someone runs judge, giving it the input <input> on stdin', with no limit on arguments, though system.cli.judge now says judge takes no argument. For `judge --json` with a valid check_result, judge.input's Then (read it) and cli.help.argument's Otherwise (refuse, check and write nothing) both apply.",
+      "status": "resolved",
+      "reason": "edited in 810c675"
+    },
+    {
+      "id": "f7",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.since",
+        "cli.help.argument"
+      ],
+      "text": "cli.help.argument reads whatever non-empty argument follows --since as its revision, so `diff --since --json` or `pack --since -h` hands \"--json\" or \"-h\" to baseline.diff.since as <revision>. No rule or Examples row says whether such a revision is refused as an argument or put to git, where it could read as an option rather than a commit; the guard \"git knows <revision> as a commit\" leaves this undecided.",
       "status": "open"
     }
   ]
