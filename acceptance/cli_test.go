@@ -15,7 +15,7 @@ import (
 )
 
 // commands are the commands of Proviso, as cli.help.command names them.
-var commands = []string{"init", "version", "lint", "manifest", "diff", "impact", "pack", "judge", "verify", "help"}
+var commands = []string{"init", "update", "version", "lint", "manifest", "diff", "impact", "pack", "judge", "verify", "help"}
 
 // options are the options the commands take.
 var options = []string{"--json", "--since"}
@@ -168,6 +168,30 @@ func TestCliCliHelpPage(t *testing.T) {
 			t.Errorf("cli.cli.help.page: the page does not name %s:\n%s", name, page)
 		}
 	}
+	// The commands in the page's order: first those engineers run, then
+	// those the skills run. A command is listed on the first line that
+	// starts with it, or with "proviso" and it.
+	order := []string{"init", "update", "version", "lint", "diff", "impact", "verify", "help", "pack", "judge", "manifest"}
+	lines := strings.Split(strings.ReplaceAll(page, "\r\n", "\n"), "\n")
+	last, lastName := -1, ""
+	for _, name := range order {
+		re := regexp.MustCompile(`^\s*(?:proviso\s+)?` + regexp.QuoteMeta(name) + `($|[^A-Za-z0-9-])`)
+		at := -1
+		for i, l := range lines {
+			if re.MatchString(l) {
+				at = i
+				break
+			}
+		}
+		if at < 0 {
+			t.Errorf("cli.cli.help.page: no line of the page lists %s:\n%s", name, page)
+			continue
+		}
+		if at <= last {
+			t.Errorf("cli.cli.help.page: %s is listed on line %d, not after %s on line %d:\n%s", name, at+1, lastName, last+1, page)
+		}
+		last, lastName = at, name
+	}
 }
 
 func TestCliCliHelpExitStatus(t *testing.T) {
@@ -262,10 +286,19 @@ func TestCliHelpCommand(t *testing.T) {
 			t.Errorf("cli.help.command: want verify to run, got exit status 2\nstderr: %s", o.json.stderr)
 		}
 	})
+	t.Run("row3 update", func(t *testing.T) {
+		t.Parallel()
+		// A release, after init: update runs and updates every file.
+		r := freshRepo(t, "repo", false)
+		r.init().exits(t, 0)
+		o := r.update("0.2.0")
+		o.exits(t, 0)
+		o.all(t, "updated")
+	})
 	for _, c := range []struct{ name, cmd string }{
-		{"row3 help", "help"},
-		{"row4 --help", "--help"},
-		{"row5 -h", "-h"},
+		{"row4 help", "help"},
+		{"row5 --help", "--help"},
+		{"row6 -h", "-h"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
@@ -274,10 +307,10 @@ func TestCliHelpCommand(t *testing.T) {
 		})
 	}
 	for _, c := range []struct{ name, cmd string }{
-		{"row6 Lint", "Lint"},
-		{"row7 --version", "--version"},
-		{"row8 build", "build"},
-		{`row9 ""`, ""},
+		{"row7 Lint", "Lint"},
+		{"row8 --version", "--version"},
+		{"row9 build", "build"},
+		{`row10 ""`, ""},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
@@ -390,7 +423,7 @@ func TestCliHelpArgument(t *testing.T) {
 			t.Run(cmd, func(t *testing.T) {
 				t.Parallel()
 				var dir string
-				if cmd == "init" {
+				if cmd == "init" || cmd == "update" {
 					dir = freshRepo(t, "repo", false).dir
 				} else {
 					dir = sinceAccepted(t).dir
