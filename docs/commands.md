@@ -222,10 +222,11 @@ proviso verify [--json]
 
 Tells whether the tree may become the baseline as it stands: either it
 is what the manifest records and no coherence file or amendment note is
-left over, or the coherence check covers the amendment's final state.
-It lists each problem: a check `missing`, a coherence file or note
-`leftover`, a candidate `unjudged`, an element `stale`, a finding
-`open`. A coherence file it cannot read stops it before anything is
+left over, or the coherence check covers the amendment's final state;
+and in either case, no element of the tree is left undecided. It lists
+each problem: a check `missing`, a coherence file or note `leftover`, an
+element `undecided`, a candidate `unjudged`, an element `stale`, a
+finding `open`. A coherence file it cannot read stops it before anything is
 reported.
 
 | Exit status | Meaning |

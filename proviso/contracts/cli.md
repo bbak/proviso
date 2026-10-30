@@ -603,7 +603,7 @@ properties:
       required: [kind, message]
       properties:
         kind:
-          enum: [missing, leftover, unjudged, stale, open]
+          enum: [missing, leftover, undecided, unjudged, stale, open]
         element:
           type: string
         finding:
@@ -616,12 +616,14 @@ properties:
 
 - `kind` says what is wrong: the element diff lists elements but no
   coherence check is recorded (`missing`); a check or an amendment note
-  is left beside a tree the manifest records (`leftover`); a candidate has no judgement
-  (`unjudged`); an element changed since the check covered it
-  (`stale`); a finding is neither resolved nor dismissed (`open`).
-- `element` is the identifier of the element an `unjudged` or `stale`
-  problem is about; `finding` and `text` are the `id` and the text of
-  an `open` finding.
+  is left beside a tree the manifest records (`leftover`); an element
+  holds an undecided place or marks an open term (`undecided`); a
+  candidate has no judgement (`unjudged`); an element changed since the
+  check covered it (`stale`); a finding is neither resolved nor
+  dismissed (`open`).
+- `element` is the identifier of the element an `undecided`,
+  `unjudged` or `stale` problem is about; `finding` and `text` are the
+  `id` and the text of an `open` finding.
 - `message` is for people and not part of the contract.
 
 ## <a id="system.cli.init"></a> init

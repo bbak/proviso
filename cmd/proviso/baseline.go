@@ -357,7 +357,7 @@ func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	if !ok {
 		return exitCantRun
 	}
-	problems := baseline.Verify(c, hasNote(t), entries, candidates, base)
+	problems := baseline.Verify(c, hasNote(t), entries, candidates, res.Elements, base)
 	if !emit("verify", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
 			return report.VerifyJSON(w, reportRoot(t.Root), problems)
