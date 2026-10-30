@@ -1,0 +1,254 @@
+{
+  "touched": [
+    {
+      "id": "baseline.verify",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8df8dc897d2d4b4a36e60bf4620340586a440122d5f05f177fedcfc462162453",
+        "section Goal": "h1:0366bfcb3019a265cdea31eb6f75ddedaed9be0d578a24a5c37ac45f64f02150",
+        "section Rationale": "h1:ab3de9a39f4c7ae69fac3eebf17a5a3466265c9354b0eef8f693690926081bd3"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8df8dc897d2d4b4a36e60bf4620340586a440122d5f05f177fedcfc462162453",
+        "section Goal": "h1:95c2dbb896b81a5300371f0b6b08fa8a86fb1657e250bbed2f8ec817b1b60893",
+        "section Rationale": "h1:2e506e4ce1faf528eb97ae4dcc1767d15f002adcd10cfa50be54c18bbb12e0f1"
+      }
+    },
+    {
+      "id": "baseline.verify.leftover",
+      "now": {
+        "heading": "h1:25e69590b51f706a886aec9a02474573e3182735ed54454f7052eb748031fa21",
+        "row h1:09e3f293ee9fc19ca38938fe15e99b0cfb67740542d89b963316977bf474bf7f": "h1:7c5cdeae2c4c314f26f9ae46e6a0635ba5b23c22a2a1f65bbd16df6ad3c1bced",
+        "row h1:766766eaca4718c21f2f5ca9a354c1dcdd2d3af82bce942d0f1d68b11f523801": "h1:f46071730e61df988ff0b5184e3387bb40fd5c52a77bc77c04983cd27cf3af66",
+        "row h1:77296d96a42a9be192ba5960f008658a3713a290204719f782f1fcd81d16681b": "h1:6096b63cfc16f36ba1b1b57e4a184fe9a0a79efd4a3bfc64de0ec9355cf3b168",
+        "row h1:8433b1ca30e7913ae8a74f5b4133d43e8b029c5dd84c28c6b00e55c28fe12cfe": "h1:0cf41ad8aef67e3e715a5e3ae21112e088370b05c26013f1a117021148a9ae85",
+        "row h1:affc5697992cdbfa09d38b930b7a7002b277a875af5a1ce0523b1f1be80771ee": "h1:6c6d57e0a65d46fea73aa9ead073ffcb9ad1db150a517a86d5dd78122993bd50",
+        "section Rationale": "h1:c505265e4c088c3344aa5f2748ba1bc8afe180694b972043a4716c4c1951edc6",
+        "step Otherwise": "h1:0f4ab50e99dcdb42b0f135569be61a9b223f956e750218274b629fb9fad5d841",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:cb02f4fa34ffff5ac79250b7d84303b70f1b05d6534a5a81ae2837cf25bccc1d",
+        "step When": "h1:14436b750dfec5e15a6b3a10fcc692024f49c6c4024287fc1dc19076ef70bdc5"
+      },
+      "baseline": {
+        "heading": "h1:25e69590b51f706a886aec9a02474573e3182735ed54454f7052eb748031fa21",
+        "row h1:09e3f293ee9fc19ca38938fe15e99b0cfb67740542d89b963316977bf474bf7f": "h1:7c5cdeae2c4c314f26f9ae46e6a0635ba5b23c22a2a1f65bbd16df6ad3c1bced",
+        "row h1:766766eaca4718c21f2f5ca9a354c1dcdd2d3af82bce942d0f1d68b11f523801": "h1:f46071730e61df988ff0b5184e3387bb40fd5c52a77bc77c04983cd27cf3af66",
+        "row h1:77296d96a42a9be192ba5960f008658a3713a290204719f782f1fcd81d16681b": "h1:6096b63cfc16f36ba1b1b57e4a184fe9a0a79efd4a3bfc64de0ec9355cf3b168",
+        "row h1:8433b1ca30e7913ae8a74f5b4133d43e8b029c5dd84c28c6b00e55c28fe12cfe": "h1:0cf41ad8aef67e3e715a5e3ae21112e088370b05c26013f1a117021148a9ae85",
+        "row h1:affc5697992cdbfa09d38b930b7a7002b277a875af5a1ce0523b1f1be80771ee": "h1:6c6d57e0a65d46fea73aa9ead073ffcb9ad1db150a517a86d5dd78122993bd50",
+        "section Rationale": "h1:c505265e4c088c3344aa5f2748ba1bc8afe180694b972043a4716c4c1951edc6",
+        "step Otherwise": "h1:5979e9ad22605fbc6927dfdcfdd23952b6f28d2a860e2d39865eb3876dad4b58",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:cb02f4fa34ffff5ac79250b7d84303b70f1b05d6534a5a81ae2837cf25bccc1d",
+        "step When": "h1:14436b750dfec5e15a6b3a10fcc692024f49c6c4024287fc1dc19076ef70bdc5"
+      }
+    },
+    {
+      "id": "baseline.verify.missing",
+      "now": {
+        "heading": "h1:8f32aeceda7b0adb2a06152a5f801c37d7ab4cce85066346fe823be5a8d90fbf",
+        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:fcad28d1643f89bdcbbdd701cbac8174e3651c44a721a98a1b48df0a24bf3d00",
+        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:d6d8f070b7344cbbd9d6e23b49efd2cb8786092a75adede915a8e0cfd8907c46",
+        "step Otherwise": "h1:da630e7c1e1749299b1a6de837ad3033af74df6fbba1e90967d12f433ba28f49",
+        "step Provided": "h1:062ba8aa192c0fd620c44dfeb36e12e9a40c7265098bd05b8f56fe307771fe98",
+        "step Then": "h1:0b358e8a9b45124dc931289d9a8aa0848d5cc5c51632b1b2264f3a137877582e",
+        "step When": "h1:acb6dd73234200b949df56fa2b99de4828c8664bda8a10a3dcd82e3967c4d70e"
+      },
+      "baseline": {
+        "heading": "h1:8f32aeceda7b0adb2a06152a5f801c37d7ab4cce85066346fe823be5a8d90fbf",
+        "row h1:2d9134b67a66a840691efb7ec030023ed44c25f8211eb3ad7d1c28a728eef684": "h1:fcad28d1643f89bdcbbdd701cbac8174e3651c44a721a98a1b48df0a24bf3d00",
+        "row h1:a0ba79bab1124e312211faf8453e1fe31c093ec2422087f526e66e32166a8cac": "h1:d6d8f070b7344cbbd9d6e23b49efd2cb8786092a75adede915a8e0cfd8907c46",
+        "step Otherwise": "h1:8cadd1b0aebbc8b72e4a11b896cea16971dd154a5bcf60873e50942ae0584217",
+        "step Provided": "h1:062ba8aa192c0fd620c44dfeb36e12e9a40c7265098bd05b8f56fe307771fe98",
+        "step Then": "h1:0b358e8a9b45124dc931289d9a8aa0848d5cc5c51632b1b2264f3a137877582e",
+        "step When": "h1:acb6dd73234200b949df56fa2b99de4828c8664bda8a10a3dcd82e3967c4d70e"
+      }
+    },
+    {
+      "id": "baseline.verify.order",
+      "now": {
+        "heading": "h1:6e53ae0e95253a5fb907aa130c818350229f46f3c3a568e98dac01fa029fa19a",
+        "row h1:1cd6da74e73fbacad92b935764529f895aa6723e4d96cfd78f855fcfe325bf58": "h1:9d29b71ecbabac4550d1b08c6d501ba705df81a2f4e69d8ab555bfc31f0f3263",
+        "row h1:5e3d4c8d80cc2caaa91a0c33d997174d7181e362c5ad065939d19190a9536fa4": "h1:47ecce41735c7ee1c06741acaa9c3fa19507c0b4d4f32d86b1cd95fdc93782cd",
+        "row h1:783b1826e682abf63d57b1f25259e7744e80f684ee734736dff72670a1bd5eb9": "h1:cd226a3a8154096a380734e44e7d76beb3e41283e051520fff2e1e0793663f78",
+        "row h1:c75df92f00cea4f75be225a7a6cedc32dc1ab975d7cf90ead30e80d25fdb7f51": "h1:c9f393efc7e08b6b0a36bf659dcef77973cd73d5964e10037fdfe86219896ea4",
+        "step Then": "h1:a9ca543684118b123819d1bbe59c8a3192d9a81feb8c3c044b141cdf2f912bed",
+        "step When": "h1:1a9115a1060a9f3f36dfb047e4b8a9a22f291d6fdbc4c6ddd38e2e1d14dfcece"
+      },
+      "baseline": {
+        "heading": "h1:6e53ae0e95253a5fb907aa130c818350229f46f3c3a568e98dac01fa029fa19a",
+        "row h1:5e3d4c8d80cc2caaa91a0c33d997174d7181e362c5ad065939d19190a9536fa4": "h1:47ecce41735c7ee1c06741acaa9c3fa19507c0b4d4f32d86b1cd95fdc93782cd",
+        "row h1:c75df92f00cea4f75be225a7a6cedc32dc1ab975d7cf90ead30e80d25fdb7f51": "h1:c9f393efc7e08b6b0a36bf659dcef77973cd73d5964e10037fdfe86219896ea4",
+        "step Then": "h1:a9ca543684118b123819d1bbe59c8a3192d9a81feb8c3c044b141cdf2f912bed",
+        "step When": "h1:1a9115a1060a9f3f36dfb047e4b8a9a22f291d6fdbc4c6ddd38e2e1d14dfcece"
+      }
+    },
+    {
+      "id": "baseline.verify.output",
+      "now": {
+        "heading": "h1:90faf0761e462aad427c5ac82fd6d9fd46953f56a3beac0a34b02d7b75f00f48",
+        "row h1:0e8bb237a8209ff70342aa111a584112d9b1889c87c6312436d0117588974415": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:4d026473ec852bfbd8c085f8ec03b61f9f8c2b0b6cc5a35d65e15488b587356a": "h1:f438e81a7645403c66e84895bad63f73c5fd3a28e1a0ac34b04e8eceda505b49",
+        "row h1:7a328cde20c447b7259641f54d95021e7d196424c096fca6c0ac55b8cb788b06": "h1:d521e8aaa4b64581b655d21e3c67615cde45e7ece68f6f5eaa74b7feb421b97f",
+        "row h1:e83e798717af1e11613a6fc27bd3ae5db48e02d942b19476e72a9f70c8ec2cd8": "h1:fd58a543d846ef4a413119e7b9adf3765e28d7940baec624c06f0ac8fa5e915a",
+        "step Given": "h1:ce544c8237985b3cd44628a255d5d6135682a7f4ef2dd64590cc4208b4d7e720",
+        "step Otherwise": "h1:b378bdaf751a7c276c2334855181a9fd5a80732387562e9e20864825bc592397",
+        "step Provided": "h1:2970036abf2c0b2e480d5b4e13553cbd5d5183f1a2ef4daa83e27b52d3a82674",
+        "step Then": "h1:862cb5621782748be26887ec1a94d018abc7918b002f1837b4af11e750d85ed7",
+        "step When": "h1:747d372eca4103e013cc5bf9f89e03931c5b12417bfa0685882785653f2c7bdc"
+      },
+      "baseline": {
+        "heading": "h1:90faf0761e462aad427c5ac82fd6d9fd46953f56a3beac0a34b02d7b75f00f48",
+        "row h1:0e8bb237a8209ff70342aa111a584112d9b1889c87c6312436d0117588974415": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:4d026473ec852bfbd8c085f8ec03b61f9f8c2b0b6cc5a35d65e15488b587356a": "h1:f438e81a7645403c66e84895bad63f73c5fd3a28e1a0ac34b04e8eceda505b49",
+        "row h1:7a328cde20c447b7259641f54d95021e7d196424c096fca6c0ac55b8cb788b06": "h1:d521e8aaa4b64581b655d21e3c67615cde45e7ece68f6f5eaa74b7feb421b97f",
+        "row h1:e83e798717af1e11613a6fc27bd3ae5db48e02d942b19476e72a9f70c8ec2cd8": "h1:fd58a543d846ef4a413119e7b9adf3765e28d7940baec624c06f0ac8fa5e915a",
+        "step Given": "h1:ce544c8237985b3cd44628a255d5d6135682a7f4ef2dd64590cc4208b4d7e720",
+        "step Otherwise": "h1:b378bdaf751a7c276c2334855181a9fd5a80732387562e9e20864825bc592397",
+        "step Provided": "h1:2970036abf2c0b2e480d5b4e13553cbd5d5183f1a2ef4daa83e27b52d3a82674",
+        "step Then": "h1:862cb5621782748be26887ec1a94d018abc7918b002f1837b4af11e750d85ed7",
+        "step When": "h1:747d372eca4103e013cc5bf9f89e03931c5b12417bfa0685882785653f2c7bdc"
+      }
+    },
+    {
+      "id": "baseline.verify.undecided",
+      "now": {
+        "heading": "h1:9e94723083d1b043fe24f5e9d60f4346f6294521dcfbddb18a0c37899626bdc7",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:7880035f9b8ae6f0a865e865586e9aadbf43b3b8542556aa2e28857d6a67dd83",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:0a68a165b4ebb43d3ed58cda896a92fc5126416c7cf31a8431336a299158c982",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:c1af769ea0c1eeffafd9fc2133255e1325636e6b05b065580da9abead3ae1ddc",
+        "row h1:c274462eaf97248a53bfc1252b0f78624f9bb356fc50a16a96880a766fdbefac": "h1:5598b00bd30e29b888f795c4ee3ba777d0b1e25b70166c74ea3916934af8e5b0",
+        "row h1:fc1e1da13902286979b70bd5369d5a9ad0a06ef496d954938b8e6259a6d2888e": "h1:fa29dbfb943d26b192a85ad0f60037dccb2def07c37557f36f67939eec7a38cd",
+        "section Rationale": "h1:13348529261a41078889d4675cb36a4772710b6f40f8aee2d30605b1707c343f",
+        "step Otherwise": "h1:3196d0ea7826294fcf35dd1d430de1929fd0c69c54ed1e379c5594b66592191e",
+        "step Provided": "h1:3be8d7edee42d63e35dc99e5c385291ce5864762bcc48a08b64c2de3fea20c3c",
+        "step Then": "h1:f303b96803327eb30c2684eebc418bfb4234a861da0e884b124840c9e4afeaac",
+        "step When": "h1:0d746ebbfa019f615a8c847e1a4d406aa4bec4f2fe920c7c1dce1c8f3c4bd7d3"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "lint.undecided",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:00cc364fc5241123d821fa8232eac9ec4af5a473d2942c0f95079984f0c69ec9",
+        "section Goal": "h1:b08f4373692cfd664d8230995af96361198ec06dd1a8e7f8d8170e607f621a99",
+        "section Rationale": "h1:5ef23a7484a3a67125964eab9b180c57c26c757a42e9966b0e13bd6b437c8145"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:00cc364fc5241123d821fa8232eac9ec4af5a473d2942c0f95079984f0c69ec9",
+        "section Goal": "h1:b08f4373692cfd664d8230995af96361198ec06dd1a8e7f8d8170e607f621a99",
+        "section Rationale": "h1:10ae46e94a50fbb3ec2c0d8b24fda972a9641ac1c09b49b9b620c787603d10b8"
+      }
+    },
+    {
+      "id": "system.cli.verification",
+      "now": {
+        "body": "h1:e963c5e2eaca957ae1c82d24c51c8d77c4e9ac732ab26bfe20c68dccfe46295b",
+        "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+      },
+      "baseline": {
+        "body": "h1:4f6ee369eb90a389844a0e9c0973e0d2babccd8915281b57ba9682e53d0a3e04",
+        "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: verify still only reads the tree; reporting \"undecided\" writes nothing under the spec root and touches no git state",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    },
+    {
+      "id": "baseline.verify.exit",
+      "reason": "untouched: \"undecided\" is one more problem, so a tree with one already exits 1 by the existing guard; 0 still means the tree may become the baseline, which is what the widened Goal says",
+      "parts": {
+        "heading": "h1:e4f296184d05c65a211bf144e76b4a8856d4bad8d1ed26df6cab962fe20a643e",
+        "row h1:a4731078914b3d7bbfef985993b395a0d8d1d7119425cf408c088b5e6131e26a": "h1:8108e00236f7dc16b712be1e8cd53988f2e2839b3fafa927ae627db87309661e",
+        "row h1:aee087f8489a92aeebd56631c05eae210b27c25cccea2a301c90cda52ebc4471": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:e190c8d7345695fa05930034d5cb9081c8cad00a1d0e5beee9328fc2f095db3e": "h1:443dec4ccbf3be67c25c04eb7e266b2db6498d4f41eb1864dc2b9bdd5f12ea8f",
+        "step Otherwise": "h1:6e39c72d43b14c24b24fe82e1ac1f34041c0166cfb9bc31fff458ad7fb554170",
+        "step Provided": "h1:ee3179b65a0c0c5ed48a58b77303c5885a5fcbf52db40eb2a52af2b9f511fbb5",
+        "step Then": "h1:72f543340d8ee7505f299f88e9171180144145fd9b3d4b7c74b30bf715813204",
+        "step When": "h1:d1518484110dd3189a8fd1dd83b3a51520b57422b496924865d41d23048db7fe"
+      }
+    },
+    {
+      "id": "baseline.verify.open",
+      "reason": "untouched: these rules compare what coherence_file records with the tree; the Goal's added condition is a separate check by its own rule and changes none of their guards or outcomes",
+      "parts": {
+        "heading": "h1:306f2b42b3f7f7dc2c6357637a4d961be84677b36b3c3c62043d8f07f1dbe7c6",
+        "row h1:1c07eb4ef823f613ea4a6cbaad46f394995978f484827b47a22a8c1445944331": "h1:6b6750872556b8ec3f451653cb64a1dbccf7bbf98fef43f70256f48628a84674",
+        "row h1:7d67dccb6daf9745b35ec21b436c675c49c37d5df894c0866363a9ad94ab8159": "h1:60364849a67d5ce560aa684fe16206b339eaa4221fb2742b6f13d1d378ea35e9",
+        "row h1:a6970129e2aa6557bfe3bb8264836e90ec523ab032b3d09607633681e90f5834": "h1:f65b0b59c2bdbc2ba0194eb1065c4f136c7e4463abab8d20e32607a6c9d0ae5f",
+        "step Otherwise": "h1:d012f66ddb6d3a52c65801ac8e38947a933cb7d72d7757de9af43d315017f8b0",
+        "step Provided": "h1:5d16d138d7ae4865581346a9c506211e6725511ed77cafc32030d8a91b253f24",
+        "step Then": "h1:e6b2224bbfe4bb6aa7ed2c6b8c168de2114cb5b21fd2013652f8780d8595d556",
+        "step When": "h1:fc04a203dc61c1e9f250c0ee166d1bb859b5415db88909b7864364f37bbc77cd"
+      }
+    },
+    {
+      "id": "baseline.verify.stale",
+      "reason": "untouched: these rules compare what coherence_file records with the tree; the Goal's added condition is a separate check by its own rule and changes none of their guards or outcomes",
+      "parts": {
+        "heading": "h1:8ee33340d97d0c84ab8832714bae5509c4bf77909e8a89073dd3e0f3434c7e45",
+        "row h1:137d233d1c289293504db8a954cc288c15932cc0bb7d79bca3bd11371f4c8089": "h1:7f90374d8582ec40fa87e0acf0bdf40b8641fa734e53678bf46894c67230f1f9",
+        "row h1:19e326539c3b678a9de2aa354d558845c2a08ef8e844697bf8b43a11ec5182d9": "h1:798bda4b498e404ce283b48d4726e298bc83d3fe9768fef5c4fa83c15e2cda98",
+        "row h1:22b4e432d00e7435a33decd3a1a1f5fa4a69437cd665fc2444f2c261183bbba0": "h1:df02e06fc939cd213b97eedf54037b64587bcae34ee14b73651e4f478fc0b2e1",
+        "row h1:a98ef9345a32a027a8b744c30ae99e5a19193da45865fcb8a54dd641874df6a1": "h1:3ac5e07985dc0b5864df2411395796f7a58cd5fcaf46a17e2bbe9a519d31a28f",
+        "row h1:f991cd3815ec06378d18d951504d4d1b3e374282eadff6adab8a630e9ff2e5a8": "h1:0e0f617ada2c9b352e9c89003d7aab7e74d0a5789e18985b3ff355daff0abcec",
+        "section Rationale": "h1:9ae47ef6a806b9077d77ca900cda4fb101e43753e26a6b4c1732d1ccf65bd685",
+        "step Otherwise": "h1:01f215d8583b17974202ffc828177ff5dc78b29e6cc93309695869505686ca73",
+        "step Provided": "h1:c20667a99a9598c214a2ddcc2c812569959338d1f336b877cc617585251d52da",
+        "step Then": "h1:493c73d394d4044d54e10012d9376a2fa9bfb271e6b6db9c5aa6319eeb5a8504",
+        "step When": "h1:7e551f587db1442410e429a97a33811098fe1a406f00024be6037eca8b045668"
+      }
+    },
+    {
+      "id": "baseline.verify.unjudged",
+      "reason": "untouched: these rules compare what coherence_file records with the tree; the Goal's added condition is a separate check by its own rule and changes none of their guards or outcomes",
+      "parts": {
+        "heading": "h1:0322c1e4901e86cd4fdbec827dffda91a3fdabc88078ec227297f1b429e446ca",
+        "row h1:1dece6f70c53c6d9483557204f4c975b20b4fde99a1ffc48917cf25f92b29f8f": "h1:2a4fb4e8c8d0e2bd7e1c5c4281c51b46c495517374d1398fdd6ed320e823d200",
+        "row h1:21f184de0438f1d45613516f57433774ecf672eedee14669488f45aa9e6b3b74": "h1:36392e3ca0389bae3728b2671be0a3c34e8cb28b93f72867044d338d6dc8e541",
+        "step Otherwise": "h1:ab45cf6fdd4338c2985df84cec45b8d77895a75592c3726e5e34d232c52b2bfe",
+        "step Provided": "h1:4de5d0d4d065056d8ddb06222fd1a0e06e69455f51b13047dc0a60d13397ef8e",
+        "step Then": "h1:40da90c93a8751be40a7ff314fe2e556e17017f492b18fcd9f80e001020cac15",
+        "step When": "h1:586981bacc120da0fe02f68378368af44d0b6ad3df41066c9215afee732082d9"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.verify.undecided",
+        "lint.glossary.open",
+        "baseline.run.lint"
+      ],
+      "text": "The fifth Examples row of baseline.verify.undecided expects nothing reported for an open glossary entry with its Definition written, but lint.glossary.open makes such an entry a lint error, and baseline.run.lint then makes verify exit 2 before this rule is reached. Every entry lint accepts as open has Definition \"?\", which is itself an undecided place, so verify reports every open entry as \"undecided\" even when no rule marks it. That contradicts the row's why: \"an open term decides nothing until a rule marks it\".",
+      "status": "resolved",
+      "reason": "edited in 7bc6863"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "baseline.verify.missing",
+        "baseline.verify.leftover",
+        "baseline.verify.undecided"
+      ],
+      "text": "baseline.verify.missing and baseline.verify.leftover end their Otherwise with \"verify looks no further\", written before the undecided check existed. No rule says whether that stop also skips the whole-tree check of baseline.verify.undecided, so a tree that is both \"missing\" (or \"leftover\") and undecided may report one problem or several.",
+      "status": "resolved",
+      "reason": "edited in 9d6545e"
+    }
+  ]
+}
