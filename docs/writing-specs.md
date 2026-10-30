@@ -94,9 +94,8 @@ element an arrow points to changes, the element it starts from may
 change in meaning.
 
 ```mermaid
-flowchart LR
+flowchart TD
   subgraph levels["Levels"]
-    direction TB
     S[System] -- holds --> C[Capability]
     C -- holds --> F[Feature]
     F -- holds --> R[Rule]
