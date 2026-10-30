@@ -129,8 +129,8 @@ Before you commit:
 - every hole is decided in the tree, or marked `?` with its question in
   `questions.md`.
 
-Commit the tree, and the amendment note if there is one, with why this
-amendment is made now as the message.
+Commit the tree, and the amendment note if there is one, as the writing
+guide says.
 
 ## 7. Check it
 

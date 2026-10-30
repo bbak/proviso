@@ -139,6 +139,7 @@ Every one you find ends decided in the tree or marked `?`:
 - `proviso diff` lists what you meant to change, and `proviso impact`
   what it may affect: read every candidate, and edit the ones the
   amendment does affect.
-- Commit only the tree files you edited, as `docs(spec): <what>`,
-  unless `.proviso/build.md` names another convention for commit
-  messages; then follow that.
+- Commit only the tree files you edited, as `docs(spec): <what>`, with
+  why this amendment is made now as the message's body, unless
+  `.proviso/build.md` names another convention for commit messages;
+  then follow that.
