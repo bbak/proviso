@@ -294,8 +294,9 @@ document beside the tree has not arrived in it.
 field value, an Examples cell or a section body, or a word of its own in
 a rule block. A note after it, as in `- Contact: ? (Treasury or Cash
 Operations)`, keeps it undecided. Nothing is specified there yet, so the
-element is not built, and an amendment is accepted only once every
-element it touches is decided.
+element is not built, and no amendment is accepted while any element of
+the tree holds one. An open glossary entry counts too, since its
+Definition is `?`.
 
 **Doubted** is behaviour that is specified, and done, but questioned.
 Doubts are open questions in `questions.md`, tagged with the element

@@ -86,7 +86,9 @@ session.
 Ask Claude Code to build the amendment. The skill:
 
 1. checks that the branch is clean, the tree lints and the element diff
-   lists something to build;
+   lists something to build and nothing as not to be built; for an
+   undecided place, decide it, or take that part out of the amendment
+   and bring it back later as a request of its own;
 2. writes the context pack;
 3. makes a branch and a worktree each for the code, the tests and their
    integration, in the system's temporary folder, never inside the
@@ -140,7 +142,8 @@ coherence file on the branch.
 Ask Claude Code to accept the amendment, and name the target branch;
 without one, the skill proposes the default branch. It checks the
 branch, brings the target in, and hands over to `proviso-check` while
-the check does not cover the amendment. Then, as `.proviso/build.md`
+the check does not cover the amendment. While an element is undecided,
+it stops: no check can decide it. Then, as `.proviso/build.md`
 says:
 
 - **Directly:** it merges into the target, rewrites the manifest, which

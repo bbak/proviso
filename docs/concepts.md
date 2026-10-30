@@ -33,8 +33,9 @@ Glossaries exist per level; a term means the same wherever it is
 marked.
 
 **Undecided.** A place marked `?`: nothing is specified there yet. The
-tree may hold undecided places, but an element with one is not built
-until it is decided.
+tree may hold undecided places only while an amendment is in progress:
+an amendment holding one is neither built nor accepted until it is
+decided.
 
 [Writing specs](writing-specs.md) explains each element and the
 notation.

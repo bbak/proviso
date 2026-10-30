@@ -94,9 +94,9 @@ proviso diff      # what the amendment adds and changes
 proviso impact    # what else it may affect
 ```
 
-`diff` lists an element with an undecided place as not to be built, so
-the agents leave it alone until it is decided. Commit the tree on the
-branch:
+`diff` lists an element with an undecided place as not to be built:
+the amendment is neither built nor accepted until it is decided. Commit
+the tree on the branch:
 
 ```sh
 git add proviso
