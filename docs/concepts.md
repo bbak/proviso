@@ -91,7 +91,9 @@ nothing else: whatever decides behaviour belongs in the tree.
 **Implementing agents.** The **testing agent** and the **coding agent**.
 They build from the same context pack, each in its own worktree, and
 never see each other's work, so that the tests are a second, independent
-reading of the tree.
+reading of the tree. The tests call only what the contracts name: they
+run slower and point less precisely at a failure than tests of the code's
+insides, but no refactoring behind the interface breaks them.
 
 **Checking agent.** Runs the **coherence check**: does the tree still
 make sense with the amendment? It reads the amendment against its

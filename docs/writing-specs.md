@@ -11,7 +11,9 @@ is a complete example.
 
 ## The layout
 
-The folders mirror the levels: system, capability, feature, rule.
+The folders mirror the levels: system, capability, feature, rule. A tree
+of small files, rather than one document, lets a person read one feature
+at a time, and lets a context pack carry only what an amendment touches.
 
 ```text
 proviso/                      the system
@@ -39,7 +41,16 @@ every context pack carries it.
 
 Each element lives at the lowest level that covers all its uses. A term
 or parameter used by one capability stays in its folder; once a second
-capability uses it, it moves up to the system level.
+capability uses it, it moves up to the system level. One glossary for
+everything would hide which terms are shared, and those are the ones an
+amendment's effects follow. Moving a term up is an amendment of its own:
+its definition must now suit both capabilities.
+
+The layout follows what the system does, not how its code is packaged.
+Moving an element changes neither its identifier nor its behaviour, so
+regrouping is cheap; consider it when the rules of a feature fall into
+groups that share no term and no event, or when amendments keep touching
+one part of it and never the other.
 
 ## Elements and identifiers
 
@@ -81,7 +92,10 @@ database or a version control system.
 **A feature** is one file: a Goal, a Rationale, a Contact, and its
 rules. The Goal states its purpose in one to three sentences; if that
 takes an "and" between unrelated purposes, the feature wants splitting.
-The Contact names whom to ask, a person or a team, never an owner.
+The Contact names whom to ask, a person or a team, never an owner: the
+word means decision authority to one reader and accountability to
+another, and the tree needs only whom to ask. Rules name no contact,
+since one per rule goes stale.
 
 ```markdown
 # <a id="cash.withdrawal"></a> Withdrawing cash
@@ -100,7 +114,9 @@ make up is refused, not rounded.
 
 ## Rules in Guarded Gherkin
 
-A rule is one block, fenced as `guarded`, and its Examples table.
+A rule is one block, fenced as `guarded`, and its Examples table. The
+fence lets tooling find rule blocks, and keeps Gherkin highlighting,
+which knows neither `Provided` nor `Otherwise`, away from them.
 
 ````markdown
 ## <a id="cash.withdrawal.pay"></a> Rule: The machine pays only what it can make up
@@ -157,6 +173,21 @@ Then      the link is [external]
 Otherwise → links.classification.reserved
 ```
 
+A chain ends in a final `Otherwise`, so it covers every case, and its
+order settles overlaps. Write no decision table beside it: a second
+notation for the same behaviour would lose each guard's Examples. A
+matrix of values, such as a tariff by region and customer type, is data,
+not a decision: a parameter whose value is a table, and one rule whose
+outcome looks the value up.
+
+**Batches, streams and queues:** the event is processing one item, such
+as "a file is read". Whatever concerns the item, or its relation to
+other items, belongs in the guard; "everything else stays as it was"
+includes the other items. What holds for the whole batch, such as "one
+malformed file never stops the load", is an invariant over the item
+event. A later pass is an event of its own, with the earlier pass as its
+`Given`.
+
 ## Examples tables
 
 Every rule has one, after its block. The testing agent derives its
@@ -194,6 +225,8 @@ Its entry defines it once:
 - **Once a word is a term, every use of it in a rule block is marked**
   `[composable]`. An unmarked use is an error, since the impact search
   follows the marks. Where you mean something else, use another word.
+  Prose needs no marks: it does not decide behaviour, so the search need
+  not follow it.
 - **Aliases** cover other names and inflected forms, such as `[terms]`
   for *term*.
 - **Status** is `defined` or `open`. An open term carries a `Question`
@@ -220,7 +253,13 @@ why it has that value:
 A rule refers to it in backticks: ``Provided  <amount> is at most `max_withdrawal` ``.
 The rationale is required: a bare value is what a later agent most
 easily "fixes". Examples keep concrete values, with rows at the value
-and just past it.
+and just past it; when the value changes, go through those rows.
+
+`Configurable` is `no`, or says how the value is set and within which
+range, such as `` yes: `--max-results`, 1–500 ``. The setting itself, a
+flag, key or environment variable, is a contract element referring to
+the parameter. A value may also be a table; then the parameter has no
+`Value` or `Unit`, and the table follows its fields.
 
 ## Invariants and constraints
 
@@ -265,10 +304,23 @@ contract states shape only; behaviour, such as when a member is present,
 stays in rules. `- Represents: [term]` links a contract element to the
 glossary term that carries its meaning.
 
+- **One authority per aspect:** prose says what an element means, a
+  block its shape, never both.
+- **A block names its language on the fence.** A typed `yaml` or `json`
+  block is a JSON Schema, from which the testing agent derives shape
+  tests; without one, an interface's shape gets example tests only.
+- **Mermaid for structure only,** such as a class diagram; a sequence
+  or a state is behaviour, and belongs in rules.
+- **Every output conforms to its contract:** an invariant, where it
+  matters.
+- **A system whose only interface is a screen** contracts a seam below
+  it, such as an application API, so that the tests have something to
+  call.
+
 **An error has three parts:** that it occurs, and when, is the rule's
 `Otherwise`; which kind it is, a contract element such as
 `` `error.not-composable` ``; its exact text, a template on that element,
-only where a consumer depends on the wording.
+only where a consumer depends on the wording, or an agent acts on it.
 
 ## References
 
@@ -276,7 +328,9 @@ External standards, listed once per level in `references.md` with their
 version, a link and a contact. Rules reach them only through glossary
 terms defined by them, so upgrading a standard lists every rule that
 uses its terms. Standards only, never libraries: "behaves as the
-library does" hands the decision back to a library default.
+library does" hands the decision back to a library default. A reference
+has no rationale of its own: why a standard was chosen belongs to the
+feature or constraint that chose it.
 
 ## Rationale
 
@@ -299,7 +353,8 @@ a rule block. A note after it, as in `- Contact: ? (Treasury or Cash
 Operations)`, keeps it undecided. Nothing is specified there yet, so the
 element is not built, and no amendment is accepted while any element of
 the tree holds one. An open glossary entry counts too, since its
-Definition is `?`.
+Definition is `?`. Only `?` counts: no `TBD` or other alias. The tree
+itself has no status; `draft` and `ready` belong to requests.
 
 **Doubted** is behaviour that is specified, and done, but questioned.
 Doubts are open questions in `questions.md`, tagged with the element

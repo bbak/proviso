@@ -44,7 +44,12 @@ skipped step: check the amendment on the target and accept it there.
 branch protection that requires the CI check stops an unchecked
 amendment before the merge. Teams that merge directly get detection
 only. A git hook is no gate either: a clone does not install it, and it
-can be skipped.
+can be skipped; an agent host's hook fires only inside that host.
+
+**Trunk-based teams** keep an amendment's branch short: the tree change
+waits on it only until it is built and accepted. Whatever the trunk
+changed meanwhile, `verify` reports as stale, and the check looks at it
+again.
 
 ## Write the engineers' notes
 
@@ -56,10 +61,13 @@ stubs and never touches them again.
   the acceptance tests of a list of element identifiers, if your tests
   are named so that they can be selected, which lets a build run only
   the tests an amendment concerns until its last round; skips that are
-  expected; Proviso's command, if it is not `proviso` from the path;
+  expected; Proviso's command, if it is not `proviso` from the path, as
+  a command rather than a path, so that it can build Proviso as it runs
+  it;
   the line `Acceptance: pull request` if acceptance goes through one; and
   your convention for commit messages, if it is not Conventional Commits
-  with `docs(spec):` for edits of the spec tree.
+  with `docs(spec):` for edits of the spec tree. A commit convention is
+  working practice, like your commands, so yours wins.
 - **`tester.md`**, for the testing agent: how the acceptance tests are
   written, named after the elements they check, run and kept fast, and
   commit conventions.
@@ -82,6 +90,11 @@ in the repository's root, names every one that another version
 installed.
 
 ## Keep the tree readable everywhere
+
+- **Keep the tree beside the code, in the same repository.** One
+  amendment is then one branch and one history, and the agents find
+  tree and code in one checkout. A git submodule would split every
+  amendment into two repositories, two commits and a pointer update.
 
 - **Run `proviso init` in the repository's root.** It refuses anywhere
   else, and puts the spec tree in `proviso/`.

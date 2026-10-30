@@ -151,7 +151,9 @@ says:
   `feat: accept <amendment>`. If a check fails, it aborts the merge.
 - **Through a pull request:** it rewrites the manifest on the
   amendment's branch, runs your checks, and commits as the branch's last
-  commit. You push and merge the pull request.
+  commit. You push and merge the pull request. Merge it without
+  squashing: each commit of the tree says why that change was made, and
+  a squash would leave only the pull request's description.
 
 It never pushes and never opens a pull request.
 
