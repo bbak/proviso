@@ -103,6 +103,28 @@ func TestCompare(t *testing.T) {
 	}
 }
 
+func TestNewer(t *testing.T) {
+	cases := []struct {
+		a, b string
+		want bool
+	}{
+		{"0.3.0", "0.2.0", true},
+		{"0.2.1-dev", "0.2.0", true},
+		{"0.2.0", "0.2.0", false},
+		{"0.2.0+build.5", "0.2.0", false},
+		{"0.2.0-dev", "0.2.0", false},
+		{"0.1.0", "0.2.0", false},
+		{"dev", "0.2.0", false},
+		{"v0.3.0", "0.2.0", false},
+		{"99999999999999999999.0.0", "0.2.0", true},
+	}
+	for _, c := range cases {
+		if Newer(c.a, c.b) != c.want {
+			t.Errorf("%s newer than %s: %v", c.a, c.b, !c.want)
+		}
+	}
+}
+
 // TestModelReleases checks system.model-release: every first release is a
 // release version with patch 0, both columns rise, and the last row names
 // model_version.
@@ -110,7 +132,7 @@ func TestModelReleases(t *testing.T) {
 	rows := model.Releases
 	patch0 := regexp.MustCompile(`\.0$`)
 	for i, r := range rows {
-		if !isRelease(r.First) || !patch0.MatchString(r.First) {
+		if !IsRelease(r.First) || !patch0.MatchString(r.First) {
 			t.Errorf("%s is no release version with patch 0", r.First)
 		}
 		if i > 0 {

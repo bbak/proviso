@@ -650,6 +650,35 @@ enum: [0, 2]
 - `2`: the command could not run, or an installed file could not be
   written.
 
+## <a id="install.cli.update"></a> update
+
+The command `proviso update`, run in the root of a git repository; it
+takes no argument. It brings the skills and agent definitions that
+`installed_files` names to the binary's version, and names each on
+standard output: one line each, in the byte order of their paths,
+`written`, `updated` or `skipped`, a space and the path, as
+`installed_files` gives it.
+
+```text
+updated .claude/agents/proviso-coder.md
+skipped .claude/skills/proviso-accept/SKILL.md
+```
+
+### <a id="install.cli.update.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: every skill and agent definition is in place, written, updated
+  or skipped.
+- `2`: the binary is no release, the directory is not the root of a
+  git repository, no skill or agent definition is installed, an
+  argument was given, or a file could not be written.
+
 ## <a id="system.cli.version"></a> version
 
 The command `proviso version`, run anywhere; it takes no argument. On
@@ -692,8 +721,10 @@ anywhere; it takes no argument. It writes `page` to standard output.
 ### <a id="cli.cli.help.page"></a> page
 
 The help page: what Proviso is, in one line; every command with its
-options and one sentence on what it does, the commands engineers run
-first, then those the skills run; the exit statuses the commands share;
+options and one sentence on what it does, first those engineers run,
+`init`, `update`, `version`, `lint`, `diff`, `impact`, `verify` and
+`help`, then those the skills run, `pack`, `judge` and `manifest`; the
+exit statuses the commands share;
 and where the documentation is. It names every command and every
 option. Its wording is for people and not part of the contract.
 

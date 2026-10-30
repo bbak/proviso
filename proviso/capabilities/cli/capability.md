@@ -10,7 +10,7 @@ the command line refuses what it does not know, saying where to look.
 Engineers call Proviso by hand now and then, and skills call it on
 every step; neither should need the documentation to find a command or
 its options, nor guess at a mistyped one. One page names everything,
-since nine commands and two options fit on one page, and a mistake
+since every command and its options fit on one page, and a mistake
 costs one line saying what was wrong and where the page is, rather than
 the whole page. The page's wording is for people; what it names, where
 it goes and the exit status are specified. The command line is read by

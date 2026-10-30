@@ -8,13 +8,14 @@ the tree readable on every platform, the definitions of the agents and
 the skills that bring a request into the spec tree and build, check and
 accept an amendment, so that an engineer begins with one command; and
 it tells which version of Proviso installed the skills and agents, and
-whether they and the spec tree fit the binary in use.
+whether they and the spec tree fit the binary in use, and brings the
+skills and agents to the binary's version after an upgrade.
 
 ## Rationale
 
 Every file `init` writes is one the engineers go on to change, so `init`
 writes only what is missing and never replaces a file; refreshing what
-Proviso itself owns is the job of an update, deferred for now. The
+Proviso itself owns is the job of `update`. The
 wording of every installed file comes from the kit: the agents'
 instructions are Proviso's own behaviour, not the specified system's,
 and the files that become part of the spec tree are stated here by

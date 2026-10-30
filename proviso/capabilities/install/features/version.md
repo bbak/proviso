@@ -24,8 +24,8 @@ of those lines is for people; what each one names is specified.
 
 `version` finds the repository's root as `init` does, by the `.git`
 entry of the directory it runs in, and looks nowhere else, since it
-checks the paths `init` writes there. It only reports: refreshing what
-it reports is the job of an update, deferred for now.
+checks the paths `init` writes there. It only reports: refreshing the
+skills and agents it reports is the job of `update`.
 
 ## <a id="install.version.output"></a> Rule: Version names the Proviso version and the model version
 

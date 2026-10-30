@@ -39,7 +39,7 @@ Otherwise "proviso" writes `help.page` to "stderr"
 
 ```guarded
 When      "proviso" reads its command <command>
-Provided  <command> is `init`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify` or `help`, or "--help" or "-h"
+Provided  <command> is `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify` or `help`, or "--help" or "-h"
 Then      "proviso" runs <command>, and runs `help` for "--help" and "-h"
   And     the command reads its arguments as its own [rules] say
 Otherwise "proviso" writes to "stderr" one line naming <command> as no command of Proviso, and that "proviso help" shows the help page
@@ -51,6 +51,7 @@ Otherwise "proviso" writes to "stderr" one line naming <command> as no command o
 | --- | --- | --- | --- |
 | lint | yes | `lint` runs | |
 | verify | yes | `verify` runs | |
+| update | yes | `update` runs | |
 | help | yes | `help` runs | |
 | --help | yes | `help` runs | |
 | -h | yes | `help` runs | |
