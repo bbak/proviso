@@ -225,7 +225,7 @@ func (o verifyOutcome) runs() []run {
 }
 
 // kindRank is the order in which `verification` lists the kinds.
-var kindRank = map[string]int{"missing": 0, "leftover": 1, "unjudged": 2, "stale": 3, "open": 4}
+var kindRank = map[string]int{"missing": 0, "leftover": 1, "undecided": 2, "unjudged": 3, "stale": 4, "open": 5}
 
 // verifyIn runs `proviso verify --json` in cwd and checks what holds for
 // every run. base is the directory the test tree was
@@ -287,11 +287,20 @@ func runVerify(t *testing.T, text bool, base, cwd, root string) verifyOutcome {
 	if o.text != nil && len(o.v.Problems) > 0 && strings.TrimSpace(o.text.stdout) == "" {
 		t.Errorf("baseline.verify.output: %d problems, but no text output", len(o.v.Problems))
 	}
-	// baseline.verify.missing, baseline.verify.leftover: after either,
-	// verify looks no further.
+	// baseline.verify.missing, baseline.verify.leftover: either comes
+	// once, and with either, verify compares nothing that coherence_file
+	// records, so that only "undecided" (baseline.verify.undecided) comes
+	// beside it.
+	stops := 0
 	for _, p := range o.v.Problems {
-		if (p.Kind == "missing" || p.Kind == "leftover") && len(o.v.Problems) != 1 {
-			t.Errorf("baseline.verify.%s: verify looks no further, but reported:\n%s", p.Kind, o.dump())
+		if p.Kind == "missing" || p.Kind == "leftover" {
+			stops++
+		}
+	}
+	for _, p := range o.v.Problems {
+		if stops > 1 || (stops == 1 && p.Kind != "missing" && p.Kind != "leftover" && p.Kind != "undecided") {
+			t.Errorf("baseline.verify.missing, baseline.verify.leftover: one of them once, with nothing compared, but reported:\n%s", o.dump())
+			break
 		}
 	}
 	return o
@@ -330,9 +339,9 @@ func parseVerification(t *testing.T, stdout string) verification {
 		var kind string
 		json.Unmarshal(it["kind"], &kind)
 		if _, ok := kindRank[kind]; !ok {
-			t.Errorf("system.cli.verification: problem %d: kind %q is none of missing, leftover, unjudged, stale, open", i, kind)
+			t.Errorf("system.cli.verification: problem %d: kind %q is none of missing, leftover, undecided, unjudged, stale, open", i, kind)
 		}
-		need := map[string][]string{"unjudged": {"element"}, "stale": {"element"}, "open": {"finding", "text"}}[kind]
+		need := map[string][]string{"undecided": {"element"}, "unjudged": {"element"}, "stale": {"element"}, "open": {"finding", "text"}}[kind]
 		for _, k := range need {
 			if v, ok := it[k]; !ok || json.Unmarshal(v, &s) != nil || s == "" {
 				t.Errorf("system.cli.verification: the %s problem %d has no %s", kind, i, k)
