@@ -28,9 +28,9 @@ what they miss.
 The candidates start from the amendment, never from the whole tree: the
 baseline was checked when it was accepted, so the cost of a check grows
 with the amendment, not with the tree. Between two capabilities, the
-candidates follow only the system level, which both read; a link
-written in each capability's own words stays unseen until someone
-lifts it to the system level.
+candidates follow the system level, which both read, and the event
+heads they share; a link each capability writes in its own words stays
+unseen until someone lifts it to the system level.
 
 `impact` derives the element diff as `diff` does, and starts from its
 touched elements. "Formerly" always means the baseline: a touched
