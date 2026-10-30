@@ -52,7 +52,13 @@ place.
 - Configurable: no
 - Rationale: a fixed set of fields per element type lets lint tell a
   misspelt key from a field of another type, and keeps out fields that
-  do not belong, such as an owner, which the tree never names.
+  do not belong. The tree names a Contact, whom to ask, never an owner,
+  a word that means decision authority, accountability or
+  responsibility, depending on the reader; a rule names none, since a
+  contact per rule goes stale and is rarely kept up. No field lists the
+  rules that use a term: the term marks say it, and a list would be a
+  second source of truth. A reference has no Rationale: why a standard
+  was chosen belongs to the feature or constraint that chose it.
 
 | element type | fields | required |
 | --- | --- | --- |
