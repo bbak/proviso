@@ -48,7 +48,7 @@ tree that lint would reject could be misread, and a misread tree would
 show changes nobody made.
 
 ```guarded
-When      someone runs `diff` with `diff.since`, or `pack` with `pack.since`, naming the revision <revision>
+When      someone runs `diff` with `diff.since`, or `pack` with `pack.since`, with arguments it takes, naming the revision <revision>
 Provided  git knows <revision> as a commit
   And     `lint`, run on the [spec tree] at <revision>, would exit with `lint.exit-status` 0, or there is no [spec tree] at <revision>
 Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [part] fingerprinted as `manifest_file` describes, in place of the [baseline]
