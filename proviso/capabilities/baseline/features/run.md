@@ -21,7 +21,7 @@ undecided place is what the element diff lists as not to be built.
 ## <a id="baseline.run.lint"></a> Rule: The baseline commands run only where lint finds no error
 
 ```guarded
-When      someone runs `manifest`, `diff`, `impact`, `pack`, `judge` or `verify` in the directory <directory>
+When      someone runs `manifest`, `diff`, `impact`, `pack`, `judge` or `verify`, with arguments it takes, in the directory <directory>
 Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0
 Then      the command works on the [spec tree] that `lint` would check
   And     nothing of what `lint` would write is written
