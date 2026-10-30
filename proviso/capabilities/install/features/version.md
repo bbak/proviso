@@ -35,9 +35,7 @@ Provided  <arguments> is empty
 Then      `version` writes to "stdout" the line "proviso", a space and its [Proviso version], and then the line "model", a space and `model_version`
   And     nothing else goes to "stdout"
   And     `version` exits with `version.exit-status` 0, whatever it writes to "stderr"
-Otherwise `version` writes to "stderr" that it takes no argument, and its usage
-  And     nothing goes to "stdout"
-  And     `version` exits with `version.exit-status` 2
+Otherwise → cli.help.argument
 ```
 
 | arguments | provided | outcome | why |
@@ -46,8 +44,8 @@ Otherwise `version` writes to "stderr" that it takes no argument, and its usage
 | none, built locally after release `0.1.0` | yes | "proviso 0.1.1-dev" and "model 0", exit status 0 | |
 | none, built with no version given | yes | "proviso dev" and "model 0", exit status 0 | |
 | none, in a repository root whose skills are stale | yes | "proviso 0.1.0" and "model 0", exit status 0 | warnings change neither the output nor the exit status |
-| `--json` | no | exit status 2, nothing on "stdout" | |
-| `0.1.0` | no | exit status 2, nothing on "stdout" | |
+| `--json` | no | handed over | |
+| `0.1.0` | no | handed over | |
 
 ## <a id="install.version.repository"></a> Rule: Version checks the installation only in the root of a git repository
 
