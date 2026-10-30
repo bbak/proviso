@@ -19,6 +19,26 @@ Every file that existed below the directory before the run is byte for
 byte as it was, and no entry is removed or renamed. The only entries
 added are the paths `installed_files` names and the folders above them.
 
+## <a id="install.update.keeps"></a> Update changes only the skills and agent definitions
+
+### Rationale
+
+Everything `init` writes but the skills and agent definitions is the
+engineers' own once written, and so is everything else in the
+repository; bringing Proviso's own files to a new version must not cost
+anyone an edit anywhere else.
+
+### Ranges over
+
+Every run of `update`, however it ends.
+
+### Property
+
+Every entry below the directory other than the skills and agent
+definitions `installed_files` names is byte for byte as it was, and no
+entry is removed or renamed. The only entries added are those paths and
+the folders above them.
+
 ## <a id="install.version.reads-only"></a> Version changes nothing
 
 ### Rationale
