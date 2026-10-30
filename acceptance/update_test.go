@@ -291,22 +291,10 @@ func TestInstallUpdateMissing(t *testing.T) {
 		o.exits(t, 0)
 		o.says(t, "written", coderAgent)
 	})
-	t.Run("row2 .claude/agents/proviso-coder.md, .claude being a file", func(t *testing.T) {
+	t.Run("row2 .claude/agents/proviso-coder.md, .claude/agents being a file, the skills in place", func(t *testing.T) {
 		t.Parallel()
-		// With .claude a file, no entry exists at any skill or agent
-		// path, so install.update.installed refuses before the file is
-		// taken; either way it is not written, with exit status 2.
-		r := versionRepo(t, tree{".claude": "not a folder\n"})
-		o := r.update("0.2.0")
-		o.exits(t, 2)
-		for _, l := range o.lines {
-			if l.path == coderAgent {
-				t.Errorf("install.update.missing: %s could not be written, but stdout names it as %s", coderAgent, l.status)
-			}
-		}
-	})
-	t.Run("derived: .claude/agents being a file, the skills in place", func(t *testing.T) {
-		t.Parallel()
+		// Every agent definition lies below the file, so none can be
+		// written; the skills are taken and updated.
 		tr := installedAs("0.1.0")
 		var agents []string
 		for _, f := range stampedFiles {
