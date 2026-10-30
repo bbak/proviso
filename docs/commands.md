@@ -15,6 +15,24 @@ tree: the [command line contract](https://github.com/bbak/proviso/blob/main/prov
 with every option, exit status and JSON format, and the feature linked
 under each command below, with every rule and its examples.
 
+## help
+
+```sh
+proviso help
+```
+
+Prints one page naming every command and option; `proviso --help` and
+`proviso -h` do the same. `proviso` without a command prints the page
+to standard error and exits with 2. Every command refuses an argument
+it does not take, and `proviso` a command it does not know, with one
+line on standard error that points to `proviso help`; it then exits
+with 2, having checked and written nothing.
+
+| Exit status | Meaning |
+| --- | --- |
+| 0 | the page was written |
+| 2 | an argument was given, or `proviso` was run without a command or with an unknown one |
+
 ## init
 
 ```sh

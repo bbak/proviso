@@ -19,7 +19,7 @@ written twice.
 ## <a id="install.init.repository"></a> Rule: Init works only in the root of a git repository
 
 ```guarded
-When      someone runs `init` in the directory <directory>
+When      someone runs `init`, with arguments it takes, in the directory <directory>
 Provided  <directory> holds an entry named ".git"
 Then      `init` takes every [installed file] that `installed_files` names, at its path below <directory>
   And     everything else stays as it was

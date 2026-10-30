@@ -86,7 +86,7 @@ properties:
 ## <a id="system.cli.manifest"></a> manifest
 
 The command `proviso manifest`, run anywhere inside the system's
-repository. It writes `manifest.sum` into the spec root, removes the
+repository; it takes no argument. It writes `manifest.sum` into the spec root, removes the
 coherence file and the amendment note there, and writes nothing to
 standard output.
 
@@ -451,7 +451,7 @@ properties:
 ## <a id="system.cli.judge"></a> judge
 
 The command `proviso judge`, run anywhere inside the system's
-repository. It reads a `check_result` from standard input, records it
+repository; it takes no argument. It reads a `check_result` from standard input, records it
 in `coherence_file` and writes nothing to standard output.
 
 ### <a id="system.cli.judge.exit-status"></a> exit-status
@@ -626,8 +626,8 @@ properties:
 
 ## <a id="system.cli.init"></a> init
 
-The command `proviso init`, run in the root of a git repository. It
-writes the installed files that are missing, and names each installed
+The command `proviso init`, run in the root of a git repository; it
+takes no argument. It writes the installed files that are missing, and names each installed
 file on standard output: one line each, in the byte order of their
 paths, `written` or `skipped`, a space and the path, as
 `installed_files` gives it.
@@ -661,8 +661,8 @@ proviso 0.1.0
 model 0
 ```
 
-With an argument, it writes to standard error only that it takes no
-argument, and its usage, and checks nothing. Without one, it writes to
+With an argument, it refuses it as every command refuses an argument it
+does not take, and checks nothing. Without one, it writes to
 standard error, outside the root of a git repository, one line of hint.
 In the root it writes, first, either one line saying that
 no skill or agent is installed, or one line for each skill or agent
@@ -683,3 +683,30 @@ enum: [0, 2]
 
 - `0`: the version was written, whatever went to standard error.
 - `2`: an argument was given.
+
+## <a id="cli.cli.help"></a> help
+
+The command `proviso help`, also `proviso --help` and `proviso -h`, run
+anywhere; it takes no argument. It writes `page` to standard output.
+
+### <a id="cli.cli.help.page"></a> page
+
+The help page: what Proviso is, in one line; every command with its
+options and one sentence on what it does, the commands engineers run
+first, then those the skills run; the exit statuses the commands share;
+and where the documentation is. It names every command and every
+option. Its wording is for people and not part of the contract.
+
+### <a id="cli.cli.help.exit-status"></a> exit-status
+
+The process exit status of `help`, and of `proviso` run without a
+command or with one it does not know.
+
+```yaml
+type: integer
+enum: [0, 2]
+```
+
+- `0`: the page was written to standard output.
+- `2`: an argument was given to `help`, or `proviso` was run without a
+  command or with an unknown one.

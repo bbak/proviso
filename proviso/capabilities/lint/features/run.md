@@ -24,7 +24,7 @@ of the repository, including from inside the tree, without a config
 file.
 
 ```guarded
-When      someone runs `lint` in the directory <directory>
+When      someone runs `lint`, with arguments it takes, in the directory <directory>
 Provided  <directory> or a directory above it holds a [spec root]
 Then      lint goes on to read the files of the [spec tree] of the [spec root] nearest to <directory>
   And     the rest of the run works on that [spec root]
