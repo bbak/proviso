@@ -54,7 +54,10 @@ its heading:
   says something, such as `cash.withdrawal.pay`.
 - **Permanent:** set when the element is created, never changed, never
   reused. The prefix names where the element was born, not where it
-  lives, so moving it breaks nothing.
+  lives, so moving it breaks nothing. A removed element's identifier
+  stays unused, since git history, commit messages and links outside
+  the tree still name the old element by it; no tool checks this, as
+  the manifest forgets a removed element.
 - **`system` is reserved** for the system and the elements born at its
   level, such as `system.read-only`.
 
