@@ -1,11 +1,11 @@
 # Commands
 
 Every command of `proviso`, with what it is for, its options and its
-exit statuses. Engineers run `init`, `version`, `lint`, `diff`, `impact`
-and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
+exit statuses. Engineers run `help`, `init`, `version`, `lint`, `diff`,
+`impact` and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
 included.
 
-Every command but `init` and `version` runs anywhere inside the
+Every command but `help`, `init` and `version` runs anywhere inside the
 repository and works on the nearest spec root. The commands that compare with the baseline,
 `manifest`, `diff`, `impact`, `pack`, `judge` and `verify`, run only on
 a tree that `lint` finds no error in, and exit with 2 otherwise.
@@ -32,6 +32,8 @@ with 2, having checked and written nothing.
 | --- | --- |
 | 0 | the page was written |
 | 2 | an argument was given, or `proviso` was run without a command or with an unknown one |
+
+Specified in [cli/features/help.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/cli/features/help.md).
 
 ## init
 
