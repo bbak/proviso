@@ -51,6 +51,12 @@ target, usually the default branch, named after the request in
 kebab-case, once the engineer confirms the name. Its working tree is
 clean, and `proviso lint` exits with 0.
 
+Run `proviso version` in the repository's root. Pass every warning it
+writes on to the engineer: a skill or agent definition that another
+version of Proviso installed works from other instructions than the
+command expects, and `proviso update` brings them in line. Whether to
+update first is the engineer's call; go on either way.
+
 ## 2. Read the request
 
 The request may come in any form: a request written with the authoring
