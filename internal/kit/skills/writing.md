@@ -33,8 +33,9 @@ Write for that reader.
 - An identifier is readable, `<prefix>.<name>` in lowercase with
   hyphens, such as `cash.withdrawal.pay`. The prefix names where the
   element was born, the capability or `system`; it is permanent, and
-  never reused once its element is removed. Search the tree before you
-  choose one.
+  never reused once its element is removed, since history, commit
+  messages and links outside the tree still name the old element by it.
+  Search the tree and its history before you choose one.
 - Before you add a term, read the glossaries of the capability and the
   system. Reuse a term that means the same thing; never add a second
   term for it, and never redefine a system term in a capability.
