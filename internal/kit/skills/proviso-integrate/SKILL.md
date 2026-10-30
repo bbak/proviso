@@ -135,7 +135,8 @@ amendment is made now as the message.
 ## 7. Check it
 
 Hand over to `proviso-check`, and go on when it has finished with
-`proviso verify` exiting with 0. The findings it brings are the
+`proviso verify` exiting with 0, or reporting no problem but
+`undecided`: the places still waiting for an answer. The findings it brings are the
 engineer's to decide, as it says.
 
 ## 8. The business view

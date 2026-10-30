@@ -48,7 +48,5 @@ Read the elements this way:
 - **Changed through a dependency:** the element reads as before but
   means something else. **Removed:** the element is gone, and so is what
   was built and tested for it.
-- **Every `?` is a stop, and so is an element listed as not to be
-  built:** neither build nor test it.
 - Rationale explains a choice; it is not behaviour, but do not "fix" or
   contradict what it justifies.

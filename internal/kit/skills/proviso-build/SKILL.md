@@ -34,8 +34,12 @@ Look nowhere else.
   is clean: the tree change is committed.
 - `proviso lint` exits with 0.
 - `proviso diff` exits with 1: the amendment lists something to build.
-  Tell the engineer which elements it lists as not to be built; the
-  agents leave them alone.
+- `proviso diff` lists no element as not to be built. Building around
+  an undecided place is waste: the amendment cannot be accepted until
+  it is decided, and the decision may change what was built. Name each
+  such element, and offer the engineer two ways on: decide it in the
+  tree, or take the undecided part out of this amendment and bring it
+  back later as a request of its own.
 
 Stop and say why if any of this fails.
 

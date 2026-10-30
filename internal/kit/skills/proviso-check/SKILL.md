@@ -32,9 +32,10 @@ the files below.
   nor the branch the engineer names as the target.
 - `proviso lint` exits with 0, and `proviso diff` exits with 1: there is
   an amendment to check.
-- `proviso verify --json`: if it exits with 0, the check covers the
-  amendment as it stands; say so and stop. If it exits with 2, stop and
-  say why.
+- `proviso verify --json`: if it exits with 0, or reports no problem
+  but `undecided`, the check covers the amendment as it stands; say so,
+  name the elements still undecided, and stop. If it exits with 2, stop
+  and say why.
 
 ## 2. Prepare the run
 
@@ -105,16 +106,19 @@ your own recommendation with the reason. The engineer either:
 
 Record a decision only when the engineer has made it.
 
-## 6. Again, until verify passes
+## 6. Again, until the check covers the amendment
 
 Run `proviso verify --json`. An edit leaves elements `stale` or
 candidates `unjudged`: run again from step 2, with a fresh checker,
-which receives only what is left. When `verify` exits with 0:
+which receives only what is left. A checker cannot decide an
+`undecided` element; only its answer can, as an edit of the tree. When
+`verify` exits with 0, or reports no problem but `undecided`:
 
 - commit `proviso/.coherence.json` on the amendment's branch, as
   `docs(spec): record the coherence check of <amendment>`, or as the
   convention `.proviso/build.md` names;
 - report to the engineer: the runs, the judgements by reason, every
-  finding and how it was closed.
+  finding and how it was closed, and every element still undecided,
+  which holds up building and acceptance until it is decided.
 
 Never build, never accept, never push.

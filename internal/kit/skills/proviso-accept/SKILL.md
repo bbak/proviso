@@ -47,9 +47,11 @@ each other.
 
 ## 4. The check covers the amendment
 
-Run `proviso verify`. If it exits with 1, hand over to `proviso-check`,
-and go on when it has finished with `verify` exiting with 0. If it exits
-with 2, stop and say why.
+Run `proviso verify`. If it reports `undecided`, stop: name each such
+element; the amendment waits until each is decided in the tree, and is
+then checked again. If it reports any other problem, hand over to
+`proviso-check`, and go on when it has finished with `verify` exiting
+with 0. If it exits with 2, stop and say why.
 
 ## 5. Accept
 
