@@ -20,6 +20,19 @@ import (
 var (
 	iOpenThen = change{payPath, "Then      the shop greets every buyer", "Then      the shop greets every buyer by name"}
 	iFullRow  = change{featurePath, "| 1 | the first cart | refused |", "| 1 | the first cart | turned away |"}
+	// iLimitAsk leaves the Then step of cart.add.limit undecided.
+	iLimitAsk = change{featurePath, "Then      the cart holds <quantity> more of <product>", "Then      ?"}
+	// iAddContactAsk leaves the Contact of the feature cart.add undecided.
+	iAddContactAsk = change{featurePath, "- Contact: Dana Reyes", "- Contact: ?"}
+	// iBasketOpen adds the open glossary entry cart.basket, marked by no
+	// rule.
+	iBasketOpen = change{glossaryPath, "", "\n## <a id=\"cart.basket\"></a> basket\n\n- Definition: ?\n- Contact: Dana Reyes\n- Status: open\n- Question: Is a basket a cart?\n"}
+	// iOpenBasket makes cart.pay.open mark the term basket.
+	iOpenBasket = change{payPath, "Then      the shop greets every buyer", "Then      the shop greets every buyer with a [basket]"}
+	// iFullAsk leaves the outcome of cart.add.full's Examples row undecided.
+	iFullAsk = change{featurePath, "| 1 | the first cart | refused |", "| 1 | the first cart | ? |"}
+	// iLimitQuestion asks a question in the prose of cart.add.limit.
+	iLimitQuestion = change{featurePath, "A shelf holds ten pieces.", "Does a shelf hold ten pieces? It does."}
 )
 
 // covered is the impact tree amended by cs, every candidate judged.
@@ -116,7 +129,7 @@ func TestBaselineVerifyLeftover(t *testing.T) {
 	t.Run("row3 none, with .coherence.json", func(t *testing.T) {
 		t.Parallel()
 		// The check holds an open finding and leaves candidates unjudged;
-		// verify looks no further.
+		// verify compares nothing that it records.
 		r := amendedRepo(t, iLimitThen)
 		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
 		r.set(impactTree())
@@ -152,6 +165,18 @@ func TestBaselineVerifyLeftover(t *testing.T) {
 		r.writeNote("")
 		r.verify().only(t, "leftover")
 	})
+	t.Run("derived: none, with .coherence.json, an element left undecided", func(t *testing.T) {
+		t.Parallel()
+		// verify compares nothing the check records, but still takes every
+		// element of the tree (baseline.verify.undecided).
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
+		r.set(amended(impactTree(), iAddContactAsk, iLimitThen))
+		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
+		r.set(amended(impactTree(), iAddContactAsk))
+		o := r.verify()
+		o.only(t, "leftover", "undecided cart.add")
+		o.exits(t, 1)
+	})
 	t.Run("derived: a merge that skipped acceptance", func(t *testing.T) {
 		t.Parallel()
 		// The mainline accepts the amendment's own text; the branch's check
@@ -185,6 +210,14 @@ func TestBaselineVerifyMissing(t *testing.T) {
 		o := r.verify()
 		o.lacks(t, "missing")
 		o.only(t, "leftover")
+	})
+	t.Run("derived: changed, an element left undecided", func(t *testing.T) {
+		t.Parallel()
+		// verify reads no judgement, but still takes every element of the
+		// tree (baseline.verify.undecided).
+		o := amendedRepo(t, iLimitAsk).verify()
+		o.only(t, "missing", "undecided cart.add.limit")
+		o.exits(t, 1)
 	})
 }
 
@@ -252,6 +285,22 @@ func TestBaselineVerifyOrder(t *testing.T) {
 		r.judgeOK(checkResult{Findings: close})
 		inOrder(t, r.verify(), "open f2", "open f10")
 	})
+	t.Run(`row3 "unjudged" for cart.add.full, "undecided" for cart.add.limit`, func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitAsk)
+		r.judgeAll([]string{"cart.add.full"})
+		inOrder(t, r.verify(), "undecided cart.add.limit", "unjudged cart.add.full")
+	})
+	t.Run(`row4 "undecided" for cart.add.limit, "missing"`, func(t *testing.T) {
+		t.Parallel()
+		inOrder(t, amendedRepo(t, iLimitAsk).verify(), "missing", "undecided cart.add.limit")
+	})
+	t.Run("derived: undecided by identifier, byte by byte", func(t *testing.T) {
+		t.Parallel()
+		// cart.add < cart.basket < cart.pay.open, byte by byte.
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk, iBasketOpen, iOpenBasket))
+		inOrder(t, r.verify(), "undecided cart.add", "undecided cart.basket", "undecided cart.pay.open")
+	})
 	t.Run("derived: unjudged by identifier, byte by byte", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
@@ -290,6 +339,14 @@ func TestBaselineVerifyOutput(t *testing.T) {
 		if p := bytes.TrimSpace(raw["problems"]); string(p) != "[]" {
 			t.Errorf("want an empty list of problems, got %s", p)
 		}
+	})
+	t.Run(`derived: one "undecided", --json`, func(t *testing.T) {
+		t.Parallel()
+		// system.cli.verification now lists the kind undecided, with the
+		// element it is about.
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
+		o := r.verify()
+		o.only(t, "undecided cart.add")
 	})
 	t.Run(`row3 one "unjudged", as text`, func(t *testing.T) {
 		t.Parallel()
@@ -356,5 +413,68 @@ func TestBaselineVerifyUnjudged(t *testing.T) {
 		o := r.verify()
 		o.has(t, "unjudged cart.add.full")
 		o.lacks(t, "unjudged billing.refund.add")
+	})
+}
+
+func TestBaselineVerifyUndecided(t *testing.T) {
+	t.Parallel()
+	// That "undecided" comes with exit status 1, and that the run changes
+	// nothing, is checked for every run (see verifyIn).
+	t.Run("row1 a rule with every step decided", func(t *testing.T) {
+		t.Parallel()
+		o := covered(t, iLimitThen).verify()
+		o.lacks(t, "undecided cart.add.limit")
+		o.only(t)
+	})
+	t.Run("row2 a rule with Then ?", func(t *testing.T) {
+		t.Parallel()
+		o := covered(t, iLimitAsk).verify()
+		o.only(t, "undecided cart.add.limit")
+		o.exits(t, 1)
+	})
+	t.Run("row3 a rule marking a term whose Status is open", func(t *testing.T) {
+		t.Parallel()
+		// The open entry is undecided itself (row5).
+		r, _ := accepted(t, amended(impactTree(), iBasketOpen, iOpenBasket))
+		r.verify().only(t, "undecided cart.pay.open", "undecided cart.basket")
+	})
+	t.Run("row4 a feature with Contact: ?, unchanged since the manifest", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
+		o := r.verify()
+		o.only(t, "undecided cart.add")
+		o.exits(t, 1)
+	})
+	t.Run("row5 an open glossary entry, marked by no rule", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, amended(impactTree(), iBasketOpen))
+		r.verify().only(t, "undecided cart.basket")
+	})
+	t.Run("derived: an undecided place outside what the amendment touched", func(t *testing.T) {
+		t.Parallel()
+		// The whole tree is verified: cart.add is no candidate of the
+		// amendment, and the check covers it.
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
+		r.set(amended(impactTree(), iAddContactAsk, iBillingGoal))
+		r.judgeAll(nil)
+		r.verify().only(t, "undecided cart.add")
+	})
+	t.Run("derived: an undecided Examples cell", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, amended(impactTree(), iFullAsk))
+		r.verify().only(t, "undecided cart.add.full")
+	})
+	t.Run("derived: a question in prose is not undecided", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, amended(impactTree(), iLimitQuestion))
+		r.verify().only(t)
+	})
+	t.Run("derived: decided again before acceptance", func(t *testing.T) {
+		t.Parallel()
+		// The amendment decides what the accepted tree left open.
+		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
+		r.set(impactTree())
+		r.judgeAll(nil)
+		r.verify().only(t)
 	})
 }
