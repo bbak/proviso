@@ -34,7 +34,7 @@ Provided  <elements> is empty
 Then      nothing is reported as "missing"
   And     `verify` reads no [judgement]
 Otherwise `verify` reports "missing"
-  And     `verify` looks no further
+  And     `verify` reads no [judgement]
 ```
 
 | elements | provided | outcome | why |
@@ -58,7 +58,7 @@ Provided  <elements> is not empty
 Then      `verify` compares what `coherence_file` records with the [spec tree], where the [spec root] holds one
   And     nothing is reported for either file itself
 Otherwise `verify` reports "leftover", once
-  And     `verify` looks no further
+  And     `verify` compares nothing that `coherence_file` records
 ```
 
 | elements | provided | outcome | why |
@@ -189,6 +189,7 @@ Then      they appear ordered by kind, as `verification` lists the kinds
 | "stale" for `lint.run.exit`, "unjudged" for `lint.run.root` | "unjudged" first, then "stale" |
 | "open" for `f10` and for `f2` | `f2`, then `f10` |
 | "unjudged" for `lint.run.root`, "undecided" for `lint.run.exit` | "undecided" first, then "unjudged" |
+| "undecided" for `lint.run.exit`, "missing" | "missing" first, then "undecided" |
 
 ## <a id="baseline.verify.exit"></a> Rule: The exit status tells whether the check covers the tree
 
