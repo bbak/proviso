@@ -12,7 +12,10 @@ form that merges and reads well in git.
 The manifest is written at acceptance, never by hand. Writing it from
 the whole tree each time, rather than updating it, means it cannot
 drift from the tree it records. One sorted line per part lets two
-amendments that touch different elements merge without a conflict.
+amendments that touch different elements merge without a conflict. It
+holds fingerprints, never text: a copy of the tree would be a second
+source of truth, and the former text is in git, at the revision that
+wrote the manifest.
 
 ## <a id="baseline.manifest.write"></a> Rule: The manifest records every part of every element
 
