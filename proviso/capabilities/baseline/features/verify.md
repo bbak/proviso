@@ -7,7 +7,8 @@
 Verifying tells whether the spec tree may become the baseline as it
 stands: either nothing changed since the manifest was written and no
 check or amendment note is left over, or the coherence check covers the amendment's final
-state, with every candidate judged and no finding open.
+state, with every candidate judged and no finding open; and in either
+case, no place of the tree is left undecided.
 
 ## Rationale
 
@@ -15,7 +16,8 @@ CI and the local checks must hold every amendment to acceptance without
 judging anything themselves. One command that compares the recorded
 check with the tree serves them on every branch: it needs to know
 neither which branch is the mainline nor who made the edit. What it
-lists is what a re-run of the check needs to look at, and no more.
+lists of the recorded check is what a re-run of the check needs to look
+at, and no more.
 
 `verify` derives the element diff and the candidates as `impact` does,
 and reads `coherence_file`, if the spec root holds one, before it
@@ -66,6 +68,35 @@ Otherwise `verify` reports "leftover", once
 | none, with `.coherence.json` | no | "leftover" | |
 | none, with `.amendment.md` only | no | "leftover" | |
 | none, with `.coherence.json` and `.amendment.md` | no | "leftover", once | one problem, however many files |
+
+## <a id="baseline.verify.undecided"></a> Rule: No element of the tree is left undecided
+
+### Rationale
+
+The tree may hold an undecided place only while an amendment is in
+progress. An element accepted with one is never built, and once it is
+unchanged, no element diff lists it again. The whole tree is verified,
+not only the elements an amendment touched: once `manifest` has
+recorded the tree, nothing records what the amendment touched, and on a
+mainline that passed, both are the same.
+
+```guarded
+When      `verify` takes the [element] <element> of the [spec tree]
+Provided  <element> holds no [undecided] place
+  And     <element> marks no [term] whose [field] "Status" is "open"
+Then      nothing is reported as "undecided" for <element>
+  And     everything else stays as it was
+Otherwise `verify` reports "undecided" for <element>
+  And     everything else stays as it was
+```
+
+| element | provided | outcome | why |
+| --- | --- | --- | --- |
+| a rule with every step decided | yes | nothing reported | |
+| a rule with `Then      ?` | no (an undecided place) | "undecided" for the rule | |
+| a rule marking a term whose Status is `open` | no (an open term) | "undecided" for the rule | its meaning is not decided |
+| a feature with `- Contact: ?`, unchanged since the manifest | no (an undecided place) | "undecided" for the feature | the whole tree, not only what the amendment touched |
+| a glossary entry whose Status is `open`, marked by no rule, its Definition written | yes | nothing reported | an open term decides nothing until a rule marks it |
 
 ## <a id="baseline.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
 
@@ -157,6 +188,7 @@ Then      they appear ordered by kind, as `verification` lists the kinds
 | --- | --- |
 | "stale" for `lint.run.exit`, "unjudged" for `lint.run.root` | "unjudged" first, then "stale" |
 | "open" for `f10` and for `f2` | `f2`, then `f10` |
+| "unjudged" for `lint.run.root`, "undecided" for `lint.run.exit` | "undecided" first, then "unjudged" |
 
 ## <a id="baseline.verify.exit"></a> Rule: The exit status tells whether the check covers the tree
 
