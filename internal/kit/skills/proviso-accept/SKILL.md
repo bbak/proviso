@@ -59,11 +59,13 @@ with 2, stop and say why.
    amendment's branch;
 2. `proviso verify` exits with 0: the check still covers the merged
    tree;
-3. `proviso manifest`, which also removes `proviso/.coherence.json`;
+3. `proviso manifest`, which also removes `proviso/.coherence.json` and
+   the amendment note `proviso/.amendment.md`;
 4. `proviso verify` exits with 0 again: the tree is what the manifest
    records, and no check is left over;
 5. stage `proviso/manifest.sum` and the removal of
-   `proviso/.coherence.json`, and run every command of the project's
+   `proviso/.coherence.json` and of the amendment note, if there was
+   one, and run every command of the project's
    checks. If one fails, `git merge --abort`, switch back to the
    amendment's branch, and report the failure;
 6. commit as `feat: accept <amendment>`, with a body that says what the
@@ -74,9 +76,10 @@ with 2, stop and say why.
 **Through a pull request:**
 
 1. on the amendment's branch, run `proviso manifest`, which also
-   removes `proviso/.coherence.json`;
+   removes `proviso/.coherence.json` and the amendment note
+   `proviso/.amendment.md`;
 2. `proviso verify` exits with 0;
-3. stage both, run every command of the project's checks, and commit as
+3. stage the manifest and the removals, run every command of the project's checks, and commit as
    `feat: accept <amendment>`, with the body as above, as the branch's
    last commit;
 4. tell the engineer to push the branch and merge the pull request into
