@@ -1,11 +1,11 @@
 # Commands
 
 Every command of `proviso`, with what it is for, its options and its
-exit statuses. Engineers run `help`, `init`, `version`, `lint`, `diff`,
-`impact` and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
+exit statuses. Engineers run `help`, `init`, `update`, `version`, `lint`,
+`diff`, `impact` and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
 included.
 
-Every command but `help`, `init` and `version` runs anywhere inside the
+Every command but `help`, `init`, `update` and `version` runs anywhere inside the
 repository and works on the nearest spec root. The commands that compare with the baseline,
 `manifest`, `diff`, `impact`, `pack`, `judge` and `verify`, run only on
 a tree that `lint` finds no error in, and exit with 2 otherwise.
@@ -53,6 +53,35 @@ what is missing. It runs only in the root of a git repository.
 | 2 | a file could not be written, or the directory is not a repository's root |
 
 Specified in [install/features/init.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/install/features/init.md).
+
+## update
+
+```sh
+proviso update
+```
+
+Brings the skills and agent definitions to the version of the binary,
+after an upgrade. Each skill and agent carries the version that wrote
+it; `update` writes one that is missing, replaces one written by an
+older version, by a local build or with an unreadable stamp, and leaves
+one of its own version or a newer one alone, warning about a newer one.
+It says file by file what it wrote, updated and skipped. It touches
+nothing else: the spec tree, its settings and the notes in `.proviso/`
+stay as they are.
+
+**A skill or agent you changed by hand is replaced without a question.**
+Copy it first if you want to keep your changes; your own notes belong in
+`.proviso/`, which `update` never touches.
+
+`update` runs only with a release, only in the root of a git
+repository, and only where `init` has installed something.
+
+| Exit status | Meaning |
+| --- | --- |
+| 0 | every skill and agent is in place |
+| 2 | a file could not be written, the binary is no release, the directory is not a repository's root, or nothing is installed |
+
+Specified in [install/features/update.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/install/features/update.md).
 
 ## version
 
