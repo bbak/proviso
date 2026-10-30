@@ -21,7 +21,9 @@ instructions are Proviso's own behaviour, not the specified system's,
 and the files that become part of the spec tree are stated here by
 what they do, where a test can check it from outside. Keeping their
 wording right is the duty of Proviso's developers, since checking it
-would mean keeping it twice.
+would mean keeping it twice. A skill is verified by use, not by a test:
+what it does shows only in an agent's work, which no test of the binary
+observes from outside.
 
 `init` works only in the root of a git repository, recognised by its
 `.git` entry rather than by asking git, since Proviso asks git only for
