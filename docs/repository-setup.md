@@ -8,13 +8,13 @@ goes through its check, whoever made it and however.
 `proviso verify` tells whether the spec tree on a branch may be the
 baseline as it stands: either it is what the manifest records and no
 check is left over, or a coherence check covers the amendment's final
-state, with every candidate judged and no finding open. It judges
-nothing itself and needs no agent.
+state, with every candidate judged and no finding open; and in either
+case, no element of the tree is left undecided. It judges nothing itself and needs no agent.
 
 | Exit status | Meaning |
 | --- | --- |
 | 0 | the tree may be the baseline |
-| 1 | something is still to check: the check is missing or left over, or a candidate is unjudged, an element stale or a finding open |
+| 1 | something is still to check: the check is missing or left over, an element is undecided, or a candidate is unjudged, an element stale or a finding open |
 | 2 | it could not run, such as for an error in the tree |
 
 Run it wherever the project's checks run:

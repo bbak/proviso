@@ -451,35 +451,68 @@ func recorded(base Baseline, id string) map[string]string {
 // The kinds of problem verify reports, in the order verification lists
 // them.
 const (
-	Missing  = "missing"
-	Leftover = "leftover"
-	Unjudged = "unjudged"
-	Stale    = "stale"
-	OpenKind = "open"
+	Missing   = "missing"
+	Leftover  = "leftover"
+	Undecided = "undecided"
+	Unjudged  = "unjudged"
+	Stale     = "stale"
+	OpenKind  = "open"
 )
 
-var problemOrder = []string{Missing, Leftover, Unjudged, Stale, OpenKind}
+var problemOrder = []string{Missing, Leftover, Undecided, Unjudged, Stale, OpenKind}
 
-// Problem is what verify found wrong: its kind, the element an unjudged
-// or stale problem is about, and the id and text of an open finding.
+// Problem is what verify found wrong: its kind, the element an undecided,
+// unjudged or stale problem is about, and the id and text of an open
+// finding.
 type Problem struct {
 	Kind, Element, Finding, Text string
 }
 
 // Verify compares what coherence_file records, nil if the spec root holds
-// none, with the element diff and the candidates, and returns the
-// problems, ordered. note says whether the spec root holds an
-// amendment_note; beside an unchanged tree, it is left over as a
-// coherence file is.
-func Verify(c *Coherence, note bool, entries []*Entry, candidates []Candidate, base Baseline) []Problem {
+// none, with the element diff and the candidates, takes every element of
+// the tree now for an undecided place, and returns the problems, ordered.
+// note says whether the spec root holds an amendment_note; beside an
+// unchanged tree, it is left over as a coherence file is. A check missing
+// or left over is compared with nothing, but the tree is still taken for
+// undecided places.
+func Verify(c *Coherence, note bool, entries []*Entry, candidates []Candidate, now []lint.Element, base Baseline) []Problem {
+	out := undecided(now)
 	switch {
 	case len(entries) == 0 && (c != nil || note):
-		return []Problem{{Kind: Leftover}}
+		out = append(out, Problem{Kind: Leftover})
 	case len(entries) == 0:
-		return nil
 	case c == nil:
-		return []Problem{{Kind: Missing}}
+		out = append(out, Problem{Kind: Missing})
+	default:
+		out = append(out, compare(c, entries, candidates, base)...)
 	}
+	slices.SortFunc(out, func(a, b Problem) int {
+		return cmp.Or(
+			cmp.Compare(slices.Index(problemOrder, a.Kind), slices.Index(problemOrder, b.Kind)),
+			cmp.Compare(a.Element, b.Element),
+			cmp.Compare(findingNumber(a.Finding), findingNumber(b.Finding)))
+	})
+	return out
+}
+
+// undecided returns an undecided problem for every element that holds an
+// undecided place. Lint asks about a rule's mark of a term that is not
+// defined as an undecided place of the rule, and about an open glossary
+// entry's Definition "?" as one of the entry, so both count.
+func undecided(now []lint.Element) []Problem {
+	var out []Problem
+	for _, e := range now {
+		if len(e.Undecided) > 0 {
+			out = append(out, Problem{Kind: Undecided, Element: e.ID})
+		}
+	}
+	return out
+}
+
+// compare returns what the recorded check c leaves to do for the element
+// diff and the candidates: elements stale, candidates unjudged or stale,
+// and findings open.
+func compare(c *Coherence, entries []*Entry, candidates []Candidate, base Baseline) []Problem {
 	var out []Problem
 	covered := map[string]Covered{}
 	for _, t := range c.Touched {
@@ -509,11 +542,5 @@ func Verify(c *Coherence, note bool, entries []*Entry, candidates []Candidate, b
 			out = append(out, Problem{Kind: OpenKind, Finding: f.ID, Text: f.Text})
 		}
 	}
-	slices.SortFunc(out, func(a, b Problem) int {
-		return cmp.Or(
-			cmp.Compare(slices.Index(problemOrder, a.Kind), slices.Index(problemOrder, b.Kind)),
-			cmp.Compare(a.Element, b.Element),
-			cmp.Compare(findingNumber(a.Finding), findingNumber(b.Finding)))
-	})
 	return out
 }

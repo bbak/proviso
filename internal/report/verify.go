@@ -57,6 +57,8 @@ func message(p baseline.Problem) string {
 		return "the element diff lists elements, but no coherence check is recorded; run the coherence check and record it with judge"
 	case baseline.Leftover:
 		return "a coherence check or an amendment note is left, but the spec tree is as the manifest records it; remove .coherence.json and .amendment.md"
+	case baseline.Undecided:
+		return p.Element + " holds an undecided place or marks an open term; lint lists where"
 	case baseline.Unjudged:
 		return p.Element + " is a candidate without a judgement"
 	case baseline.Stale:
