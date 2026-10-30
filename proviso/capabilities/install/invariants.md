@@ -34,7 +34,7 @@ Every run of `update`, however it ends.
 
 ### Property
 
-Every entry below the directory other than the skills and agent
+Every file below the directory other than the skills and agent
 definitions `installed_files` names is byte for byte as it was, and no
 entry is removed or renamed. The only entries added are those paths and
 the folders above them.

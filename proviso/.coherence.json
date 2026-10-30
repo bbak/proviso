@@ -1,0 +1,608 @@
+{
+  "touched": [
+    {
+      "id": "cli",
+      "now": {
+        "heading": "h1:c925a11891b84dfcf3a6a35ab8064b4ff807efc9c9afac7df8081e91e3af0116",
+        "section Goal": "h1:f9f63a8645177939565b6f96c718d7955c3f34037c89c153f9d39863dd6ea783",
+        "section Rationale": "h1:f05b731d1a5bfc659a98bd373d80f4416f4b7acbc96aa067ccd7cfb7adbac388"
+      },
+      "baseline": {
+        "heading": "h1:c925a11891b84dfcf3a6a35ab8064b4ff807efc9c9afac7df8081e91e3af0116",
+        "section Goal": "h1:f9f63a8645177939565b6f96c718d7955c3f34037c89c153f9d39863dd6ea783",
+        "section Rationale": "h1:f20fe4cd64f593858a0e28cb68d134379af097970a4636e5db2631a705f07dab"
+      }
+    },
+    {
+      "id": "cli.help.command",
+      "now": {
+        "heading": "h1:76801228de660bae717b1296c66d23ac673d5ac049e4ef2319df4b5e8749a05b",
+        "row h1:2748736155142dc0064c31d275b71a936405695f4bab06dcd1b3b7f90f5a878b": "h1:8fd25ff15b13fbd93c9ca00c2d1738edfdf7701b3fd3a6dcb8145e983fb3d6ff",
+        "row h1:4f07a2a043dfc149f7b9e16bc7db0cb33bf098cad08aedf004ce1b18f92bdb80": "h1:3d561108fa3875bb7f4f4b0f1e61488b1894a60fb8c9916e4f9a2abc6cb99ef5",
+        "row h1:508eab6749c7ce330b6a7d5f35ba090eb67a61b68698ad1170d12112dcca7048": "h1:49004c5f86baf1bacb4d1562800a9a9bd6a11edd4ab18f502df5808bb6452e8d",
+        "row h1:6134baccff66e185c6488cfc88398434c59b680e95975fe381c6a8a0b332bf0e": "h1:6774faaa70bb9556118bcb44778836ebf34ee1cdbfd079985fe21f0e23cf6c04",
+        "row h1:7ddd2c2d3b3c79047c0ca851f791c3d8df80183c921e21f336789adf503170db": "h1:eb315cc1b821c9a8877af26f5e39a69c5597e260aacc65891687e6457d66fc37",
+        "row h1:a03c7914c1c977910af55f2bba3e6ac82f4e79da519d6bf2ed6a716734df335b": "h1:ed0a821c84d622e11c9f2f1b23acbc0c5483ccb8a2c4c07ec01b7a4a524fca88",
+        "row h1:a5dcf6670f94812e0847efc6b73d7835d990b8e1c3a0d7741c6b7538efe41947": "h1:4e6b603a8971bd48ddc889edd0533bfbdd0bdbd3c880eb9dd7e9db998fcf605b",
+        "row h1:bb0d11cfc84a141b3c0235c629d2303cd8d4ae1ceb4281136f3ab25225c092c5": "h1:3f1a38d0b65b9bd2d5d05c41d4367598d63a8f08a105ecfcaee2c63eeb012be5",
+        "row h1:cd02a98aa5bf71bb8e3d3314023f132fee8c26d4e2b0bf630fbd604cd442bd40": "h1:40f703c69a4ad7a5c1fd74309312e6bb2dc033fc2f74ab09a18bd27e878a54f6",
+        "row h1:cf183fc1cf3ac042a6a86338e8f4fe209d6d331b7e5f9750e97006c988b36c29": "h1:667e322d129da602a640dd00dcb24054179cb87bb9cd3404af85c49a1061abfa",
+        "step Otherwise": "h1:8bc1d2d6750b1d0d3a5305a8c0a39ce0f650b0ac7cb4c2b40587c74e21eaaddf",
+        "step Provided": "h1:0ead215a02cdafdc3da316772b5b9689b423ce5a09ff9b8113ad0efe5ede3cd7",
+        "step Then": "h1:cd102a30a7ca0dcd41d6c21269c88f232e1fe23de1edb17025efe2f7e7459045",
+        "step When": "h1:46505f0eb70bc5cea656c027afc4b33dadb2d9ead58285015aa6c45bc60f80dc"
+      },
+      "baseline": {
+        "heading": "h1:76801228de660bae717b1296c66d23ac673d5ac049e4ef2319df4b5e8749a05b",
+        "row h1:2748736155142dc0064c31d275b71a936405695f4bab06dcd1b3b7f90f5a878b": "h1:8fd25ff15b13fbd93c9ca00c2d1738edfdf7701b3fd3a6dcb8145e983fb3d6ff",
+        "row h1:4f07a2a043dfc149f7b9e16bc7db0cb33bf098cad08aedf004ce1b18f92bdb80": "h1:3d561108fa3875bb7f4f4b0f1e61488b1894a60fb8c9916e4f9a2abc6cb99ef5",
+        "row h1:508eab6749c7ce330b6a7d5f35ba090eb67a61b68698ad1170d12112dcca7048": "h1:49004c5f86baf1bacb4d1562800a9a9bd6a11edd4ab18f502df5808bb6452e8d",
+        "row h1:6134baccff66e185c6488cfc88398434c59b680e95975fe381c6a8a0b332bf0e": "h1:6774faaa70bb9556118bcb44778836ebf34ee1cdbfd079985fe21f0e23cf6c04",
+        "row h1:7ddd2c2d3b3c79047c0ca851f791c3d8df80183c921e21f336789adf503170db": "h1:eb315cc1b821c9a8877af26f5e39a69c5597e260aacc65891687e6457d66fc37",
+        "row h1:a03c7914c1c977910af55f2bba3e6ac82f4e79da519d6bf2ed6a716734df335b": "h1:ed0a821c84d622e11c9f2f1b23acbc0c5483ccb8a2c4c07ec01b7a4a524fca88",
+        "row h1:a5dcf6670f94812e0847efc6b73d7835d990b8e1c3a0d7741c6b7538efe41947": "h1:4e6b603a8971bd48ddc889edd0533bfbdd0bdbd3c880eb9dd7e9db998fcf605b",
+        "row h1:bb0d11cfc84a141b3c0235c629d2303cd8d4ae1ceb4281136f3ab25225c092c5": "h1:3f1a38d0b65b9bd2d5d05c41d4367598d63a8f08a105ecfcaee2c63eeb012be5",
+        "row h1:cd02a98aa5bf71bb8e3d3314023f132fee8c26d4e2b0bf630fbd604cd442bd40": "h1:40f703c69a4ad7a5c1fd74309312e6bb2dc033fc2f74ab09a18bd27e878a54f6",
+        "step Otherwise": "h1:8bc1d2d6750b1d0d3a5305a8c0a39ce0f650b0ac7cb4c2b40587c74e21eaaddf",
+        "step Provided": "h1:b94c45d51ad753a496ec721c0147415c3ce6ca75c0639334b22884b4dfce4ffd",
+        "step Then": "h1:cd102a30a7ca0dcd41d6c21269c88f232e1fe23de1edb17025efe2f7e7459045",
+        "step When": "h1:46505f0eb70bc5cea656c027afc4b33dadb2d9ead58285015aa6c45bc60f80dc"
+      }
+    },
+    {
+      "id": "install",
+      "now": {
+        "heading": "h1:569ca49f4aaf7846e952c1d4aeca72febd0b79fa1c4f9db08fd3127551218572",
+        "section Goal": "h1:197510d1c735a35a138d59d890e0b7b1f59cc82257b1e3a454bb05e3cc170d20",
+        "section Rationale": "h1:e2aeeaebda144beab242501e8c1a36da7ae3d24b143ecca1dadc44ef372a9522"
+      },
+      "baseline": {
+        "heading": "h1:569ca49f4aaf7846e952c1d4aeca72febd0b79fa1c4f9db08fd3127551218572",
+        "section Goal": "h1:a79ccf3d945b38a4adde5d0faf93af2b99a5d1fa08b97bc396ab0dd5532e1e3f",
+        "section Rationale": "h1:4d8b89aa9db6b669f612b1580a69caf6d84bc18f3d342339106f48f8f71f5d6c"
+      }
+    },
+    {
+      "id": "install.cli.update",
+      "now": {
+        "body": "h1:f7c2120e815596145a8ca4a662356cef2e4cee984fffb43771e4b01d5e3ceaf2",
+        "heading": "h1:2937013f2181810606b2a799b05bda2849f3e369a20982a4138f0e0a55984ce4"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.cli.update.exit-status",
+      "now": {
+        "body": "h1:c967385fcc490fd772fed31de354ebffc1b214d77c392ce42e07a35e562f5b16",
+        "heading": "h1:6102e44d6fc6f40b350b53728321acb8b0849819025843ed02cff62b932f7d73"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:6bd71ec136a4ff268cb1cd40d11b5a1255597fc918aef7c41a2862dbc61e9a5b",
+        "section Goal": "h1:5235ac064e6a42d78eeba9f27764a916671ff37fee7587dc59e78d2fdd827202",
+        "section Rationale": "h1:0e4478ba545ae99dee8fccf6393aa239bcaf9dc85ec82e912e16ec23ab39367f"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.exit",
+      "now": {
+        "heading": "h1:4bf4fb6abc43f346c05cd80da65d4d9f62a68e2bea72c77ce4cd1689544b709b",
+        "row h1:012dc2e97607ea99a8ab77f53a09265d654cc245666d19759446cfd0250e6378": "h1:fe774bb1cadca2c6a93c862dd958af58761bb108d0320523e6d6f323a4cc83e9",
+        "row h1:7d6ce9a57e0181b08161ca48a37e07b709f0928c62517da2eed96a55b08c053c": "h1:a3cb1b2b658c98a82a0624cf9f351d48b87da35ece7b350ce4569bc88416c17c",
+        "row h1:fef3fedc7750b4e130a965e7453081a90d0a871bb584e06e600477283f8f70fc": "h1:0d0486562178545630896b8a070ddd82290977db0a970c87d44d58c4f60ac54d",
+        "step Otherwise": "h1:5d558ed70b7e0ac89a8da9066c271a20cf0fb1a00d6c9b0715c4d29bfcacdda9",
+        "step Provided": "h1:9fdfcd561420bb15d42f8c85bed4a22a461f9c07a35546b86aace0bd3c95a326",
+        "step Then": "h1:55176cabf877e511072f1dbfa0d4de582dd043894772d824d44bdf0db6a53f64",
+        "step When": "h1:77aa1c963fa905ec5e8c66206f6525a9b894c9f303ac7453fd1a2e97f04dce97"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.installed",
+      "now": {
+        "heading": "h1:47bda6f897421cfd32ce60be9076eedf9e940bd0a94500154e6710ea63a69f7a",
+        "row h1:24d2636f3e67a3f8cd2b2ef3bc2c790aa432154273358b39192437f2be1e9309": "h1:f53872da500d8853b041d6154b59e3f15aedfcc4f03014dd1ad4481cd7e695e0",
+        "row h1:3795e19e7dc42c35f398b27f9140939f8393421b699e93abda302bb9415daa59": "h1:f9e3327a44e564a1ed794605cf90b0048b3e6210e8a051bf5804775f1eba4ee0",
+        "row h1:7153b25794ebea6f84a85f8a4d6e6bebca5f1c7016d6e843a166458e13b7365c": "h1:ae3361fa0966892fe3b9d4914cc28410c7613b1e17957369c3bce31ca70870e7",
+        "row h1:965353fcd75c366ffbfc0e6fc4493bd3ed783b34dd718db2ffc9bce4b74eeb87": "h1:8d7224fbc8345b3efab52cbb4b873a796c996f80e39525668b85a98e6ed381d3",
+        "section Rationale": "h1:dfcbdfc545bee7bc134b2d1f66bc94d22d19f0b6ae06cec475dff523bc073683",
+        "step Otherwise": "h1:86f94f549d4c900db34925e035cffb722696aafbdfefb795f57a41b2c50b32a4",
+        "step Provided": "h1:f5cf9b604a956efdfdd3ac149b39d21f6891ba18db734996dba0d1170bc4bec2",
+        "step Then": "h1:21a16f366cb62161cb75af6566a4c223ae4280bcec25eada4107ef1ae849e2f6",
+        "step When": "h1:57ae15a9624aab482f29519cc99424b8f1748d4aa1818f94cb36f2a18b5efa4e"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.keeps",
+      "now": {
+        "heading": "h1:4dc4000f3bc49aab00970fbc78c04a76e249e96b3d47dbbdff6247e91fd8767c",
+        "section Property": "h1:2877b14a76d5883580f6e178a12d7c2edda5f5cb6a49f29839285ea2398d8eb5",
+        "section Ranges over": "h1:034937ecf08414a6f4b8200ccafe0a7553437bc9eb08e826c9671fc854575ec9",
+        "section Rationale": "h1:8a4532091c101dbec89305c5cbfb7c79a5869763c57e1414ba40095817dd3cc3"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.missing",
+      "now": {
+        "heading": "h1:e144bfc6d417b7669e33685ae798c0bb9cfbffe92160378d428080cc88cd4839",
+        "row h1:67edfb22e80a8469044bef6349966dc689d2cd01497b58c289321880af06a3c1": "h1:e07faa7276d5cf1c34280b30333e9271a66de0c9f3bea4895c613692c5b81c6f",
+        "row h1:8e806f47618d4f123002f12a57f51ef953409fd78053a507aaec8ea8968f8435": "h1:6e6ecb76e8b7d7ab6a9e7eb6fb2aaad6b109e37742c2f43259d8bff75f2037e9",
+        "row h1:e1b349ea405d863bc6abb1c9d53aed277e1561ff7f1ea9713299698198fdbef3": "h1:3e2bde44dccd0f60beee0863c40b77131812f41217a8abd6428ff58e609ccb14",
+        "step Otherwise": "h1:70bac46744691c57531a378cd78f4c23cc73eb478f7809d991127ef065cf7eb0",
+        "step Provided": "h1:69f3ec30d713af929c0e8dd7a51a750c76311b13d3393ca704079a474336d566",
+        "step Then": "h1:e0f6191153111e4d1cc44da343f5a47e7809b5618026dfa8b3c99b0a065afa0e",
+        "step When": "h1:371d2f1aae1341e04c40f2b8e1ac392aff321af8ddb3b02cc1714196ddbbb7c3"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.release",
+      "now": {
+        "heading": "h1:cc7a51d16f1694cd7f23ec0356a99abeeb0b5b48b90861e387e89ae77056e4e3",
+        "row h1:073715389c288a0eabed40ea7d8ac42e83cd07425145d1cfece5fa7e86e54cb0": "h1:1e8cea0dfeb3e3d161e59163fec865be718591e2f90f7e785b390e6f69a0f979",
+        "row h1:12cf1b22893ba713380eff3c5ebdf46f5781d5727697335b79d4f4c22e8ae8b9": "h1:7c27666500d8ac7d514cd8fe4bff892d7c0f853159c77123a851c48d1bdd1509",
+        "row h1:3cf824c94ce4203865829f22cfa7b27b78b3353f9e3bc29357f2beb78eb492c6": "h1:f4c9616373c3be721cdd5952a41c6a856858d60ea136e432a0840f190ebde460",
+        "row h1:8182ffd09f3d876ad052c33882f531f989383085b4dc76a24a1a6e69374262d9": "h1:4d8fad322352b6ba2f8476e40574421d1724c8f0139f6a101e59f184d5ea375d",
+        "row h1:ba856356c6bee34038be3b0765a5fa1006a94d968818a7cac4642dcd4364a67e": "h1:f6466632280a92b889f99f60f9a3eca7d790d93d23575ee4c52763756bfe908e",
+        "row h1:dbaa883e027211b6b88ec0676bd4d8ea577c2c5dccca32e5e0e1f486a749d846": "h1:04ff27ce37d51a59e9d92ac3d695e920f197c19dc0dea9786d7dee8b9c20adab",
+        "step Otherwise": "h1:aba659573f6cd2cc931173da6201c4c2bed66208bccf72524a4c9bbf5d2bd366",
+        "step Provided": "h1:6d1f4a6d8617a7be31ce26356848b098824bc03350469ae3c12c00f5195aa4f7",
+        "step Then": "h1:68b55a0c1a1b3dd297fc59f7ff59ff259a99b593bd28b2b9629ab53d1666d5e2",
+        "step When": "h1:7331858c6a3969018efff4989e0f3075600d82836c5272dceea7328c91105235"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.repository",
+      "now": {
+        "heading": "h1:c7e46a887cd25a1eb947dc69e5829dee2444a27bffdbffc656d14f0915ec9a19",
+        "row h1:1bce2d4a5ed09394438bae6a050335cbcdd3f733735b2cad196c164c146ba309": "h1:13aed738874c0e24e9e65ed64c137272f25d0e886f9106cb323c9d3d121244f6",
+        "row h1:3743e6c636f6dca35e1588c78dcc2bb244157c2ac9172e207b64344fac43eb5f": "h1:b72e956f6fcf213298aad099b9078a2a238a09fce3060e1056790abb45959ede",
+        "row h1:54db7d8faf34e5dc5acd29cd662d7116485325809a25a0b598e6bddd7db52ef3": "h1:45efeb58eaced8c4dd3cfcc4b2dda6c989ebc2cd4717b0e3ed9945d239f4e08a",
+        "row h1:f7b78b9a914fb2a88595a25c3b3fecfc8140b0aec1f4f834bd5dc3927f5ea134": "h1:3da3be0ce86d38ab924330b79fb38d5e0ed129b1b23984ba161309cfdf486a68",
+        "step Otherwise": "h1:1063da95239880078e6d326a9fa62094034b8b9403d809899bc4864d490bc42c",
+        "step Provided": "h1:f8957b1de67530d62705f16154983531e3f7e912f0180e6b0bcf0f9f9455767b",
+        "step Then": "h1:5d9886c958ea05a60bb1436d18c5c99d2c4f20c7a35a15873ea337cf300e4a2c",
+        "step When": "h1:ef84269fec60f38a5661d32b344614a6548e760a2cc8b75dc8354ebcd98610be"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.update.stamp",
+      "now": {
+        "heading": "h1:67fa676ac5d33707becf15e63020bbe1728d4b00052055111923e28c2ad7cd34",
+        "row h1:14e778cc967db4219f068a779888e1e77ad83a458118adbfbd1400e2743b4df6": "h1:ccf4b651d44ed2afd4a988b09958bca4bb7fdd1afcf23759e76cf7d2df734e44",
+        "row h1:3c00793c31eff9fd138d14dca7bf61532d3652d4c7f69d562ab689076bd20439": "h1:45b38a7a48bd0bb00a9ca94152ce74865834374ad67b13013bd9b9430ea1a4ce",
+        "row h1:60b3d802f9ec85d845e1060a6900dd5aa01491d1db6e11330ec4ce17b38a1481": "h1:79d068b1b9655609b88fe7243b928daead8595b852f7d67d4aed7ec9b4b6678a",
+        "row h1:77ce52b3760b84dea7bb4c7361810ab4f7356706fe465de7c363a9f13a339832": "h1:aeae7157360527471db29df2f8f2b8ff8a0e3d41142430266857e3c9fd769834",
+        "row h1:9eeba42adff5846bb5c57b19950370b405f328339af30e924a4520bfb3cd0a96": "h1:d5faa4882b549f557d877d86bc2187f170aba96e9c767f1368097d025b7f273c",
+        "row h1:b2ebb18e68d206ed6f742e7a30765d7f3f54c68fe71ebe0edcc33f1b11689ddf": "h1:c5d62a3beaf6e172a0478c1105848f2f07d379555bcb1fd3f3fbb8119056a57c",
+        "row h1:ba898071b6e355a5c13849c12377993755bc61ac729d155a3afa2dbd30f53649": "h1:1d4c1125a2b2bf605d809767a74f23302d1acb166f4ba5e69446bdfc5d1abc97",
+        "row h1:c0cb1d9c578d42aacc51ad8d221ac5b02517d5679418570e8cc93561c4cdab96": "h1:acfcc76209087b3d8eea7ac1d894b6a88b3895a0dc57acec74b59abe6370c7f1",
+        "row h1:db61f4f20f79fcc64076adcd1c98d23ede3fd1b722c1c2ad7c2b3b6f1206d731": "h1:5d06b59b31689bbe320bc7406fbe72a9127e93ca863d94c6805da6cbe3ddc5b5",
+        "row h1:f22cc5bff52aea5a39f4192591df1f1380c7a79b301461e78ef1a7badd6f5390": "h1:451c5de94a7470b0c526d566a7dfc69f8093af1fffe72f68bf63d7d9bb6230ff",
+        "row h1:fbf72eb5057e721f4e8ace1ee17dbb0e90e3433dfd1216675a1a08be89f3ac12": "h1:8a83f62cbc0572a82a5e10f01ab3be575b2a48a1eb91e6a7b034961b4550b0e3",
+        "step Otherwise": "h1:228b0f84898863c094338639243c987c258953852fa05c817a26fde34797f94b",
+        "step Provided": "h1:e3f9b1e4829be6c0d813131f7dac9bb4f175e67f902c92acd9d33ef08c93308c",
+        "step Then": "h1:c1677d2d3609329a81d9b949a67930722d57c3a0f593b9e3819906718d9944e1",
+        "step When": "h1:c15214c01beb7909ae50976ad56dd0266f9afaf1301a0b5215b35460ffb95de5"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "install.version",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:9f99b1f7e16894435a8a81ae334a37f894c5122f50dfece7f5d75ef9c78d7d4b",
+        "section Goal": "h1:6268929495731e4c7139de08248716df801db0a68b988dcd95d39392ca8da7d5",
+        "section Rationale": "h1:2edb6f66f722c1fd51a0411bf1f109c214c584ad9b99af745252aa7d19197925"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:9f99b1f7e16894435a8a81ae334a37f894c5122f50dfece7f5d75ef9c78d7d4b",
+        "section Goal": "h1:6268929495731e4c7139de08248716df801db0a68b988dcd95d39392ca8da7d5",
+        "section Rationale": "h1:ed60e113d4e86dce8f2119513689a84861933fded924c0c3ad7cc36347a9e300"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "install.init.agents",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:39d1ce4efd85868878f853e5b31a65adf2ba899badb610d7f3cf07746d4802f2",
+        "row h1:0e1ad104e98c17b9f0001992619dcc23019745c9ec31c762939c97cbd87bc0f8": "h1:acc5b3ae542b98372d2cdd154ffdeccce2704002fc1e9755270a61ce92309096",
+        "row h1:73d8e0a2b602667fe020f0986b9b5e87631fb3bd2887e4e5f6a6143cc9de80c7": "h1:4b0c21fe17c46cbcc1855bf2e0847091785534315098418a2786aaef689285e3",
+        "row h1:c2fb72aa2d94ef4d9f38cc802ebaf2ee33dcb32abd951bc7a2bf89c1460645f8": "h1:f3c60ded813d20f6495fadc9b24c6378abbe304754e76bedb059aa032e3b795d",
+        "section Rationale": "h1:514131457b4fdbb10e0392786977873a5944f3c9ab757386cb7e942aaa6672b5",
+        "step Then": "h1:f68da65b1d9cfb3c069b6f4c9e9899ce6349352c014c1b5a8f17f4ebe2c75983",
+        "step When": "h1:609be81547735118cc0e35a0a5f74a019e3cf3a215c25cead42861f6149e63e3"
+      }
+    },
+    {
+      "id": "install.init.existing",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:a9210cfc3d94b405cb79c77e75374bab544ab8789b4fab4ecc65e66abf50f804",
+        "row h1:8ad4de2443b8bde9b0b8e59315a76c99aa468bb87637e9fd24b48f3a6d93ddb1": "h1:c9cd3a2ff362402a15c170fa7a7ec7082e6b73055b1d626bc21d52d5924a03a7",
+        "row h1:b945ee06aa001977cfa39efbd20863e6c264f9b466305cafb8eaae6836c5ba70": "h1:c47a40f156e1ac138999427cc629668598cb6df9543e99dcb412904f739c3fbd",
+        "row h1:bf74311ab559a6bbf46cc547985de10153ebc6129b9bbd633743e4ca94249144": "h1:272261aa15c186b219253ba12b7360785e85d1f8bed3bd2bae8381687e13c89e",
+        "row h1:e160675c3abfef7c5dec36aca2a9e747da5acb235ca516ca5b6312fa5d4d257a": "h1:eef1ccfb4a52b505a8ea7de05a075d6c649c8a83f7973f67bf0e0a7f8f72972a",
+        "row h1:f4c18fb730255a7593a9d73c0cb2c7290c59ac88b949efae189aec466c3accfb": "h1:b3f8b8bc83012d2720dd5947ce6d951063b3b2c0eb82f77f12fb50b7ae9f4909",
+        "step Otherwise": "h1:ed112ad4d7d834396bec865f4d96aa0108cf00efd4afa3553e394fb34171cad7",
+        "step Provided": "h1:69f3ec30d713af929c0e8dd7a51a750c76311b13d3393ca704079a474336d566",
+        "step Then": "h1:95aaf73706d0cde26d020d91b66cd0b2220e56250fc3f051571ac3e40c01f21c",
+        "step When": "h1:e79e8de137b560bedd89f56a7c35f69222af7699f8acae1e804d07f77945ff15"
+      }
+    },
+    {
+      "id": "install.init.exit",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:ac4bdebba42ccfc2015a76eddaeb13cc1a6725a9b1e8dfab9df168b5234b65df",
+        "row h1:0a85c38ef2e76eaa61543a7f960c9e492041bd22d43b8d0a9ec4a13431939cff": "h1:6c65f94d1e00dbc176f5d69eb973f47571430fb98d0f39af77274a13c47c00f8",
+        "row h1:395704992049ed7fcb5d65bb85bc897c8966b360d7302a5328955e43b0e742ee": "h1:e49706e362f25d795192ebf087502569294d218a385811a1ee930b8a36a74304",
+        "row h1:47705c20ef9386caa328d311e1078d4cb5db2cbc8d3a44d6bad9ca72bf646520": "h1:2d399f365b783d70115d9fee730c6e972f7ebf090875871cd8520163c344b87d",
+        "step Otherwise": "h1:d89978cde0f2fbabefc1496d781de3370f778af1296f7b5657c745b74ed264cc",
+        "step Provided": "h1:9fdfcd561420bb15d42f8c85bed4a22a461f9c07a35546b86aace0bd3c95a326",
+        "step Then": "h1:0367e305297e369ce9bb6879efdf97332f348767a704e41e25abf0c2f9695cd0",
+        "step When": "h1:e84b4f81c4e829352e15f1c5fa4e6830545d52cada9f7c7a51e5d61025511e49"
+      }
+    },
+    {
+      "id": "install.init.keeps",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:de87b1e3b01ce29fdb9b56da7599c5fda0e5d7a6817ef331154da510f8951211",
+        "section Property": "h1:a9dee47d75ae29452bebe0b701cfa696cc96a6fed20910a15a2a6339a407cdcb",
+        "section Ranges over": "h1:ec1e2df5e9e74e7ebebd55cb1b7075b3ca87d58aa0b536fec5afcfd316da5ee2",
+        "section Rationale": "h1:5921f26376536728c1409f7e909fa4c7ee70738cd83936d015398577e3876983"
+      }
+    },
+    {
+      "id": "install.init.line-endings",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:8a70e0e580ceae784579559d8b90b1566e3c55b35db89910aa88393b79255c08",
+        "row h1:073beefaa56e56db60674e2a5ac9c63cffd09744e5faed5f2a013056c8e3c240": "h1:a6b71137d56e310d345293ee64675a1361d522199f8a96a4206e8699fc4132ad",
+        "row h1:5df3d3a13de7c265a677a2a8bd53a5abbe9076c37ea00f6b712344adb9a04ab2": "h1:dcedce8dc88ad4839b2e9b3d51f21689a6297669980abf8f9032ce938eb01d24",
+        "row h1:6e48c8e38b8698f587c76a19931c9a41ebb52863737ef1feaa064f3d375872fb": "h1:4e971842632c503e3a2fa3c54a5f878a36939667724a3742fe130a9910c2e99d",
+        "section Rationale": "h1:1f6e7d46e8bed1d4d38d8c8251b4bdf2aeee7357c0d9559eee085292ef05f4bc",
+        "step Then": "h1:37985b752fccfec47fb42eb42ad40f0b1ad0f1b49e061e378c05d92d4df57f19",
+        "step When": "h1:f73f965ed7fe4fb9b39154b5196a10feddc059437a2fdbb3c4473e0eba5103c6"
+      }
+    },
+    {
+      "id": "install.init.repository",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:9b66c1943cf43f32389c76a54385d12b9c3682253713ec3feca301a7d536e25f",
+        "row h1:1bce2d4a5ed09394438bae6a050335cbcdd3f733735b2cad196c164c146ba309": "h1:2a01ae7d140ae4dc963258cbfc9352750e5b35964e6e90da45f43434c407f22f",
+        "row h1:3743e6c636f6dca35e1588c78dcc2bb244157c2ac9172e207b64344fac43eb5f": "h1:55c210dd745f8f9f2b75bd086913097f72cab9ff0271f3d538a6c73243d49d1c",
+        "row h1:3f5a553f577eda0c54ee74b8faa6361575fd9850634b3e211c5fe4cb4cda48fc": "h1:12ea51213c078b9c793e35260522287ada28515f46ffb02212646b18bc967376",
+        "row h1:54db7d8faf34e5dc5acd29cd662d7116485325809a25a0b598e6bddd7db52ef3": "h1:7f3d6b399bfe9828666eb46a1700096616b7c76f94c2145d43c9737d8720e53e",
+        "row h1:f7b78b9a914fb2a88595a25c3b3fecfc8140b0aec1f4f834bd5dc3927f5ea134": "h1:5ec58716eda2f910c2eb9d3e293731159dfab17cfb6e7974b4f5b301e411fbfb",
+        "step Otherwise": "h1:8d60e9d3430001e202ca3c213484ace2639b413d76fcfb7955c3f50afe0ccbb4",
+        "step Provided": "h1:f8957b1de67530d62705f16154983531e3f7e912f0180e6b0bcf0f9f9455767b",
+        "step Then": "h1:9a7ed591060ebcd28b2a4c5f134178e1ad4c42eea1475b5360abc049916a4cb6",
+        "step When": "h1:b31e39725ee8154cd38403fe539182ef1028765f3d01fac9565738184d552a50"
+      }
+    },
+    {
+      "id": "install.init.skeleton",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:2a6454c329aefb4239a773e26a86ce876362a9acd8ed20ccca95fb94356f123f",
+        "row h1:5f4dcab1c45f0424652afc9e0f991ce31d8cc63c2a7124a1cb69419dbc519be1": "h1:ec6f5ee63ca2c2d137e03b4bc598784f33a53c5e34a6ff8b05573a499cfab339",
+        "row h1:a56d395f1ace993225b19dd9ee07aa509ff3f16a58e1b8d774345bc24eeb15d6": "h1:19d14a3c958988cd2f14bf98249e7d647acec2d93fd9cdd2b9feed4040246ffd",
+        "row h1:c239e565171c3e5351e972049863a3e6c41af6b9da67864d1fcf6b8c3ba42fd4": "h1:122287858669446bfbbd9e19ad97f39d97ce3c0b009f08163e866c757c9e612b",
+        "section Rationale": "h1:6e23027008fbe6238f161df1e8b328864c94c4fc9e8b750af71ee0bb27f837b5",
+        "step Then": "h1:4d79977aab6c2e9688be1596cffcaf8ca424983f5b9568e76ad0b750c8b9cf28",
+        "step When": "h1:f18669a293bfa47f67b7cff0778ea4fd7f62a1f6b9fd1573882ce402143f7ac5"
+      }
+    },
+    {
+      "id": "install.init.skills",
+      "reason": "untouched: init's rules and its invariant only cover runs of init, and the amendment adds a separate command without changing what init writes, skips, stamps or exits with; update.keeps covers runs of update only",
+      "parts": {
+        "heading": "h1:8fee20b19d5a1589e3dabe033d6bdc65c655a0bab3f33bf242ca1c6320f6c707",
+        "row h1:358ebcc2ba931b7ad2e35a3a3d9ca54651a4e482a60914aadd2776cd66035031": "h1:b8a0633fc16d28c3586a1f9147200775cd17feec239cec6704ca6bfbf45207be",
+        "row h1:45eb70fa0a7af50b4f2b32198b020369e142762d0782d30b5021484f2498a39b": "h1:0c1b1c110da13e32ccc0c3ae2d030c51aa211bf46c7f00b3f4ab5a2b4a2b7317",
+        "row h1:ba22cfaf8ca13af087da180b6aa6006d2dcc51bab5a38955653b310cfb12c658": "h1:f3948ebd25348368b729ce94d7af3e9a72d2877d14bc1059dc359e7999bcdece",
+        "row h1:e2974d4e343718e2212cf2c1de358ee9b8035736c43a9ffe3969ee2a28aec701": "h1:f0c47d15694a6ed7b3f3f62f9ec3cefe7f35a514e5349c9c9eed948aac9facc4",
+        "section Rationale": "h1:32ea1692dd4cb01db481ddff3147457c6be2dfce4f7050673eeca58dba35325a",
+        "step Then": "h1:287b96551a9770ce47a45b11ba2df71bb49b64d75179fc3a008264b0fcedbbb2",
+        "step When": "h1:a995d6e6093a0d7101becb2c27eea0a99f9509109700f217abf8f46067d979bc"
+      }
+    },
+    {
+      "id": "install.version.kit",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:090273608b6c213f94fddea69b6d5df0a0b8282ea4ca5ec8abb0df7bd04c63b5",
+        "row h1:24d2636f3e67a3f8cd2b2ef3bc2c790aa432154273358b39192437f2be1e9309": "h1:d0ca3f8896e3bfe9a623afdfb8e94d58e121998c7f891f9bede416ad2187e76e",
+        "row h1:7153b25794ebea6f84a85f8a4d6e6bebca5f1c7016d6e843a166458e13b7365c": "h1:6e59c52654b661917a14417f0bb81a44755205a352263a3ad32c14cc7a30c419",
+        "row h1:8c15bf3d0bf5575fd358f48cd560fb5f48a71b4debef2f9009d958b1ee6f1d7f": "h1:0e1271e370477fddffbc6042bad762c04bd2563aad64c247545758fe7d33f62d",
+        "row h1:965353fcd75c366ffbfc0e6fc4493bd3ed783b34dd718db2ffc9bce4b74eeb87": "h1:23a6efeb7d4a6a72ab162f476c7ab2103006e27c89d8138e3fc9be4a909ba4b2",
+        "step Otherwise": "h1:ec9a2d76c03115678ecc39f546cf6348711bf9c667d8104559770286bf33b6c2",
+        "step Provided": "h1:f5cf9b604a956efdfdd3ac149b39d21f6891ba18db734996dba0d1170bc4bec2",
+        "step Then": "h1:522fb73ac55a81ed3ea47c2dba459e1af231b6a9011d36c842eba40fea9df613",
+        "step When": "h1:85ef0165286eb6e11e4762db507783acd45c96f7bbd570b44fff6ee3558968ce"
+      }
+    },
+    {
+      "id": "install.version.manifest-missing",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:548900938f94b65b7c24faac18e7a199f619eaebbab058b59bfcd38f7ba68498",
+        "row h1:24d2636f3e67a3f8cd2b2ef3bc2c790aa432154273358b39192437f2be1e9309": "h1:cdf92c057c75d9f340ddbe8aae22822ed7b8d5360f7dd07eeb0a8f6876078108",
+        "row h1:80f818e245389155673f7e170300b8f54ef3a019adc715bb48a4958423cdc162": "h1:0136263ddb65af6e62607ecb40f91702b5e51a11e52e7493ebbb14f2e6b889a5",
+        "row h1:f5dad5f66c74095a0305bec58b137c081dbf407f009a0b6142c0791a75e3c008": "h1:6ac53c6dca53aa0eeee9a58e2026cbf6b55bd1eae9cdde418d3663d4a0c89412",
+        "section Rationale": "h1:83077fda1cbab79268306a2fda38d5f4b340942fec827d21cf1634c52aacea2f",
+        "step Otherwise": "h1:950b94a8ac42008964c163121dd1c6ffd5f9c34e4c96e23413f3c7dfe2c7a6d6",
+        "step Provided": "h1:73f3eb2c2cc0a57b5a2922ece50dc225f6e8aa8195bafa40775463cef204660c",
+        "step Then": "h1:9e4e7ffba2bd67d6e77e5a363c57e969082fa7e65d9db76e1f8f2bc8b5bab7d1",
+        "step When": "h1:a7e9949d90a574e55a559df18d33566ce889630b118156534de66e418b70f4dd"
+      }
+    },
+    {
+      "id": "install.version.manifest-model",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:b195b9c949b5980ba58292b2201191e564d04f4f841e898d6943b542fd08d948",
+        "row h1:0d97a2a1eca57af49579f40fa9af8acf7802984b0ff0d402caa0382ae1146609": "h1:5e7b91aafa366c93266b077811c1f5ef2fdc6f6ddaf8bcee9130a45f90808b8f",
+        "row h1:2f8379f0bc3eaa829031dba2a1579cdbfa5b4c7751634d84305d06c79e73d2d5": "h1:81feb95914ce7952351303f7c2de1631e112c3555960ecb3b059d6f3dbfbd206",
+        "row h1:629a9ea2588cf75ea9e6cd728f60cfc3671b52d4c7f7e4e82009fe1b899654ee": "h1:09a4b05aefcf2cf83bd4c2a6687252ea2c3f57eac2156c0f9d26f1101a1476f1",
+        "row h1:92a7c8062100911ebf743004c48d157e987d7b261c3d6fb6859b20ddcbcb6cf7": "h1:f4c58833d2c75ba41e6ab4715dd71e1c355146f155ff8db21848ec3c6d83c026",
+        "row h1:9dad4bd2b3a11513407426353b86883c36646ff558aa6239df4158998f84a877": "h1:120008552ae53cd107f0c13281a4605b1a57bb9909c98446defdc766370db6c8",
+        "row h1:f168f5657cb1e3eb7df89b37971ed2589eb763d8c5ac82a566da8c5247afba89": "h1:6650fd33ba28894506a1edea34f04bb5d976073f88e0ac960aa9bea364605c04",
+        "section Rationale": "h1:19f3e780c204d7109dce76a06badd9b72e2c2d8022ffcf9d5ab43c09d1e3eef3",
+        "step Otherwise": "h1:2f9517b00f4be243d7b281212db4f96af56be682f6c3d161c9ce4341f9f874b4",
+        "step Provided": "h1:072e18bf2ae8593e260d54a4ebb31340bb04e82ab283fa0a30fe375a2f4cff2a",
+        "step Then": "h1:398c36fbfa74a192f9bc4bc6136edc557ad6362779e5627baff5be5833b74c1e",
+        "step When": "h1:f0850a58dbbf7571437ed5031ed9350d6c8b10d64dacb36cd199d1925f0a7ec3"
+      }
+    },
+    {
+      "id": "install.version.manifest-other",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:bbe209db3bd1c2eafb1874ce6abc025f0ac1a4559a87997c5aebfb3d098acab7",
+        "row h1:080dfa1649375a9ea72cabbd6b9c2f64d9b7a5dd9df5ca96d5dfe92615a742bc": "h1:446b2daedc9c29abc2be0dbaeb3de28c42d4d738083ec1405814f89f3829482f",
+        "row h1:0d97a2a1eca57af49579f40fa9af8acf7802984b0ff0d402caa0382ae1146609": "h1:cdf3531033d7fdd0bd93b5965a2685c06ef5c59c03383486eedb5ea601db5662",
+        "row h1:1e08305eab3455b1169db822d0a9ae65232b3d46e9ee59ae45adbcf5c6769e74": "h1:3b734fab0433e9c942f314823b0d950ad8d34a0c72b6944e78ef9f433f143511",
+        "row h1:2f8379f0bc3eaa829031dba2a1579cdbfa5b4c7751634d84305d06c79e73d2d5": "h1:23669e984c5ae7808e3ffc17b2860170cf2b4a116f0e5c709ad8e35ca7c18731",
+        "row h1:3156aa9d5c52b854e25a93aac8d5de4d438cfe413b5caeff09b5c84cebb774ee": "h1:52ff0a985957b74bb30df834813e3a248a98dabdd732dd4f80965648267d3231",
+        "row h1:92a7c8062100911ebf743004c48d157e987d7b261c3d6fb6859b20ddcbcb6cf7": "h1:f29c31d37bfac7401cd5921483301b25c5ce653dcce82995acfd36ac16405a8e",
+        "row h1:b6176a140a15e38c2e33d4d065bb915ebde2db70189221eb3fd6554cf1627d76": "h1:4ef814f8b777805ee0a1e78fdb58e1e02a07b666f34cae7d9b66f33da5a99ef5",
+        "row h1:f168f5657cb1e3eb7df89b37971ed2589eb763d8c5ac82a566da8c5247afba89": "h1:625231b1ea6e80e17825e1e65b0b6882bbd5fb226358d65c4d4ec74a2d3ab062",
+        "row h1:f6fd35bb86c60df16b65976a3a2baba8418c1e4e2e2a8e0b7b8efb010e8f2e31": "h1:08f1e855efc5686be9615c1495c0a718e99fafac81e87db4b184f2f2d80e21c9",
+        "step Otherwise": "h1:a03a9e54e86e5dad993362a802b19a5054a3fc5213f57fd1eb5351a86e8e50ae",
+        "step Provided": "h1:3b75ffc0b093bc670530cdd0083db8b1238d6610ed22bb27de4520454a44c7fd",
+        "step Then": "h1:99144f35608092163569fe62a08fa2ea5e8192a17cb930de75b20ac5ce92e0a7",
+        "step When": "h1:f7f9101599cdbcc0feb75c85491a76cb54e8eaea18ea8b9b6ad28b342fae2802"
+      }
+    },
+    {
+      "id": "install.version.manifest-unreadable",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:9bacbdec5c1d3fd36607a88a7af799b22a1855ddd7ebf2359f4fdd7bfe024158",
+        "row h1:18f3902d9fd155f89062d9a4f2b234aba155961c2f62ce756ddcb1a2dd610767": "h1:4b701dfcde2c9e045d73a1d5c4f4bff84b70424a30477f4dd2d2f4a44eb8a8af",
+        "row h1:74f03242fb47b300b4110183a2f1a5c0fe192f023f571a1fe7cce25e76781178": "h1:34dd221afa9a667848094f2a38e01c29966f19991801677f679fb82e73035546",
+        "row h1:eb6bcd095ace01445613d14d88e0f627bd4696e7de19f7f79b415033096a4a0a": "h1:1ec5f562244ecc322229418fc63ddf012a3fd572499925680b45ffa39c40a722",
+        "step Otherwise": "h1:8c96fa3028304e73a2a5c767ffe750a2ddc1bbd361f8ba4815b9270cefa2da98",
+        "step Provided": "h1:f14bbe82c5cfbca163f3c1efc01518629dc9859cc90cd22618b03110a5521d34",
+        "step Then": "h1:76d6b734a4f107374b17e5f53d8feae11c592828d3a216957dee43c788df7464",
+        "step When": "h1:ea58d9798dcc8b350467d7b0b2b9d649e38a6d1ad49025e45bd1bc2175591d1e"
+      }
+    },
+    {
+      "id": "install.version.missing",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:9bb4b24197f85e3b8bc60e4991dd52c2b77d2ee433b2f6ae57238a737d13b12b",
+        "row h1:67edfb22e80a8469044bef6349966dc689d2cd01497b58c289321880af06a3c1": "h1:e07faa7276d5cf1c34280b30333e9271a66de0c9f3bea4895c613692c5b81c6f",
+        "row h1:8e806f47618d4f123002f12a57f51ef953409fd78053a507aaec8ea8968f8435": "h1:87ee895924e7dd6ebecf4c70ee0847b44fbb6d1066b258348334eef25918be83",
+        "row h1:e1b349ea405d863bc6abb1c9d53aed277e1561ff7f1ea9713299698198fdbef3": "h1:20f8616c7e69ad120a272ad552e063eb6f4d78119090546d6474dcecf0ca4f62",
+        "step Given": "h1:f886d0b2725edb145771c4e5a879964bc4cc0b4fedef5da34835769c519df8e1",
+        "step Otherwise": "h1:7530a30f31af6ebe80c214aabab60812c4082ba3c55eee911aba1bf6d11c8772",
+        "step Provided": "h1:69f3ec30d713af929c0e8dd7a51a750c76311b13d3393ca704079a474336d566",
+        "step Then": "h1:2e0cae3ca8d11c23673dfe826e56ba3f778da03f45ea41d1aa648ca8f896d5b7",
+        "step When": "h1:8c6063924711c58307cef201fd38e9484b29b5ce465e54d951d073c6e899bdcd"
+      }
+    },
+    {
+      "id": "install.version.model",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:faad076bc140bb8ff9af9ab829e430906020f776d8d1e18b92cd2e5e821946b9",
+        "row h1:2ef3dbfa792b4e55f100f000ee36ba1ba44abb1139b9e188ba05231aef38fd1d": "h1:7046bfaefd40602b1747d80034074d07a274832612e2e70ba22e3dcb1f517c9d",
+        "row h1:2f11674673f5e4c42cfbb33d856ec479989549abf12c8909b0a9b4daee7d3676": "h1:32b890140d399a9b033adfb1feec43525ea6f29a6aab05474568b2fa3c988058",
+        "row h1:395cf37538ce8b58b7e0a40e7ba0fdd98bea3230d7ec5a6b74b7250e0b7403d3": "h1:6d9cb7ede7570387dbe8d00a10dfd3284b8951e7320f7dd418276186842d47cf",
+        "row h1:4343a32ed7b6c5027985e61773c7bc6b3d7017ac9c75d2e1549fd22be857d5b5": "h1:9aec2ac7e1b2501ce5459d6ddcc8bad01b45b850c3ea024d80a268dee3a17e56",
+        "row h1:43b55aeccdc227b8e5f3c0a7256928a9df122893ee2095bde94eadb5e402140b": "h1:d5243713f577938cd52167bc308820e9fc0b4a74080e062e576cb7a4dc21b8cb",
+        "row h1:68a32660553b0d8692a0db74b6c002602df00741e0046a4d7e3d2310c4812c77": "h1:3ba3879330e21d1427dedff58f75b2dc1175a78e766dc2f534933d28ba922fc8",
+        "row h1:a85af0707dd9b86360c1d59ad6bef7d90d4f11b40d708f416d0c2b10cbee4115": "h1:4f3204633269b2f7992945058e8875f248ccde9d8d09d98f7a87559620f31bba",
+        "row h1:b0e38cfa485c2e3663ffa169022dadea708aad212bee365fd0967282b170bc3d": "h1:5feb9971b89d41ce47e6e40cc9c87825861d6d89add7d9399305701b441d99a3",
+        "row h1:bcfed6e3966abd6de7bccad6777db6ad47db1ecb73706665d70108fe3522b0ee": "h1:6628b72a99f954864bb1bd5f26ec2fa898199d68ddbf5ae74d0737792e5efd3a",
+        "row h1:bebc818f3c52d2c2d72d38aad1acc1e903ca3fa0bb9e8fe3df4e65cef1719f95": "h1:2709cc087598a1f38a460741cd4c3ca1d6ea23bab30bf58f25c9611b11076aff",
+        "row h1:fb86d39b80ac66e28b84d0d9c92f9bb8261af4a38a6d29d825c463460d1ed5e7": "h1:497bc52f9b235f7922acd8f27020b32c4cec16880a62ae8a8ba7a7364ee35d63",
+        "section Rationale": "h1:494ef1a5fb35acfa2824b29ba5e9efb4c9bc08409e8a4821ab762f544d918bc9",
+        "step Given": "h1:e826537a49c104d280e87fae0fa9dd63484481b041bbd64e147812858e860bb4",
+        "step Otherwise": "h1:db4fc6107a7918ee950493f34e55c8bf0c9a1515ad763533450107b2df693107",
+        "step Provided": "h1:7281b7035facf321891b9e27a654a0409a25f8cbdc20653de365cfd45c8a7f7e",
+        "step Then": "h1:3c1b54abef78eb0415b4b1b180fb00abd1ac1668ded65b091222793008613833",
+        "step When": "h1:fdf4e19cf659c94c0068bd3556428aba81c492ed0da8fedf4f423238258fa170"
+      }
+    },
+    {
+      "id": "install.version.output",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:183222a8ca6a97171b9d7af34a63f0ec4266141a32acc3894841e2897231be82",
+        "row h1:0697fdaf588111a1379893c4572d2d487c530d6dc9c20a15a6d9dc26f76dfbad": "h1:92f7458b034ef99518929a35184e63b8d18be229eda7b986d35ab48caa84bd0d",
+        "row h1:78e7e8800bbf0b439e516e9a5f239bfae5489ba5154ab1a76b627d7753211d96": "h1:371273b4b1056e82e70fe3aff680dbf5d58fe012c58f32151810f67c79063684",
+        "row h1:80eb20a9bb70c25aedb6d3ea1d3d7c450c9eff2e178b18d9c61048ec729f2843": "h1:0e7a4bd823b4e589f38ae132cfe6c25597d8428eefdd10448568417f258fb57d",
+        "row h1:872190c451f3e32eb921e880d5aa3f72c5df0c6f0c5ac780c1b6fb4bce2eacaf": "h1:d9cbf2c6e8d0f7244b86d38f85604004393a64507e3bf83e4bfbfc75345da055",
+        "row h1:d24af4cfbccac7145a9fff7a3d7c17cbbe2b62e8c0979a4b21eb25c223de9968": "h1:7984656bc9f60a9129a49cd747a86a6bcd85ff782141a875de19c63e68e41e78",
+        "row h1:fb612acd578d5dbf362f1b430deabe086d0b5ba73ff0922d201c459a293d8700": "h1:f0f41a0da99ff4783a1010ba273f9c69fbda83c38570efbcb6ce3e76c730fccf",
+        "step Otherwise": "h1:1c7d51a72995163e0f2e7090b91d93796d361d33dfb3483f2ea8821acf27c49c",
+        "step Provided": "h1:7d5f03c4f5d1a2a968e326d51504de93dd7dbeda8fd7c4b050645f7829c9d38d",
+        "step Then": "h1:3e834e73d874ea730715fd64aab8947c0de90ec8d3328ff537072ba9b2e64fe1",
+        "step When": "h1:fae934444fe419566034a46da835c7563ef9ba28f45acbead3caf8d3df433185"
+      }
+    },
+    {
+      "id": "install.version.reads-only",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:472dc25692045c10ffe451193b005275208b2260f92ba52bf1d760c9092cab53",
+        "section Property": "h1:c9cb3acd6c3b85d169d2dfa655e6d6c78cde1075a98bce64c469308e9c58b3c8",
+        "section Ranges over": "h1:fc28887b132d1d91b480618622d821209fd6e8171a3176abfff4a8f930674d30",
+        "section Rationale": "h1:a43be87f46a3d7d8d9bbd9adfaacbdca9dc69f3cf26f1320270d006a95fb0426"
+      }
+    },
+    {
+      "id": "install.version.repository",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:7e1ee512010f8cd49856030a5035d1c747981c42d6ef7bc21b28b6cf857d12b8",
+        "row h1:1bce2d4a5ed09394438bae6a050335cbcdd3f733735b2cad196c164c146ba309": "h1:ff9da191ec601672463107512748986d6832ed98892e5195421f72fe5ed6a2b4",
+        "row h1:3743e6c636f6dca35e1588c78dcc2bb244157c2ac9172e207b64344fac43eb5f": "h1:0676b8cb31b5b6c19f856c0db668d90763d8a4e056288afc9869e6cb25c0463c",
+        "row h1:54db7d8faf34e5dc5acd29cd662d7116485325809a25a0b598e6bddd7db52ef3": "h1:8bdbc533f0cf1dab81756eae78dec204cac4217f00f098aa73cae09357ccc5fa",
+        "row h1:f7b78b9a914fb2a88595a25c3b3fecfc8140b0aec1f4f834bd5dc3927f5ea134": "h1:64a0830e37f48ac1dc7feb62de4c88a19a6d67335ec834b293ca727f2c4f011a",
+        "step Given": "h1:32432cb25e024fe12990bc44aee74284995a42e4a265e3cf10d94171ea339464",
+        "step Otherwise": "h1:cc6175389f1405de4c9e6279df7c9c75c02d403c8e9fadf602187d30c2f1798e",
+        "step Provided": "h1:f8957b1de67530d62705f16154983531e3f7e912f0180e6b0bcf0f9f9455767b",
+        "step Then": "h1:db116ce812f20188a3c239ee8f93ad4e84bc45801fe5e2d63a4dc6331906a225",
+        "step When": "h1:7f5f2cf961ed43beb6d474b56f187958e01817c66d3433e2acac5d64ed503a13"
+      }
+    },
+    {
+      "id": "install.version.stale",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:5bb748743a79fbd0bea43fdb265a876912c6171cdda8138b84e8e176b1426b05",
+        "row h1:03262a2eabe39b93b246e73b07733ff9ae6abd88a894597373442967016f0f2c": "h1:a47994da6a983807a623fc83ba3030cae7808e9933753514408407e8092cd690",
+        "row h1:1afb81b29d752796a530ea72da492e74b215d230fd16ef04c3fd1fc94436fcc1": "h1:816f79cc6c5b377921cdf2e6d67709520e8db18db253cb706abe42a888251b53",
+        "row h1:31450ba6e5b68c5e911d8304d235c4bc43819db2cdafafbf3b3d3806c2437210": "h1:5f27a8ec4f290a1215d685dc0c931e1fb8c56197c00608b892b92768dc2f2a1a",
+        "row h1:82a9c2aeba5f8f175ff546b6502aee1584fcec6a6a2943d46b4d786ccf9e2e50": "h1:d12e74ca0dbde78827067b7fba40dacdcba54953c2370a02fe5cee1d29f49cef",
+        "row h1:bb0997b5ea98449d211ed71a8ba4798005f691fd3c70af5276dabe98f13996cd": "h1:3b4e3d343b221942984004b128c792844dce5b4ec1b7c30a2ed8bb75c141d833",
+        "row h1:f7560ba1fe1da622666cddde249af5338550166820bc35f3fcb1c885fa89575f": "h1:138f86f25cc0b4f509747ddc6422d1a22c9013087befb8fa4148ae7f3346e0ca",
+        "row h1:ffd9473218603012b6c91fd1f6b933df61d652c1064e8c35bb2bf92429a287b8": "h1:fb505f20429331a5a49645fe6e496fa9cfc911fbf0ae0218123ccf55dddc35b7",
+        "step Otherwise": "h1:58bd4e3e25ae229b1db2b913fda903334ea501445c079b4ae655b601c4f8802c",
+        "step Provided": "h1:0ba8acd84c8474d9369782bc0e9f53de01686ddbf71e003c99cb9d20b389ecab",
+        "step Then": "h1:57199e6f45c7f44325e994b14c997935ebae334a9f4834184746bf7c520291aa",
+        "step When": "h1:4ea602f5db41bfd90cee8702b990da438b5c9b8b4475612393018aae37af7431"
+      }
+    },
+    {
+      "id": "install.version.stamps",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:148f5dbdb237263e3921331873cadaefa00cafa083384ecd5ea6c6ce6c2cf466",
+        "row h1:10bddd405ee831a8afd28883fd8bcdbd4fd74f86e2fb48280869f6662286703b": "h1:298d70d933b5dac325a15cd7a498841519969310c3aa16dda9e3246f09d16c85",
+        "row h1:173033ac4af3ce9de07f6207b699448dfb30759eb8dfde89dc78f4f5d670504e": "h1:016647aad3b126210a6b3b4b8447df491cbbbf461178a084ab5b546b978d6c0f",
+        "row h1:7d27f17ddbf7cd0e69fa9cdce34d567aed3c26f3f6ad9f0b86a06fdec112817a": "h1:5e98956afaae8c4241a8d38020f7eabc7d977f2b5095a6c4873960fab75c35db",
+        "row h1:da358ede6246b078944ad5ea917c35a34fc46436f16dd86ce5e549f395e28b8c": "h1:bbc97533073d0ec91ef0de70bb0bdfe9417914a7bb0aa710b2eac1ef46d8a58b",
+        "row h1:e3a319217ea39ebe10206683575965c2a88a709e1b0a1fedf63d4b9916a1f1b9": "h1:ebce427e2739b5695f5453d07e0413a97fac3c9880626c74748522d9883886de",
+        "section Rationale": "h1:97156e66578284c0444167e8cc0f68c4f27edd24c7a913779fed37e60890153e",
+        "step Otherwise": "h1:c1572ac05927426e94cd143ac3e2156cedabd8e6b101a8c7e98ab963c3bb7daf",
+        "step Provided": "h1:f54966e0174b7757a0f6c1cf5040a4804643fd8c9199681a93564741d91ae662",
+        "step Then": "h1:534b856e9eb0e83af157378e0590fb8771eecc5d04b57f117bc673b34f8dbdf0",
+        "step When": "h1:b74b42bba9007c527171344a0065709aa55eb79827a7e07538110f9caf8a4074"
+      }
+    },
+    {
+      "id": "install.version.unstamped",
+      "reason": "untouched: version's rules and its invariant read stamps and the manifest as before; update only changes which stamps are on disk, and what it leaves for version to name (newer stamps, failed writes) is what update itself warns about, as update's Rationale intends",
+      "parts": {
+        "heading": "h1:0cd8e0818c30f70f0931b4038dac7b36efa718a13333a59e1d2cf127e6f6ad75",
+        "row h1:097194985c47c33ded55ac9646bd643803c6f37fc4e5156df5d500d2bebe5e46": "h1:889af90f9bf2ccf079b68a7c460b22812100ce1524cb0ca1ca3e8e9927278abd",
+        "row h1:13289662b539b88483eb9de1224c5c823095c84106d0dc878a0f2b95fb0553b6": "h1:156af02a72e422c7be79644973b22433b3a3938e6b579c873afd05332dc05910",
+        "row h1:2b26a008ee03d58c5d534711fc8888f858813abbb3a00486d39b08a851ea83a0": "h1:b43a623f4540081b3de2bd6dade01303e52a14b004b584343ec2580b644ab81f",
+        "row h1:364a43f28e73f209c9fe352dc9c6f5e824cb34bb27db7e820823bdf65819f058": "h1:decc36d134e794ae1744365a935b5d48ea4e64277e2786c1aaa874501cbd9979",
+        "row h1:48c60b0c411b9516322c8c0cf5817ece653c018ec6da5c4a7f8ca30cf91f0a9a": "h1:b0c14767dc1e12a1ff9743ca887e84e2001a3b9bd8001300dbbab6f7aa4fe084",
+        "row h1:4e42f78167f27000a3c89b39f4978f09fecb7cfe7727a9db10b5674950155861": "h1:8414036188db921ca5a34566fc928517b3d82ebe34a74c7dc18fe1704c193a22",
+        "row h1:529e071d2ee89f568183b5baa64e1b1205cebb9619475eedfb1e33d28842f1a8": "h1:9d8a26e98ac682cc02b568d6db2d1b963b536907a4886cfdd2e507a1e5956514",
+        "row h1:547cec535f00e5a2efc1aab082c9c68c78754f7fd848b10296be6c0b89590ae6": "h1:c9b4599f0544020b2859c5a31b0f57bf8a4219d4ebfabd54e52735ca1e6fdd7c",
+        "row h1:5b6d922061dd6e6e278fd869ce955ead40fcfb00e186590eb4ebecbf84ff128c": "h1:9cc8f1283d2a51ed9a0ea310351e2a12fa305a6535d325ef6b33393596db4393",
+        "row h1:a3cf1ae1339481e33901afdf3bad20366e4760f20a62dbfd649bdc5f6af31969": "h1:8617fe29435ba118cd8d909561ce3a4276fdfbe14e09adb075af90877810a233",
+        "row h1:a7a3a0046f386104266feb8475440e56936657652fbcf72df04ef3fb422b1a3f": "h1:6283cf658f7c8b1c9bbdb4d3a4ee54b5bb1f1229e10597fdc29a89b950c1aaea",
+        "row h1:ac83011a7548c254aa31debcd7b41a6615d0c74baf0248032e7a347a49636672": "h1:cc3b8f9f100303928fb6df4f21a7ef47e175b90b3e8db9755be9301f4d31e511",
+        "row h1:b87922cf50e41416f4145b0e36a7f57fe65c720f2820fd5a516d552d4f95fd40": "h1:ec3b75cb2e56f5b5b6f17bb45e8ca9c1974ee1d1ea713300fefe92a3d0cd8488",
+        "row h1:bbcd2a67932049f09e79e6895425de599ba14de6b49b4188c6f1b242425fda5f": "h1:c4b452cff07f753b973c4c2e7dc2f414a23791d8c4fde393e9aa1f9908e22c47",
+        "row h1:bf48d0c5fbf4d5b0f0b62d69df0e6d170a352ba48080e44521363fc23f0d1671": "h1:de01d3ea371e49c6348b954c0baddbc65aeef848733da2416c9c71126e1ec5c1",
+        "row h1:cea3614350486eb4a629dfa48355f5c9dd695d12e61247382518fe2d5a23533f": "h1:6a5c053aa7181cfb4d1e4d6d1477d8adf0a70fcca4d787be692528a583f45b3c",
+        "row h1:d3340f7a0e9c8b7f9fcefdd98fe7bdc094cae00f9f7080dcb9f8448b14e30414": "h1:6ffd1a0de66123f526f1b07ed720ba16ecb2c1929f6aeae7a66b7b14d5e7584a",
+        "row h1:e7320b7d85cf0ae3f392feca16ede360c157478630b28b56dd1f6ff7063e16f3": "h1:17ed45162612bb4a667cc62e92b5ce218f3958047f42137dcf4d97af5bc40f55",
+        "row h1:f08009ea688c153970684f4d88ea6c3d4f9c9a1a0a2c2e0bd340e5597a8ac0fa": "h1:9f959e62b83e3a7eb08b1f2129da7f864b9ed07aa56ec4532b7ec30552a08a13",
+        "section Rationale": "h1:a7bb0415fc3f5b0a2addc71976d4a1339a9e2f51b860962ece8743c0bda9cd50",
+        "step Otherwise": "h1:965c07855142537ccc0fd0518e88ee2fdb31706053afe7a4546a7a5eb9b55c74",
+        "step Provided": "h1:e2765bbdbba628e5785f9e5bcddc31fa4315bbb6ea80457c52d9a3eefbdf9f0b",
+        "step Then": "h1:473f9f3a3c63058e3c7f0d90e952dfeed98a0befcac868cb4a6825a9012bd08f",
+        "step When": "h1:b74b42bba9007c527171344a0065709aa55eb79827a7e07538110f9caf8a4074"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "missed",
+      "elements": [
+        "cli.help.page",
+        "cli.cli.help.page"
+      ],
+      "text": "The help page names every command and every option, so adding the command `update` changes what cli.help.page must write. It is not among the candidates, even though the amendment changed the cli Rationale to say every command fits on one page.",
+      "status": "open"
+    },
+    {
+      "id": "f2",
+      "kind": "contradiction",
+      "elements": [
+        "install.update.missing",
+        "install.update.exit"
+      ],
+      "text": "install.update.missing's Then always writes the stdout line naming <file> as written, while install.update.exit says no stdout line names a file that failed to be written. For example, a missing skill below a `.claude` that is a file gets both. install.update.stamp avoids this with \"where it could write it\"; install.update.missing has no such qualifier.",
+      "status": "open"
+    },
+    {
+      "id": "f3",
+      "kind": "ignored",
+      "elements": [
+        "install.version-stamp",
+        "install.update.release",
+        "install.update.missing",
+        "install.update.stamp"
+      ],
+      "text": "[version stamp] is defined as the Proviso version of the `init` that wrote the file, but `update` now writes the files and stamps them with its own version (install.update.release). Today that is covered only by the wording \"as `init` of its own Proviso version writes it\".",
+      "status": "open"
+    },
+    {
+      "id": "f4",
+      "kind": "contradiction",
+      "elements": [
+        "install.version"
+      ],
+      "text": "The Rationale of install.version says refreshing what version reports is the job of `update`, but version also reports the spec tree model version, which update does not refresh yet.",
+      "status": "open"
+    },
+    {
+      "id": "f5",
+      "kind": "contradiction",
+      "elements": [
+        "install.update.keeps"
+      ],
+      "text": "install.update.keeps says every entry other than the skills and agent definitions stays byte for byte as it was, but a folder that gains a written skill is an entry that changes; install.init.keeps says every file.",
+      "status": "open"
+    }
+  ]
+}

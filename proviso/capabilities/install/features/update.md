@@ -102,13 +102,14 @@ Otherwise `update` writes to "stderr" one line saying that no [skill] or [agent 
 When      `update` takes the [agent definition] or [skill] <file>
 Provided  no entry exists at the path of <file>
 Then      `update` writes <file> as `init` of its own [Proviso version] writes it, with the folders above it that are missing
-  And     `update` writes to "stdout" the line naming <file> as written
+  And     `update` writes to "stdout" the line naming <file> as written, where it could write it
 Otherwise → install.update.stamp
 ```
 
 | file | provided | outcome | why |
 | --- | --- | --- | --- |
 | `.claude/agents/proviso-coder.md`, deleted after `init` | yes | written | |
+| `.claude/agents/proviso-coder.md`, `.claude` being a file | yes | not written, exit status 2 | a folder cannot be made below a file |
 | `.claude/agents/proviso-coder.md`, in place | no | handed over | |
 | `.claude/agents/proviso-coder.md`, a folder of that name | no | handed over | any entry counts |
 

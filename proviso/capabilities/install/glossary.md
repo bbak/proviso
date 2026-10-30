@@ -64,7 +64,7 @@
 - Definition: The line `proviso-version: <version>` in the frontmatter
   of an installed skill or agent definition, among the lines directly
   below the line `metadata:` that start with a space or a tab: the
-  Proviso version of the `init` that wrote the file. The frontmatter is
+  Proviso version of the `init` or `update` that wrote the file. The frontmatter is
   the lines between a first line `---` and the next line `---`; without
   that next line there is none. `metadata:` starts its line; the first
   line below it that starts with neither a space nor a tab, a blank one

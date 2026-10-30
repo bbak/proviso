@@ -721,8 +721,10 @@ anywhere; it takes no argument. It writes `page` to standard output.
 ### <a id="cli.cli.help.page"></a> page
 
 The help page: what Proviso is, in one line; every command with its
-options and one sentence on what it does, the commands engineers run
-first, then those the skills run; the exit statuses the commands share;
+options and one sentence on what it does, first those engineers run,
+`init`, `update`, `version`, `lint`, `diff`, `impact`, `verify` and
+`help`, then those the skills run, `pack`, `judge` and `manifest`; the
+exit statuses the commands share;
 and where the documentation is. It names every command and every
 option. Its wording is for people and not part of the contract.
 
