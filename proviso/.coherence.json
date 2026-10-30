@@ -1,0 +1,63 @@
+{
+  "touched": [
+    {
+      "id": "baseline.dependencies",
+      "now": {
+        "body": "h1:ac1644da4c4f38fbd23447385fde037a2aa92fcbfd85a4bdb8761be38c2c03e0",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:4e5e48895e0b029977e3f4ad76087931abad71edd0e8487359d5d5dc70fd6242",
+        "heading": "h1:2188dfc2d889b53230f6891977d505642d718b940aa3eec23985afb379141dcd"
+      },
+      "baseline": {
+        "body": "h1:ac1644da4c4f38fbd23447385fde037a2aa92fcbfd85a4bdb8761be38c2c03e0",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:843d6c19e054f5c15fa396dfe09149e19378bd12c984e2bab827e4754fb4772d",
+        "heading": "h1:2188dfc2d889b53230f6891977d505642d718b940aa3eec23985afb379141dcd"
+      }
+    },
+    {
+      "id": "baseline.impact",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:f1c9e0fe106a9f836a55e53f7231c4e75bcf248a6d375a708889c4e0f7fbd7bb",
+        "section Goal": "h1:900a1b03643efb064d1cd8963f238fdad4f38f26787cf148837a3a4a5b7f6e85",
+        "section Rationale": "h1:5c91e9239e5e327ff8d852d9f252524dfd7419c749764b3e53e5a234b4507a5f"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:f1c9e0fe106a9f836a55e53f7231c4e75bcf248a6d375a708889c4e0f7fbd7bb",
+        "section Goal": "h1:900a1b03643efb064d1cd8963f238fdad4f38f26787cf148837a3a4a5b7f6e85",
+        "section Rationale": "h1:6b4e512c2cc83858f6ac17fd070fe84e203cfca121e0a2b8a41b124d73467b6a"
+      }
+    },
+    {
+      "id": "baseline.manifest",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:72289d10d39a762f0234f75cc1ff41f1fd20fd970116b849e8959228deebf4bd",
+        "section Goal": "h1:20197244aaa89e32197e401418091a9c66330ce27db88685468c7f928ff3210e",
+        "section Rationale": "h1:bdaa8e77a253b504b7b8d3609b5749813546da4ae8ae9171ec3796f9dcc60b28"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:72289d10d39a762f0234f75cc1ff41f1fd20fd970116b849e8959228deebf4bd",
+        "section Goal": "h1:20197244aaa89e32197e401418091a9c66330ce27db88685468c7f928ff3210e",
+        "section Rationale": "h1:f1eb919aaac42e70550d00edbe5dc438097eaaed35983498884fd16c77e69785"
+      }
+    }
+  ],
+  "judgements": [],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.impact",
+        "baseline.impact.events"
+      ],
+      "text": "The new Rationale of baseline.impact says that between two capabilities the candidates follow only the system level, and that a link written in each capability's own words stays unseen. But baseline.impact.events finds every rule with the same event head anywhere in the tree, now or in the baseline, with no limit to the capability. So two capabilities whose When steps use the same words are linked without going through the system level.",
+      "status": "resolved",
+      "reason": "edited in dfd27cf"
+    }
+  ]
+}
