@@ -80,12 +80,12 @@ Go, with Claude Code and primarily Claude Opus 5.5.
 
 ## Documentation
 
-The [documentation](docs/index.md) covers
-[getting started](docs/getting-started.md),
-[concepts](docs/concepts.md), the [workflow](docs/workflow.md),
-[writing specs](docs/writing-specs.md),
-[repository setup](docs/repository-setup.md) and the
-[commands](docs/commands.md). Proviso specifies itself: its own spec tree
+The [documentation](https://bbak.github.io/proviso/) covers
+[getting started](https://bbak.github.io/proviso/getting-started),
+[concepts](https://bbak.github.io/proviso/concepts), the [workflow](https://bbak.github.io/proviso/workflow),
+[writing specs](https://bbak.github.io/proviso/writing-specs),
+[repository setup](https://bbak.github.io/proviso/repository-setup) and the
+[commands](https://bbak.github.io/proviso/commands). Proviso specifies itself: its own spec tree
 is in [`proviso/`](proviso/).
 
 ## Building Proviso
