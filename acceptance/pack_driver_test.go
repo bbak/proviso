@@ -127,6 +127,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 		return o
 	}
 	checkPackDiff(t, o)
+	checkPackOrder(t, o)
 	return o
 }
 
@@ -398,11 +399,10 @@ func lineAt(lines []string, i int) string {
 }
 
 // checkPackHeadings checks system.cli.pack-text's headings and
-// baseline.pack.contents, baseline.pack.once and baseline.pack.order for
-// every run: the headings in their order, none twice and none empty; every
-// element once; the elements under each heading in byte order. That the
+// baseline.pack.contents and baseline.pack.once for every run: the headings
+// in their order, none twice and none empty; every element once. That the
 // system stands under System is checked against the element diff (see
-// checkPackDiff).
+// checkPackDiff), and the order of the elements by checkPackOrder.
 func checkPackHeadings(t *testing.T, o packOutcome) {
 	t.Helper()
 	rank := map[string]int{}
@@ -425,14 +425,11 @@ func checkPackHeadings(t *testing.T, o packOutcome) {
 		}
 	}
 	seen := map[string]string{}
-	for i, it := range o.items {
+	for _, it := range o.items {
 		if h, ok := seen[it.id]; ok {
 			t.Errorf("baseline.pack.once: %s appears under %q and under %q", it.id, h, it.heading)
 		}
 		seen[it.id] = it.heading
-		if i > 0 && o.items[i-1].heading == it.heading && o.items[i-1].id >= it.id {
-			t.Errorf("baseline.pack.order: under %q, %s before %s", it.heading, o.items[i-1].id, it.id)
-		}
 		if it.heading != "Amendment" && (len(it.headIDs) != 1 || it.headIDs[0] != it.id) {
 			t.Errorf("system.cli.pack-text: the text of %s under %q holds the headings %v", it.id, it.heading, it.headIDs)
 		}
@@ -512,7 +509,20 @@ func checkPackDiff(t *testing.T, o packOutcome) {
 	var packRaw, diffRaw map[string]any
 	json.Unmarshal([]byte(o.json.stdout), &packRaw)
 	json.Unmarshal([]byte(o.diff.json.stdout), &diffRaw)
-	pd, dd := packRaw["diff"], diffRaw["elements"]
+	// Each item exactly as element_diff's; diff stands in the order of
+	// pack_text, element_diff in its own (see checkPackOrder).
+	byID := func(list any) map[string]any {
+		m := map[string]any{}
+		items, _ := list.([]any)
+		for _, it := range items {
+			if obj, ok := it.(map[string]any); ok {
+				id, _ := obj["id"].(string)
+				m[id] = obj
+			}
+		}
+		return m
+	}
+	pd, dd := byID(packRaw["diff"]), byID(diffRaw["elements"])
 	if !reflect.DeepEqual(pd, dd) {
 		a, _ := json.MarshalIndent(pd, "", "  ")
 		b, _ := json.MarshalIndent(dd, "", "  ")
@@ -525,15 +535,15 @@ func checkPackDiff(t *testing.T, o packOutcome) {
 }
 
 // checkAmendments checks the elements under Amendment against those the
-// element diff lists: the same, in the same order, each as checkAmendment
-// says.
+// element diff lists: the same, each as checkAmendment says. Their order is
+// checked by checkPackOrder.
 func checkAmendments(t *testing.T, o packOutcome) {
 	t.Helper()
 	var want []string
 	for _, e := range o.diff.ed.Elements {
 		want = append(want, e.ID)
 	}
-	if got := o.under("Amendment"); strings.Join(got, " ") != strings.Join(want, " ") {
+	if got := o.under("Amendment"); strings.Join(sorted(got), " ") != strings.Join(sorted(want), " ") {
 		t.Errorf("baseline.pack.contents: under Amendment %v, but the element diff lists %v", got, want)
 	}
 	for _, e := range o.diff.ed.Elements {
@@ -621,6 +631,71 @@ func checkAmendment(t *testing.T, it packItem, e diffElement) {
 	if strings.Join(got, "|") != strings.Join(want, "|") {
 		t.Errorf("system.cli.pack-text: want the lines Former of %s for %q, got %q", e.ID, want, got)
 	}
+}
+
+// checkPackOrder checks baseline.pack.order for every run: under each
+// heading of pack_text, the elements by the path of their file, compared
+// byte by byte, then by the line of their heading; under Amendment, the
+// removed elements after all others, by identifier, compared byte by byte.
+// Where each element stands is taken from context_pack and from the element
+// diff, which write paths as report does; that they say it right is checked
+// by standsAt and by the tests of diff. That diff in context_pack stands in
+// the order of pack_text is checked by checkPackAgrees.
+func checkPackOrder(t *testing.T, o packOutcome) {
+	t.Helper()
+	at := map[string]treePlace{}
+	if o.cpOK {
+		for _, e := range o.cp.Elements {
+			at[e.ID] = treePlace{id: e.ID, file: e.File, line: e.Line}
+		}
+	}
+	for _, e := range o.diff.ed.Elements {
+		p := treePlace{id: e.ID, removed: e.Change == "removed"}
+		if e.File != nil && e.Line != nil {
+			p.file, p.line = *e.File, *e.Line
+		}
+		at[e.ID] = p
+	}
+	for i := 1; i < len(o.items); i++ {
+		a, b := o.items[i-1], o.items[i]
+		if a.heading != b.heading {
+			continue
+		}
+		pa, okA := at[a.id]
+		pb, okB := at[b.id]
+		if okA && okB && !pa.before(pb) {
+			t.Errorf("baseline.pack.order: under %q, %s (%s) before %s (%s)", a.heading, a.id, pa, b.id, pb)
+		}
+	}
+}
+
+// treePlace is where an element stands in the spec tree, as
+// baseline.pack.order orders it.
+type treePlace struct {
+	id      string
+	removed bool
+	file    string
+	line    int
+}
+
+// before tells whether p comes before q in the order of baseline.pack.order.
+func (p treePlace) before(q treePlace) bool {
+	switch {
+	case p.removed != q.removed:
+		return !p.removed
+	case p.removed:
+		return p.id < q.id
+	case p.file != q.file:
+		return p.file < q.file
+	}
+	return p.line < q.line
+}
+
+func (p treePlace) String() string {
+	if p.removed {
+		return "removed"
+	}
+	return fmt.Sprintf("%s:%d", p.file, p.line)
 }
 
 // statusFor writes the status line of e, except for an element changed
@@ -735,6 +810,33 @@ func (o packOutcome) exactly(t *testing.T, heading string, ids ...string) {
 	}
 	if present != (len(ids) > 0) {
 		t.Errorf("want the heading %q present: %v, got:\n%s", heading, len(ids) > 0, o.dump())
+	}
+}
+
+// inOrder asserts that exactly the elements ids appear under heading, in
+// this order, in pack_text and in context_pack: in diff for Amendment, among
+// elements for the others.
+func (o packOutcome) inOrder(t *testing.T, heading string, ids ...string) {
+	t.Helper()
+	o.ran(t)
+	want := strings.Join(ids, " ")
+	if got := strings.Join(o.under(heading), " "); got != want {
+		t.Errorf("want under %q in pack_text %s, got %s", heading, want, got)
+	}
+	var fromJSON []string
+	if heading == "Amendment" {
+		for _, e := range o.cp.Diff {
+			fromJSON = append(fromJSON, e.ID)
+		}
+	} else {
+		for _, e := range o.cp.Elements {
+			if e.Heading == packHeadingJSON[heading] {
+				fromJSON = append(fromJSON, e.ID)
+			}
+		}
+	}
+	if got := strings.Join(fromJSON, " "); got != want {
+		t.Errorf("want under %q in context_pack %s, got %s", heading, want, got)
 	}
 }
 

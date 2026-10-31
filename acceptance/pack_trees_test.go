@@ -108,3 +108,46 @@ func TestFixturePack(t *testing.T) {
 	t.Parallel()
 	check(t, packTree()).clean(t)
 }
+
+// The trees of baseline.pack.order: the pack tree with what an order by
+// identifier, or by folder, would get wrong.
+
+const giftPath = "proviso/capabilities/cart-gift/capability.md"
+
+// memberTree is the pack tree whose contract element cart.api.line holds a
+// second member, cart.api.line.amount, after cart.api.line.count, and whose
+// rule cart.pay.lines refers to both.
+func memberTree() tree {
+	return packTree().
+		edit(apiPath, "How many pieces the line holds.\n", "How many pieces the line holds.\n\n"+
+			"### <a id=\"cart.api.line.amount\"></a> amount\n\nWhat the line costs.\n").
+		edit(payPath, "´line.count´ for each line", "´line.count´ and ´line.amount´ for each line")
+}
+
+// giftTree is the pack tree with a second capability, cart-gift, whose
+// folder's path sorts before cart's byte by byte, since - comes before /,
+// but after it folder by folder.
+func giftTree() tree {
+	return packTree().with(giftPath, `# <a id="cart-gift"></a> Gift carts
+
+## Goal
+
+Buyers give carts away.
+
+## Rationale
+
+Gifts sell goods.
+`)
+}
+
+func TestFixturePackOrder(t *testing.T) {
+	t.Parallel()
+	t.Run("members", func(t *testing.T) {
+		t.Parallel()
+		check(t, memberTree()).clean(t)
+	})
+	t.Run("gift", func(t *testing.T) {
+		t.Parallel()
+		check(t, giftTree()).clean(t)
+	})
+}
