@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/bbak/proviso/internal/lint"
 )
 
 // packOf compares the edited tree with the baseline of impactTree, and
@@ -16,7 +18,7 @@ func packOf(t *testing.T, edit func(map[string]string)) map[string][]string {
 	now := files(editTree(edit))
 	entries := Compare(now, base)
 	out := map[string][]string{}
-	for _, e := range entries {
+	for _, e := range PackOrder(entries) {
 		out["amendment"] = append(out["amendment"], e.ID)
 	}
 	for _, p := range Pack(entries, now) {
@@ -64,7 +66,7 @@ func TestPack(t *testing.T) {
 			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.a"},
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
-			HeadingContext: {"system.ref.std", "system.std"},
+			HeadingContext: {"system.std", "system.ref.std"},
 		}},
 		{"a removed rule brings nothing", func(m map[string]string) {
 			m["capabilities/c/features/g.md"] = strings.Replace(m["capabilities/c/features/g.md"], rule("c.g.c", "`api` answers <x>", "it is answered"), "", 1)
@@ -104,5 +106,25 @@ func TestPack(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestPackOrder(t *testing.T) {
+	el := func(file string, line int) *lint.Element { return &lint.Element{File: file, Line: line} }
+	entries := []*Entry{
+		{ID: "a.z", Change: Removed},
+		{ID: "lint.run.exit", Change: Changed, Element: el("proviso/capabilities/lint/features/run.md", 30)},
+		{ID: "a.b", Change: Removed},
+		{ID: "lint.run.root", Change: Changed, Element: el("proviso/capabilities/lint/features/run.md", 10)},
+		{ID: "system.git", Change: Added, Element: el("proviso/constraints.md", 1)},
+		{ID: "lint", Change: Added, Element: el("proviso/capabilities/lint/capability.md", 1)},
+	}
+	var got []string
+	for _, e := range PackOrder(entries) {
+		got = append(got, e.ID)
+	}
+	want := []string{"lint", "lint.run.root", "lint.run.exit", "system.git", "a.b", "a.z"}
+	if !slices.Equal(got, want) {
+		t.Errorf("got %v, want %v", got, want)
 	}
 }

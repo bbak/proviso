@@ -198,6 +198,7 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, 
 		return exitCantRun
 	}
 	packed := baseline.Pack(entries, res.Elements)
+	entries = baseline.PackOrder(entries)
 	if !emit("pack", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
 			return report.PackJSON(w, reportRoot(t.Root), revision, entries, note, packed)
