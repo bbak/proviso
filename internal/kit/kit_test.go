@@ -15,8 +15,8 @@ var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop", "0.1.1-dev")
-	if len(got) != 13 {
-		t.Fatalf("%d files, want 13", len(got))
+	if len(got) != 14 {
+		t.Fatalf("%d files, want 14", len(got))
 	}
 	reading := read("agents/reading.md")
 	for i, f := range got {
@@ -83,8 +83,8 @@ func TestFiles(t *testing.T) {
 			t.Errorf("%s not named %s", f.Path, name)
 		}
 	}
-	if skills != 4 {
-		t.Errorf("%d skills, want 4", skills)
+	if skills != 5 {
+		t.Errorf("%d skills, want 5", skills)
 	}
 	if sys := got[len(got)-1]; sys.Path != "proviso/system.md" || !bytes.HasPrefix(sys.Data, []byte("# <a id=\"system\"></a> shop\n")) {
 		t.Errorf("skeleton %s: %q", sys.Path, sys.Data)

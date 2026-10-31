@@ -17,7 +17,7 @@ func TestUpdate(t *testing.T) {
 	stamped := func(v string) string { return "---\nname: x\nmetadata:\n  proviso-version: " + v + "\n---\n" }
 	all := func(v string, edit map[string]string) map[string]string {
 		files := map[string]string{".git/HEAD": "", "proviso/system.md": "mine\n", ".proviso/build.md": "mine\n"}
-		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", build, ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md"} {
+		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", build, ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md"} {
 			files[f] = stamped(v)
 		}
 		for k, v := range edit {
@@ -97,7 +97,7 @@ func TestUpdateOrder(t *testing.T) {
 		t.Fatalf("status %d, stderr %q", status, errOut.String())
 	}
 	want := "written .claude/agents/proviso-checker.md\nupdated .claude/agents/proviso-coder.md\nwritten .claude/agents/proviso-tester.md\n" +
-		"written .claude/skills/proviso-accept/SKILL.md\nwritten .claude/skills/proviso-build/SKILL.md\nwritten .claude/skills/proviso-check/SKILL.md\nwritten .claude/skills/proviso-integrate/SKILL.md\n"
+		"written .claude/skills/proviso-accept/SKILL.md\nwritten .claude/skills/proviso-build/SKILL.md\nwritten .claude/skills/proviso-check/SKILL.md\nwritten .claude/skills/proviso-integrate/SKILL.md\nwritten .claude/skills/proviso-recover/SKILL.md\n"
 	if out.String() != want {
 		t.Errorf("stdout %q", out.String())
 	}
