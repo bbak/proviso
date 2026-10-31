@@ -174,7 +174,8 @@ that the order is the same on every platform.
 
 ```guarded
 When      `pack` writes the [elements] <elements> under the heading <heading> of `pack_text`
-Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], compared byte by byte, then by where they stand in that file
+Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], written as `report` writes paths, compared byte by byte, then by where they stand in that file
+  And     removed [elements] follow them, ordered by [identifier], compared byte by byte, since they no longer stand in the [spec tree]
   And     the [parts] named for each appear in the order `diff` gives them
 ```
 
@@ -182,6 +183,7 @@ Then      they appear in the order the [spec tree] holds them: by the path of th
 | --- | --- | --- | --- |
 | `system.git`, `lint.run`, `lint` | "Frames" | `lint`, `lint.run`, `system.git` | `capabilities/lint/capability.md`, then `capabilities/lint/features/run.md`, then `constraints.md` |
 | `lint.run.exit`, `lint.run.root` | "Amendment" | `lint.run.root`, then `lint.run.exit` | as they stand in `run.md`, not by identifier |
+| `lint.run.root`, removed, and `lint.run.exit`, changed | "Amendment" | `lint.run.exit`, then `lint.run.root` | a removed element follows |
 | `system.cli.diff.exit-status`, `system.cli.diff`, `system.cli.diff.since`, `system.cli.diff.json` | "Context" | `system.cli.diff`, `system.cli.diff.json`, `system.cli.diff.since`, `system.cli.diff.exit-status` | the members as the contract gives them |
 
 ## <a id="baseline.pack.output"></a> Rule: The pack is written as text or as JSON
