@@ -52,19 +52,21 @@ plurals count as uses, which is what aliases are for.
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
-Provided  <text> holds no name or alias of a [glossary entry] in the glossary of <capability> or of the system, as a whole word, ignoring case
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of <capability> or of the system
 Then      lint reports no [error] about <text>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.term-unmarked` at each such word
+Otherwise lint reports the [error] `findings.term-unmarked` at each such match
   And     lint goes on with the rest of the [spec tree]
 ```
 
 Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
-taken out. Words are matched against the names and aliases of every
-glossary at once, its own capability's, the system's and the other
-capabilities': where names overlap, the longest match at a place wins,
-and a word within it is no use of its own.
+taken out. Matches are found from its start onwards: at each place, the
+longest name or alias of a glossary entry that starts there as a whole
+word, ignoring case, is a match, and matching goes on after it. Every
+glossary counts at once, its own capability's, the system's and the
+other capabilities', so the match that starts first wins, and a word
+within a match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -73,6 +75,7 @@ and a word within it is no use of its own.
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
 | lint reports nothing about | lint | yes | no error | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | no error | "date heading" is the longer match |
+| lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
 
 ## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
 
@@ -89,14 +92,14 @@ will be. A word that is a term here as well is left to
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
-Provided  <text> holds no name or alias of a [glossary entry] in the glossary of another capability, as a whole word, ignoring case, that is not also a name or alias of a [glossary entry] in the glossary of <capability> or of the system
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of another capability, and of none in the glossary of <capability> or of the system
 Then      lint reports no [ask] about <text>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [ask] `findings.term-foreign` at each such word, naming each [glossary entry] that has it
+Otherwise lint reports the [ask] `findings.term-foreign` at each such match, naming each [glossary entry] that has it
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Words are matched as `lint.references.marked` says, over every glossary
+Matches are found as `lint.references.marked` says, over every glossary
 at once.
 
 | text | capability | provided | outcome | why |
@@ -110,6 +113,7 @@ at once.
 | the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the longer match wins over the capability's own term |
 | the line ending is read | lint, while diff defines line | yes | no ask | the system's "line ending" is the longer match |
+| lint reads the line ending date | lint, while diff defines ending date | yes | no ask | "line ending" starts first, so "ending date" is no match |
 
 ## <a id="lint.references.term-ambiguous"></a> Rule: A term name names one entry
 
