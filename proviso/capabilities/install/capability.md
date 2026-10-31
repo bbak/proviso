@@ -5,11 +5,12 @@
 Installing gives a repository what Proviso needs beside the system's
 code: the start of a spec tree that lint accepts, the settings that keep
 the tree readable on every platform, the definitions of the agents and
-the skills that bring a request into the spec tree and build, check and
-accept an amendment, so that an engineer begins with one command; and
-it tells which version of Proviso installed the skills and agents, and
-whether they and the spec tree fit the binary in use, and brings the
-skills and agents to the binary's version after an upgrade.
+the skills that recover the spec tree of an existing system, bring a
+request into it and build, check and accept an amendment, so that an
+engineer begins with one command; and it tells which version of Proviso
+installed the skills and agents, and whether they and the spec tree fit
+the binary in use, and brings the skills and agents to the binary's
+version after an upgrade.
 
 ## Rationale
 

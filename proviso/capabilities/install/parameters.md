@@ -14,11 +14,12 @@
   which keeps it independent of whoever wrote the amendment, and what
   it writes reaches the engineer before anyone else. A definition of
   its own, `proviso-amendment-renderer`, follows when its instructions
-  need to be shared or its tools restricted. The skill that recovers the
-  spec tree of an existing system is the engineer's, as the skills of an
-  amendment are, and edits the tree as they do, so it is installed with
-  them; only the authoring skill, for requesters who never see the tree,
-  is distributed on its own.
+  need to be shared or its tools restricted. Recovering a capability of
+  an existing system is the first step of an amendment, as bringing in a
+  request is: the engineer's, on the amendment's branch, so the skill
+  that recovers the spec tree is installed with the other skills; only
+  the authoring skill, for requesters who never see the tree, is
+  distributed on its own.
 
 The paths are relative to the directory `init` runs in, with `/` as the
 separator.
