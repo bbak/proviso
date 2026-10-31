@@ -137,7 +137,8 @@ another file of the kit would point to nothing. A skill reads no context
 pack, so it carries no reading guide. A skill that edits the spec tree
 carries the writing guide instead: the kit keeps it once for every such
 skill, so that a decision written into the tree while integrating,
-building or checking reads the same, and `init` puts it in place.
+recovering, building or checking reads the same, and `init` puts it in
+place.
 
 ```guarded
 When      `init` writes the [skill] <skill>
@@ -151,6 +152,7 @@ Then      <skill> is the [kit]'s [skill] of that name, with the [kit]'s writing 
 | `.claude/skills/proviso-build/SKILL.md` | the skill that builds an amendment, named `proviso-build`, with the writing guide in it, stamped with `init`'s Proviso version | |
 | `.claude/skills/proviso-check/SKILL.md` | the skill that checks an amendment, named `proviso-check`, with the same writing guide in it, stamped with `init`'s Proviso version | |
 | `.claude/skills/proviso-integrate/SKILL.md` | the skill that brings a request into the spec tree, named `proviso-integrate`, with the same writing guide in it, stamped with `init`'s Proviso version | |
+| `.claude/skills/proviso-recover/SKILL.md` | the skill that recovers the spec tree of an existing system, named `proviso-recover`, with the same writing guide in it, stamped with `init`'s Proviso version | |
 | `.claude/skills/proviso-accept/SKILL.md` | the skill that accepts an amendment, named `proviso-accept`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
 
 ## <a id="install.init.exit"></a> Rule: The exit status tells whether every installed file is in place
