@@ -83,6 +83,17 @@ this section holds:
   "No reason was recorded when this was built.", and a question asks
   for it. Never infer a plausible reason: it would read as a decision
   someone made.
+- **Invariants and constraints** only where a source states one: a doc,
+  a specification, a design note, a comment in the code, or the
+  engineer. A property you see in the code but no source states is a
+  question, such as "Does every response carry the concept's status?",
+  never an invariant: an inferred invariant claims more than any rule
+  shows, and the check then finds every case it does not cover.
+- **Claim nothing the rules do not deliver:** a Rationale, a term's
+  definition and an invariant say only what the rules they explain do.
+  Read each against those rules before you commit. When the check finds
+  one that claims too much, take the claim out rather than reword it: a
+  reworded claim is the next finding.
 
 ## Questions
 
@@ -92,7 +103,8 @@ Each is tagged with the element it concerns and names whom to ask:
 - one per feature: `- [cash.withdrawal] Do these rules state the intended behaviour? (ask: Cash Operations)`;
 - one for each behaviour a default decided;
 - one for each disagreement between the code and a test or a doc;
-- one for each recovered term and each missing reason.
+- one for each recovered term and each missing reason;
+- one for each property the code seems to keep but no source states.
 
 A question about every single rule would drown the agenda; the feature's
 question covers its plain rules.
@@ -103,6 +115,11 @@ Each run is one amendment on a branch of its own, made from the target,
 usually the default branch, and named after what it recovers, such as
 `recover-system` or `recover-billing`, once the engineer confirms the
 name. Its working tree is clean, and `proviso lint` exits with 0.
+
+Capabilities may be recovered at the same time, each on its own branch
+in its own worktree, with a scratch folder of its own for whatever you
+run. The second to be accepted brings the first in, and its check then
+covers what the two do to each other.
 
 Run `proviso version` in the repository's root. Pass every warning it
 writes on to the engineer: a skill or agent definition that another
@@ -123,6 +140,9 @@ only:
   what it does, not by how its code is packaged; for each capability
   the engineer agrees to, write its `capability.md`, Goal and Rationale
   only;
+- propose the order: first the capability whose words the others use,
+  such as the one that reads the system's data, so that its shared terms
+  stand at system level before anyone else needs them;
 - add the system's questions to its `questions.md`.
 
 Then go on with step 4.
@@ -135,10 +155,22 @@ When the engineer names a capability to recover:
   the glossaries, parameters, invariants, constraints and contracts of
   the system and of any capability recovered before. Reuse their terms;
   a word they define differently from how this capability's code uses it
-  is a question, never a second definition.
+  is a question, never a second definition. Lint resolves a mark only in
+  the capability's own files and at system level: a term or contract a
+  second capability needs moves to system level, its identifier kept,
+  and gets its mark in every rule that uses the word.
 - **Read the system:** the code that does what the capability does, its
   tests, and every doc about it. Note each disagreement and each default
   as you go.
+- **Try what reading leaves open:** where the code, its tests and its
+  docs leave a row uncertain, such as a library's handling of an odd
+  input, run the system and see. Use its own interface, the way
+  `.proviso/build.md` says it is built and run, or a short script in the
+  system's language that calls it, in a scratch folder of your own
+  outside the repository, against data you make there. Never change the
+  system's code for it, never touch data or services the engineer has
+  not named, and where the system cannot be run here, rest the row on
+  reading and say so.
 - **Agree the features** with the engineer: their names, Goals and
   contacts.
 - **Write the capability** as the writing guide says, with the departures
@@ -152,7 +184,12 @@ Before you commit:
 - `proviso lint` exits with 0, and no element holds a `?`;
 - every Examples row is checked against its rule and against the code;
 - every candidate `proviso impact` lists is read, and either edited or
-  left for the check.
+  left for the check;
+- every Rationale, definition and invariant you wrote is read against
+  the rules it explains.
+
+Report which rows rest on reading the code alone, and which on running
+it.
 
 ## 4. Check it
 
@@ -162,7 +199,27 @@ on when it has finished with `proviso verify` exiting with 0. Accepting
 is the engineer's call: say that the amendment is ready for
 `proviso-accept`.
 
-## 5. Check a recovered capability against the code
+For each finding of a recovered capability, recommend to the engineer:
+
+- **A claim the recovery made** that the rules do not deliver: take it
+  out, as the departures above say.
+- **A rule that misstates what the system does:** correct it from the
+  code.
+- **A finer case of behaviour the system already has,** which no rule
+  decides: a question in `questions.md`, and the finding dismissed with
+  that reason, unless the engineer wants it decided now. Each such case
+  answered by an edit only shows the next one; the questions keep them
+  for whoever confirms the tree.
+
+## 5. Tie the capabilities together
+
+Once every capability is recovered, one more amendment states at system
+level what crosses them: a notion one capability's rules rely on and
+another defines, such as a state one reports and another keeps;
+invariants several capabilities state alike; contracts more than one
+refers to. Write it, check it and have it accepted like the others.
+
+## 6. Check a recovered capability against the code
 
 Only when the engineer asks for it: once a capability is accepted, and
 its tree is solid enough that tests written from it say something.
