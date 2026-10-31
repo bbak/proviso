@@ -172,7 +172,8 @@ For a system that exists already, the tree starts from what it does.
 Ask Claude Code to recover it. The first run writes `system.md` and the
 system's capabilities, with their Goals; each later run recovers one
 capability as an amendment of its own, checked and accepted like any
-other.
+other, starting with the one whose words the others use. A last
+amendment states at system level what crosses the capabilities.
 
 - **The code decides** what a rule says: the tree states what the system
   does, whether or not anyone meant it to. Tests give the Examples, docs
