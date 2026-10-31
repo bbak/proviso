@@ -39,8 +39,14 @@ func removedFrom(tr tree, path, id string) change {
 // the outcome, the amended tree and the accepted commit.
 func packOf(t *testing.T, cs ...change) (packOutcome, tree, string) {
 	t.Helper()
-	r, base := accepted(t, packTree())
-	tr := amended(packTree(), cs...)
+	return packFrom(t, packTree(), cs...)
+}
+
+// packFrom does what packOf does, with the tree from instead of the pack tree.
+func packFrom(t *testing.T, from tree, cs ...change) (packOutcome, tree, string) {
+	t.Helper()
+	r, base := accepted(t, from)
+	tr := amended(from.clone(), cs...)
 	r.set(tr)
 	o := r.pack()
 	o.ran(t)
@@ -325,23 +331,65 @@ func TestBaselinePackOnce(t *testing.T) {
 
 func TestBaselinePackOrder(t *testing.T) {
 	t.Parallel()
-	// That the elements under each heading are in byte order, and the parts
-	// of each in diff's order, is checked for every run (see packIn); here
-	// each row's outcome is checked as well.
+	// That the elements under each heading stand in the order of the tree,
+	// with removed elements after them, and the parts of each in diff's
+	// order, is checked for every run (see packIn); here each row's outcome
+	// is checked as well.
 	t.Run("row1 under Frames", func(t *testing.T) {
 		t.Parallel()
+		// system.git, lint.run, lint: system.fast and system.honest, the
+		// feature cart.pay, the capability cart with its constraint
+		// cart.light and its invariant cart.bounded. By identifier, cart.bounded
+		// would come second.
 		o, _, _ := packOf(t, pCapThen)
-		want := "cart cart.bounded cart.light cart.pay system.fast system.honest"
-		if got := strings.Join(o.under("Frames"), " "); got != want {
-			t.Errorf("want under Frames %s, got %s", want, got)
-		}
+		o.inOrder(t, "Frames", "cart", "cart.light", "cart.pay", "cart.bounded", "system.fast", "system.honest")
 	})
-	t.Run("row2 under Amendment", func(t *testing.T) {
+	t.Run("row2 under Amendment, as they stand in one file", func(t *testing.T) {
 		t.Parallel()
+		// lint.run.exit, lint.run.root: cart.pay.cap and cart.pay.total, of
+		// which cart.pay.total stands first in pay.md.
+		o, _, _ := packOf(t, pCapThen, pTotalThen)
+		o.inOrder(t, "Amendment", "cart.pay.total", "cart.pay.cap")
+	})
+	t.Run("row3 under Amendment, a removed element follows", func(t *testing.T) {
+		t.Parallel()
+		// lint.run.root, removed, and lint.run.exit, changed: cart.pay.total,
+		// which stood before cart.pay.cap in pay.md.
 		o, _, _ := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"), pCapThen)
-		if got := strings.Join(o.under("Amendment"), " "); got != "cart.pay.cap cart.pay.total" {
-			t.Errorf("want under Amendment cart.pay.cap, then cart.pay.total, got %s", got)
-		}
+		o.inOrder(t, "Amendment", "cart.pay.cap", "cart.pay.total")
+	})
+	t.Run("row4 under Context, the members as the contract gives them", func(t *testing.T) {
+		t.Parallel()
+		// system.cli.diff and its members: cart.api.line, with
+		// cart.api.line.count before cart.api.line.amount in api.md, and
+		// cart.item, which it represents, in glossary.md.
+		o, _, _ := packFrom(t, memberTree(), change{payPath, "for each line of <order>", "for every line of <order>"})
+		o.inOrder(t, "Amendment", "cart.pay.lines")
+		o.inOrder(t, "Context", "cart.api.line", "cart.api.line.count", "cart.api.line.amount", "cart.item")
+	})
+	t.Run("derived: a removed element follows, though its file and its identifier come first", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packOf(t, removedFrom(packTree(), featurePath, "cart.add.full"), pCapThen)
+		o.inOrder(t, "Amendment", "cart.pay.cap", "cart.add.full")
+	})
+	t.Run("derived: removed elements by identifier, not where they stood", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packOf(t, removedFrom(packTree(), payPath, "cart.pay.total"), removedFrom(packTree(), payPath, "cart.pay.cap"))
+		o.inOrder(t, "Amendment", "cart.pay.cap", "cart.pay.total")
+	})
+	t.Run("derived: elements changed through a dependency stand where the tree holds them", func(t *testing.T) {
+		t.Parallel()
+		// cart.max-quantity stands in parameters.md, after features/.
+		o, _, _ := packOf(t, iParamValue)
+		o.inOrder(t, "Amendment", "cart.add.limit", "cart.add.spoken", "cart.pay.cap", "cart.max-quantity")
+	})
+	t.Run("derived: paths compared byte by byte, not folder by folder", func(t *testing.T) {
+		t.Parallel()
+		// capabilities/cart-gift/ comes before capabilities/cart/, since -
+		// comes before /.
+		o, _, _ := packFrom(t, giftTree(), iCartGoal, change{giftPath, "Buyers give carts away.", "Buyers give whole carts away."})
+		o.inOrder(t, "Amendment", "cart-gift", "cart")
+		o.inOrder(t, "Frames", "cart.light", "cart.bounded", "system.fast", "system.honest")
 	})
 	t.Run("derived: the parts in diff's order", func(t *testing.T) {
 		t.Parallel()
