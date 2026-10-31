@@ -27,6 +27,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-build/SKILL.md\n" +
 		"written .claude/skills/proviso-check/SKILL.md\n" +
 		"written .claude/skills/proviso-integrate/SKILL.md\n" +
+		"written .claude/skills/proviso-recover/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -44,10 +45,10 @@ func TestSystemCliInit(t *testing.T) {
 }
 
 // TestInstallInstalledFiles checks the rows of installed_files that the
-// other tests do not: the skills that accept, build and check an amendment
-// and the one that brings a request into the spec tree are written, and are
-// no empty files. Their wording, and that of the stubs,
-// is the kit's.
+// other tests do not: the skills that accept, build and check an amendment,
+// the one that brings a request into the spec tree and the one that recovers
+// the spec tree of an existing system are written, and are no empty files.
+// Their wording, and that of the stubs, is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
 	r := freshRepo(t, "repo", false)
@@ -58,6 +59,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-build/SKILL.md",
 		".claude/skills/proviso-check/SKILL.md",
 		".claude/skills/proviso-integrate/SKILL.md",
+		".claude/skills/proviso-recover/SKILL.md",
 	}
 	for _, p := range append(skills, ".proviso/build.md") {
 		o.says(t, "written", p)
@@ -241,7 +243,8 @@ func TestInstallInitSkills(t *testing.T) {
 		{"row1 the skill that builds an amendment, with the writing guide, stamped with init's Proviso version", ".claude/skills/proviso-build/SKILL.md", "proviso-build", true},
 		{"row2 the skill that checks an amendment, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-check/SKILL.md", "proviso-check", true},
 		{"row3 the skill that brings a request into the spec tree, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-integrate/SKILL.md", "proviso-integrate", true},
-		{"row4 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
+		{"row4 the skill that recovers the spec tree of an existing system, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-recover/SKILL.md", "proviso-recover", true},
+		{"row5 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
 	}
 	var writers []string
 	for _, row := range rows {
