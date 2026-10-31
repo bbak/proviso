@@ -135,8 +135,9 @@ branch.
 installs. Proviso owns them.
 
 **Skill.** Instructions the agent host follows for one step of an
-amendment: `proviso-integrate`, `proviso-build`, `proviso-check` and
-`proviso-accept`. A skill runs Proviso's commands for every mechanical
+amendment: `proviso-integrate`, `proviso-build`, `proviso-check`,
+`proviso-accept`, and `proviso-recover`, which writes the tree of an
+existing system one capability per amendment. A skill runs Proviso's commands for every mechanical
 step and starts the agents. The skills that edit the tree share a
 **writing guide**: how to write it for the agents that build from it.
 

@@ -59,6 +59,10 @@ notes in `.proviso/`. Name your project's build and test commands in
 4. **Accept:** ask it to accept the amendment. It is merged, and the tree
    becomes the new baseline.
 
+For a system that exists already, ask Claude Code to recover its spec
+tree: `proviso-recover` writes what the system does, one capability per
+amendment, with the questions that let the business confirm it.
+
 Run `proviso verify` in CI, so that no amendment reaches the target
 branch unchecked.
 

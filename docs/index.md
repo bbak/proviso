@@ -75,8 +75,9 @@ sets out the findings behind this.
    is either the recorded baseline or an amendment its check covers.
 
 The agents call Proviso; Proviso never drives them. Four skills,
-installed into the repository, take an amendment through steps 2 to 5.
-Claude Code is the first agent host they run on.
+installed into the repository, take an amendment through steps 2 to 5;
+a fifth recovers the spec tree of a system that exists already. Claude
+Code is the first agent host they run on.
 
 ## Limits
 

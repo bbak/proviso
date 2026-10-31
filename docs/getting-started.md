@@ -44,7 +44,7 @@ it wrote and what it left alone. It never replaces a file that exists.
 | --- | --- |
 | `proviso/system.md` | the start of the spec tree: the system, with six sections to decide |
 | `proviso/.gitattributes`, `proviso/.markdownlint.jsonc` | settings that keep the tree on line feeds and markdownlint content with the notation |
-| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/` | the skills that bring a request into the tree, and build, check and accept an amendment |
+| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/`, `proviso-recover/` | the skills that bring a request into the tree, build, check and accept an amendment, and recover the tree of an existing system |
 | `.claude/agents/proviso-tester.md`, `proviso-coder.md`, `proviso-checker.md` | the testing, coding and checking agents |
 | `.proviso/build.md`, `tester.md`, `coder.md` | your notes to the skills and the implementing agents |
 
@@ -132,6 +132,13 @@ In Claude Code, on the amendment's branch, ask in turn:
 After that, `proviso verify` exits with 0 on the target branch: the tree
 is the baseline, and no check is left over. Every later change is an
 amendment of its own, on its own branch.
+
+## An existing system
+
+For a system that runs already, ask Claude Code to **recover its spec
+tree**: `proviso-recover` writes what the system does, as built, first
+the system and its capabilities, then one capability per amendment.
+[Workflow](workflow.md#recover-proviso-recover) describes it.
 
 ## Next
 

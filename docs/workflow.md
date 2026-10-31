@@ -166,6 +166,36 @@ It never pushes and never opens a pull request.
 resolve it by running `proviso manifest`: the merge is an amendment of
 its own, and the check shows what the two did to each other.
 
+## Recover: `proviso-recover`
+
+For a system that exists already, the tree starts from what it does.
+Ask Claude Code to recover it. The first run writes `system.md` and the
+system's capabilities, with their Goals; each later run recovers one
+capability as an amendment of its own, checked and accepted like any
+other.
+
+- **The code decides** what a rule says: the tree states what the system
+  does, whether or not anyone meant it to. Tests give the Examples, docs
+  the terms and the reasons. Where a test or a doc says otherwise, the
+  rule stays as built, and a question asks which is intended.
+- **Behaviour a default decided,** such as a library's rounding or an
+  unset timeout, gets a question of its own: it is the decision nobody
+  made.
+- **Nothing is left undecided:** the system does something in every
+  case, so a recovered tree holds no `?`. What nobody has confirmed is
+  doubted instead, as questions in `questions.md`: one per feature, and
+  one for each default, disagreement, recovered term and missing
+  reason. They are the agenda for the business to confirm the tree.
+- **You decide** how the system falls into capabilities and features,
+  and whom to ask about each.
+
+Once a capability is accepted and solid, ask Claude Code to **check it
+against the code**: the testing agent writes acceptance tests from the
+tree alone, and they run against the unchanged code. A failing test
+means the tree and the code disagree; the fix goes into the tree, never
+the code. This needs your notes to say how acceptance tests are built
+and run. The tests stay, and pin what the system does today.
+
 ## Edits outside the skills
 
 The tree can be edited by hand, and an amendment need not be built by
