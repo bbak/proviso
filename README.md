@@ -102,3 +102,6 @@ Copyright 2026 Bruno Baketarić. Licensed under the
 [Apache License, Version 2.0](LICENSE). The binary contains code from
 other projects under their own licenses; see
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+Proviso is a personal project, built in my own time. It is not
+affiliated with, sponsored or endorsed by my employer.
