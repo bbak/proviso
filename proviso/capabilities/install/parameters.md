@@ -14,7 +14,11 @@
   which keeps it independent of whoever wrote the amendment, and what
   it writes reaches the engineer before anyone else. A definition of
   its own, `proviso-amendment-renderer`, follows when its instructions
-  need to be shared or its tools restricted.
+  need to be shared or its tools restricted. The skill that recovers the
+  spec tree of an existing system is the engineer's, as the skills of an
+  amendment are, and edits the tree as they do, so it is installed with
+  them; only the authoring skill, for requesters who never see the tree,
+  is distributed on its own.
 
 The paths are relative to the directory `init` runs in, with `/` as the
 separator.
@@ -28,6 +32,7 @@ separator.
 | `.claude/skills/proviso-build/SKILL.md` | the kit's skill that builds an amendment |
 | `.claude/skills/proviso-check/SKILL.md` | the kit's skill that checks an amendment |
 | `.claude/skills/proviso-integrate/SKILL.md` | the kit's skill that brings a request into the spec tree |
+| `.claude/skills/proviso-recover/SKILL.md` | the kit's skill that recovers the spec tree of an existing system |
 | `.proviso/build.md` | the kit's stub for the engineers' notes to the skills |
 | `.proviso/coder.md` | the kit's stub for the engineers' notes to the coding agent |
 | `.proviso/tester.md` | the kit's stub for the engineers' notes to the testing agent |
