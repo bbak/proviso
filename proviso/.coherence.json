@@ -1,0 +1,142 @@
+{
+  "touched": [
+    {
+      "id": "baseline.diff.former",
+      "now": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      },
+      "baseline": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      }
+    },
+    {
+      "id": "baseline.pack.order",
+      "now": {
+        "heading": "h1:dbc84f4b13df0bac63f96e99c362007aaa0b9f8bd2686e2d142fc9651c73acfb",
+        "row h1:0a95d01a55b6cbf2921afd860f21caffbc12b7c0f7ad1e46ba2f55202321a988": "h1:2061e04ea54417bda55cdb3d21476e33d60b48b477ee0487a75f02534a70b99b",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:02d649470496824e508b9015548a19c9e796c0c109f4ff17356e105cb56ca229",
+        "row h1:a37525d76f6518c6d9a1b3cd58f1c1e8c37527ae6646756568f3820775c80327": "h1:9dc414777110720d4843203f068daf381af67e2bf90aa0be6b6ef9eea7486c3d",
+        "row h1:df3f7c4bdaba5e464d1bb46b7ba889c2f84bd1a1aa406c5d494cd02a42bdbe51": "h1:2ff236362c8b657dc55759b08620cccbd932c6874ceb432d3e89c131153dcfab",
+        "section Rationale": "h1:aab8bb95b5397b1542408339e13cef095a6bc7e206ce5c98c547f0310bdc8b72",
+        "step Then": "h1:979ab4a0c188b3f3c5a7eea9c4543fbfaa26a6ee5c040e7c583fac10bc76d9e5",
+        "step When": "h1:fa91016298467ee761dd5f8341e8dcbde12fa10c7202ef9f5e43f289fb081b1a"
+      },
+      "baseline": {
+        "heading": "h1:03d25fde7f984c318ad8a5bb0692584bba77d80a2c1f1d4f2266bdb4b386db3a",
+        "row h1:6a4bc1dd372cc8764ed17890b948e8ce6fc0ec4af08bcd2489299569e246443c": "h1:c7062fd87ac9245d822ead849d2355d9381e5e8a98e5ee13a34ee069c645bfb9",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:fbd341d4b42787104748e1f02c49aca434fc077ec2419076f3fdaf2b4aaf32fe",
+        "step Then": "h1:c53db797ac0f66c8d94d5912eaaa1b5c6198a3ee80309a4fae60bfb82c9450dd",
+        "step When": "h1:fa91016298467ee761dd5f8341e8dcbde12fa10c7202ef9f5e43f289fb081b1a"
+      }
+    },
+    {
+      "id": "baseline.pack.output",
+      "now": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      },
+      "baseline": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      }
+    },
+    {
+      "id": "system.cli.context-pack",
+      "now": {
+        "body": "h1:27cdf6e944c4eef4cb3ebde457340d8b864d32f24297e99eea275d1cc97effb8",
+        "heading": "h1:4621e0e17ed9ba1fe97b7bd048fd64f55e8eb199794098abaa6fd02445a45162"
+      },
+      "baseline": {
+        "body": "h1:92467bea441607aa1d14672964a225b9892d45b5ff812141f6aeda7a7fcde03f",
+        "heading": "h1:4621e0e17ed9ba1fe97b7bd048fd64f55e8eb199794098abaa6fd02445a45162"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment changes only the order and the source of what pack and the other commands write to stdout, not which files under the spec root or in git a run may change",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "baseline.pack.order",
+        "system.cli.pack-text",
+        "system.cli.element-diff"
+      ],
+      "text": "The new Then orders elements by the path of their file and where they stand in it, but a removed element listed under \"Amendment\" no longer stands in the tree (element_diff gives it no file and no line), so no rule says where it appears. The former order by identifier covered removed elements; the new one does not.",
+      "status": "resolved",
+      "reason": "edited in 1796875"
+    },
+    {
+      "id": "f2",
+      "kind": "ignored",
+      "elements": [
+        "baseline.pack.order",
+        "system.platforms"
+      ],
+      "text": "The rule compares 'the path of their file below the spec root' byte by byte but does not say how the path is written: which separator, and which Unicode form. With a backslash or a slash and with NFC or NFD names the byte order differs, so the order of pack_text could differ between platforms. system.platforms requires such a difference to be decided in the tree, and the rule's own Rationale says it means the same order on every platform.",
+      "status": "resolved",
+      "reason": "edited in 1796875"
+    },
+    {
+      "id": "f3",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.pack.order",
+        "system.cli.diff",
+        "system.cli.diff.exit-status",
+        "system.cli.diff.json",
+        "system.cli.diff.since"
+      ],
+      "text": "Examples row 3 of baseline.pack.order gives `system.cli.diff`, `.json`, `.since`, `.exit-status` as 'the members as the contract gives them', but contracts/cli.md holds them in the order `system.cli.diff`, `.exit-status`, `.json`, `.since`. Under the new Then, the real tree would give a different outcome from the one the row names.",
+      "status": "dismissed",
+      "reason": "The contract file holds json, since, exit-status (lines 113, 118, 125); the order read was the pack's identifier order this amendment replaces."
+    }
+  ]
+}
