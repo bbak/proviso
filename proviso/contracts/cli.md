@@ -441,7 +441,7 @@ properties:
 ```
 
 - `diff` holds the elements under Amendment, each exactly as an item of
-  `elements` in `element_diff`.
+  `elements` in `element_diff`, in the order of `pack_text`.
 - `note` is the text `pack_text` holds under Not in this amendment, or
   null where it has no such heading.
 - `elements` holds every other element of the pack, under the heading

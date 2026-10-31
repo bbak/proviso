@@ -26,8 +26,9 @@ type Packed struct {
 // the tree as it stands: the elements the diff lists, under Amendment, and
 // every other element of the pack, under its heading. Each element appears
 // once: a listed one under Amendment only, any other under the heading it
-// was taken for. The elements under each heading are ordered by
-// identifier.
+// was taken for. The elements under each heading are ordered as the tree
+// holds them (baseline.pack.order); PackOrder orders those under
+// Amendment.
 func Pack(entries []*Entry, elements []lint.Element) []Packed {
 	byID := byID(elements)
 	listed := map[string]bool{}
@@ -97,9 +98,34 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 		out = append(out, Packed{Heading: h, Element: byID[id]})
 	}
 	slices.SortFunc(out, func(a, b Packed) int {
-		return cmp.Or(cmp.Compare(rank(a.Heading), rank(b.Heading)), cmp.Compare(a.Element.ID, b.Element.ID))
+		return cmp.Or(cmp.Compare(rank(a.Heading), rank(b.Heading)), treeOrder(a.Element, b.Element))
 	})
 	return out
+}
+
+// PackOrder returns the entries of an element diff in the order the pack
+// gives them under Amendment (baseline.pack.order): as the tree holds
+// them, removed elements following, by identifier.
+func PackOrder(entries []*Entry) []*Entry {
+	out := slices.Clone(entries)
+	slices.SortStableFunc(out, func(a, b *Entry) int {
+		switch {
+		case a.Element == nil && b.Element == nil:
+			return cmp.Compare(a.ID, b.ID)
+		case a.Element == nil:
+			return 1
+		case b.Element == nil:
+			return -1
+		}
+		return treeOrder(a.Element, b.Element)
+	})
+	return out
+}
+
+// treeOrder orders elements as the tree holds them: by the report's path
+// of their file, compared byte by byte, then by the line of their heading.
+func treeOrder(a, b *lint.Element) int {
+	return cmp.Or(cmp.Compare(a.File, b.File), cmp.Compare(a.Line, b.Line))
 }
 
 // rank is the place of a heading in pack_text, Amendment standing between
