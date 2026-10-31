@@ -226,9 +226,9 @@ parts at once does not show which one decides, so each part needs a row
 of its own.
 
 ```guarded
-When      lint reads the "provided" column <values> of the [Examples table] of a [rule] whose [guard] has two or more parts, <parts> of them
+When      lint reads the "provided" column <values> of the [Examples table] of a [rule] whose [guard] has two or more lines, <parts> of them
 Provided  <values> hold at least <parts> rows that are "no" or "no (<part>)"
-Then      lint reports nothing about the parts of the [guard]
+Then      lint reports nothing about the lines of the [guard]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.examples-part-missing` at the table
   And     lint goes on with the rest of the [spec tree]

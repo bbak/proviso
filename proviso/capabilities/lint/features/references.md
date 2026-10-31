@@ -5,8 +5,8 @@
 ## Goal
 
 Every term mark, hand-over and backtick reference in the spec tree
-resolves to exactly one element, and every use of a term in a rule block
-is marked.
+resolves to exactly one element, every use of a term in a rule block is
+marked, and a word that is a term of another capability is asked about.
 
 ## Rationale
 
@@ -53,7 +53,7 @@ plurals count as uses, which is what aliases are for.
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
 Provided  <text> holds no name or alias of a [glossary entry] in the glossary of <capability> or of the system, as a whole word, ignoring case
-Then      lint reports nothing about <text>
+Then      lint reports no [error] about <text>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.term-unmarked` at each such word
   And     lint goes on with the rest of the [spec tree]
@@ -65,10 +65,45 @@ taken out.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| lint goes on with the rest of the | lint | yes | nothing reported | "spec tree" was marked |
+| lint goes on with the rest of the | lint | yes | no error | "spec tree" was marked |
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
-| lint reports nothing about | lint | yes | nothing reported | |
+| lint reports nothing about | lint | yes | no error | |
+
+## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
+
+### Rationale
+
+Capabilities do not see each other's terms, so a word that is a term of
+another capability is plain text here, and the impact search through
+terms misses the rule when that term changes. Only a person can weigh
+whether the word means that term, so lint asks rather than refuses. If
+it does, the term moves to the system's glossary and the word is marked;
+if not, the word is reworded, since a word that can be read as either
+will be. A word that is a term here as well is left to
+`lint.references.marked`.
+
+```guarded
+When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
+Provided  <text> holds no name or alias of a [glossary entry] in the glossary of another capability, as a whole word, ignoring case, that is not also a name or alias of a [glossary entry] in the glossary of <capability> or of the system
+Then      lint reports no [ask] about <text>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [ask] `findings.term-foreign` at each such word, naming each [glossary entry] that has it
+  And     lint goes on with the rest of the [spec tree]
+```
+
+Words are matched as `lint.references.marked` matches them: where names
+overlap, the longest match at a place wins.
+
+| text | capability | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| lint reads it as a line of a | lint | yes | no ask | |
+| lint reports nothing about the parts of the | lint | no | ask at "parts", naming `baseline.part` | by an alias |
+| lint reads it as Part of a | lint | no | ask at "Part", naming `baseline.part` | names are matched ignoring case |
+| lint reads it as partial | lint | yes | no ask | not a whole word |
+| the finding is read | install | no | ask at "finding", naming `lint.finding` | |
+| the part is read | diff, which defines part, as baseline does | yes | no ask | a term of its own; `lint.references.marked` reports it unmarked |
+| the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
 
 ## <a id="lint.references.term-ambiguous"></a> Rule: A term name names one entry
 

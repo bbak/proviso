@@ -46,7 +46,7 @@ guard, and belongs in `Provided` and `Otherwise`.
 ```guarded
 When      lint reads the non-blank line <line> of a [rule block]
 Provided  <line> starts with a [keyword], after any spaces or tabs
-Then      lint reads <line> as part of a [step]
+Then      lint reads <line> as a line of a [step]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.keyword-unknown` at <line>
   And     lint goes on with the rest of the [spec tree]
