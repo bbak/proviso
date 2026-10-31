@@ -53,7 +53,7 @@ plurals count as uses, which is what aliases are for.
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
 Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of <capability> or of the system
-Then      lint reports no [error] about <text>
+Then      lint reports nothing about <text> holding an unmarked [term]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.term-unmarked` at each such match
   And     lint goes on with the rest of the [spec tree]
@@ -70,11 +70,11 @@ within a match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| lint goes on with the rest of the | lint | yes | no error | "spec tree" was marked |
+| lint goes on with the rest of the | lint | yes | nothing reported | "spec tree" was marked |
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
-| lint reports nothing about | lint | yes | no error | |
-| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | no error | "date heading" is the longer match |
+| lint reports nothing about | lint | yes | nothing reported | |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the longer match |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
 
 ## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
@@ -93,7 +93,7 @@ will be. A word that is a term here as well is left to
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
 Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of another capability, and of none in the glossary of <capability> or of the system
-Then      lint reports no [ask] about <text>
+Then      lint reports nothing about <text> holding a [term] of another capability
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [ask] `findings.term-foreign` at each such match, naming each [glossary entry] that has it
   And     lint goes on with the rest of the [spec tree]
@@ -104,16 +104,16 @@ at once.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
-| lint reads it as a line of a | lint | yes | no ask | |
+| lint reads it as a line of a | lint | yes | nothing reported | |
 | lint reports nothing about the parts of the | lint | no | ask at "parts", naming `baseline.part` | by an alias |
 | lint reads it as Part of a | lint | no | ask at "Part", naming `baseline.part` | names are matched ignoring case |
-| lint reads it as partial | lint | yes | no ask | not a whole word |
+| lint reads it as partial | lint | yes | nothing reported | not a whole word |
 | the finding is read | install | no | ask at "finding", naming `lint.finding` | |
-| the part is read | diff, which defines part, as baseline does | yes | no ask | a term of its own; `lint.references.marked` reports it unmarked |
+| the part is read | diff, which defines part, as baseline does | yes | nothing reported | a term of its own; `lint.references.marked` reports it unmarked |
 | the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the longer match wins over the capability's own term |
-| the line ending is read | lint, while diff defines line | yes | no ask | the system's "line ending" is the longer match |
-| lint reads the line ending date | lint, while diff defines ending date | yes | no ask | "line ending" starts first, so "ending date" is no match |
+| the line ending is read | lint, while diff defines line | yes | nothing reported | the system's "line ending" is the longer match |
+| lint reads the line ending date | lint, while diff defines ending date | yes | nothing reported | "line ending" starts first, so "ending date" is no match |
 
 ## <a id="lint.references.term-ambiguous"></a> Rule: A term name names one entry
 
