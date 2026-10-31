@@ -162,18 +162,27 @@ Otherwise <element> appears once under the heading it was taken for, however oft
 | `lint.run`, unchanged, holding two changed rules | no | under "Frames" once | |
 | `system.spec-root`, unchanged, marked by two changed rules | no | under "Context" once | |
 
-## <a id="baseline.pack.order"></a> Rule: The elements under each heading are ordered
+## <a id="baseline.pack.order"></a> Rule: The elements under each heading are ordered as the tree holds them
+
+### Rationale
+
+The agents read the pack in place of the tree, so it keeps the tree's
+order. Where elements stand can carry meaning, such as the members of a
+contract element standing in the order of a message's fields, and an
+order by identifier would lose it. Paths are compared byte by byte, so
+that the order is the same on every platform.
 
 ```guarded
 When      `pack` writes the [elements] <elements> under the heading <heading> of `pack_text`
-Then      they appear ordered by [identifier], compared byte by byte
+Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], compared byte by byte, then by where they stand in that file
   And     the [parts] named for each appear in the order `diff` gives them
 ```
 
-| elements | heading | outcome |
-| --- | --- | --- |
-| `system.git`, `lint.run`, `lint` | "Frames" | `lint`, `lint.run`, `system.git` |
-| `lint.run.root`, `lint.run.exit` | "Amendment" | `lint.run.exit`, then `lint.run.root` |
+| elements | heading | outcome | why |
+| --- | --- | --- | --- |
+| `system.git`, `lint.run`, `lint` | "Frames" | `lint`, `lint.run`, `system.git` | `capabilities/lint/capability.md`, then `capabilities/lint/features/run.md`, then `constraints.md` |
+| `lint.run.exit`, `lint.run.root` | "Amendment" | `lint.run.root`, then `lint.run.exit` | as they stand in `run.md`, not by identifier |
+| `system.cli.diff.exit-status`, `system.cli.diff`, `system.cli.diff.since`, `system.cli.diff.json` | "Context" | `system.cli.diff`, `system.cli.diff.json`, `system.cli.diff.since`, `system.cli.diff.exit-status` | the members as the contract gives them |
 
 ## <a id="baseline.pack.output"></a> Rule: The pack is written as text or as JSON
 
