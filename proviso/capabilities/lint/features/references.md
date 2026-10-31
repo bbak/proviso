@@ -61,7 +61,10 @@ Otherwise lint reports the [error] `findings.term-unmarked` at each such word
 
 Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
-taken out.
+taken out. Words are matched against the names and aliases of every
+glossary at once, its own capability's, the system's and the other
+capabilities': where names overlap, the longest match at a place wins,
+and a word within it is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -69,6 +72,7 @@ taken out.
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
 | lint reports nothing about | lint | yes | no error | |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | no error | "date heading" is the longer match |
 
 ## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
 
@@ -92,8 +96,8 @@ Otherwise lint reports the [ask] `findings.term-foreign` at each such word, nami
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Words are matched as `lint.references.marked` matches them: where names
-overlap, the longest match at a place wins.
+Words are matched as `lint.references.marked` says, over every glossary
+at once.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -104,6 +108,8 @@ overlap, the longest match at a place wins.
 | the finding is read | install | no | ask at "finding", naming `lint.finding` | |
 | the part is read | diff, which defines part, as baseline does | yes | no ask | a term of its own; `lint.references.marked` reports it unmarked |
 | the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the longer match wins over the capability's own term |
+| the line ending is read | lint, while diff defines line | yes | no ask | the system's "line ending" is the longer match |
 
 ## <a id="lint.references.term-ambiguous"></a> Rule: A term name names one entry
 
