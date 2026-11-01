@@ -9,6 +9,9 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"unicode"
+
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/bbak/proviso/internal/markdown"
 	"github.com/bbak/proviso/internal/tree"
@@ -264,11 +267,11 @@ func (l *linter) definedByResolves(e *element, by field) string {
 func (l *linter) checkAmbiguity() {
 	for lv, entries := range l.glossary {
 		for _, e := range entries {
-			for _, n := range uniqueNorm(termNames(e)) {
+			for _, n := range uniqueKeys(termNames(e)) {
 				var others []*element
 				for _, olv := range neighbours(lv, l.glossaryLevels()) {
 					for _, o := range l.glossary[olv] {
-						if o != e && slices.Contains(uniqueNorm(termNames(o)), n) {
+						if o != e && slices.Contains(uniqueKeys(termNames(o)), n) {
 							others = append(others, o)
 						}
 					}
@@ -346,21 +349,26 @@ func termNames(e *element) []string {
 	return names
 }
 
-// nameSpace holds the characters that join the words of a term name and
-// do not count at either end of it: spaces and tabs, and a line break
-// within a field. No other white space does.
+// nameSpace holds the characters that join the words of a term name:
+// spaces and tabs, and a line break within a field. No other white space
+// does.
 const nameSpace = " \t\r\n"
 
-// norm folds case and white space, as term names are matched.
-func norm(s string) string {
+// nameKey brings a name into the form in which names compare, as
+// name_comparison says: white space at either end dropped, each run of
+// spaces and tabs within it one space, each character in its simple lower
+// case, and the whole in NFC. Two names are the same when their keys are.
+func nameKey(s string) string {
+	s = strings.TrimFunc(s, unicode.IsSpace)
 	words := strings.FieldsFunc(s, func(c rune) bool { return strings.ContainsRune(nameSpace, c) })
-	return strings.ToLower(strings.Join(words, " "))
+	s = strings.Map(unicode.ToLower, strings.Join(words, " "))
+	return norm.NFC.String(s)
 }
 
-func uniqueNorm(names []string) []string {
+func uniqueKeys(names []string) []string {
 	var out []string
 	for _, n := range names {
-		if n := norm(n); !slices.Contains(out, n) {
+		if n := nameKey(n); n != "" && !slices.Contains(out, n) {
 			out = append(out, n)
 		}
 	}
@@ -369,10 +377,10 @@ func uniqueNorm(names []string) []string {
 
 // resolveTerm returns the visible entry a term name names, if any.
 func (l *linter) resolveTerm(cap, name string) *element {
-	n := norm(name)
+	n := nameKey(name)
 	for _, lv := range visible(cap) {
 		for _, e := range l.glossary[lv] {
-			if slices.Contains(uniqueNorm(termNames(e)), n) {
+			if slices.Contains(uniqueKeys(termNames(e)), n) {
 				return e
 			}
 		}

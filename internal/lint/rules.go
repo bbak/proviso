@@ -226,11 +226,11 @@ func (l *linter) resolveReference(cap, ref string) *element {
 }
 
 // checkUnmarked reports each match in the unmarked text of a line: a name
-// or alias of a glossary entry of any level, as whole words, ignoring case,
-// the longest at each place, found from the start onwards. A match that is
-// a term of the rule's own capability or of the system is a term used
-// without its mark; one that is a term of other capabilities only is asked
-// about.
+// or alias of a glossary entry of any level, as whole words, compared as
+// name_comparison says, the longest at each place, found from the start
+// onwards. A match that is a term of the rule's own capability or of the
+// system is a term used without its mark; one that is a term of other
+// capabilities only is asked about.
 func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	text := ln.Without(true, guarded.Literal, guarded.Code, guarded.Mark, guarded.Placeholder)
 	if ln.Keyword != "" {
@@ -245,9 +245,9 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	var phrases []phrase
 	for _, lv := range l.glossaryLevels() {
 		for _, e := range l.glossary[lv] {
-			for _, n := range termNames(e) {
+			for _, n := range uniqueKeys(termNames(e)) {
 				if p := splitWords(n); len(p) > 0 && wordsAndSpaces(n) {
-					phrases = append(phrases, phrase{lowerAll(p), e})
+					phrases = append(phrases, phrase{keysOf(p), e})
 				}
 			}
 		}
@@ -290,13 +290,16 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	}
 }
 
+// word is a word of a text, with its key as name_comparison makes it.
 type word struct {
 	start, end int
-	lower      string
+	key        string
 }
 
+// isWordRune reports whether c belongs to a word: a letter, a combining
+// mark, a digit, a hyphen or an underscore.
 func isWordRune(c rune) bool {
-	return unicode.IsLetter(c) || unicode.IsDigit(c) || c == '-' || c == '_'
+	return unicode.IsLetter(c) || unicode.IsMark(c) || unicode.IsDigit(c) || c == '-' || c == '_'
 }
 
 func splitWords(s string) []word {
@@ -310,12 +313,12 @@ func splitWords(s string) []word {
 			continue
 		}
 		if start >= 0 {
-			out = append(out, word{start, i, strings.ToLower(s[start:i])})
+			out = append(out, word{start, i, nameKey(s[start:i])})
 			start = -1
 		}
 	}
 	if start >= 0 {
-		out = append(out, word{start, len(s), strings.ToLower(s[start:])})
+		out = append(out, word{start, len(s), nameKey(s[start:])})
 	}
 	return out
 }
@@ -326,10 +329,10 @@ func wordsAndSpaces(s string) bool {
 	return strings.IndexFunc(s, func(c rune) bool { return !isWordRune(c) && !strings.ContainsRune(nameSpace, c) }) < 0
 }
 
-func lowerAll(ws []word) []string {
+func keysOf(ws []word) []string {
 	var out []string
 	for _, w := range ws {
-		out = append(out, w.lower)
+		out = append(out, w.key)
 	}
 	return out
 }
@@ -341,7 +344,7 @@ func matchAt(words []word, i int, phrase []string, text string) bool {
 		return false
 	}
 	for k, p := range phrase {
-		if words[i+k].lower != p {
+		if words[i+k].key != p {
 			return false
 		}
 		if k > 0 && !spaceOnly.MatchString(text[words[i+k-1].end:words[i+k].start]) {
