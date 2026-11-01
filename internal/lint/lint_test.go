@@ -454,6 +454,12 @@ func TestTermForeign(t *testing.T) {
 		{"no-break space splits", "the line ending is read", "", "", "", entry("system.line-ending", "line ending", ""), nil},
 		{"combining mark joins, NFC", "lint reads the übersicht", entry("c.ubersicht", "Übersicht", ""), "", "", "", []string{"term-unmarked"}},
 		{"simple lower case", "lint reads the STRASSE", entry("c.strasse", "Straße", ""), "", "", "", nil},
+		{"punctuation in a name", "lint reads the U.S.  law", entry("c.us-law", "U.S. law", ""), "", "", "", []string{"term-unmarked"}},
+		{"punctuation, tab", "lint reads the u.s.\tlaw", entry("c.us-law", "U.S. law", ""), "", "", "", []string{"term-unmarked"}},
+		{"punctuation, foreign", "lint reads the U.S. law", "", entry("d.us-law", "U.S. law", ""), "", "", []string{"term-foreign d.us-law"}},
+		{"punctuation, no-break space", "lint reads the U.S. law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
+		{"punctuation, placeholder splits", "lint reads the U.S. <id> law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
+		{"punctuation, not a whole word", "lint reads the XU.S. law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
