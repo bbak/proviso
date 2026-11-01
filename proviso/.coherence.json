@@ -1,0 +1,98 @@
+{
+  "touched": [
+    {
+      "id": "baseline.diff.former",
+      "now": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      },
+      "baseline": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      }
+    },
+    {
+      "id": "baseline.diff.output",
+      "now": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      },
+      "baseline": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      }
+    },
+    {
+      "id": "system.cli.element-diff",
+      "now": {
+        "body": "h1:33eb80fb992ef33a50179c4d3fbdc547e734975972bda167b42496dfaa870a05",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      },
+      "baseline": {
+        "body": "h1:75963a3e491053e2d99baae86b8b673ab47ac121b2a94286fe34bf3853a605db",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment changes only which element sets the order of an element_diff, not which files or git state a baseline command may change",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "system.cli.element-diff",
+        "baseline.diff.order"
+      ],
+      "text": "Now that element_diff leaves order to its rule, baseline.diff.order gives the order of elements and of their parts, but neither element says how the chains in `through` or the entries in `undecided` are ordered. Two builds could write different JSON for the same amendment.",
+      "status": "dismissed",
+      "reason": "Older than this amendment; the removed clause never ordered them, and the code is deterministic. A follow-up amendment of baseline.diff.order if wanted."
+    }
+  ]
+}
