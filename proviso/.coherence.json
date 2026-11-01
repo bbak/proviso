@@ -1,0 +1,386 @@
+{
+  "touched": [
+    {
+      "id": "baseline.dependencies",
+      "now": {
+        "body": "h1:d21bb14b658ddec9485dee4c86978c2186cbd48840339f30d0f6bc0d91346f7b",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:5f6cc8235a6226813aafe7aba5bf4ad6f79e4fd84a6f42889d787754ab2674f4",
+        "heading": "h1:2188dfc2d889b53230f6891977d505642d718b940aa3eec23985afb379141dcd"
+      },
+      "baseline": {
+        "body": "h1:ac1644da4c4f38fbd23447385fde037a2aa92fcbfd85a4bdb8761be38c2c03e0",
+        "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
+        "field Rationale": "h1:4e5e48895e0b029977e3f4ad76087931abad71edd0e8487359d5d5dc70fd6242",
+        "heading": "h1:2188dfc2d889b53230f6891977d505642d718b940aa3eec23985afb379141dcd"
+      }
+    },
+    {
+      "id": "baseline.diff.dependency",
+      "now": {
+        "heading": "h1:7dec7b3008e2452468d6a3198b53c0463120551df6266e67ac8e447ebef03251",
+        "row h1:006997c31bd7e02c3b9a46a5a8350b0d73e5ec904127bbe8e0d1cf443b33c32e": "h1:fec300bbde77d08adb8c2a6c8f99304ff56c015af797305b367f5b91948fc08b",
+        "row h1:0aab68aa04510bdedc2ea00e5e43fd6973cac8e70432f517b8f700acd90a4d0e": "h1:e7fe1a34f2d492aed2eff0c1d2cb1658bc8f04b133a038c9caae13469d8bc903",
+        "row h1:1683b97ea7b8a552e44c86d2035ce4f4f457fc9d53948ea0b64f6955ba9063ac": "h1:6f79e49f31b2de71105d43c4cd8e908cd0d626858026826c3883e69f3b02a29b",
+        "row h1:43ac26a9681a7f61128b72ef1903d2ad1b7ac474e4edc274f42944a8bf41990b": "h1:1142f38294f33dffe19a88acee34617edbb7165e27f39c8e32e9c2c0d9968d58",
+        "row h1:658dffe126ac0acb5f7789a527e7afcbc44da70363bfc0bcc60e68807c015f44": "h1:63110c64f6823512c115c2785f4cf10b743d48c05a769e6e08ba73e462c3ae71",
+        "row h1:91b0c93be0c9c2fac3e4fce0275083180327e64fdd3d21b4ae47080c421a65b3": "h1:3085075aad597da836724d8b25c265cb2486fd16201e60aaf3f9211908abc4ba",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:e7941b639a6a5331edaca7c6a526ff9eb3681e33b17219e7eb0d717aa73b597a",
+        "row h1:dadec99e187de8a53537e3def6b45a3ccdc2f0a4b682d6e2f9eb7cd2f209e0a3": "h1:0aa3da4d5f1c39f6d5cdfd2cd080256dc45a803f47f2c06d380bbd5eee1fda87",
+        "row h1:dc43115c32d6e9454b4306e965fbe3978ab14c71c9e789d3806b9aab7051dd83": "h1:00e2c8d2274fe7be68db693cc22ccea6810b731f424fab5b0cfe9816d61fb200",
+        "row h1:fa210bd874492291ad29d7d988ba5787fe7d0eb92af9c591ade8b5312ed15862": "h1:6ae0dba3838b82adf8f5fca6150d3545da5640e20f5bbb349a1691a7dfd97de8",
+        "section Rationale": "h1:1a8d4404a5f6e630a1dd9f1021b109d2d725c34c92b54fd42dd59ae962822d99",
+        "step Otherwise": "h1:dc7f2de521b9c2d5a6dd1d4e0e5f046f0bc60399ffa51626a00d85aecc4ff467",
+        "step Provided": "h1:97218acdf995ee384ab822fb4ce3474aca8709deacb0c28b8be920303593bad5",
+        "step Then": "h1:1bed1fd21f81ac651f2f01cea7698cdfb4bb82871dafb3e16502aa110d272586",
+        "step When": "h1:8c7ef74ec57968781ad9bd0f929941baf41c52f954620da50146814f2ca866f8"
+      },
+      "baseline": {
+        "heading": "h1:7dec7b3008e2452468d6a3198b53c0463120551df6266e67ac8e447ebef03251",
+        "row h1:006997c31bd7e02c3b9a46a5a8350b0d73e5ec904127bbe8e0d1cf443b33c32e": "h1:fec300bbde77d08adb8c2a6c8f99304ff56c015af797305b367f5b91948fc08b",
+        "row h1:0aab68aa04510bdedc2ea00e5e43fd6973cac8e70432f517b8f700acd90a4d0e": "h1:e7fe1a34f2d492aed2eff0c1d2cb1658bc8f04b133a038c9caae13469d8bc903",
+        "row h1:1683b97ea7b8a552e44c86d2035ce4f4f457fc9d53948ea0b64f6955ba9063ac": "h1:68ad2245edae63bb6421d13a23c2bb6ce6e005761ebe89d77faf396d6ddd1c8c",
+        "row h1:43ac26a9681a7f61128b72ef1903d2ad1b7ac474e4edc274f42944a8bf41990b": "h1:1142f38294f33dffe19a88acee34617edbb7165e27f39c8e32e9c2c0d9968d58",
+        "row h1:658dffe126ac0acb5f7789a527e7afcbc44da70363bfc0bcc60e68807c015f44": "h1:63110c64f6823512c115c2785f4cf10b743d48c05a769e6e08ba73e462c3ae71",
+        "row h1:91b0c93be0c9c2fac3e4fce0275083180327e64fdd3d21b4ae47080c421a65b3": "h1:3085075aad597da836724d8b25c265cb2486fd16201e60aaf3f9211908abc4ba",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:e7941b639a6a5331edaca7c6a526ff9eb3681e33b17219e7eb0d717aa73b597a",
+        "row h1:dadec99e187de8a53537e3def6b45a3ccdc2f0a4b682d6e2f9eb7cd2f209e0a3": "h1:0aa3da4d5f1c39f6d5cdfd2cd080256dc45a803f47f2c06d380bbd5eee1fda87",
+        "section Rationale": "h1:27c222300c770cd741c26dc7c91c3e37820e70628b8656d04f9f195d76830168",
+        "step Otherwise": "h1:dc7f2de521b9c2d5a6dd1d4e0e5f046f0bc60399ffa51626a00d85aecc4ff467",
+        "step Provided": "h1:97218acdf995ee384ab822fb4ce3474aca8709deacb0c28b8be920303593bad5",
+        "step Then": "h1:0f671915249f820af6e51d92f3f7202bbd62ff1a927e3ab35ef31dddf72635af",
+        "step When": "h1:8c7ef74ec57968781ad9bd0f929941baf41c52f954620da50146814f2ca866f8"
+      }
+    },
+    {
+      "id": "baseline.diff.former",
+      "now": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      },
+      "baseline": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      }
+    },
+    {
+      "id": "baseline.diff.order",
+      "now": {
+        "heading": "h1:fdad325b099a3148480c0c9b69abeb16428db72704099dfa625e4338e4ad0997",
+        "row h1:27016f31a79d8e46caeed7b48f7e3f0b138632892b8ef2c2ba2297b8426f31bd": "h1:c564702b9db155aa6ec0557f0d8db9a61c6963ad37661b09b43aca6a6ec9c98b",
+        "row h1:449052c2d499f7a97d177df090a03cd8780ae673762db2bdf908cdaf0505d6d9": "h1:42c9cbcdb5d7c7e37edc22325744e869460d6c425fface1657229a7454138066",
+        "row h1:54a1a4b8e1d86c73798e6b1fddb3c7d45daf94120f4fbde0b2185a741a76c0ea": "h1:329c6c7254a3a5efc6b4cdcdd3d153ce50f4b7eb331b1433bf95bf634ec7ef1e",
+        "row h1:c9de8e4f52cc974a50c1ff1ce0f98571412bc4b0c067a9535ff82ed336ada73f": "h1:8e97a9e83950e06f77a0c60b54599890e778bb14e31a77d14b27828773635702",
+        "row h1:d9f497a9ddf0ebd2da37da483deaaa099adaa6be19f33a4d93f0129962ae7805": "h1:e9d14bad91176a3d33bdcad4712c2b34eaf03d6f607f27845021da8ed65f247e",
+        "row h1:e3e0d600857ad94cbb3b62291f4bd38734af4229183794467758d955c05ef0af": "h1:2632acd946f912e59891c3b75be0bbf074507990fd25ac05e6c8280099e58cd1",
+        "step Then": "h1:d74276a8580363b9951174040d75240e2382b3508c2da34d05b167d5af93f4f7",
+        "step When": "h1:9a1426c7ce635d04ee38928bb98b030c93a60f6f05164cf9f1d93d2b24a24949"
+      },
+      "baseline": {
+        "heading": "h1:fdad325b099a3148480c0c9b69abeb16428db72704099dfa625e4338e4ad0997",
+        "row h1:54a1a4b8e1d86c73798e6b1fddb3c7d45daf94120f4fbde0b2185a741a76c0ea": "h1:329c6c7254a3a5efc6b4cdcdd3d153ce50f4b7eb331b1433bf95bf634ec7ef1e",
+        "row h1:e3e0d600857ad94cbb3b62291f4bd38734af4229183794467758d955c05ef0af": "h1:2632acd946f912e59891c3b75be0bbf074507990fd25ac05e6c8280099e58cd1",
+        "step Then": "h1:6d6fc2eac90088ee8e10ec1ceb02b41b846af1a3feabbac24a8f6536db3c4622",
+        "step When": "h1:9a1426c7ce635d04ee38928bb98b030c93a60f6f05164cf9f1d93d2b24a24949"
+      }
+    },
+    {
+      "id": "baseline.diff.output",
+      "now": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      },
+      "baseline": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      }
+    },
+    {
+      "id": "baseline.diff.undecided",
+      "now": {
+        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:62bdeaa3cc0bc4306fd414f69f68010aa7415a37698e5885aa4c238be59d5076",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:9359a5917780300a2069761a78f5fb881f29af489c2b41d0d3688fb835f29cde",
+        "row h1:8fb4d889a1f5a6c10622a62bf1d6154f3f38973d0b2ca235463fbd0aac7ccc24": "h1:3e3f2038918e8c304c4811e862e8edb55af2fc9dfaf0dc6597f4b0a8ccfaab01",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:234e2389bcd55af0158f8567dea51145e0d66e851ec7be6bd7dd0a599b6536bb",
+        "step Otherwise": "h1:770a58eaa49a268a676fe450528b2b6b81919ffbe72968a0224ece870959f4f5",
+        "step Provided": "h1:3be8d7edee42d63e35dc99e5c385291ce5864762bcc48a08b64c2de3fea20c3c",
+        "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
+        "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
+      },
+      "baseline": {
+        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:62bdeaa3cc0bc4306fd414f69f68010aa7415a37698e5885aa4c238be59d5076",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:9359a5917780300a2069761a78f5fb881f29af489c2b41d0d3688fb835f29cde",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:234e2389bcd55af0158f8567dea51145e0d66e851ec7be6bd7dd0a599b6536bb",
+        "step Otherwise": "h1:e09b4dc4ed475d9536a2664d7faa15b2185a34cdf9074683ca8944f4c430eac8",
+        "step Provided": "h1:3be8d7edee42d63e35dc99e5c385291ce5864762bcc48a08b64c2de3fea20c3c",
+        "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
+        "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
+      }
+    },
+    {
+      "id": "baseline.pack.chain",
+      "now": {
+        "heading": "h1:1dbc25163e71890edc1faa5a01512d84fad05949468053485625d74d2871c218",
+        "row h1:2ff2cae93f97581d7bb2fe5ee64def1bf12239ff5b3aacaa11510c00a85960e8": "h1:98760e724a200544ce551bd01353ec35eb31d77ff67aad3fc8505fcb807ff1b5",
+        "row h1:61dd748dfce959ab3d763ee5d7f45b7c1af1fe51b03dbeb7d604f7603870ed12": "h1:33029bb88335702fd7d266f060baf04a0fc9e35f6bf00ada45569ef3805ed3b9",
+        "row h1:839342fa6825ea1cda9127795781660334ecbd16076f23497a3608fd4e4e06f9": "h1:9eb27faf5cbc4e4ac4851156376d332700d37b9f6488983d434948887c69ffdd",
+        "row h1:9aae21c97fda471428723f1f23ac2a9c5cd18309c51ccb862d61ef5950423809": "h1:8f0ba468d91b3656a1a7d62f88f1b9ac36e76d59f546d5e0a8c3527ad2ea11ec",
+        "row h1:bb21eda0b11d05cf7c56a308b5e1d15b647cfd3ab3fdce428520e28821de2b9b": "h1:177a29090661090a926269137f21bb65e7c77377b900e357c17469d8fc6a51ef",
+        "step Otherwise": "h1:e0203255228fc513ebf4580f0d81aa31165c4f6e302adca2e0a427a36e0edb71",
+        "step Provided": "h1:d42abce22068e91edcc939994707deafbf602c68944ab0ec511dcf87d2c086da",
+        "step Then": "h1:d96168d8ad82818e4078a442a94a9a1cfbeff18c1e9c93d58bebc18d91fcdd42",
+        "step When": "h1:e7a14b688c592f311473b0614010079b38f15169c3a4a80862364ad918f56a4d"
+      },
+      "baseline": {
+        "heading": "h1:1dbc25163e71890edc1faa5a01512d84fad05949468053485625d74d2871c218",
+        "row h1:2ff2cae93f97581d7bb2fe5ee64def1bf12239ff5b3aacaa11510c00a85960e8": "h1:98760e724a200544ce551bd01353ec35eb31d77ff67aad3fc8505fcb807ff1b5",
+        "row h1:61dd748dfce959ab3d763ee5d7f45b7c1af1fe51b03dbeb7d604f7603870ed12": "h1:33029bb88335702fd7d266f060baf04a0fc9e35f6bf00ada45569ef3805ed3b9",
+        "row h1:839342fa6825ea1cda9127795781660334ecbd16076f23497a3608fd4e4e06f9": "h1:9eb27faf5cbc4e4ac4851156376d332700d37b9f6488983d434948887c69ffdd",
+        "row h1:9aae21c97fda471428723f1f23ac2a9c5cd18309c51ccb862d61ef5950423809": "h1:8f0ba468d91b3656a1a7d62f88f1b9ac36e76d59f546d5e0a8c3527ad2ea11ec",
+        "row h1:bb21eda0b11d05cf7c56a308b5e1d15b647cfd3ab3fdce428520e28821de2b9b": "h1:177a29090661090a926269137f21bb65e7c77377b900e357c17469d8fc6a51ef",
+        "step Otherwise": "h1:e0203255228fc513ebf4580f0d81aa31165c4f6e302adca2e0a427a36e0edb71",
+        "step Provided": "h1:d42abce22068e91edcc939994707deafbf602c68944ab0ec511dcf87d2c086da",
+        "step Then": "h1:d96168d8ad82818e4078a442a94a9a1cfbeff18c1e9c93d58bebc18d91fcdd42",
+        "step When": "h1:e7a14b688c592f311473b0614010079b38f15169c3a4a80862364ad918f56a4d"
+      }
+    },
+    {
+      "id": "baseline.pack.order",
+      "now": {
+        "heading": "h1:dbc84f4b13df0bac63f96e99c362007aaa0b9f8bd2686e2d142fc9651c73acfb",
+        "row h1:0a95d01a55b6cbf2921afd860f21caffbc12b7c0f7ad1e46ba2f55202321a988": "h1:2061e04ea54417bda55cdb3d21476e33d60b48b477ee0487a75f02534a70b99b",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:02d649470496824e508b9015548a19c9e796c0c109f4ff17356e105cb56ca229",
+        "row h1:a37525d76f6518c6d9a1b3cd58f1c1e8c37527ae6646756568f3820775c80327": "h1:9dc414777110720d4843203f068daf381af67e2bf90aa0be6b6ef9eea7486c3d",
+        "row h1:df3f7c4bdaba5e464d1bb46b7ba889c2f84bd1a1aa406c5d494cd02a42bdbe51": "h1:2ff236362c8b657dc55759b08620cccbd932c6874ceb432d3e89c131153dcfab",
+        "section Rationale": "h1:aab8bb95b5397b1542408339e13cef095a6bc7e206ce5c98c547f0310bdc8b72",
+        "step Then": "h1:435d83e7ebeba749134fd2307cc3215e2950d6cb687674def92c042bbd5e92ad",
+        "step When": "h1:fa91016298467ee761dd5f8341e8dcbde12fa10c7202ef9f5e43f289fb081b1a"
+      },
+      "baseline": {
+        "heading": "h1:dbc84f4b13df0bac63f96e99c362007aaa0b9f8bd2686e2d142fc9651c73acfb",
+        "row h1:0a95d01a55b6cbf2921afd860f21caffbc12b7c0f7ad1e46ba2f55202321a988": "h1:2061e04ea54417bda55cdb3d21476e33d60b48b477ee0487a75f02534a70b99b",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:02d649470496824e508b9015548a19c9e796c0c109f4ff17356e105cb56ca229",
+        "row h1:a37525d76f6518c6d9a1b3cd58f1c1e8c37527ae6646756568f3820775c80327": "h1:9dc414777110720d4843203f068daf381af67e2bf90aa0be6b6ef9eea7486c3d",
+        "row h1:df3f7c4bdaba5e464d1bb46b7ba889c2f84bd1a1aa406c5d494cd02a42bdbe51": "h1:2ff236362c8b657dc55759b08620cccbd932c6874ceb432d3e89c131153dcfab",
+        "section Rationale": "h1:aab8bb95b5397b1542408339e13cef095a6bc7e206ce5c98c547f0310bdc8b72",
+        "step Then": "h1:979ab4a0c188b3f3c5a7eea9c4543fbfaa26a6ee5c040e7c583fac10bc76d9e5",
+        "step When": "h1:fa91016298467ee761dd5f8341e8dcbde12fa10c7202ef9f5e43f289fb081b1a"
+      }
+    },
+    {
+      "id": "baseline.pack.output",
+      "now": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      },
+      "baseline": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      }
+    },
+    {
+      "id": "system.cli.element-diff",
+      "now": {
+        "body": "h1:c33e20443d81cedd46a5b89113cadb405e2a020ced9ee111edf1ca6a994f0e02",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      },
+      "baseline": {
+        "body": "h1:33eb80fb992ef33a50179c4d3fbdc547e734975972bda167b42496dfaa870a05",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      }
+    },
+    {
+      "id": "system.cli.pack-text",
+      "now": {
+        "body": "h1:cd0e58cf65c2fd8295debe5b6c9b9af5a82fde0b72e8ebec3e5a54acf52a7c19",
+        "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+      },
+      "baseline": {
+        "body": "h1:0d1982f0b3a4bb3991e89eec35497dea9f1dc6f1a2f8e6b47fd69c7da4dbee0b",
+        "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.pack.frames",
+      "reason": "untouched: it takes frames for the elements the diff lists, by their feature and capability, and never reads what `dependencies` or the chain rule take for Context",
+      "parts": {
+        "heading": "h1:0b8f28b01e28c5d1af39da8a6dfe1ee6cbb78b50ae242c93951c4a1f0324efbe",
+        "row h1:0a86e3681b1b41f371e50b97d1c4ecabfa0b3fe9547e7e5d97ca2d2b23886bc3": "h1:633ed16554ea46c6d1b2f5aae3e675c5e6465a5d61748f58108f6ff07ed9e868",
+        "row h1:32a3ecfecb448b14e25f96e3283d3d882e7baf08e8ab337bd13cb84808dd2d00": "h1:65e38c651128e94224264658140984c5358bd356622b54271c61237933f011bc",
+        "row h1:839342fa6825ea1cda9127795781660334ecbd16076f23497a3608fd4e4e06f9": "h1:46babf5dd81a95302f7ff29a7bff5620ebccf37032c68ee3666e84a456937021",
+        "row h1:c84c19b17d790d7a21d03c5549b0c5a344abc7c4a7498eb03f702f08b692f165": "h1:1e4991434a1f469d9fd714f4291fef139101c2f2c10ad598e73e9fe0c00a08b5",
+        "step Otherwise": "h1:d7b71e78fcb93ce17f849c093f34ef756ad2b755ca409e8deb9c7ba7a425b93e",
+        "step Provided": "h1:cd07ae6c0eafa670e6d476ab41ff835e5193967365e6d696151d2dd0a94de11e",
+        "step Then": "h1:54042979dd9239308aefafb002622478410faa9ed24eec067fddd232947b86de",
+        "step When": "h1:70ae4310b67575e63027cd7e7ca27b161492807162d7a6ea2e04542422ff7d9f"
+      }
+    },
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment only orders what diff writes; it changes no file or git state, so what the invariant allows a run to write stays the same",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.order",
+        "baseline.diff.undecided",
+        "system.cli.element-diff"
+      ],
+      "text": "baseline.diff.undecided and element_diff's `undecided` name each undecided place and also each mark of an open term, but the new And line orders only the [undecided] places. By the glossary, a mark of an open term is not an undecided place, so no rule orders those marks or says how they sort among the undecided places.",
+      "status": "resolved",
+      "reason": "edited in af52a70"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.order"
+      ],
+      "text": "Undecided places are ordered only 'in the order of their lines', and element_diff names each one only by file and line. Nothing says how two places on the same line are ordered, such as two `?` cells in one Examples row or a `?` beside a mark of an open term, or whether that line is then listed once or twice.",
+      "status": "resolved",
+      "reason": "edited in af52a70"
+    },
+    {
+      "id": "f3",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.diff.dependency",
+        "baseline.diff.order",
+        "system.cli.element-diff"
+      ],
+      "text": "baseline.diff.dependency lists an element as changed through a dependency 'naming the chain' (one chain), and takes every element once. But baseline.diff.order's new Examples rows and element_diff's `through` ('every chain of identifiers that reaches it') give one element several chains. The rule that produces the chains does not say it names every one.",
+      "status": "resolved",
+      "reason": "edited in af52a70"
+    },
+    {
+      "id": "f4",
+      "kind": "gap",
+      "elements": [
+        "baseline.pack.order"
+      ],
+      "text": "pack_text writes each chain of a `Changed through` element and each place under `Not to be built`, but baseline.pack.order only says the parts follow diff's order. No rule orders the chains or the undecided places in the pack, so the order the amendment now fixes for diff need not carry over to the pack.",
+      "status": "resolved",
+      "reason": "edited in af52a70"
+    },
+    {
+      "id": "f5",
+      "kind": "contradiction",
+      "elements": [
+        "system.cli.pack-text",
+        "baseline.diff.undecided",
+        "system.cli.element-diff"
+      ],
+      "text": "baseline.diff.undecided and element_diff's `undecided` now name each line holding an undecided place or a mark of an open term, once. pack_text still writes 'each undecided place as its path and line' under `Not to be built:`. Two places on one line would then appear twice, and the marks of open terms are not mentioned at all.",
+      "status": "resolved",
+      "reason": "edited in 49b9f8f"
+    },
+    {
+      "id": "f6",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.dependency"
+      ],
+      "text": "Chains run 'from the first changed [element]', but the rule does not say which element starts a chain. The case is an element that is listed as changed only in a part that does not pass its meaning on, while its meaning changed through a dependency, as in the Examples row for `lint.run.exit` with a reworded Rationale. That element is the first one listed as changed, yet the change that reaches its dependents begins at the term. Nothing says whether a rule handing over to it gets the chain `lint.run.exit` or the chain `lint.step`, `lint.run.exit`.",
+      "status": "resolved",
+      "reason": "edited in 49b9f8f"
+    },
+    {
+      "id": "f7",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.diff.dependency",
+        "baseline.change-effects",
+        "system.cli.element-diff"
+      ],
+      "text": "The Then step of baseline.diff.dependency starts each chain at 'an element whose changed part change_effects gives \"dependents\" for'. But change_effects says every part of an element changed through a dependency counts as changed, so such an element (for example a term defined by system.ref.commonmark) also qualifies as a start. That gives a rule marking the term a second chain, the term alone, which Examples row 2 ('through system.ref.commonmark and the term') and element_diff's `through` ('from the first changed element') leave out.",
+      "status": "resolved",
+      "reason": "edited in bd47bf1"
+    },
+    {
+      "id": "f8",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.dependency",
+        "baseline.dependencies",
+        "system.cli.element-diff"
+      ],
+      "text": "A chain now starts only at an element listed as added or changed, and dependencies are read from the tree as it stands. So when a member of a contract element is removed, no rule lists a rule that refers to the holding contract element as changed through a dependency, although `dependencies` says such a rule depends on every member, because a changed member can affect it.",
+      "status": "resolved",
+      "reason": "edited in 7e8ac3b"
+    },
+    {
+      "id": "f9",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.dependency",
+        "system.cli.element-diff"
+      ],
+      "text": "The Then step names 'every chain of [identifiers] that reaches it', but no rule says whether a chain may pass the same element twice. Where hand-overs form a cycle, the set of chains has no end, while 'every [element] once' processes each element a single time. Nor does any rule say that an element's chains are complete before its dependents are taken.",
+      "status": "dismissed",
+      "reason": "Cannot arise in a tree lint accepts: lint refuses hand-over cycles, and the code never repeats an element in a chain."
+    }
+  ]
+}
