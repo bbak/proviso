@@ -210,11 +210,12 @@ properties:
   changed or removed, written as `part_kinds` writes it, with the former
   text of a changed or removed part.
 - `through` lists, for an element changed through a dependency, every
-  chain of identifiers that reaches it, each from the first changed
-  element to the one the element depends on directly, as
-  `dependencies` gives them.
-- `undecided` lists every undecided place in the element and every mark
-  of an open term; an element with any is not to be built.
+  chain of identifiers that reaches it, each from an element listed as
+  added, changed or removed whose changed part passes its meaning on, to
+  the one the element depends on directly, as `dependencies` gives them.
+- `undecided` lists each line of the element that holds an undecided
+  place or a mark of an open term, once; an element with any is not to
+  be built.
 
 ## <a id="system.cli.impact"></a> impact
 
@@ -366,8 +367,9 @@ of the contract.
     identifiers in backticks joined by ` → `, separated by `; `, and a
     full stop.
   - An element not to be built gets a second line: `Not to be built:`,
-    then each undecided place as its path and line joined by `:`,
-    separated by a comma and a space, and a full stop.
+    then each line that holds an undecided place or a mark of an open
+    term, once, as its path and line joined by `:`, separated by a comma
+    and a space, and a full stop.
 - **The former text** of each changed or removed part follows its
   element, each after a line ``Former `<part>`:``.
 - **Under Not in this amendment,** the text of `amendment_note` stands

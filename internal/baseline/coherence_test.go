@@ -54,7 +54,7 @@ func amendment(t *testing.T, edit func(map[string]string)) ([]*Entry, []Candidat
 			edit(m)
 		}
 	}))
-	entries := Compare(now, base)
+	entries := Through(Compare(now, base), now, before)
 	cands, _ := Impact(entries, now, before)
 	return entries, cands, now, base
 }

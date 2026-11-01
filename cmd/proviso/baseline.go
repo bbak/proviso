@@ -99,14 +99,14 @@ func elementDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stder
 	}
 	entries := baseline.Compare(res.Elements, base)
 	if !baseline.NeedsFormer(entries) {
-		return entries, "", nil, true
+		return baseline.Through(entries, res.Elements, nil), "", nil, true
 	}
 	revision, formerElements, err := former(t, entries, base, data)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso %s: cannot read the former text: %v\n", cmd, err)
 		return nil, "", nil, false
 	}
-	return entries, revision, formerElements, true
+	return baseline.Through(entries, res.Elements, formerElements), revision, formerElements, true
 }
 
 // sinceDiff derives the element diff against the spec tree at the revision
@@ -144,12 +144,12 @@ func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr 
 	base := baseline.Record(formerElements)
 	entries := baseline.Compare(res.Elements, base)
 	if !baseline.NeedsFormer(entries) {
-		return entries, "", nil, true
+		return baseline.Through(entries, res.Elements, nil), "", nil, true
 	}
 	if err := baseline.Former(entries, base, formerElements, rev); err != nil {
 		return fail("%v", err)
 	}
-	return entries, rev, formerElements, true
+	return baseline.Through(entries, res.Elements, formerElements), rev, formerElements, true
 }
 
 func diffRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, stderr io.Writer) int {

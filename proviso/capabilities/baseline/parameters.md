@@ -56,9 +56,10 @@ a dependency, whose meaning changed while its text did not.
   the term it represents, never the reverse: its shape leaves the
   term's meaning as it is, and a rule that relies on the shape refers to
   the element itself. A rule depends on every member of a contract
-  element it refers to, a member added later included, since a changed
-  member can affect any such rule: coarse on purpose, at the cost of
-  rules listed that only the added member touches.
+  element it refers to, a member added later included, and one removed
+  by an amendment, since a changed member can affect any such rule:
+  coarse on purpose, at the cost of rules listed that only the added or
+  removed member touches.
 
 Which element depends on which: when the meaning of the second changes,
 so does the meaning of the first.
@@ -66,7 +67,7 @@ so does the meaning of the first.
 | element | depends on |
 | --- | --- |
 | a rule | every glossary entry whose term its rule block marks |
-| a rule | every contract element and parameter its rule block refers to, and every member of such a contract element |
+| a rule | every contract element and parameter its rule block refers to, and every member of such a contract element, one removed from it included |
 | a rule | the rule its hand-over names |
 | a contract element | the glossary entry its field `Represents` marks |
 | a glossary entry | the reference its field `Defined by` links to |

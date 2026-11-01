@@ -67,7 +67,7 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 
 	// baseline.pack.chain: from every listed element that is not removed,
 	// and from every element taken so, each once.
-	deps := dependsOn(elements)
+	deps := dependsOn(elements, nil)
 	seen := map[string]bool{}
 	var queue []string
 	for _, e := range entries {
