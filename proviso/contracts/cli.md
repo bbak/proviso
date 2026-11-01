@@ -210,9 +210,9 @@ properties:
   changed or removed, written as `part_kinds` writes it, with the former
   text of a changed or removed part.
 - `through` lists, for an element changed through a dependency, every
-  chain of identifiers that reaches it, each from the first changed
-  element to the one the element depends on directly, as
-  `dependencies` gives them.
+  chain of identifiers that reaches it, each from an element listed as
+  added or changed whose changed part passes its meaning on, to the one
+  the element depends on directly, as `dependencies` gives them.
 - `undecided` lists each line of the element that holds an undecided
   place or a mark of an open term, once; an element with any is not to
   be built.

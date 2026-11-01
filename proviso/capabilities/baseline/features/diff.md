@@ -164,7 +164,7 @@ that stopped depending on something was edited, and is listed anyway.
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] whose changed [part] `change_effects` gives "dependents" for, to the one it depends on directly
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added or changed whose changed [part] `change_effects` gives "dependents" for, to the one it depends on directly
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
