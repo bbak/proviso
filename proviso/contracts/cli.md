@@ -138,8 +138,8 @@ enum: [0, 1, 2]
 ## <a id="system.cli.element-diff"></a> element_diff
 
 What `diff --json` writes: the spec root that was compared, the revision
-the former text came from, and every element listed. Paths, `root` and
-the order of elements follow the same conventions as in `report`.
+the former text came from, and every element listed. Paths and `root`
+follow the same conventions as in `report`.
 
 ```yaml
 type: object
