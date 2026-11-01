@@ -1,0 +1,444 @@
+{
+  "touched": [
+    {
+      "id": "lint.examples.parts",
+      "now": {
+        "heading": "h1:01e6d71812cff43049c35cb8540dcec6401598e84151a9462fb0d8b161654980",
+        "row h1:79067ff36674c0bd802cb83303dc047e9628431e963abc618b1096f4934a4856": "h1:2df177e01673df20e55c1dbb5d072eee616b7a803a061c2a4c7d9f077d48fa27",
+        "row h1:b93e26dd3ab053a98ec7ccc1e10548b01372d1f330f403062bd06538d775aa65": "h1:60be339a3d7d6e7b1ca44d0dafe58a8dfd334f29851b448d751bc58a6e8999c1",
+        "section Rationale": "h1:80a9353d1a431a6b7892276df8cb23d9efc04a20601c7ffd9022faf980991d59",
+        "step Otherwise": "h1:b329c37bcc981c55e6c020c11486f64f7e3c33ab9b9edfdce91646ea992ba8c2",
+        "step Provided": "h1:7134c9df680589d9873fe480da80d9a2e624d3f2e080ab22f58d52495812fc0b",
+        "step Then": "h1:15cd1b1ad036e8b903b1cd064f3df3483b0ecf5b32459e6b34234a4a8edac3f2",
+        "step When": "h1:c95f45f5a38594cb49ba4a412e2d0f715319c38fb06d08dba2dcd5d27b0affc9"
+      },
+      "baseline": {
+        "heading": "h1:01e6d71812cff43049c35cb8540dcec6401598e84151a9462fb0d8b161654980",
+        "row h1:79067ff36674c0bd802cb83303dc047e9628431e963abc618b1096f4934a4856": "h1:2df177e01673df20e55c1dbb5d072eee616b7a803a061c2a4c7d9f077d48fa27",
+        "row h1:b93e26dd3ab053a98ec7ccc1e10548b01372d1f330f403062bd06538d775aa65": "h1:60be339a3d7d6e7b1ca44d0dafe58a8dfd334f29851b448d751bc58a6e8999c1",
+        "section Rationale": "h1:80a9353d1a431a6b7892276df8cb23d9efc04a20601c7ffd9022faf980991d59",
+        "step Otherwise": "h1:b329c37bcc981c55e6c020c11486f64f7e3c33ab9b9edfdce91646ea992ba8c2",
+        "step Provided": "h1:7134c9df680589d9873fe480da80d9a2e624d3f2e080ab22f58d52495812fc0b",
+        "step Then": "h1:e72d9b5b55faedf609e53175c3ecd1d7de51fb93fdacf6c826e1bc656dbcf272",
+        "step When": "h1:45086a6e8ad9660a28455439e9c7b9f888470ebc0a1897235b5bb60b3c9260ae"
+      }
+    },
+    {
+      "id": "lint.findings.term-foreign",
+      "now": {
+        "body": "h1:9c6fa93fc790b4b99544004ff5f4fbed0df649d767cc449f8c1274a3ad2dff2c",
+        "heading": "h1:02828d8c239cd354bb916f34aaa547ad75ae811fc60374ea46e620d2f29c588c"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "lint.references",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:69824d3b0e70ca6aaa0da1613b65fd914c442bf1f7ad1bb22bcdfbdfe1a05e39",
+        "section Goal": "h1:d6e75b7b3f316fe1007a86469e1c86e9b90d7221ea554fd90f690ee0e9e800cd",
+        "section Rationale": "h1:b1a58b055c52f2b27608c003d84ba50fea86022f3b256136052579e598101148"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:69824d3b0e70ca6aaa0da1613b65fd914c442bf1f7ad1bb22bcdfbdfe1a05e39",
+        "section Goal": "h1:e2ee0b89432f65384b084a29381de318ec487a3ffb9a21fc9992c12f4f741634",
+        "section Rationale": "h1:b1a58b055c52f2b27608c003d84ba50fea86022f3b256136052579e598101148"
+      }
+    },
+    {
+      "id": "lint.references.foreign",
+      "now": {
+        "body": "h1:00e6af12f459ca18e7d5cf6ceef6d3314fc76845b5073abfa11db79dc0e78b7a",
+        "heading": "h1:d41643b07c2705e7ce28a86c722db5bba676c623a634be1fe990afa9af9e0f67",
+        "row h1:27c03f640d3f04a3c174e86945bd8a32eecf4fe5aa15b39415dcdeec92d47d88": "h1:4ff4173574c796db4bfc7c6a52292177649d5db142e3da0f54d42826ac7b5a62",
+        "row h1:5683a1e6069145779c3ba7ea285988f5a855d241dc0e57e23c5d9cc1650a7f98": "h1:f07aeb88e53ffbf074c8aa9cf2141d833ed91c4ee7d80937a9ef488e61d2267e",
+        "row h1:6023afb9e718135f142d5ade48496282a220ecf3313db4a948fb28e39fd1ed2c": "h1:585227197201dfeff427c20e91b8eb5c70cd13e8f6a75dbe934359a1d15d7ba4",
+        "row h1:7810d68bea229374b18ff836507683b550edf337501d0ad6e0d9d19d94948374": "h1:7c01929e6327ed357ac8b367580e907e8c229c763dd63f81c14112852e21d381",
+        "row h1:8688553c7f0fc2f60428bdd03759795b0ce65a471c20a074e42f59cf74ddd62d": "h1:441faa222828d55a7ad71ab34fde85ba9518679979de96de60a528cae2b9dade",
+        "row h1:a43ee4b20787528aedea441a65f735f18db4b3e1a05658df99c7df3a84d7ed07": "h1:f2e9677066196264b053700c2de3571ae99dc0bfe3115795455de0c059fda1ad",
+        "row h1:c2ade0fa9afdea78921fd8502750abd019d1fac753f22272c68f7effd9576467": "h1:537e9db6f921d20a7d0d3f9d8edc8e6a043f062c882d1fa5cfd922129f7d1131",
+        "row h1:cf022a608779c9d94a2ea4a5e3a41c8f6b380858abd694489c135ef914886ccf": "h1:8be82a575379b2af2df85079d2bc7f508818dfcdd52ec137bc157ee94744f192",
+        "row h1:ed06059e23e1f7c4b1d6a636300571bd8946f71defef5bc6465e87169a9872fd": "h1:4473821cd5a9aa76e2ddad2942b852add416a4457fbcb025845d657c9c5dd5cb",
+        "row h1:f5ef99fc64abc6894315cbb43c23c8c955539bfdc6bd75298bd23b9fae0367ba": "h1:50174d93f01df64a91652e2fdaa2a73e855588b59eeda8fa2726277a02af5b72",
+        "section Rationale": "h1:5c9402cd79407843ec361a2dfa71d0982359a09403ed1e9a9c9bf08e7e7bf3b9",
+        "step Otherwise": "h1:238245d18a2620ec55b824a876d5e4c56b3e2a0179d440dc705448ff3374c3b3",
+        "step Provided": "h1:f9ade2dc00fa0b010751b76398cd257d60837821d6d89806560da227b55228e2",
+        "step Then": "h1:16a40ff66139063310696d183d97c65a8b8c5a714c12310dd7c85e0c3d4e6c41",
+        "step When": "h1:4293f33de74846a8ac91c21b6c51023a9bb0eb7f4b13317ae2f31c04e6c420c5"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "lint.references.marked",
+      "now": {
+        "body": "h1:b61e23c9ddbc38641a36a92347091c02c4a29962eff7c84dba9d4462dfcf5337",
+        "heading": "h1:c25501496059dce6be50f6a1423d6ec5a1d8cb0dd25eebc015290383f5ed0743",
+        "row h1:79a8d58de26c9457689856d5eea4632e0bafb8f3128ae7197a84d48b17605d31": "h1:cb8e02f21b3da12311b3c2de9443254ff20b5ba4017da0d611ed8373dda7ec09",
+        "row h1:80046702168d540db0ecea52d0d4b2fc89613cf7b9401194f7e5a63d771e56f6": "h1:1c14fb3c85c618e0da2760015ee7fbd817b4913e524d7f1eeb73ebf6de151e52",
+        "row h1:80ce3012322440f28e053f7f8ef1b6b9094bcc057ca1eb1378971efc1bad6133": "h1:ce9fd6b0e0ee644649c34fc19bbe97e9ab7e67ad9e5b67de8b3e231039657c2c",
+        "row h1:82cf14c05f6f606fe2321025c2959221e779836115f2eb445e69b18959835a0f": "h1:e6c86c6fcc8399888ef2ad15441b698fbf496590a69e1bed8ac0c6cdb7d68935",
+        "row h1:8ade9212575cd93c8c367f13f24bb656ad3291ace59181f08f427cb6848b84a4": "h1:940fbf7e94a805207996cbd4b833ecae0f06585607dea41388264557beb4ed3b",
+        "row h1:a3d02aa5568d5611abc7c35f0352660000a4dc055a45d219736f3816da507c55": "h1:be7a22f9b14e631f411d31a12f7b6956fcda5e3a759a5133333ff0860362c216",
+        "row h1:c2ade0fa9afdea78921fd8502750abd019d1fac753f22272c68f7effd9576467": "h1:5d18705b92d0b1eb910c48a18d1f0a2e951dbdebfbe5ba2a1b7d39d7bab5f7c3",
+        "row h1:ed06059e23e1f7c4b1d6a636300571bd8946f71defef5bc6465e87169a9872fd": "h1:f375e6f4eaf69557060bc4f0ad30ce2cb25dafa0ab98cdc8d5cc00d90d724b01",
+        "section Rationale": "h1:d3e184d5b13455a7194b8efd9b14e5f9dd33185db55c3d124172b1493a92af16",
+        "step Otherwise": "h1:710a313039d997be1063a0c9dfa79f64b5b71a889e0d8e65d47b6f50926d816e",
+        "step Provided": "h1:021d3f5cf1623cb116710c9bec484d16e1cfe7257bd6d8c7b65e5dbff97df9a7",
+        "step Then": "h1:9c167ff7f8b5ff90e1446c406646f3b802481024651e9f0ed86086d13182111c",
+        "step When": "h1:4293f33de74846a8ac91c21b6c51023a9bb0eb7f4b13317ae2f31c04e6c420c5"
+      },
+      "baseline": {
+        "body": "h1:af8c4d486b9c40f24e0a295166dc8344285b5a4203b07c3e117b9854d29d1551",
+        "heading": "h1:c25501496059dce6be50f6a1423d6ec5a1d8cb0dd25eebc015290383f5ed0743",
+        "row h1:80046702168d540db0ecea52d0d4b2fc89613cf7b9401194f7e5a63d771e56f6": "h1:1c14fb3c85c618e0da2760015ee7fbd817b4913e524d7f1eeb73ebf6de151e52",
+        "row h1:80ce3012322440f28e053f7f8ef1b6b9094bcc057ca1eb1378971efc1bad6133": "h1:ce9fd6b0e0ee644649c34fc19bbe97e9ab7e67ad9e5b67de8b3e231039657c2c",
+        "row h1:8ade9212575cd93c8c367f13f24bb656ad3291ace59181f08f427cb6848b84a4": "h1:940fbf7e94a805207996cbd4b833ecae0f06585607dea41388264557beb4ed3b",
+        "row h1:a3d02aa5568d5611abc7c35f0352660000a4dc055a45d219736f3816da507c55": "h1:be7a22f9b14e631f411d31a12f7b6956fcda5e3a759a5133333ff0860362c216",
+        "section Rationale": "h1:05da401b5161da990fa26c8ecdbf11c590ef7f8a8495afe6e644e22207e26c6e",
+        "step Otherwise": "h1:c0329749336cfad6f0fe8180335b5b5a87faac972fb05c49e4cc93d2ca0c0aa1",
+        "step Provided": "h1:30bc5da1d868b1724a283de127f37d65508e3c4b432e2a906b36ed12cd41941b",
+        "step Then": "h1:c837d255694edc4edbabce7223d3fec60a9879d2775d4108b83598600ad630b1",
+        "step When": "h1:4293f33de74846a8ac91c21b6c51023a9bb0eb7f4b13317ae2f31c04e6c420c5"
+      }
+    },
+    {
+      "id": "lint.rules.keyword",
+      "now": {
+        "heading": "h1:8c59d6646135c83cc4a77364ea943a606780d6cfea2afe4bca93892651c8236a",
+        "row h1:241103bad055421d1b6791ee029853283323aadda22cc1621fb5b8f643d0d559": "h1:271465a8d446c305dfea6b4b436d1a11c9f8526cceb5046a9e3422d330c39fa0",
+        "row h1:39436281d49154ca78876f75ab627f77b3768711efab94c9b14ce474a4374ec6": "h1:e197cb5dfd649236032e97c72b71813c65227a28b3d4d521ce431cb7520d356e",
+        "row h1:9e40aa46e6452b8382ce5bfb78803283375d3b0e9c16ae69518f7ab26527f808": "h1:f96c5b67399b2c401951f7d913453b59bd9a96bfcc14428c9cb704b1e2268c3b",
+        "row h1:9ebfb482223b3e4e65f705fb7d882f95165cbd69b39c476dd61662355a12131e": "h1:8054b2238938d8bd5a70f0b4f7a2a9cfd72670e95a0c2002ae7651f04173e2c8",
+        "row h1:b69b23a0c84be34b4d48b9a1157f42353ec29f5bfc4d49ceac59598fb6a8f23a": "h1:446a8f1ba163eb30632079bb514357431f3090ef131b23593d39ea668c96b0fe",
+        "row h1:e87429bbf78ee8a2f8de6f95910fa4360fa45e7ce11122467bd295571510b409": "h1:6dcae1e3163077a8c9ba01d1ad71de0b25e54c141a3a39228cd800521b2325ad",
+        "section Rationale": "h1:c24dfcda736564362f2db3014ac68af4d723f53de4055faa29e2b328f6fa861c",
+        "step Otherwise": "h1:ab7c4eb955c4f7fcc972947f987c20501986dbd083a5e19cb4dc40c60c9cb7ff",
+        "step Provided": "h1:94ab7bb35651592d26821b33f18dad1d661d2825c9530416262c2ed57b933c3a",
+        "step Then": "h1:5c758408f9651ebafdcf840bf4c89d831df414f4d4092e2e71f091d92ac5ce38",
+        "step When": "h1:85ea9707276fa88ba2674ff9811e9c0d4ed09e512ef207e535b5170adf74e3f3"
+      },
+      "baseline": {
+        "heading": "h1:8c59d6646135c83cc4a77364ea943a606780d6cfea2afe4bca93892651c8236a",
+        "row h1:241103bad055421d1b6791ee029853283323aadda22cc1621fb5b8f643d0d559": "h1:271465a8d446c305dfea6b4b436d1a11c9f8526cceb5046a9e3422d330c39fa0",
+        "row h1:39436281d49154ca78876f75ab627f77b3768711efab94c9b14ce474a4374ec6": "h1:e197cb5dfd649236032e97c72b71813c65227a28b3d4d521ce431cb7520d356e",
+        "row h1:9e40aa46e6452b8382ce5bfb78803283375d3b0e9c16ae69518f7ab26527f808": "h1:f96c5b67399b2c401951f7d913453b59bd9a96bfcc14428c9cb704b1e2268c3b",
+        "row h1:9ebfb482223b3e4e65f705fb7d882f95165cbd69b39c476dd61662355a12131e": "h1:8054b2238938d8bd5a70f0b4f7a2a9cfd72670e95a0c2002ae7651f04173e2c8",
+        "row h1:b69b23a0c84be34b4d48b9a1157f42353ec29f5bfc4d49ceac59598fb6a8f23a": "h1:446a8f1ba163eb30632079bb514357431f3090ef131b23593d39ea668c96b0fe",
+        "row h1:e87429bbf78ee8a2f8de6f95910fa4360fa45e7ce11122467bd295571510b409": "h1:6dcae1e3163077a8c9ba01d1ad71de0b25e54c141a3a39228cd800521b2325ad",
+        "section Rationale": "h1:c24dfcda736564362f2db3014ac68af4d723f53de4055faa29e2b328f6fa861c",
+        "step Otherwise": "h1:ab7c4eb955c4f7fcc972947f987c20501986dbd083a5e19cb4dc40c60c9cb7ff",
+        "step Provided": "h1:94ab7bb35651592d26821b33f18dad1d661d2825c9530416262c2ed57b933c3a",
+        "step Then": "h1:e87acabefecec8114cd56f18e23bae5bf82800653302351d4965850a6e83334b",
+        "step When": "h1:85ea9707276fa88ba2674ff9811e9c0d4ed09e512ef207e535b5170adf74e3f3"
+      }
+    },
+    {
+      "id": "lint.structure.field-known",
+      "now": {
+        "heading": "h1:964c69b98cdfb075e710fb750df2d8867bf963da9359267ef43258c432004515",
+        "row h1:69606b4d1b73bc479404a207c414cc44be7c5fcbb4396b77e8bc7507cbd35d29": "h1:8b3d332abe69f152821e8f7efc550ec17cef22f72c7fe89c440146d24835ba44",
+        "row h1:872b5ae7df2922efc1731c783a322002681d3020f2db8d427ddfd95d8f35120c": "h1:3ba6dd023c98d241c6fac1a4133136630978f4665c7999f219d9ab8125124cad",
+        "row h1:c38f54d6232fff94b18e3c8240e7cbadfba4f61eec70488466592218c10a13bb": "h1:2bb2189e8afd15058efabb4de018ab1946764e38ecb4728840d660b8f1ee35db",
+        "row h1:e17dfc50a683ab947a16695679f609f6f12781b446d17a0d939eade902cf2354": "h1:d6b38d5d786b4286da54efb21b48d3db5deda7477c9575fe36c03e3248360ba3",
+        "row h1:f43476d83faf5198b165f0f9900182b757efdf08710fd8125a49d85cb8d628d8": "h1:d61f08d7b79049c3b58f21779e4a41a9c09f1de210d4f85f5ebf7d3ded5f5d88",
+        "step Otherwise": "h1:c7359ca73463be95176a22198fe615c27b1b93f3b60a079309bf98368626879e",
+        "step Provided": "h1:326534f33a710a54da0b9b68856ce04da97537c3ee6309988b7d6e10a0b936d5",
+        "step Then": "h1:ff7a760bee581f830fbf6219bdd0a145e4d30f5461f97ae1718489581d3a7ec7",
+        "step When": "h1:039dc8df8412883f291c3cc8ba3f6f0db7ff034f5786e45f2b37ab9fc8729aca"
+      },
+      "baseline": {
+        "heading": "h1:964c69b98cdfb075e710fb750df2d8867bf963da9359267ef43258c432004515",
+        "row h1:69606b4d1b73bc479404a207c414cc44be7c5fcbb4396b77e8bc7507cbd35d29": "h1:8b3d332abe69f152821e8f7efc550ec17cef22f72c7fe89c440146d24835ba44",
+        "row h1:872b5ae7df2922efc1731c783a322002681d3020f2db8d427ddfd95d8f35120c": "h1:3ba6dd023c98d241c6fac1a4133136630978f4665c7999f219d9ab8125124cad",
+        "row h1:c38f54d6232fff94b18e3c8240e7cbadfba4f61eec70488466592218c10a13bb": "h1:2bb2189e8afd15058efabb4de018ab1946764e38ecb4728840d660b8f1ee35db",
+        "row h1:e17dfc50a683ab947a16695679f609f6f12781b446d17a0d939eade902cf2354": "h1:d6b38d5d786b4286da54efb21b48d3db5deda7477c9575fe36c03e3248360ba3",
+        "row h1:f43476d83faf5198b165f0f9900182b757efdf08710fd8125a49d85cb8d628d8": "h1:d61f08d7b79049c3b58f21779e4a41a9c09f1de210d4f85f5ebf7d3ded5f5d88",
+        "step Otherwise": "h1:c7359ca73463be95176a22198fe615c27b1b93f3b60a079309bf98368626879e",
+        "step Provided": "h1:326534f33a710a54da0b9b68856ce04da97537c3ee6309988b7d6e10a0b936d5",
+        "step Then": "h1:b7d4918f4b1c4ef5897200b0876c232e663d579217a496d229f29c36818594e4",
+        "step When": "h1:039dc8df8412883f291c3cc8ba3f6f0db7ff034f5786e45f2b37ab9fc8729aca"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "lint.examples.sides",
+      "reason": "untouched: lint.examples.parts only rewords 'parts' of the guard as 'lines', which is what the [guard] entry defines it as (the Provided line with its And lines); sides reads every provided column whatever the guard's length",
+      "parts": {
+        "heading": "h1:022521111ce905a049b934bc8449413013c958a0610878f28581873b8dddbfa6",
+        "row h1:2752eb91ec53a6bbd56080c00c934fffa3dab2db44ab3a88982ec467eea81242": "h1:a5d63fab07272864be8b05a3b3b2ba37613dfd43543a9d73e4e113d7f4bc091a",
+        "row h1:645129b95e916da51c20855e9cc0f9f759a75513fe89025a8ff4f3d456c7f1f7": "h1:522fe79bb842dbc61bbf40cabfab3c6e1370cf66d8cd5b963d831efa852c7fcf",
+        "row h1:a63a286f1d155baf3fb2f781751fce6088c1306a67ac98eda94cce513bbd05d6": "h1:451e38896eeb717677951fa6ba0ed902c86bd4400f9d35476527bde0f7074ffd",
+        "row h1:ab30c913396c25e955b91aff2c2af6f73af5df114572d1a8348450c14501e816": "h1:a96648f40072fd6548a8d19169402ce1bd4abf1b89139814ac94c97e31746664",
+        "row h1:be21f73ae0345cf5084ea4aa5629c980e5bb2d94f19971fa6a1b59ce37b63684": "h1:3be928c57a1cefc105ad5583072bd6f6b52e1b1083c986ca1b12d56b3cc0599e",
+        "step Otherwise": "h1:5cc337e12912d7cf77008e1ad809bc8f536668363c54e6e652e0f2d3232460fc",
+        "step Provided": "h1:3bb639cbb497870caead6ed1675b1e50357ddaa05781ccb22ab32a124272c73f",
+        "step Then": "h1:e508ab127d75e4941bbfd2da1df167772f75a74a38528325f637ae7da369a04f",
+        "step When": "h1:7306d551dc9da97d6fd1e3d08813e08f73ad4bd83e9bf07dc30cf0595972fb7b"
+      }
+    },
+    {
+      "id": "lint.references.chain",
+      "reason": "untouched: the Goal adds asking about other capabilities' terms in unmarked text; these rules read hand-overs, backtick references and contract or parameter names, never unmarked words",
+      "parts": {
+        "heading": "h1:4689761acaec586c1e2ccbbed3138592deb15ee96afbdd4e5c3d7b0183e89929",
+        "row h1:7f07be8c48a381100b5ebf003fb4e0d785c82e0b513a07b19a2a230267627e93": "h1:efa1fc806f6c1a7c76a88bed53cc3c2d2a2e7271361f97ae563e8caeff013ba7",
+        "row h1:ad08a223f45782778faadd13c86b86d9f884b014db778eda9376f8ec60f69953": "h1:38a8804a49c4e4f754767bf21f5b93e59736060cb5ee94895b94a37d4dbaa265",
+        "row h1:cab1f1914ac09487b8b9ce62d6a2fb505663d9d7db4e9ac5a512d5b9c2ed9fb2": "h1:21f699e7c5de970ea7a34785dda988c0c91f847ab38b9ec36661c708dbfe5ee5",
+        "section Rationale": "h1:8cb7748b0e6c1817e81f1c7b37e520034de5284d81944e59204921c0c9d4d880",
+        "step Otherwise": "h1:76536685df80c77b9b288ed10e89537aa831313d1498a2112fbe6cfba2431bd5",
+        "step Provided": "h1:b422431242c8f16c3e1477d43f3567fa85f0cffd8f5d284d3f1c754a7d9150a0",
+        "step Then": "h1:5f3fd4f3caf317438063f44ab9bcdbd475d01757fcd5f01392e5caa47708fd32",
+        "step When": "h1:59a80601ab1301730283a6fb8538fdab08084db7415647161f74df441ce23efc"
+      }
+    },
+    {
+      "id": "lint.references.hand-over",
+      "reason": "untouched: the Goal adds asking about other capabilities' terms in unmarked text; these rules read hand-overs, backtick references and contract or parameter names, never unmarked words",
+      "parts": {
+        "heading": "h1:ae7ab9907c7058ac99bd4bb68b7a5a8bf813be32982b8200cb4536fdec773290",
+        "row h1:48b7c3f6d01a435b5d59b6c37a571b8845ddae51efe56f9deaec32ff62f6b79f": "h1:d25265f250ba1b446c2113070611572c43682ce2637a25f37e43d78c062d650d",
+        "row h1:9a0dab0bb24d87892435ff2a1a9b341ace4596b23492ccf32b93371034c2addc": "h1:198b0b60dc8fb8abfceff288828df3e6b90c65921f23b00db51cb1ed211fa24e",
+        "row h1:df8ec989687448d2d18da28b195e37c07430c66455ec6218eae5dfc450e9ad3f": "h1:2166d8cefa0dcf5321009d0d05219c41c9fa55cf40488eb1273ccd0c477e256f",
+        "step Otherwise": "h1:a3a9807d51c9f1a1033b499f7e5c257148587482665f542e58fb0ec4844d9d52",
+        "step Provided": "h1:258284d0ad5767d2d92c7e860b1db748d5d506228064e66b7f3e18a4ab324ee0",
+        "step Then": "h1:d6ee062bbe6b94231d1eb73414285898eeb121ea4d796afa4fe52bd6d9f2bcd5",
+        "step When": "h1:b20466912faffc1c4b3416e6d5006251040fc112ea0951f16e7a0f958d4b0d71"
+      }
+    },
+    {
+      "id": "lint.references.reference",
+      "reason": "untouched: the Goal adds asking about other capabilities' terms in unmarked text; these rules read hand-overs, backtick references and contract or parameter names, never unmarked words",
+      "parts": {
+        "heading": "h1:5e1329d14e98bab62d446a37f1b4401df0a0320207c4fb768b7ce00ca83a19c4",
+        "row h1:05168544d613a4f68c8952af273dbaffd4461750ea710e3ddb8c95c3581b2450": "h1:3b095c3a36a56b6294e0a5f5cee0fe64b487f7e1b3c3ed2d018e91499a42b387",
+        "row h1:3e07c101cd770b49ad07cdf9e5a663c4201daa9157cd2fb13ea5bda5c0b62af0": "h1:5bbad21fe2f88a6a21195593faffeb70124b7a069ffb8f60657a304c9d190dbd",
+        "row h1:3edaa13b8f2de78dfa376c14150e2c96639235503c0a8ddf0e59251e6683137e": "h1:18ffc42a96c3e1692b8770e7cb1f30daa01b7c7c6df763a876ae73c6db3db2e1",
+        "row h1:5eb7f4d34c813154d129f09e95f4f5ae8daddc0785a6aae3b194f2283d6e3213": "h1:17b912f351b9b273a4d2787b68663a6e3785c23ff39304102670e72593d38614",
+        "row h1:adf2898682b3590075c03e5b7e847c53e33b5de234f89005840bcb3b20fc8aac": "h1:a7c6440afc8b21ff7e925da72678463e8c48681c480fd748c6d497cf940395f3",
+        "row h1:be8365145dadd17754135295614665f45c2d56db1b0cfbe8acae276cea6a9bf7": "h1:b0e35ba00ecb479888d4affc8f6b5582e9f60dd2da14050e0153f56f73f5372a",
+        "row h1:ebbed49d0c3120588ae9967d6834729d1f8275d1634e4b3eead4aa212115e04b": "h1:6e129a225c7c9761cc9b3b846699322a8bb7d61b4269d668406845bba8baa24b",
+        "step Otherwise": "h1:27c8d2da59f444c68b79a9e8e74173d762725a07606243949c0d436a4f2e073b",
+        "step Provided": "h1:b3a85749a69e7046a3cb5f9a73830fad80e992d34040d4ab5e8921f7ab78fbb3",
+        "step Then": "h1:bf42fa7d27296e43a49af4b8f5921da247b18d4e1e81babc61ad8f3a092a91a2",
+        "step When": "h1:b477618061bab45457023ae90e1d10c861d46c4ae22049193d94369f20790ad4"
+      }
+    },
+    {
+      "id": "lint.references.reference-ambiguous",
+      "reason": "untouched: the Goal adds asking about other capabilities' terms in unmarked text; these rules read hand-overs, backtick references and contract or parameter names, never unmarked words",
+      "parts": {
+        "heading": "h1:9de4a30c7259c261f62e112d0949ab703556498bcaa1c908c771f613bc69ab70",
+        "row h1:13675c64585d6823505bf0041fc50100427290b6d27a038089443cb20e1226a0": "h1:262bdfba887736d7be2c6c9bf4aac1c4f93c770ca39be1b377a9a92452c59d3f",
+        "row h1:9af8e77cff3bcbc77b385628bfeee221cac72b557526982ae18f18c433ea2f2a": "h1:bc0b6de1301b568439d0608c8c01762a8b550f31809d37d1ee2a9b8d73a9c147",
+        "row h1:e450fc96724111b6d765fd6cbd3aeb445042f7eb1cbf56c8b3240442746932a0": "h1:3d18fb315fb5eb18ab22045ed7f4d26ca5c517149e34921ac7a990ad415c0bd3",
+        "step Otherwise": "h1:1f7bccc4210fe77193bc9a6d90548c45f58d762d6f2b0c3f84ed3e3ee6512bc2",
+        "step Provided": "h1:1c7591ab70732432fc94a8279ba4c755f4e2297d7afd0994065139c83539ef9b",
+        "step Then": "h1:ab8f4788c855ddcd39bc236a8f6a1ebd1f00391deeaca041f08effd49ac12ad9",
+        "step When": "h1:082de3fc0c12c3dc6ce51d3c79f4291a190bc0cc8462d7d24d3add4ec78d4b23"
+      }
+    },
+    {
+      "id": "lint.references.term",
+      "reason": "untouched: these rules read term marks and glossary entry names; the new ask reads only unmarked text, agrees that capabilities do not see each other's terms, and resolves through the system glossary as before",
+      "parts": {
+        "heading": "h1:3e9391d567948ed97b8114354f1de42bff30d476084afb0250113ddfe95ee62f",
+        "row h1:1ebee5a356c6ed412a78e6a099dbf720c7d2bb24351819ddc9d2b0f2fa71be3f": "h1:2f036293d9709a11d443866c9be97a7fb6a7dc0eabd474efb46196ace8dc2720",
+        "row h1:4c7f34dc36688b1144a2737c47fb558b7fe0adde183ee37440a214b18eec790b": "h1:f343465115315831443b30ab476a21f22927185192c24780b3d1132005b63e3a",
+        "row h1:5dbd135fd2b2f81f17af0769e1c234e36155c05bb6fd9f88f80d68c751ac15af": "h1:6792d8aaf3c6bc2c9ac08cfa340d5eab91fd372d005f446188382b9aaa6d97e6",
+        "row h1:62507217a968697af1861d81abb2ded0f3d132d9fbc43151b695d4cf91eea9c4": "h1:d72f9de707af5f56b1b84eb6cd9d185daaa105c948f92594b79ddf198fdc35eb",
+        "row h1:63977eee2b45698b8f58596ae643ae0586012f0bec75d080f7ad8bc325aa5a62": "h1:0aea88822c67c2d99f9e8a71e4db0ced1e5f7b71a249e3bb506f25c0a3e4c822",
+        "step Otherwise": "h1:23c0079136fbc00e4c5ba2dbae71ee71f831eff4e257b2ff16344e147869e38f",
+        "step Provided": "h1:fcf59b7ac17bf7b0b08cbfef28a7cf045ce9b94ba6c267ce586dba1cd3e62fc4",
+        "step Then": "h1:24a77bde0f4a4196fbb1fe860b04c20113eed1438474b3766be78c5c04261bee",
+        "step When": "h1:294e844e07a2f03a41158550e4aabcce4f11b5405fb3a7de56e8892860a6eb7b"
+      }
+    },
+    {
+      "id": "lint.references.term-ambiguous",
+      "reason": "untouched: these rules read term marks and glossary entry names; the new ask reads only unmarked text, agrees that capabilities do not see each other's terms, and resolves through the system glossary as before",
+      "parts": {
+        "heading": "h1:4aec0bd7b5c71097b0c9cdad628bbc33eba0eac9d8241f6634c0fbf3147a5b5c",
+        "row h1:463059a79709c977c8d56d2f4905d417fa1b7d490a8d656a0096f1187b0ab30b": "h1:e3e62f6484beed108120b8f4a064bf5d3398cd1d5b3ea03244735bb11f0efef2",
+        "row h1:46dd67b040ccd999121413fb0eb426059a434e161fc0ee85638d40838fd70024": "h1:908e21b0d84835257b4d6f540de7b1f895968093555345a07d0139525f1eea85",
+        "row h1:558f3f6368261c803ad0ab272133e5778fa9a483cbcd2d5f82b5d839f423a278": "h1:5e577958981ce1fae243b909e29ddd0e73d3a559a4bef8acf20c70f548750aa1",
+        "row h1:a05bb8d37cfcc518229e153f7892ccbe671a097d8e497a64a1df528dda032f17": "h1:49880df5c6f93fc6a0a437fa1921755e5a77f201185520ce992788fe4a2630d6",
+        "step Otherwise": "h1:4bb1399ea478c779cdf23d86bb10c91708f262546e6f9981b5ba75db2521f5c5",
+        "step Provided": "h1:ccd80fc45fb16bb66081472fa1d365ec6eb9f2842293a55387e23d57695658dd",
+        "step Then": "h1:ab8f4788c855ddcd39bc236a8f6a1ebd1f00391deeaca041f08effd49ac12ad9",
+        "step When": "h1:9929642b197e52d59f0420de25e947baf874fec306dcd3ea8e6ae3a3cd00ad94"
+      }
+    },
+    {
+      "id": "lint.undecided.field",
+      "reason": "untouched: field-known's Then only rewords 'part of that element' as 'a [field] of that element', with the same meaning; undecided.field reads only the field's value for '?'",
+      "parts": {
+        "heading": "h1:c3867e664eab626b7f4d569a867d2c04ce99a7c120d4bb0a5cf089a65c591888",
+        "row h1:3a5d4454c2f337e8d4d800fa94eb729874762f1b2256d05db53f60fb4e5f1844": "h1:78801a5618a8e179974b39e971fd41e3d83f95eed3521224d5db0a6eaa88f5ea",
+        "row h1:ac4be14dab183bdd4c62ce6e5d15847552e925149d64eaa9404dc763937c90d7": "h1:5c80256426ae5acc4ea59da4f9f6737c44c7ebb3142556f463fe7c4e51239098",
+        "row h1:afc18dd655ab6b5bb70e563767f86286acb104119e1f263e623cb3129e86b342": "h1:240376104fd622cb38a1bc2d56a89d78099fcbff588b6fc1d5bad806ade9e9ea",
+        "row h1:b93a1645040a046f4da6b53cc1078f3319bfa2543005e52c2228aee1cb5bc1bb": "h1:f181f02b1f6cf5935d5732fd4baab95cb0d54b02fdd0b5009399f5172408e684",
+        "row h1:cf2af24fa8d21da79456702736245f2de66918fc7ec7043eafe66de788d5d29f": "h1:ce2f6bef0bc1ec148b7570068b24e49b8321a7ef121219ec6a42958c4288051d",
+        "row h1:fb8dcedca407683e4690df7ea6510d3afcb1168815b968be4bba23ba0eedc7db": "h1:b9d7d69c62ab79d2df62194a78595146c9ffd7e875882b35cc11922478840144",
+        "step Otherwise": "h1:a3bfdc8d22a4203f68fdfc7ddb05dd388f234c3d1f5d450fbc876b2f718a73b6",
+        "step Provided": "h1:0a27223434af7437473b5c4c04c6e2ad0c91ac991bff94597f168af5dd6dccb3",
+        "step Then": "h1:99c1d58218d32c251daf5a9250899cc8ee24681083947dc5364cfee3e3dfbe42",
+        "step When": "h1:42f49e7a1aab60d1b41e007475072154169f0367be12d6daf8ded53687e5c31b"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "lint.references.foreign",
+        "lint.references.marked"
+      ],
+      "text": "The prose of lint.references.foreign says words are matched as lint.references.marked matches them, 'where names overlap, the longest match at a place wins', but lint.references.marked states no such overlap rule. No rule says what happens when a term of this capability or the system overlaps a longer term of another capability at one place, for example own 'line' inside foreign 'line ending': an ask only, an error only, or both.",
+      "status": "resolved",
+      "reason": "edited in e53a4e0"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "lint.references.marked",
+        "lint.references.foreign"
+      ],
+      "text": "The matching prose says that where names overlap \"the longest match at a place wins\", but no rule or row covers two matches that overlap without one containing the other (such as \"line ending\" and a foreign \"ending date\" over \"line ending date\"). Whether the leftmost match wins, the longest wins, or both count is not decided, and that changes which word gets the error or the ask.",
+      "status": "resolved",
+      "reason": "edited in 46cb462"
+    },
+    {
+      "id": "f3",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.marked",
+        "lint.references.foreign"
+      ],
+      "text": "Read on its own, the guard of lint.references.marked fails for row 5 (\"heading\", a term of check, appears as a whole word), yet the row says provided yes; the same is true of lint.references.foreign row 9 (\"line\", a term of diff). Only the prose after the block, that a word inside a longer match is no use of its own, makes these rows hold, and the guard does not refer to that prose.",
+      "status": "resolved",
+      "reason": "edited in 46cb462"
+    },
+    {
+      "id": "f4",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.foreign",
+        "lint.undecided.token"
+      ],
+      "text": "The Then of lint.references.foreign says lint reports no [ask] about <text>, yet lint.undecided.token reports the ask `findings.undecided` at a \"?\" standing as a word in a rule block line, and that \"?\" stays in the unmarked text. A line that holds a \"?\" and no other capability's term makes both rules apply, and they cannot both hold. lint.undecided.token is not among the candidates.",
+      "status": "resolved",
+      "reason": "edited in 2f30aa3"
+    },
+    {
+      "id": "f5",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.marked",
+        "lint.rules.keyword"
+      ],
+      "text": "The changed Then of lint.references.marked says lint reports no [error] about <text>, yet other rules report errors at the same text. For example, lint.rules.keyword reports `findings.keyword-unknown` at a line that starts with no keyword, and that line's unmarked text is the whole line. The Then claims more than this rule decides.",
+      "status": "resolved",
+      "reason": "edited in 2f30aa3"
+    },
+    {
+      "id": "f6",
+      "kind": "gap",
+      "elements": [
+        "lint.references.foreign"
+      ],
+      "text": "The second and third Examples rows ('the parts of the' and 'Part of a', capability lint) rely on another capability, baseline, defining the term part with the alias parts, but the row does not say so. The other rows that rely on another capability's glossary state it in the capability column (e.g. 'cli, while baseline and diff each define part'). So these two rows' inputs are only implied by the outcome and why cells, and they depend on a real other capability's glossary that lint's tree cannot see or keep in step.",
+      "status": "resolved",
+      "reason": "edited in d83eab7"
+    },
+    {
+      "id": "f7",
+      "kind": "gap",
+      "elements": [
+        "lint.references.foreign"
+      ],
+      "text": "The row `lint reads it as partial | lint | yes | nothing reported | not a whole word` names no glossary of another capability that defines part, unlike the other rows that show a foreign term. With no foreign part, nothing could match whether or not matching is by whole word, so the row does not show the whole-word condition its why gives.",
+      "status": "resolved",
+      "reason": "edited in d29fc10"
+    },
+    {
+      "id": "f8",
+      "kind": "gap",
+      "elements": [
+        "lint.references.marked",
+        "lint.references.foreign"
+      ],
+      "text": "Both rules now rest on the matching in lint.references.marked's body: the longest name or alias that 'starts there as a whole word'. Nothing in the tree says what ends a word. The rows assume an apostrophe ends one (\"guard's\" counts as a use of guard) and a letter does not (\"partial\" is not \"part\"). No rule says whether a hyphen, a digit or an underscore ends a word, so it is undecided whether \"tree\", an alias of spec tree, matches inside \"spec-tree\".",
+      "status": "resolved",
+      "reason": "edited in cfe6d6e"
+    },
+    {
+      "id": "f9",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.marked",
+        "system.undecided",
+        "lint.undecided.token"
+      ],
+      "text": "lint.references.marked now says, without qualification, that a word is a run of letters, digits, hyphens and underscores, while system.undecided says a word is what whitespace separates; under the first, \"?\" is never a word, so lint.undecided.token's \"?\" standing as a word of its own could never hold for a reader who takes the newer definition.",
+      "status": "resolved",
+      "reason": "edited in a59f7f5"
+    },
+    {
+      "id": "f10",
+      "kind": "gap",
+      "elements": [
+        "lint.references.marked"
+      ],
+      "text": "Unmarked text is what remains once marks, placeholders, references, literals and the hand-over target are taken out, but no rule says whether a removed piece still separates words, so text such as `spec <x> tree` or `guard<x>s` may or may not produce a match across the gap.",
+      "status": "resolved",
+      "reason": "edited in a59f7f5"
+    },
+    {
+      "id": "f11",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.marked",
+        "system.spec-tree"
+      ],
+      "text": "The Examples row 'lint reads the spec <x> tree | lint | yes | nothing reported' cannot hold: `system.spec-tree` has the alias \"tree\", so \"tree\" after the placeholder is a whole-word match of a system term and has to be reported as `findings.term-unmarked`. The row only shows that no match spans the placeholder; it does not show that nothing is reported.",
+      "status": "resolved",
+      "reason": "edited in c71cbe6"
+    },
+    {
+      "id": "f12",
+      "kind": "contradiction",
+      "elements": [
+        "lint.findings.term-foreign",
+        "lint.references.foreign"
+      ],
+      "text": "`lint.findings.term-foreign` says the finding is any word or phrase in a rule block that is a term of another capability and not of its own or the system. But `lint.references.foreign` shows such phrases with no ask: \"ending date\" in 'lint reads the line ending date' and \"line\" in 'the line ending is read', because the first match that starts wins. The member's text is wider than the rule's matching.",
+      "status": "resolved",
+      "reason": "edited in c71cbe6"
+    },
+    {
+      "id": "f13",
+      "kind": "contradiction",
+      "elements": [
+        "lint.references.marked"
+      ],
+      "text": "The Rationale still says possessives count as uses \"which is what aliases are for\", but the changed body ends a word at any character other than a letter, digit, hyphen or underscore. So \"guard's\" matches \"guard\" with no alias, as the third Examples row shows (error at \"guard\", \"a possessive is a use\"). Aliases are now needed only for plurals and other inflections, not for possessives.",
+      "status": "resolved",
+      "reason": "edited in 8fa7593"
+    },
+    {
+      "id": "f14",
+      "kind": "gap",
+      "elements": [
+        "lint.references.marked",
+        "lint.references.foreign"
+      ],
+      "text": "Matching says what ends a word but not how the spaces inside a multi-word name such as \"date heading\" or \"line ending\" are matched. So no rule says whether text with two spaces or a tab between the words (\"date  heading\") is a match, which decides both an error from lint.references.marked and an ask from lint.references.foreign.",
+      "status": "dismissed",
+      "reason": "Older than this amendment; settled in a follow-up amendment of the matching."
+    }
+  ]
+}
