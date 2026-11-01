@@ -164,7 +164,7 @@ that stopped depending on something was edited, and is listed anyway.
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming the chain of [identifiers] from the first changed [element] to it
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from the first changed [element] to the one it depends on directly
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
@@ -178,6 +178,7 @@ Otherwise nothing is listed because of <element>
 | `lint.findings.anchor-misplaced`, a new description | yes | every rule referring to `findings.anchor-misplaced` or to `findings` listed | a rule referring to the element holding it depends on it too |
 | `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
 | `lint.run.exit`, its Rationale reworded, marking a term whose Definition changed | yes | every rule handing over to it listed | its meaning changed through the term, though it is listed as changed for its Rationale |
+| `system.ref.commonmark`, a new `Version`, while `lint.step`, which it defines, has its Definition reworded too | yes | every rule marking `lint.step` listed once, through `lint.step` and through `system.ref.commonmark`, `lint.step` | every chain that reaches it is named |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
 
@@ -189,7 +190,7 @@ Provided  <element> holds no [undecided] place
   And     <element> marks no [term] whose [field] "Status" is "open"
 Then      <element> is to be built
   And     everything else stays as it was
-Otherwise <element> is listed as not to be built, naming each [undecided] place and each mark of an open [term]
+Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place or a mark of an open [term], once
   And     everything else stays as it was
 ```
 
@@ -198,6 +199,7 @@ Otherwise <element> is listed as not to be built, naming each [undecided] place 
 | a rule with every step decided | yes | to be built | |
 | a rule with `Then      ?` | no (an undecided place) | not to be built, naming the `Then` step | |
 | a rule marking a term whose Status is `open` | no (an open term) | not to be built, naming the mark | its meaning is not decided |
+| a rule with `?` in two cells of one Examples row | no (an undecided place) | not to be built, naming that row's line once | a place is named by its line |
 
 ## <a id="baseline.diff.former"></a> Rule: Former text comes from the revision that wrote the manifest
 
@@ -257,7 +259,7 @@ When      `diff` writes the listed [elements] <elements>
 Then      they appear ordered by [identifier], compared byte by byte
   And     the [parts] named for each appear in the order of their lines in `manifest_file`
   And     the chains of [identifiers] named for each appear ordered by their first [identifier], then by their second, and so on, each compared byte by byte, a chain that is the start of another coming first
-  And     the [undecided] places named for each appear in the order of their lines
+  And     the [undecided] places and the marks of open [terms] named for each appear in the order of their lines
 ```
 
 | elements | outcome |
@@ -267,6 +269,7 @@ Then      they appear ordered by [identifier], compared byte by byte
 | a rule changed through the chains `system.ref.commonmark`, `lint.step` and `lint.step` | `lint.step` first, then `system.ref.commonmark`, `lint.step` |
 | a rule changed through the chains `lint.step`, `lint.keyword` and `lint.step` | `lint.step` first, then `lint.step`, `lint.keyword` |
 | a rule with `?` in its `Then` step and in its `When` step | the `When` step first, then the `Then` step |
+| a rule marking an open term in its `When` step, with `?` in its `Then` step | the mark first, then the `Then` step |
 
 ## <a id="baseline.diff.exit"></a> Rule: The exit status tells whether the tree is as the manifest records it
 

@@ -213,8 +213,9 @@ properties:
   chain of identifiers that reaches it, each from the first changed
   element to the one the element depends on directly, as
   `dependencies` gives them.
-- `undecided` lists every undecided place in the element and every mark
-  of an open term; an element with any is not to be built.
+- `undecided` lists each line of the element that holds an undecided
+  place or a mark of an open term, once; an element with any is not to
+  be built.
 
 ## <a id="system.cli.impact"></a> impact
 
