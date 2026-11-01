@@ -256,12 +256,17 @@ Otherwise `diff` writes <elements> to "stdout" as text
 When      `diff` writes the listed [elements] <elements>
 Then      they appear ordered by [identifier], compared byte by byte
   And     the [parts] named for each appear in the order of their lines in `manifest_file`
+  And     the chains of [identifiers] named for each appear ordered by their first [identifier], then by their second, and so on, each compared byte by byte, a chain that is the start of another coming first
+  And     the [undecided] places named for each appear in the order of their lines
 ```
 
 | elements | outcome |
 | --- | --- |
 | `lint.run.root`, `lint.run.exit`, `baseline.parts.split` | `baseline.parts.split`, `lint.run.exit`, `lint.run.root` |
 | `lint.run`, `lint.run.exit` | `lint.run`, then `lint.run.exit` |
+| a rule changed through the chains `system.ref.commonmark`, `lint.step` and `lint.step` | `lint.step` first, then `system.ref.commonmark`, `lint.step` |
+| a rule changed through the chains `lint.step`, `lint.keyword` and `lint.step` | `lint.step` first, then `lint.step`, `lint.keyword` |
+| a rule with `?` in its `Then` step and in its `When` step | the `When` step first, then the `Then` step |
 
 ## <a id="baseline.diff.exit"></a> Rule: The exit status tells whether the tree is as the manifest records it
 
