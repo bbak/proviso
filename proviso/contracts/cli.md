@@ -367,8 +367,9 @@ of the contract.
     identifiers in backticks joined by ` → `, separated by `; `, and a
     full stop.
   - An element not to be built gets a second line: `Not to be built:`,
-    then each undecided place as its path and line joined by `:`,
-    separated by a comma and a space, and a full stop.
+    then each line that holds an undecided place or a mark of an open
+    term, once, as its path and line joined by `:`, separated by a comma
+    and a space, and a full stop.
 - **The former text** of each changed or removed part follows its
   element, each after a line ``Former `<part>`:``.
 - **Under Not in this amendment,** the text of `amendment_note` stands
