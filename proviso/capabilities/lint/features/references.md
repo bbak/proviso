@@ -63,16 +63,18 @@ Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
 taken out. Matches are found from its start onwards: at each place, the
 longest name or alias of a glossary entry that starts there as a whole
-word, ignoring case, is a match, and matching goes on after it. Every
-glossary counts at once, its own capability's, the system's and the
-other capabilities', so the match that starts first wins, and a word
-within a match is no use of its own.
+word, ignoring case, is a match, and matching goes on after it. A word
+is a run of letters, digits, hyphens and underscores; any other
+character ends it. Every glossary counts at once, its own capability's,
+the system's and the other capabilities', so the match that starts
+first wins, and a word within a match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | lint goes on with the rest of the | lint | yes | nothing reported | "spec tree" was marked |
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
+| lint reads it as the guard-line | lint | yes | nothing reported | a hyphen joins "guard-line" into one word |
 | lint reports nothing about | lint | yes | nothing reported | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
