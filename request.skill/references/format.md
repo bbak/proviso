@@ -214,6 +214,14 @@ team, blackout period*). Everyday nouns (*employee, report, licence*)
 are not terms. Spelled-out comparisons (`<amount> is at most the
 account balance`) need no term.
 
+Name a term in the form that sets it apart from everyday use, where the
+requester has one: *daily limit* rather than *limit*, or a word with no
+everyday sense, such as *composable*. A bare everyday word as a term
+claims that word: every use in a rule must then mean the term. Settle
+the name when the term first comes up, by asking which form they use;
+once a term is in the request, people expect it to stay. Go no further
+than readable: no coined words, no long phrases.
+
 ## 7. Examples
 
 A Markdown table after the rule block. **Every rule has one.**
