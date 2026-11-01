@@ -48,6 +48,7 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | übersicht, its "ü" written as "u" and a combining diaeresis | lint, while lint defines Übersicht, its "Ü" composed | yes | that entry | names are compared in NFC |
 | spec tree, with a non-breaking space between the words | lint | no | error | only spaces and tabs join the words of a name |
 | STRASSE, while lint defines Straße | lint | no | error | simple lower case, not full case folding |
+| J̌, written as "J" and a combining caron | lint, while lint defines ǰ, a single character | yes | that entry | lower case comes before NFC |
 | finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 

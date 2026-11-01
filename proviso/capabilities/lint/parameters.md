@@ -81,18 +81,19 @@ after each step below, in this order. A name of a glossary entry, an
 alias, a term mark and a run of words in unmarked text are compared
 alike; a place reported in text is where the match stands as written.
 
-The composed form, as for paths, since the same word is stored composed
-or decomposed depending on the editor. White space at either end does
-not count, since it cannot be seen and the reader of headings and
-fields already drops it. Only spaces and tabs join words, so that no
-other character makes two words one name. Unicode's simple lower-case
-mapping, character by character, and not full case folding, which
-makes "ß" the same as "ss" and so changes a word's length while
-matching.
+White space at either end does not count, since it cannot be seen and
+the reader of headings and fields already drops it. Of the white space
+within a name, only spaces and tabs join words, so that no other white
+space makes two words one name. Unicode's simple lower-case mapping,
+character by character, and not full case folding, which makes "ß" the
+same as "ss" and so changes a word's length while matching. The
+composed form, as for paths, since the same word is stored composed or
+decomposed depending on the editor; it comes last, since lower case can
+leave a name that is no longer composed.
 
 | step | effect |
 | --- | --- |
-| 1 | the name is brought into Unicode's composed form, NFC |
-| 2 | every character with Unicode's White_Space property at either end, a non-breaking space included, is dropped; a zero-width space has no such property and stays |
-| 3 | each run of spaces and tabs within the name, a line break within a field included, becomes one space |
-| 4 | each character becomes its simple lower-case form |
+| 1 | every character with Unicode's White_Space property at either end, a non-breaking space included, is dropped; a zero-width space has no such property and stays |
+| 2 | each run of spaces and tabs within the name, a line break within a field included, becomes one space |
+| 3 | each character becomes its simple lower-case form |
+| 4 | the name is brought into Unicode's composed form, NFC |
