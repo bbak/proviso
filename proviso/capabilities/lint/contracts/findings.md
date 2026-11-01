@@ -168,8 +168,8 @@ A term used in a rule block without its mark.
 
 ### <a id="lint.findings.term-foreign"></a> term-foreign
 
-A word in a rule block that is a term of another capability, and of
-neither its own capability nor the system.
+A word or phrase in a rule block that is a term of another capability,
+and of neither its own capability nor the system.
 
 ### <a id="lint.findings.term-ambiguous"></a> term-ambiguous
 
