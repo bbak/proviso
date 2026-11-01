@@ -34,11 +34,15 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
   And     lint goes on with the rest of the [spec tree]
 ```
 
+Names are compared ignoring case, and any run of spaces and tabs
+between two words counts as one space.
+
 | name | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | spec tree | lint | yes | the system's entry | |
 | findings | lint | yes | lint's entry `finding` | by an alias |
 | Spec Tree | lint | yes | the system's entry | names are matched ignoring case |
+| spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
 | finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 
