@@ -99,6 +99,7 @@ var severities = map[string]string{
 	"examples-part-missing":        "error",
 	"term-unresolved":              "error",
 	"term-unmarked":                "error",
+	"term-foreign":                 "ask",
 	"term-ambiguous":               "error",
 	"hand-over-unresolved":         "error",
 	"hand-over-cycle":              "error",
