@@ -320,10 +320,10 @@ func splitWords(s string) []word {
 	return out
 }
 
-// wordsAndSpaces reports whether a name consists only of words and white
-// space, so that it can be matched word by word.
+// wordsAndSpaces reports whether a name consists only of words and the
+// spaces and tabs that join them, so that it can be matched word by word.
 func wordsAndSpaces(s string) bool {
-	return strings.IndexFunc(s, func(c rune) bool { return !isWordRune(c) && !unicode.IsSpace(c) }) < 0
+	return strings.IndexFunc(s, func(c rune) bool { return !isWordRune(c) && !strings.ContainsRune(nameSpace, c) }) < 0
 }
 
 func lowerAll(ws []word) []string {
@@ -334,7 +334,7 @@ func lowerAll(ws []word) []string {
 	return out
 }
 
-var spaceOnly = regexp.MustCompile(`^\s+$`)
+var spaceOnly = regexp.MustCompile(`^[ \t]+$`)
 
 func matchAt(words []word, i int, phrase []string, text string) bool {
 	if i+len(phrase) > len(words) {

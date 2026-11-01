@@ -338,7 +338,7 @@ func termNames(e *element) []string {
 	names := []string{e.name}
 	if a, ok := e.field("Aliases"); ok {
 		for _, s := range strings.Split(a.value, ",") {
-			if s = strings.TrimSpace(s); s != "" {
+			if s = strings.Trim(s, nameSpace); s != "" {
 				names = append(names, s)
 			}
 		}
@@ -346,8 +346,16 @@ func termNames(e *element) []string {
 	return names
 }
 
+// nameSpace holds the characters that join the words of a term name and
+// do not count at either end of it: spaces and tabs, and a line break
+// within a field. No other white space does.
+const nameSpace = " \t\r\n"
+
 // norm folds case and white space, as term names are matched.
-func norm(s string) string { return strings.ToLower(strings.Join(strings.Fields(s), " ")) }
+func norm(s string) string {
+	words := strings.FieldsFunc(s, func(c rune) bool { return strings.ContainsRune(nameSpace, c) })
+	return strings.ToLower(strings.Join(words, " "))
+}
 
 func uniqueNorm(names []string) []string {
 	var out []string

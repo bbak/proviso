@@ -449,6 +449,9 @@ func TestTermForeign(t *testing.T) {
 		{"system longer", "the line ending is read", "", entry("d.line", "line", ""), "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
 		{"starts first", "lint reads the line ending date", "", entry("d.ending-date", "ending date", ""), "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
 		{"placeholder splits", "lint reads the date <id> heading", "", entry("d.date-heading", "date heading", ""), "", "", nil},
+		{"spaces join", "the line  ending is read", "", "", "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
+		{"tab joins", "the line\tending is read", "", "", "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
+		{"no-break space splits", "the line ending is read", "", "", "", entry("system.line-ending", "line ending", ""), nil},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -486,5 +489,21 @@ func TestTermForeign(t *testing.T) {
 				t.Errorf("got  %v\nwant %v", got, c.want)
 			}
 		})
+	}
+}
+
+func TestNorm(t *testing.T) {
+	for in, want := range map[string]string{
+		"Spec Tree":    "spec tree",
+		"spec  tree":   "spec tree",
+		"spec\ttree":   "spec tree",
+		"spec\ntree":   "spec tree",
+		" spec tree\t": "spec tree",
+		"spec tree":    "spec tree",
+		" spec tree":   " spec tree",
+	} {
+		if got := norm(in); got != want {
+			t.Errorf("norm(%q) = %q, want %q", in, got, want)
+		}
 	}
 }
