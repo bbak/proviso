@@ -34,8 +34,9 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Names are compared ignoring case, and any run of spaces and tabs
-between two words counts as one space.
+Names are compared ignoring case: any run of white space between two
+words, a line break within a field included, counts as one space, and
+white space at either end of a mark or a name does not count.
 
 | name | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -43,6 +44,8 @@ between two words counts as one space.
 | findings | lint | yes | lint's entry `finding` | by an alias |
 | Spec Tree | lint | yes | the system's entry | names are matched ignoring case |
 | spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
+| spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
+| " spec tree " | lint | yes | the system's entry | white space at either end does not count |
 | finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 
@@ -139,9 +142,12 @@ Otherwise lint reports the [error] `findings.term-ambiguous` at <entry>, naming 
   And     lint goes on with the rest of the [spec tree]
 ```
 
+Names are compared as `lint.references.term` compares them.
+
 | name | entry | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | finding | `lint.finding` | yes | nothing reported | |
+| Spec  Tree | an entry of lint named Spec  Tree, with two spaces, while the system defines spec tree | no (level above or below) | error | names are compared as marks are |
 | finding | `lint.finding`, and `baseline.finding` in another capability | yes | nothing reported | capabilities do not see each other's terms |
 | findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | reported at each of the two |
 | element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term; reported at each of the two |
