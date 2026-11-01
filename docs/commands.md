@@ -132,7 +132,8 @@ proviso lint [--json]
 Checks the spec tree against the notation: layout, identifiers, the
 fields and sections of each element, rule blocks, Examples tables and
 glossary entries. It reports errors, and asks about every undecided
-place. It never writes the tree.
+place and about every unmarked word in a rule block that is a term of
+another capability. It never writes the tree.
 
 | Exit status | Meaning |
 | --- | --- |

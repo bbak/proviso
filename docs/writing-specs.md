@@ -263,6 +263,9 @@ Its entry defines it once:
 - **Once a word is a term, every use of it in a rule block is marked**
   `[composable]`. An unmarked use is an error, since the impact search
   follows the marks. Where you mean something else, use another word.
+  A capability cannot mark another capability's term, so lint asks
+  where a rule block uses one: either the term moves up to the system
+  level and is marked, or the rule says it in other words.
   Prose needs no marks: it does not decide behaviour, so the search need
   not follow it.
 - **Aliases** cover other names and inflected forms, such as `[terms]`
