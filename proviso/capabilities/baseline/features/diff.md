@@ -159,12 +159,15 @@ meaning passes on along every dependency, however long the chain, and
 stops where nothing depends on a changed meaning: in practice a
 reference, a glossary entry, a contract element and a rule at most.
 Which elements depend on what is read from the tree as it stands: one
-that stopped depending on something was edited, and is listed anyway.
+that stopped depending on something was edited, and is listed anyway. A
+removed member of a contract element is the exception: a rule that
+referred to a contract element above it relied on it, and still refers
+to that contract element.
 
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added or changed whose changed [part] `change_effects` gives "dependents" for, to the one it depends on directly
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added, changed or removed whose changed [part] `change_effects` gives "dependents" for, to the one it depends on directly
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
@@ -179,6 +182,7 @@ Otherwise nothing is listed because of <element>
 | `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
 | `lint.run.exit`, its Rationale reworded, marking a term whose Definition changed | yes | every rule handing over to it listed, through that term, then `lint.run.exit` | its meaning changed through the term, though it is listed as changed for its Rationale |
 | `system.ref.commonmark`, a new `Version`, while `lint.step`, which it defines, has its Definition reworded too | yes | every rule marking `lint.step` listed once, through `lint.step` and through `system.ref.commonmark`, `lint.step` | every chain that reaches it is named |
+| `lint.findings.anchor-misplaced`, removed, while `lint.findings` stays | yes | every rule referring to `findings` listed, through `lint.findings.anchor-misplaced` | a rule relied on every member of `findings` |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
 
