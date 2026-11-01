@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"fmt"
 	"maps"
-	"regexp"
 	"slices"
 	"strings"
 	"unicode"
@@ -226,11 +225,11 @@ func (l *linter) resolveReference(cap, ref string) *element {
 }
 
 // checkUnmarked reports each match in the unmarked text of a line: a name
-// or alias of a glossary entry of any level, as whole words, ignoring case,
-// the longest at each place, found from the start onwards. A match that is
-// a term of the rule's own capability or of the system is a term used
-// without its mark; one that is a term of other capabilities only is asked
-// about.
+// or alias of a glossary entry of any level, as whole words, compared as
+// name_comparison says, the longest at each place, found from the start
+// onwards. A match that is a term of the rule's own capability or of the
+// system is a term used without its mark; one that is a term of other
+// capabilities only is asked about.
 func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	text := ln.Without(true, guarded.Literal, guarded.Code, guarded.Mark, guarded.Placeholder)
 	if ln.Keyword != "" {
@@ -238,17 +237,13 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 		text = text[:i] + string(rune(0)) + text[i+len(ln.Keyword):]
 	}
 	words := splitWords(text)
-	type phrase struct {
-		words []string
-		entry *element
-	}
-	var phrases []phrase
+	byKey := map[string][]*element{} // the entries each key of a name or alias belongs to
+	most := 0                        // the most words a key holds
 	for _, lv := range l.glossaryLevels() {
 		for _, e := range l.glossary[lv] {
-			for _, n := range termNames(e) {
-				if p := splitWords(n); len(p) > 0 && wordsAndSpaces(n) {
-					phrases = append(phrases, phrase{lowerAll(p), e})
-				}
+			for _, k := range uniqueKeys(termNames(e)) {
+				byKey[k] = append(byKey[k], e)
+				most = max(most, len(splitWords(k)))
 			}
 		}
 	}
@@ -256,15 +251,14 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	for i := 0; i < len(words); {
 		best := 0
 		var entries []*element
-		for _, p := range phrases {
-			if len(p.words) < best || !matchAt(words, i, p.words, text) {
+		for j := min(i+most, len(words)) - 1; j >= i; j-- {
+			run := text[words[i].start:words[j].end]
+			if strings.ContainsRune(run, 0) { // no match spans a piece taken out
 				continue
 			}
-			if len(p.words) > best {
-				best, entries = len(p.words), nil
-			}
-			if !slices.Contains(entries, p.entry) {
-				entries = append(entries, p.entry)
+			if es := byKey[nameKey(run)]; len(es) > 0 {
+				best, entries = j-i+1, slices.Clone(es)
+				break
 			}
 		}
 		if best == 0 {
@@ -290,13 +284,15 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	}
 }
 
+// word is a word of a text, from its start to its end.
 type word struct {
 	start, end int
-	lower      string
 }
 
+// isWordRune reports whether c belongs to a word: a letter, a combining
+// mark, a digit, a hyphen or an underscore.
 func isWordRune(c rune) bool {
-	return unicode.IsLetter(c) || unicode.IsDigit(c) || c == '-' || c == '_'
+	return unicode.IsLetter(c) || unicode.IsMark(c) || unicode.IsDigit(c) || c == '-' || c == '_'
 }
 
 func splitWords(s string) []word {
@@ -310,45 +306,14 @@ func splitWords(s string) []word {
 			continue
 		}
 		if start >= 0 {
-			out = append(out, word{start, i, strings.ToLower(s[start:i])})
+			out = append(out, word{start, i})
 			start = -1
 		}
 	}
 	if start >= 0 {
-		out = append(out, word{start, len(s), strings.ToLower(s[start:])})
+		out = append(out, word{start, len(s)})
 	}
 	return out
-}
-
-// wordsAndSpaces reports whether a name consists only of words and the
-// spaces and tabs that join them, so that it can be matched word by word.
-func wordsAndSpaces(s string) bool {
-	return strings.IndexFunc(s, func(c rune) bool { return !isWordRune(c) && !strings.ContainsRune(nameSpace, c) }) < 0
-}
-
-func lowerAll(ws []word) []string {
-	var out []string
-	for _, w := range ws {
-		out = append(out, w.lower)
-	}
-	return out
-}
-
-var spaceOnly = regexp.MustCompile(`^[ \t]+$`)
-
-func matchAt(words []word, i int, phrase []string, text string) bool {
-	if i+len(phrase) > len(words) {
-		return false
-	}
-	for k, p := range phrase {
-		if words[i+k].lower != p {
-			return false
-		}
-		if k > 0 && !spaceOnly.MatchString(text[words[i+k-1].end:words[i+k].start]) {
-			return false
-		}
-	}
-	return true
 }
 
 // checkCycles reports each chain of hand-overs that returns to a rule it has

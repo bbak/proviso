@@ -40,22 +40,44 @@ Then      the shop sends a bill for <product>
 	}
 	represents := api(baseline(), "[basket]")
 	broken := api(sys, "[spec\n  tree]")
+	// Rows 5, 10, 12 and 13 need terms of the cart's own, defined as the row
+	// says.
+	usLaw := withTerms(baseline(), "cart", entryMD("cart.us-law", "U.S. law"))
+	ubersicht := withTerms(baseline(), "cart", entryMD("cart.ubersicht", "\u00dcbersicht"))
+	strasse := withThenAnd(withTerms(baseline(), "cart", entryMD("cart.strasse", "Stra\u00dfe")), "the cart stays in the [STRASSE]")
+	jCaron := withTerms(baseline(), "cart", entryMD("cart.j-caron", "\u01f0"))
+	zeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\u200b]")
+	noBreakZeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\ufeff]")
 	rows(t, "term-unresolved", []row{
 		{name: "row1 the system's entry", tree: withThenAnd(sys, "the cart stays in the [spec tree]"), holds: true},
 		{name: "row2 by an alias", tree: baseline(), holds: true},
 		{name: "row3 names are matched ignoring case", tree: withThenAnd(sys, "the cart stays in the [Spec Tree]"), holds: true},
 		{name: "row4 any run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec  tree]"), holds: true},
-		{name: "row5 a line break within a field joins words too", tree: broken, holds: true},
-		{name: "row6 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
-		{name: "row7 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
-		{name: "row8 not visible in another capability", tree: other,
+		{name: "row5 every run of spaces and tabs within a name counts as one, next to punctuation too",
+			tree: withThenAnd(usLaw, "the cart follows [U.S.  law]"), holds: true},
+		{name: "row6 a line break within a field joins words too", tree: broken, holds: true},
+		{name: "row7 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
+		{name: "row8 any white space at either end does not count", tree: withThenAnd(sys, "the cart stays in the [spec tree\u00a0]"), holds: true},
+		{name: "row9 a zero-width space is no white space", tree: zeroWidth, file: featurePath, lines: lines(thenAndLine(zeroWidth))},
+		{name: "row10 names are compared in NFC", tree: withThenAnd(ubersicht, "the cart shows the [u\u0308bersicht]"), holds: true},
+		{name: "row11 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
+		{name: "row12 simple lower case, not full case folding", tree: strasse, file: featurePath, lines: lines(thenAndLine(strasse))},
+		{name: "row13 lower case comes before NFC", tree: withThenAnd(jCaron, "the cart shows the [J\u030c]"), holds: true},
+		{name: "row14 not visible in another capability", tree: other,
 			file: "proviso/capabilities/billing/features/pay.md", lines: lines(other.line("proviso/capabilities/billing/features/pay.md", "[item]"))},
-		{name: "row9 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
+		{name: "row15 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
 		{name: "derived: a tab joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec\ttree]"), holds: true},
 		{name: "derived: a run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec \t \ttree]"), holds: true},
 		{name: "derived: tabs at either end do not count", tree: withThenAnd(sys, "the cart stays in the [\tspec tree\t]"), holds: true},
+		{name: "derived: other white space at the start does not count", tree: withThenAnd(sys, "the cart stays in the [\u3000\u2003spec tree]"), holds: true},
+		{name: "derived: a zero-width no-break space is no white space", tree: noBreakZeroWidth,
+			file: featurePath, lines: lines(thenAndLine(noBreakZeroWidth))},
 		{name: "derived: a run of spaces in a glossary name counts as one", tree: withThenAnd(
 			withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf  label")), "the cart shows the [shelf label]"), holds: true},
+		{name: "derived: a decomposed glossary name is compared in NFC", tree: withThenAnd(
+			withTerms(baseline(), "cart", entryMD("cart.ubersicht", "U\u0308bersicht")), "the cart shows the [\u00fcbersicht]"), holds: true},
+		{name: "derived: simple lower case of the capital I with dot above", tree: withThenAnd(
+			withTerms(baseline(), "cart", entryMD("cart.istanbul", "istanbul")), "the cart ships to [\u0130stanbul]"), holds: true},
 		{name: "derived: no other character joins the words of a name", tree: underscore, file: featurePath, lines: lines(thenAndLine(underscore))},
 		{name: "derived: a Represents field that resolves", tree: api(baseline(), "[item]"), holds: true},
 		{name: "derived: a Represents field that does not resolve", tree: represents,
@@ -69,7 +91,7 @@ Then      the shop sends a bill for <product>
 		t.Parallel()
 		check(t, withThenAnd(sys, "the cart stays in the [spec  tree]")).clean(t)
 	})
-	t.Run("row5 resolves without other findings", func(t *testing.T) {
+	t.Run("row6 resolves without other findings", func(t *testing.T) {
 		t.Parallel()
 		check(t, broken).clean(t)
 	})
@@ -86,18 +108,18 @@ func TestLintReferencesMarked(t *testing.T) {
 	r2.name = "row2 an unmarked use"
 	r3 := unmarked(baseline(), "the cart keeps the item's price")
 	r3.name = "row3 a possessive is a use"
-	// Rows 5, 6, 8 and 9 need terms of two words: the cart's own "shelf
+	// Rows 5, 6, 9 and 10 need terms of two words: the cart's own "shelf
 	// label" and "label", and billing's "price label" and "label date".
 	shelfLabel := withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf label"))
 	r6 := unmarked(shelfLabel, "the cart keeps the shelf  label")
 	r6.name = "row6 any run of spaces and tabs joins the words of a name"
 	r9 := unmarked(withTerms(shelfLabel, "billing", entryMD("billing.label-date", "label date")), "the cart reads the shelf label date")
-	r9.name = "row9 the match that starts first wins"
+	r9.name = "row10 the match that starts first wins"
 	tab := unmarked(shelfLabel, "the cart keeps the shelf\tlabel")
 	tab.name = "derived: a tab joins the words of a name"
 	run := unmarked(shelfLabel, "the cart keeps the shelf \t label")
 	run.name = "derived: a run of spaces and tabs joins the words of a name"
-	// Row 8 as written: two other capabilities, check defining "heading" and
+	// Row 9 as written: two other capabilities, check defining "heading" and
 	// bundle "date heading".
 	dateHeading := withTerms(withTerms(baseline(), "check", entryMD("check.heading", "heading")),
 		"bundle", entryMD("bundle.date-heading", "date heading"))
@@ -107,6 +129,14 @@ func TestLintReferencesMarked(t *testing.T) {
 	plural.name = "derived: a plural, by its alias"
 	upper := unmarked(baseline(), "Item counts stay as they were")
 	upper.name = "derived: ignoring case"
+	// Row 7: the cart defines its name with the composed U+00DC; the text
+	// writes its first letter as "u" and the combining diaeresis U+0308.
+	r7 := unmarked(withTerms(baseline(), "cart", entryMD("cart.ubersicht", "\u00dcbersicht")), "the cart reads the u\u0308bersicht")
+	r7.name = "row7 the combining mark stays in its word, and names are compared in NFC"
+	decomposed := unmarked(withTerms(baseline(), "cart", entryMD("cart.ubersicht", "U\u0308bersicht")), "the cart reads the \u00dcbersicht")
+	decomposed.name = "derived: a decomposed glossary name is compared in NFC"
+	jCaron := unmarked(withTerms(baseline(), "cart", entryMD("cart.j-caron", "\u01f0")), "the cart reads the J\u030c")
+	jCaron.name = "derived: lower case comes before NFC"
 	rows(t, "term-unmarked", []row{
 		{name: "row1 the term is marked", tree: withThenAnd(sys, "the cart goes on with the rest of the [spec tree]"), holds: true},
 		r2,
@@ -114,9 +144,10 @@ func TestLintReferencesMarked(t *testing.T) {
 		{name: "row4 a hyphen joins item-list into one word", tree: withThenAnd(baseline(), "the cart keeps the item-list"), holds: true},
 		{name: "row5 no match spans the placeholder taken out", tree: withThenAnd(shelfLabel, "the cart keeps the shelf <product> label"), holds: true},
 		r6,
-		{name: "row7 no term at all", tree: baseline(), holds: true},
-		{name: "row8 the foreign match that starts first wins", tree: withThenAnd(dateHeading, "the cart reads the date heading"), holds: true},
-		{name: "row8 over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price label"), holds: true},
+		r7,
+		{name: "row8 no term at all", tree: baseline(), holds: true},
+		{name: "row9 the foreign match that starts first wins", tree: withThenAnd(dateHeading, "the cart reads the date heading"), holds: true},
+		{name: "row9 over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price label"), holds: true},
 		r9,
 		tab,
 		run,
@@ -124,6 +155,12 @@ func TestLintReferencesMarked(t *testing.T) {
 		{name: "derived: a foreign match across a run of spaces wins over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price  label"), holds: true},
 		plural,
 		upper,
+		decomposed,
+		jCaron,
+		{name: "derived: a combining mark does not end a word", tree: withThenAnd(
+			withTerms(baseline(), "cart", entryMD("cart.bersicht", "bersicht")), "the cart reads the u\u0308bersicht"), holds: true},
+		{name: "derived: simple lower case, not full case folding", tree: withThenAnd(
+			withTerms(baseline(), "cart", entryMD("cart.strasse", "Stra\u00dfe")), "the cart reads STRASSE"), holds: true},
 		{name: "derived: only whole words", tree: withThenAnd(baseline(), "the bill stays itemized"), holds: true},
 		{name: "derived: an underscore is part of a word", tree: withThenAnd(baseline(), "the cart keeps item_count"), holds: true},
 		{name: "derived: a literal is not a use", tree: withThenAnd(baseline(), `the cart shows "item"`), holds: true},
@@ -291,6 +328,21 @@ func TestLintReferencesForeign(t *testing.T) {
 		t.Parallel()
 		notAsked(t, billNoAlias.edit(featurePath, "Buyers put goods into the cart.\n", "Buyers put goods into the cart and get a bill.\n"))
 	})
+	t.Run("derived: names are compared in NFC", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(baseline(), "billing", entryMD("billing.ubersicht", "\u00dcbersicht"))
+		atCart(t, tr, "the cart keeps the u\u0308bersicht", "billing", "billing.ubersicht")
+	})
+	t.Run("derived: lower case comes before NFC", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(baseline(), "billing", entryMD("billing.j-caron", "\u01f0"))
+		atCart(t, tr, "the cart keeps the J\u030c", "billing", "billing.j-caron")
+	})
+	t.Run("derived: simple lower case, not full case folding", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(baseline(), "billing", entryMD("billing.strasse", "Stra\u00dfe"))
+		notAsked(t, withThenAnd(tr, "the cart keeps the STRASSE"))
+	})
 	t.Run("derived: an ask leaves the exit status at 0", func(t *testing.T) {
 		t.Parallel()
 		o := check(t, billingWith(baseline(), "the shop bills the item <product>"))
@@ -334,7 +386,7 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 		t.Parallel()
 		checkGoesOn(t, baseline()).lacks(t, "term-ambiguous", "")
 	})
-	t.Run("row2 names are compared as marks are", func(t *testing.T) {
+	t.Run("row2 runs of spaces count as one", func(t *testing.T) {
 		t.Parallel()
 		levelled(t, spaced("Spec  Tree"))
 	})
@@ -368,6 +420,34 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 		label, tag := tr.line(glossaryPath, `id="cart.shelf-label"`), tr.line(glossaryPath, `id="cart.tag"`)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, label), glossaryPath, tag)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, tag), glossaryPath, label)
+	})
+	// twins asserts term-ambiguous at the cart's entries a and b, each naming
+	// the other.
+	twins := func(t *testing.T, tr tree, a, b string) {
+		t.Helper()
+		o := checkGoesOn(t, tr)
+		la, lb := tr.line(glossaryPath, `id="`+a+`"`), tr.line(glossaryPath, `id="`+b+`"`)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, la), glossaryPath, lb)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, lb), glossaryPath, la)
+	}
+	t.Run("derived: white space at the end of a name does not count", func(t *testing.T) {
+		t.Parallel()
+		levelled(t, spaced("spec tree\u00a0"))
+	})
+	t.Run("derived: names are compared in NFC", func(t *testing.T) {
+		t.Parallel()
+		twins(t, withTerms(baseline(), "cart", entryMD("cart.ubersicht", "\u00dcbersicht"), entryMD("cart.overview", "overview", "U\u0308bersicht")),
+			"cart.ubersicht", "cart.overview")
+	})
+	t.Run("derived: lower case comes before NFC", func(t *testing.T) {
+		t.Parallel()
+		twins(t, withTerms(baseline(), "cart", entryMD("cart.j-caron", "\u01f0"), entryMD("cart.jay", "jay", "J\u030c")),
+			"cart.j-caron", "cart.jay")
+	})
+	t.Run("derived: simple lower case, not full case folding", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(baseline(), "cart", entryMD("cart.strasse", "Stra\u00dfe"), entryMD("cart.street", "street", "STRASSE"))
+		checkGoesOn(t, tr).lacks(t, "term-ambiguous", "")
 	})
 }
 

@@ -452,6 +452,14 @@ func TestTermForeign(t *testing.T) {
 		{"spaces join", "the line  ending is read", "", "", "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
 		{"tab joins", "the line\tending is read", "", "", "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
 		{"no-break space splits", "the line ending is read", "", "", "", entry("system.line-ending", "line ending", ""), nil},
+		{"combining mark joins, NFC", "lint reads the übersicht", entry("c.ubersicht", "Übersicht", ""), "", "", "", []string{"term-unmarked"}},
+		{"simple lower case", "lint reads the STRASSE", entry("c.strasse", "Straße", ""), "", "", "", nil},
+		{"punctuation in a name", "lint reads the U.S.  law", entry("c.us-law", "U.S. law", ""), "", "", "", []string{"term-unmarked"}},
+		{"punctuation, tab", "lint reads the u.s.\tlaw", entry("c.us-law", "U.S. law", ""), "", "", "", []string{"term-unmarked"}},
+		{"punctuation, foreign", "lint reads the U.S. law", "", entry("d.us-law", "U.S. law", ""), "", "", []string{"term-foreign d.us-law"}},
+		{"punctuation, no-break space", "lint reads the U.S. law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
+		{"punctuation, placeholder splits", "lint reads the U.S. <id> law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
+		{"punctuation, not a whole word", "lint reads the XU.S. law", entry("c.us-law", "U.S. law", ""), "", "", "", nil},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -492,18 +500,27 @@ func TestTermForeign(t *testing.T) {
 	}
 }
 
-func TestNorm(t *testing.T) {
+func TestNameKey(t *testing.T) {
 	for in, want := range map[string]string{
-		"Spec Tree":    "spec tree",
-		"spec  tree":   "spec tree",
-		"spec\ttree":   "spec tree",
-		"spec\ntree":   "spec tree",
-		" spec tree\t": "spec tree",
-		"spec tree":    "spec tree",
-		" spec tree":   " spec tree",
+		"Spec Tree":       "spec tree",
+		"spec  tree":      "spec tree",
+		"spec\ttree":      "spec tree",
+		"spec\ntree":      "spec tree",
+		"spec \t\n tree":  "spec tree",
+		" spec tree\t":    "spec tree",
+		"spec tree\u00a0": "spec tree",
+		"\u3000spec tree": "spec tree",
+		"spec\u00a0tree":  "spec\u00a0tree",
+		"spec tree\u200b": "spec tree\u200b",
+		"U.S.  law":       "u.s. law",
+		"STRASSE":         "strasse",
+		"Stra\u00dfe":     "stra\u00dfe",
+		"\u00dcbersicht":  "\u00fcbersicht",
+		"u\u0308bersicht": "\u00fcbersicht",
+		"J\u030c":         "\u01f0",
 	} {
-		if got := norm(in); got != want {
-			t.Errorf("norm(%q) = %q, want %q", in, got, want)
+		if got := nameKey(in); got != want {
+			t.Errorf("nameKey(%q) = %q, want %q", in, got, want)
 		}
 	}
 }
