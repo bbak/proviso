@@ -117,6 +117,13 @@ text lines up, then its Examples table.
   readers could understand differently. Its entry has `Definition`,
   `Contact`, `Status` (`defined`, or `open` with a `Question`) and
   `Aliases` for other names and forms.
+- **A term's name** is the business's word, in the form that sets it
+  apart from everyday use where the business has one: *daily limit*
+  rather than *limit*, or a word with no everyday sense, such as
+  *composable*. A bare everyday word as a term claims that word: every
+  use in a rule block must then mean the term, and a rule in another
+  capability that uses it is asked about. Go no further than readable:
+  no coined words, no long phrases; the business reads the rules.
 - **A parameter** has `Value`, `Unit`, `Configurable` and a one-line
   `Rationale`, which a bare value always needs. `Configurable` is `no`,
   or names how it is set and its range, such as
