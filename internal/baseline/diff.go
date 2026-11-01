@@ -43,7 +43,8 @@ func (e *Entry) Undecided() []lint.Pos {
 }
 
 // Compare lists what the tree's elements did against the baseline, ordered
-// by identifier, without former texts: Former fills them in.
+// by identifier, without former texts, which Former fills in, and without
+// the elements changed through a dependency, which Through adds.
 func Compare(elements []lint.Element, base Baseline) []*Entry {
 	var out []*Entry
 	byID := map[string]*Entry{}
@@ -81,11 +82,27 @@ func Compare(elements []lint.Element, base Baseline) []*Entry {
 			byID[id] = &Entry{ID: id, Change: Removed}
 		}
 	}
-	throughDependencies(elements, byID)
 	for _, id := range slices.Sorted(maps.Keys(byID)) {
 		e := byID[id]
 		slices.SortFunc(e.Parts, func(a, b PartChange) int { return cmp.Compare(a.Part, b.Part) })
 		out = append(out, e)
+	}
+	return out
+}
+
+// Through adds to the entries Compare listed every element changed through
+// a dependency, and returns them all, ordered by identifier. now is the
+// tree as it stands, former the tree the removed elements stood in, nil
+// where no element was removed.
+func Through(entries []*Entry, now, former []lint.Element) []*Entry {
+	byID := map[string]*Entry{}
+	for _, e := range entries {
+		byID[e.ID] = e
+	}
+	throughDependencies(now, former, byID)
+	var out []*Entry
+	for _, id := range slices.Sorted(maps.Keys(byID)) {
+		out = append(out, byID[id])
 	}
 	return out
 }

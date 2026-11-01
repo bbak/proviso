@@ -73,9 +73,15 @@ func changedParts(e *Entry, version *lint.Element) []string {
 }
 
 // dependsOn is the parameter dependencies: the identifiers of the elements
-// each element depends on, read from the tree as it stands.
-func dependsOn(elements []lint.Element) map[string][]string {
+// each element depends on, read from the tree as it stands. removed holds,
+// by the contract element that held them, the members an amendment
+// removed, on which a rule referring to that contract element still
+// depends.
+func dependsOn(elements []lint.Element, removed map[string][]string) map[string][]string {
 	members := map[string][]string{}
+	for holder, ids := range removed {
+		members[holder] = slices.Clone(ids)
+	}
 	for _, e := range elements {
 		if e.Parent != "" {
 			members[e.Parent] = append(members[e.Parent], e.ID)
@@ -119,9 +125,20 @@ func dependsOn(elements []lint.Element) map[string][]string {
 
 // throughDependencies lists every element that depends on a changed
 // meaning, and is not listed otherwise, as changed through a dependency,
-// with every chain of identifiers that reaches it.
-func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
-	deps := dependsOn(elements)
+// with every chain of identifiers that reaches it. former is the tree the
+// removed elements stood in, which tells the members among them.
+func throughDependencies(elements, former []lint.Element, byID map[string]*Entry) {
+	formerElem := map[string]*lint.Element{}
+	for i := range former {
+		formerElem[former[i].ID] = &former[i]
+	}
+	removed := map[string][]string{}
+	for id, e := range byID {
+		if fe := formerElem[id]; e.Change == Removed && fe != nil && fe.Parent != "" {
+			removed[fe.Parent] = append(removed[fe.Parent], id)
+		}
+	}
+	deps := dependsOn(elements, removed)
 	dependents := map[string][]string{}
 	for id, ds := range deps {
 		for _, d := range ds {
@@ -135,11 +152,17 @@ func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
 	seeds := map[string]bool{}
 	var queue []string
 	for id, e := range byID {
-		if e.Element == nil {
-			continue // nothing in the tree depends on a removed element
+		version := e.Element
+		if version == nil {
+			// Only a removed member is still depended on, by the rules
+			// referring to the contract element that held it.
+			version = formerElem[id]
 		}
-		for _, p := range changedParts(e, e.Element) {
-			if passes, _ := effects(e.Element.Type, p); passes {
+		if version == nil {
+			continue
+		}
+		for _, p := range changedParts(e, version) {
+			if passes, _ := effects(version.Type, p); passes {
 				seeds[id] = true
 				queue = append(queue, id)
 				break
@@ -169,8 +192,9 @@ func throughDependencies(elements []lint.Element, byID map[string]*Entry) {
 			}
 		}
 	}
-	// chains returns every chain of identifiers from a first changed
-	// element to one the element id depends on directly.
+	// chains returns every chain of identifiers from a listed element
+	// whose changed part passes its meaning on to one the element id
+	// depends on directly.
 	memo := map[string][][]string{}
 	var chains func(id string, visiting map[string]bool) [][]string
 	chains = func(id string, visiting map[string]bool) [][]string {

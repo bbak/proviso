@@ -1,6 +1,8 @@
 package lint
 
 import (
+	"cmp"
+	"slices"
 	"strings"
 
 	"github.com/bbak/proviso/internal/guarded"
@@ -53,7 +55,7 @@ type Element struct {
 	Refs       []Ref    // the backtick references of its rule block
 	Represents []string // the identifiers of the glossary entries its Represents marks
 	DefinedBy  string   // the identifier of the reference its Defined by links to
-	Undecided  []Pos    // the places lint asks about as undecided
+	Undecided  []Pos    // the lines holding a place lint asks about as undecided, each once, in order
 }
 
 // Ref is a backtick reference as written, and the identifier of the
@@ -115,6 +117,9 @@ func (l *linter) export() []Element {
 				x.Undecided = append(x.Undecided, Pos{f.File, f.Line})
 			}
 		}
+		// Each line is named once, in the order of the lines.
+		slices.SortFunc(x.Undecided, func(a, b Pos) int { return cmp.Compare(a.Line, b.Line) })
+		x.Undecided = slices.Compact(x.Undecided)
 		out = append(out, x)
 	}
 	return out

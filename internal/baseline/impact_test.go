@@ -64,9 +64,11 @@ func replace(m map[string]string, file, old, new string) {
 // element changed through a dependency.
 func through(t *testing.T, edit func(map[string]string)) map[string]string {
 	t.Helper()
-	base, _ := Parse(Write(files(impactTree)))
+	before := files(impactTree)
+	base, _ := Parse(Write(before))
 	out := map[string]string{}
-	for _, e := range Compare(files(editTree(edit)), base) {
+	now := files(editTree(edit))
+	for _, e := range Through(Compare(now, base), now, before) {
 		out[e.ID] = e.Change
 		if e.Change == ChangedThrough {
 			out[e.ID] = fmt.Sprint(e.Through)
@@ -115,6 +117,22 @@ func TestDependencies(t *testing.T) {
 	if got["c.f.r"] != Changed || got["c.g.d"] != "[[system.thing c.f.r]]" {
 		t.Errorf("through a listed rule: %v", got)
 	}
+	// Every chain is named, ordered, a chain that starts another first.
+	got = through(t, func(m map[string]string) {
+		replace(m, "glossary.md", "A thing.", "Another thing.")
+		replace(m, "contracts/api.md", "The api.", "The new api.")
+	})
+	if got["c.g.c"] != "[[system.api] [system.thing system.api]]" {
+		t.Errorf("two chains: %v", got)
+	}
+	// A removed member passes its change to the rules referring to the
+	// contract element that held it.
+	got = through(t, func(m map[string]string) {
+		replace(m, "contracts/api.md", "\n### <a id=\"system.api.code\"></a> code\n\nA code.\n", "")
+	})
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.api.code": Removed, "c.g.c": "[[system.api.code]]"}) {
+		t.Errorf("a removed member: %v", got)
+	}
 	for _, edit := range []func(map[string]string){
 		func(m map[string]string) { replace(m, "glossary.md", "- Aliases: things", "- Aliases: things, stuff") },
 		func(m map[string]string) { replace(m, "references.md", "- Contact: Ann", "- Contact: Bob") },
@@ -140,6 +158,7 @@ func impact(t *testing.T, edit func(map[string]string)) (map[string][]string, []
 	if err := Former(entries, base, before, "rev"); err != nil {
 		t.Fatal(err)
 	}
+	entries = Through(entries, now, before)
 	cands, frames := Impact(entries, now, before)
 	out := map[string][]string{}
 	for i, c := range cands {

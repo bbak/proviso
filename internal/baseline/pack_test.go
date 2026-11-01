@@ -14,9 +14,10 @@ import (
 // element diff.
 func packOf(t *testing.T, edit func(map[string]string)) map[string][]string {
 	t.Helper()
-	base, _ := Parse(Write(files(impactTree)))
+	before := files(impactTree)
+	base, _ := Parse(Write(before))
 	now := files(editTree(edit))
-	entries := Compare(now, base)
+	entries := Through(Compare(now, base), now, before)
 	out := map[string][]string{}
 	for _, e := range PackOrder(entries) {
 		out["amendment"] = append(out["amendment"], e.ID)

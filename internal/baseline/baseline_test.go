@@ -222,7 +222,8 @@ func diff(t *testing.T, edit func(map[string]string)) map[string]*Entry {
 		t.Fatal(bad)
 	}
 	out := map[string]*Entry{}
-	entries := Compare(files(edit), base)
+	now := files(edit)
+	entries := Through(Compare(now, base), now, files(nil))
 	for i, e := range entries {
 		if i > 0 && entries[i-1].ID >= e.ID {
 			t.Error("not ordered by identifier")
@@ -262,6 +263,12 @@ func TestCompare(t *testing.T) {
 	}
 	if d["c.new"] == nil || d["c.new"].Change != Added || len(d["c.new"].Undecided()) != 1 {
 		t.Errorf("%+v", d["c.new"])
+	}
+	twice := diff(t, func(m map[string]string) {
+		m["capabilities/c/features/f.md"] = strings.Replace(feature, "| b | no | not read | |", "| b | no | ? | ? |", 1)
+	})
+	if u := twice["c.f.r"].Undecided(); len(u) != 1 {
+		t.Errorf("a row with two undecided cells: %v", u)
 	}
 	if d["c.f"] != nil {
 		t.Error("a rule's change changed its feature")
