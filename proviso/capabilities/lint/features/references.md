@@ -105,8 +105,8 @@ at once.
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | lint reads it as a line of a | lint | yes | nothing reported | |
-| lint reports nothing about the parts of the | lint | no | ask at "parts", naming `baseline.part` | by an alias |
-| lint reads it as Part of a | lint | no | ask at "Part", naming `baseline.part` | names are matched ignoring case |
+| lint reports nothing about the parts of the | lint, while baseline defines part, with the alias parts | no | ask at "parts", naming baseline's entry | by an alias |
+| lint reads it as Part of a | lint, while baseline defines part | no | ask at "Part", naming baseline's entry | names are matched ignoring case |
 | lint reads it as partial | lint | yes | nothing reported | not a whole word |
 | the finding is read | install | no | ask at "finding", naming `lint.finding` | |
 | the part is read | diff, which defines part, as baseline does | yes | nothing reported | a term of its own; `lint.references.marked` reports it unmarked |
