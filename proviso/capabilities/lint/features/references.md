@@ -74,7 +74,7 @@ within a match is no use of its own.
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
 | lint reports nothing about | lint | yes | nothing reported | |
-| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the longer match |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
 
 ## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
@@ -107,11 +107,11 @@ at once.
 | lint reads it as a line of a | lint | yes | nothing reported | |
 | lint reports nothing about the parts of the | lint, while baseline defines part, with the alias parts | no | ask at "parts", naming baseline's entry | by an alias |
 | lint reads it as Part of a | lint, while baseline defines part | no | ask at "Part", naming baseline's entry | names are matched ignoring case |
-| lint reads it as partial | lint | yes | nothing reported | not a whole word |
+| lint reads it as partial | lint, while baseline defines part | yes | nothing reported | not a whole word |
 | the finding is read | install | no | ask at "finding", naming `lint.finding` | |
 | the part is read | diff, which defines part, as baseline does | yes | nothing reported | a term of its own; `lint.references.marked` reports it unmarked |
 | the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
-| lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the longer match wins over the capability's own term |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the match that starts first wins over the capability's own term |
 | the line ending is read | lint, while diff defines line | yes | nothing reported | the system's "line ending" is the longer match |
 | lint reads the line ending date | lint, while diff defines ending date | yes | nothing reported | "line ending" starts first, so "ending date" is no match |
 
