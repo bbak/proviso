@@ -268,6 +268,11 @@ Its entry defines it once:
   level and is marked, or the rule says it in other words.
   Prose needs no marks: it does not decide behaviour, so the search need
   not follow it.
+- **Name a term distinctly,** in the business's own words: *daily
+  limit* rather than *limit*, or a word with no everyday sense, such as
+  *composable*. A bare everyday word as a term claims that word in every
+  rule block, and costs awkward wording wherever it is meant plainly.
+  Go no further than readable, though: the business reads the rules.
 - **Aliases** cover other names and inflected forms, such as `[terms]`
   for *term*.
 - **Status** is `defined` or `open`. An open term carries a `Question`
