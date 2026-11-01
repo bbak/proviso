@@ -225,9 +225,12 @@ func (l *linter) resolveReference(cap, ref string) *element {
 	return nil
 }
 
-// checkUnmarked reports each name or alias of a visible glossary entry that
-// the unmarked text of a line uses as a whole word, ignoring case. Where
-// names overlap, the longest match at a place wins.
+// checkUnmarked reports each match in the unmarked text of a line: a name
+// or alias of a glossary entry of any level, as whole words, ignoring case,
+// the longest at each place, found from the start onwards. A match that is
+// a term of the rule's own capability or of the system is a term used
+// without its mark; one that is a term of other capabilities only is asked
+// about.
 func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	text := ln.Without(true, guarded.Literal, guarded.Code, guarded.Mark, guarded.Placeholder)
 	if ln.Keyword != "" {
@@ -235,21 +238,33 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 		text = text[:i] + string(rune(0)) + text[i+len(ln.Keyword):]
 	}
 	words := splitWords(text)
-	var phrases [][]string
-	for _, lv := range visible(r.cap) {
+	type phrase struct {
+		words []string
+		entry *element
+	}
+	var phrases []phrase
+	for _, lv := range l.glossaryLevels() {
 		for _, e := range l.glossary[lv] {
 			for _, n := range termNames(e) {
 				if p := splitWords(n); len(p) > 0 && wordsAndSpaces(n) {
-					phrases = append(phrases, lowerAll(p))
+					phrases = append(phrases, phrase{lowerAll(p), e})
 				}
 			}
 		}
 	}
+	own := visible(r.cap)
 	for i := 0; i < len(words); {
 		best := 0
+		var entries []*element
 		for _, p := range phrases {
-			if len(p) > best && matchAt(words, i, p, text) {
-				best = len(p)
+			if len(p.words) < best || !matchAt(words, i, p.words, text) {
+				continue
+			}
+			if len(p.words) > best {
+				best, entries = len(p.words), nil
+			}
+			if !slices.Contains(entries, p.entry) {
+				entries = append(entries, p.entry)
 			}
 		}
 		if best == 0 {
@@ -257,7 +272,20 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 			continue
 		}
 		used := text[words[i].start:words[i+best-1].end]
-		l.report(Error, "term-unmarked", l.at(r, ln.N), "%q is a glossary term used without its mark", used).col = words[i].start
+		pos := l.at(r, ln.N)
+		if slices.ContainsFunc(entries, func(e *element) bool { return slices.Contains(own, e.cap) }) {
+			l.report(Error, "term-unmarked", pos, "%q is a glossary term used without its mark", used).col = words[i].start
+		} else {
+			slices.SortFunc(entries, func(a, b *element) int { return cmp.Compare(a.id, b.id) })
+			var rel []Pos
+			var ids []string
+			for _, e := range entries {
+				rel = append(rel, e.pos())
+				ids = append(ids, fmt.Sprintf("%q (%s:%d)", e.id, e.file.path, e.line))
+			}
+			f := l.report(Ask, "term-foreign", pos, "%q is a term of another capability: %s; move the term to the system's glossary and mark it, or reword", used, strings.Join(ids, ", "))
+			f.col, f.Related = words[i].start, rel
+		}
 		i += best
 	}
 }

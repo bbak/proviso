@@ -423,3 +423,68 @@ func TestDefinedByBackslash(t *testing.T) {
 		}
 	}
 }
+
+func TestTermForeign(t *testing.T) {
+	entry := func(id, name, aliases string) string {
+		s := "\n## <a id=\"" + id + "\"></a> " + name + "\n\n- Definition: x\n- Contact: x\n- Status: defined\n"
+		if aliases != "" {
+			s += "- Aliases: " + aliases + "\n"
+		}
+		return s
+	}
+	capFile := func(c string) string { return strings.ReplaceAll(baseCapability, `id="c"`, `id="`+c+`"`) }
+	cases := []struct {
+		name, then string
+		own, d, e  string // extra glossary entries of c, d and e
+		sys        string
+		want       []string // kinds on the Then line, with the entries named
+	}{
+		{"none", "lint reads it as a line of a", "", entry("d.part", "part", "parts"), "", "", nil},
+		{"alias", "lint reports nothing about the parts of the", "", entry("d.part", "part", "parts"), "", "", []string{"term-foreign d.part"}},
+		{"case", "lint reads it as Part of a", "", entry("d.part", "part", ""), "", "", []string{"term-foreign d.part"}},
+		{"not a whole word", "lint reads it as partial", "", entry("d.part", "part", ""), "", "", nil},
+		{"own term", "the part is read", entry("c.part", "part", ""), entry("d.part", "part", ""), "", "", []string{"term-unmarked"}},
+		{"two entries", "the part is read", "", entry("d.part", "part", ""), entry("e.part", "part", ""), "", []string{"term-foreign d.part e.part"}},
+		{"first match wins", "lint reads the date heading", entry("c.heading", "heading", ""), entry("d.date-heading", "date heading", ""), "", "", []string{"term-foreign d.date-heading"}},
+		{"system longer", "the line ending is read", "", entry("d.line", "line", ""), "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
+		{"starts first", "lint reads the line ending date", "", entry("d.ending-date", "ending date", ""), "", entry("system.line-ending", "line ending", ""), []string{"term-unmarked"}},
+		{"placeholder splits", "lint reads the date <id> heading", "", entry("d.date-heading", "date heading", ""), "", "", nil},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f := withRule("When      lint reads <id>\nThen      "+c.then+"\n  And     y\n", "| id | outcome |\n| --- | --- |\n| a | x |\n")
+			f["capabilities/c/glossary.md"] += c.own
+			f["glossary.md"] += c.sys
+			for cp, g := range map[string]string{"d": c.d, "e": c.e} {
+				if g != "" {
+					f["capabilities/"+cp+"/capability.md"] = capFile(cp)
+					f["capabilities/"+cp+"/glossary.md"] = "# Glossary\n" + g
+				}
+			}
+			var got []string
+			for _, fd := range lintFiles(f) {
+				if fd.File != "proviso/capabilities/c/features/f.md" || fd.Line != 21 {
+					t.Errorf("unexpected %s at %s:%d: %s", fd.Kind, fd.File, fd.Line, fd.Message)
+					continue
+				}
+				s := fd.Kind
+				if fd.Kind == "term-foreign" {
+					if fd.Severity != Ask {
+						t.Errorf("term-foreign is an %s", fd.Severity)
+					}
+					for _, id := range []string{"c.", "d.", "e.", "system."} {
+						for _, w := range strings.Fields(strings.NewReplacer(`"`, " ", ",", " ").Replace(fd.Message)) {
+							if strings.HasPrefix(w, id) {
+								s += " " + w
+							}
+						}
+					}
+				}
+				got = append(got, s)
+			}
+			if !slices.Equal(got, c.want) {
+				t.Errorf("got  %v\nwant %v", got, c.want)
+			}
+		})
+	}
+}

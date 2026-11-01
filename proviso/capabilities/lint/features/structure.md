@@ -147,7 +147,7 @@ Otherwise lint reports the [error] `findings.section-repeated` at the second occ
 ```guarded
 When      lint reads the [field] <field> of an [element] of the [element type] <type>
 Provided  `field_names` lists the key of <field> for <type>
-Then      lint reads <field> as part of that [element]
+Then      lint reads <field> as a [field] of that [element]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.field-unknown` at <field>
   And     lint goes on with the rest of the [spec tree]

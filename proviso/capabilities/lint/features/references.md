@@ -5,8 +5,8 @@
 ## Goal
 
 Every term mark, hand-over and backtick reference in the spec tree
-resolves to exactly one element, and every use of a term in a rule block
-is marked.
+resolves to exactly one element, every use of a term in a rule block is
+marked, and a word that is a term of another capability is asked about.
 
 ## Rationale
 
@@ -47,28 +47,78 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 ### Rationale
 
 A term used without its mark is invisible to the impact search through
-terms: redefining the term would leave that rule out. Possessives and
-plurals count as uses, which is what aliases are for.
+terms: redefining the term would leave that rule out. Possessives count
+as uses, since an apostrophe ends a word, and so do plurals, which is
+what aliases are for.
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
-Provided  <text> holds no name or alias of a [glossary entry] in the glossary of <capability> or of the system, as a whole word, ignoring case
-Then      lint reports nothing about <text>
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of <capability> or of the system
+Then      lint reports nothing about <text> holding an unmarked [term]
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.term-unmarked` at each such word
+Otherwise lint reports the [error] `findings.term-unmarked` at each such match
   And     lint goes on with the rest of the [spec tree]
 ```
 
 Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
-taken out.
+taken out. Matches are found from its start onwards: at each place, the
+longest name or alias of a glossary entry that starts there as a whole
+word, ignoring case, is a match, and matching goes on after it. For
+matching, a word is a run of letters, digits, hyphens and underscores;
+any other character ends it, and so does each piece taken out, which no
+match spans. Every glossary counts at once, its own capability's,
+the system's and the other capabilities', so the match that starts
+first wins, and a word within a match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | lint goes on with the rest of the | lint | yes | nothing reported | "spec tree" was marked |
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
+| lint reads it as the guard-line | lint | yes | nothing reported | a hyphen joins "guard-line" into one word |
+| lint reads the line <x> ending | lint | yes | nothing reported | no match spans the placeholder taken out |
 | lint reports nothing about | lint | yes | nothing reported | |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
+| lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
+
+## <a id="lint.references.foreign"></a> Rule: Another capability's term is asked about
+
+### Rationale
+
+Capabilities do not see each other's terms, so a word that is a term of
+another capability is plain text here, and the impact search through
+terms misses the rule when that term changes. Only a person can weigh
+whether the word means that term, so lint asks rather than refuses. If
+it does, the term moves to the system's glossary and the word is marked;
+if not, the word is reworded, since a word that can be read as either
+will be. A word that is a term here as well is left to
+`lint.references.marked`.
+
+```guarded
+When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of another capability, and of none in the glossary of <capability> or of the system
+Then      lint reports nothing about <text> holding a [term] of another capability
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [ask] `findings.term-foreign` at each such match, naming each [glossary entry] that has it
+  And     lint goes on with the rest of the [spec tree]
+```
+
+Matches are found as `lint.references.marked` says, over every glossary
+at once.
+
+| text | capability | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| lint reads it as a line of a | lint | yes | nothing reported | |
+| lint reports nothing about the parts of the | lint, while baseline defines part, with the alias parts | no | ask at "parts", naming baseline's entry | by an alias |
+| lint reads it as Part of a | lint, while baseline defines part | no | ask at "Part", naming baseline's entry | names are matched ignoring case |
+| lint reads it as partial | lint, while baseline defines part | yes | nothing reported | not a whole word |
+| the finding is read | install, while lint defines finding | no | ask at "finding", naming lint's entry | |
+| the part is read | diff, which defines part, as baseline does | yes | nothing reported | a term of its own; `lint.references.marked` reports it unmarked |
+| the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
+| lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the match that starts first wins over the capability's own term |
+| the line ending is read | lint, while diff defines line | yes | nothing reported | the system's "line ending" is the longer match |
+| lint reads the line ending date | lint, while diff defines ending date | yes | nothing reported | "line ending" starts first, so "ending date" is no match |
 
 ## <a id="lint.references.term-ambiguous"></a> Rule: A term name names one entry
 

@@ -4,6 +4,7 @@ package acceptance
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -61,6 +62,11 @@ func TestLintReferencesMarked(t *testing.T) {
 	r2.name = "row2 an unmarked use"
 	r3 := unmarked(baseline(), "the cart keeps the item's price")
 	r3.name = "row3 a possessive is a use"
+	// Rows 5, 7 and 8 need terms of two words: the cart's own "shelf
+	// label" and "label", and billing's "price label" and "label date".
+	shelfLabel := withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf label"))
+	r8 := unmarked(withTerms(shelfLabel, "billing", entryMD("billing.label-date", "label date")), "the cart reads the shelf label date")
+	r8.name = "row8 the match that starts first wins"
 	plural := unmarked(baseline(), "the cart keeps the other items")
 	plural.name = "derived: a plural, by its alias"
 	upper := unmarked(baseline(), "Item counts stay as they were")
@@ -69,13 +75,194 @@ func TestLintReferencesMarked(t *testing.T) {
 		{name: "row1 the term is marked", tree: withThenAnd(sys, "the cart goes on with the rest of the [spec tree]"), holds: true},
 		r2,
 		r3,
-		{name: "row4 no term at all", tree: baseline(), holds: true},
+		{name: "row4 a hyphen joins item-list into one word", tree: withThenAnd(baseline(), "the cart keeps the item-list"), holds: true},
+		{name: "row5 no match spans the placeholder taken out", tree: withThenAnd(shelfLabel, "the cart keeps the shelf <product> label"), holds: true},
+		{name: "row6 no term at all", tree: baseline(), holds: true},
+		{name: "row7 the foreign match that starts first wins", tree: withThenAnd(withTerms(withTerms(baseline(), "cart", entryMD("cart.label", "label")),
+			"billing", entryMD("billing.price-label", "price label")), "the cart shows the price label"), holds: true},
+		r8,
 		plural,
 		upper,
 		{name: "derived: only whole words", tree: withThenAnd(baseline(), "the bill stays itemized"), holds: true},
+		{name: "derived: an underscore is part of a word", tree: withThenAnd(baseline(), "the cart keeps item_count"), holds: true},
 		{name: "derived: a literal is not a use", tree: withThenAnd(baseline(), `the cart shows "item"`), holds: true},
+		{name: "derived: no match spans a literal taken out", tree: withThenAnd(shelfLabel, `the cart keeps the shelf "x" label`), holds: true},
 		{name: "derived: the keyword is taken out", tree: baseline().appendTo(glossaryPath,
 			"\n## <a id=\"cart.then\"></a> then\n\n- Definition: The time after paying.\n- Contact: Dana Reyes\n- Status: defined\n"), holds: true},
+	})
+	t.Run("derived: a word within a match is no use of its own", func(t *testing.T) {
+		t.Parallel()
+		// "item list" is the match; the "item" in it is not a second one.
+		tr := withThenAnd(withTerms(baseline(), "cart", entryMD("cart.item-list", "item list")), "the cart keeps the item list")
+		o := checkGoesOn(t, tr)
+		if found := o.find("term-unmarked", featurePath, lines(thenAndLine(tr))); len(found) != 1 {
+			t.Errorf("want one term-unmarked at %s:%d, got:\n%s", featurePath, thenAndLine(tr), dump(o.report.Findings))
+		}
+	})
+	t.Run("derived: each match is reported", func(t *testing.T) {
+		t.Parallel()
+		tr := withThenAnd(baseline(), "the item and the items stay")
+		o := checkGoesOn(t, tr)
+		if found := o.find("term-unmarked", featurePath, lines(thenAndLine(tr))); len(found) != 2 {
+			t.Errorf("want two term-unmarked at %s:%d, got:\n%s", featurePath, thenAndLine(tr), dump(o.report.Findings))
+		}
+	})
+}
+
+// entryMD is a glossary entry of the identifier id that defines name, with
+// the aliases given, if any.
+func entryMD(id, name string, aliases ...string) string {
+	e := "\n## <a id=\"" + id + "\"></a> " + name + "\n\n- Definition: Something of the shop.\n- Contact: Dana Reyes\n- Status: defined\n"
+	if len(aliases) > 0 {
+		e += "- Aliases: " + strings.Join(aliases, ", ") + "\n"
+	}
+	return e
+}
+
+// withTerms adds entries to the glossary of the capability capID, creating
+// the capability, with its capability.md, and the glossary where they do not
+// exist yet.
+func withTerms(tr tree, capID string, entries ...string) tree {
+	dir := "proviso/capabilities/" + capID
+	if _, ok := tr[dir+"/capability.md"]; !ok {
+		tr = tr.with(dir+"/capability.md", "# <a id=\""+capID+"\"></a> "+strings.ToUpper(capID[:1])+capID[1:]+
+			"\n\n## Goal\n\nThe shop works.\n\n## Rationale\n\nBuyers need it.\n")
+	}
+	if _, ok := tr[glossaryOf(capID)]; !ok {
+		tr = tr.with(glossaryOf(capID), "# Glossary\n")
+	}
+	return tr.appendTo(glossaryOf(capID), strings.Join(entries, ""))
+}
+
+// glossaryOf is the path of the glossary of the capability capID.
+func glossaryOf(capID string) string { return "proviso/capabilities/" + capID + "/glossary.md" }
+
+// billingWith is tr with billing's rule block reading text in its Then.
+func billingWith(tr tree, text string) tree {
+	return withBilling(tr, "When      a buyer pays for <product>\nThen      "+text+"\n  And     nothing else changes",
+		"| product | outcome |\n| --- | --- |\n| apple | billed |\n")
+}
+
+const billingPayPath = "proviso/capabilities/billing/features/pay.md"
+
+func TestLintReferencesForeign(t *testing.T) {
+	t.Parallel()
+	bill := withTerms(baseline(), "billing", entryMD("billing.bill", "bill", "bills"))
+	billNoAlias := withTerms(baseline(), "billing", entryMD("billing.bill", "bill"))
+
+	// asked asserts one term-foreign at line of file, naming each entry,
+	// given as capability, identifier pairs, by the line of its heading.
+	asked := func(t *testing.T, tr tree, file string, line int, entries ...string) {
+		t.Helper()
+		o := checkGoesOn(t, tr)
+		found := o.find("term-foreign", file, lines(line))
+		if len(found) != 1 {
+			t.Fatalf("want one term-foreign at %s:%d, got:\n%s", file, line, dump(o.report.Findings))
+		}
+		for i := 0; i+1 < len(entries); i += 2 {
+			relates(t, found[0], glossaryOf(entries[i]), tr.line(glossaryOf(entries[i]), `id="`+entries[i+1]+`"`))
+		}
+	}
+	// atCart asserts one term-foreign at the line text is placed on in the
+	// cart, naming the entries.
+	atCart := func(t *testing.T, tr tree, text string, entries ...string) {
+		t.Helper()
+		tr = withThenAnd(tr, text)
+		asked(t, tr, featurePath, thenAndLine(tr), entries...)
+	}
+	notAsked := func(t *testing.T, tr tree) outcome {
+		t.Helper()
+		o := checkGoesOn(t, tr)
+		o.lacks(t, "term-foreign", "")
+		return o
+	}
+
+	t.Run("row1 no term of another capability", func(t *testing.T) {
+		t.Parallel()
+		notAsked(t, withThenAnd(bill, "the cart stays as it was"))
+	})
+	t.Run("row2 by an alias", func(t *testing.T) {
+		t.Parallel()
+		atCart(t, bill, "the cart keeps the bills", "billing", "billing.bill")
+	})
+	t.Run("row3 names are matched ignoring case", func(t *testing.T) {
+		t.Parallel()
+		atCart(t, billNoAlias, "the cart keeps the Bill", "billing", "billing.bill")
+	})
+	t.Run("row4 not a whole word", func(t *testing.T) {
+		t.Parallel()
+		notAsked(t, withThenAnd(billNoAlias, "the cart keeps billable goods"))
+	})
+	t.Run("row5 another capability uses the cart's term", func(t *testing.T) {
+		t.Parallel()
+		tr := billingWith(baseline(), "the shop bills the item <product>")
+		asked(t, tr, billingPayPath, tr.line(billingPayPath, "the shop bills the item"), "cart", "cart.item")
+	})
+	t.Run("row6 a term of its own as well", func(t *testing.T) {
+		t.Parallel()
+		tr := withThenAnd(withTerms(billNoAlias, "cart", entryMD("cart.bill", "bill")), "the cart keeps the bill")
+		o := notAsked(t, tr)
+		// lint.references.marked reports it unmarked instead.
+		o.has(t, "term-unmarked", featurePath, thenAndLine(tr))
+	})
+	t.Run("row7 two other capabilities define it", func(t *testing.T) {
+		t.Parallel()
+		atCart(t, withTerms(billNoAlias, "stock", entryMD("stock.bill", "bill")), "the cart keeps the bill",
+			"billing", "billing.bill", "stock", "stock.bill")
+	})
+	t.Run("row8 the match that starts first wins over the capability's own term", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(withTerms(baseline(), "cart", entryMD("cart.label", "label")), "billing", entryMD("billing.price-label", "price label"))
+		atCart(t, tr, "the cart shows the price label", "billing", "billing.price-label")
+	})
+	t.Run("row9 the system's term is the longer match", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(withSystemGlossary(), "billing", entryMD("billing.spec", "spec"))
+		notAsked(t, withThenAnd(tr, "the cart goes on with the rest of the spec tree"))
+	})
+	t.Run("row10 the match that starts first leaves no match within it", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf label")), "billing", entryMD("billing.label-date", "label date"))
+		notAsked(t, withThenAnd(tr, "the cart reads the shelf label date"))
+	})
+
+	t.Run("derived: a possessive is a use", func(t *testing.T) {
+		t.Parallel()
+		atCart(t, billNoAlias, "the cart keeps the bill's total", "billing", "billing.bill")
+	})
+	t.Run("derived: each match is asked about", func(t *testing.T) {
+		t.Parallel()
+		tr := withThenAnd(bill, "the cart keeps the bill and the bills")
+		o := checkGoesOn(t, tr)
+		if found := o.find("term-foreign", featurePath, lines(thenAndLine(tr))); len(found) != 2 {
+			t.Errorf("want two term-foreign at %s:%d, got:\n%s", featurePath, thenAndLine(tr), dump(o.report.Findings))
+		}
+	})
+	t.Run("derived: a literal is not asked about", func(t *testing.T) {
+		t.Parallel()
+		notAsked(t, withThenAnd(billNoAlias, `the cart shows "bill"`))
+	})
+	t.Run("derived: a term mark is taken out", func(t *testing.T) {
+		t.Parallel()
+		notAsked(t, withThenAnd(billNoAlias, "the cart keeps the [bill]"))
+	})
+	t.Run("derived: prose outside a rule block is not asked about", func(t *testing.T) {
+		t.Parallel()
+		notAsked(t, billNoAlias.edit(featurePath, "Buyers put goods into the cart.\n", "Buyers put goods into the cart and get a bill.\n"))
+	})
+	t.Run("derived: an ask leaves the exit status at 0", func(t *testing.T) {
+		t.Parallel()
+		o := check(t, billingWith(baseline(), "the shop bills the item <product>"))
+		o.has(t, "term-foreign", billingPayPath)
+		for _, f := range o.report.Findings {
+			if f.Kind != "term-foreign" {
+				t.Errorf("want only term-foreign, got:\n%s", dump(o.report.Findings))
+				break
+			}
+		}
+		if o.json.exit != 0 {
+			t.Errorf("exit status %d, want 0 for asks only", o.json.exit)
+		}
 	})
 }
 

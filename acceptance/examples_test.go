@@ -247,11 +247,11 @@ Otherwise the shop shows nothing
 	}
 	missing := twoParts("yes", "no (level 1)")
 	rows(t, "examples-part-missing", []row{
-		{name: "derived: a guard of one part is not checked here", tree: withValues("yes", "yes"), holds: true},
-		{name: "row2 two parts, two no", tree: twoParts("yes", "no (level 1)", "no (no anchor)"), holds: true},
-		{name: "row3 the second part never shown failing", tree: missing, file: xPath, lines: tableLines(missing)},
+		{name: "derived: a guard of one line is not checked here", tree: withValues("yes", "yes"), holds: true},
+		{name: "row1 two lines, two no", tree: twoParts("yes", "no (level 1)", "no (no anchor)"), holds: true},
+		{name: "row2 the second line never shown failing", tree: missing, file: xPath, lines: tableLines(missing)},
 	})
-	t.Run("row2 is a well-formed rule", func(t *testing.T) {
+	t.Run("row1 is a well-formed rule", func(t *testing.T) {
 		t.Parallel()
 		check(t, twoParts("yes", "no (level 1)", "no (no anchor)")).clean(t)
 	})

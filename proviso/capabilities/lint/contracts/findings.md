@@ -166,6 +166,11 @@ A term mark that names no visible glossary entry.
 
 A term used in a rule block without its mark.
 
+### <a id="lint.findings.term-foreign"></a> term-foreign
+
+A match in a rule block that is a term of another capability, and of
+neither its own capability nor the system.
+
 ### <a id="lint.findings.term-ambiguous"></a> term-ambiguous
 
 A term name or alias that names more than one visible entry.
