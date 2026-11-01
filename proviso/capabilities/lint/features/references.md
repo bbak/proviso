@@ -34,9 +34,10 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Names are compared ignoring case: any run of white space between two
-words, a line break within a field included, counts as one space, and
-white space at either end of a mark or a name does not count.
+Names are compared ignoring case: any run of spaces and tabs between
+two words, a line break within a field included, counts as one space,
+and spaces and tabs at either end of a mark or a name do not count. No
+other character joins or ends a name.
 
 | name | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -45,7 +46,8 @@ white space at either end of a mark or a name does not count.
 | Spec Tree | lint | yes | the system's entry | names are matched ignoring case |
 | spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
 | spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
-| " spec tree " | lint | yes | the system's entry | white space at either end does not count |
+| " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
+| spec tree, with a non-breaking space between the words | lint | no | error | only spaces and tabs join the words of a name |
 | finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 
