@@ -47,8 +47,9 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 ### Rationale
 
 A term used without its mark is invisible to the impact search through
-terms: redefining the term would leave that rule out. Possessives and
-plurals count as uses, which is what aliases are for.
+terms: redefining the term would leave that rule out. Possessives count
+as uses, since an apostrophe ends a word, and so do plurals, which is
+what aliases are for.
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
@@ -112,7 +113,7 @@ at once.
 | lint reports nothing about the parts of the | lint, while baseline defines part, with the alias parts | no | ask at "parts", naming baseline's entry | by an alias |
 | lint reads it as Part of a | lint, while baseline defines part | no | ask at "Part", naming baseline's entry | names are matched ignoring case |
 | lint reads it as partial | lint, while baseline defines part | yes | nothing reported | not a whole word |
-| the finding is read | install | no | ask at "finding", naming `lint.finding` | |
+| the finding is read | install, while lint defines finding | no | ask at "finding", naming lint's entry | |
 | the part is read | diff, which defines part, as baseline does | yes | nothing reported | a term of its own; `lint.references.marked` reports it unmarked |
 | the part is read | cli, while baseline and diff each define part | no | ask at "part", naming both entries | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | no | ask at "date heading", naming bundle's entry | the match that starts first wins over the capability's own term |
