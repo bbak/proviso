@@ -303,6 +303,7 @@ func runDiff(t *testing.T, text bool, base, cwd, root string, args ...string) di
 		checkRoot(t, outcome{report: report{Root: o.ed.Root}}, root)
 	}
 	checkDiffOrder(t, o.ed.Elements)
+	checkChains(t, o.ed.Elements)
 	// baseline.diff.exit
 	want := 0
 	if len(o.ed.Elements) > 0 {
@@ -443,7 +444,10 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 // checkDiffOrder checks baseline.diff.order: elements by identifier, byte by
 // byte; the parts of each in the order of their lines in manifest_file, that
 // is by the part as written, byte by byte, since every line of one element
-// starts with the same identifier and a tab.
+// starts with the same identifier and a tab; the chains of each by their
+// identifiers in turn, a chain that starts another first; the lines not
+// decided of each in the order of their lines, which, as every line of one
+// element stands in one file, also says that each is named once.
 func checkDiffOrder(t *testing.T, list []diffElement) {
 	t.Helper()
 	for i := 1; i < len(list); i++ {
@@ -455,6 +459,69 @@ func checkDiffOrder(t *testing.T, list []diffElement) {
 		for i := 1; i < len(e.Parts); i++ {
 			if e.Parts[i-1].Part+"\t" >= e.Parts[i].Part+"\t" {
 				t.Errorf("baseline.diff.order: in %s, part %q before %q", e.ID, e.Parts[i-1].Part, e.Parts[i].Part)
+			}
+		}
+		for i := 1; i < len(e.Through); i++ {
+			if !chainBefore(e.Through[i-1], e.Through[i]) {
+				t.Errorf("baseline.diff.order: in %s, the chain %q before %q", e.ID, e.Through[i-1], e.Through[i])
+			}
+		}
+		for i := 1; i < len(e.Undecided); i++ {
+			a, b := e.Undecided[i-1], e.Undecided[i]
+			if a.File != b.File || a.Line >= b.Line {
+				t.Errorf("baseline.diff.order: in %s, the line %s:%d before %s:%d", e.ID, a.File, a.Line, b.File, b.Line)
+			}
+		}
+	}
+}
+
+// chainBefore tells whether the chain a comes before the chain b: by their
+// first identifier, then by their second, and so on, each compared byte by
+// byte, a chain that is the start of the other coming first.
+func chainBefore(a, b []string) bool {
+	for i := 0; i < len(a) && i < len(b); i++ {
+		if a[i] != b[i] {
+			return a[i] < b[i]
+		}
+	}
+	return len(a) < len(b)
+}
+
+// checkChains checks baseline.diff.dependency and system.cli.element-diff
+// for every diff: only an element changed through a dependency names
+// chains, and it names at least one; every chain starts at an element listed
+// as added, changed or removed, and passes only elements listed, whose
+// meaning changed, never the element it reaches.
+func checkChains(t *testing.T, list []diffElement) {
+	t.Helper()
+	change := map[string]string{}
+	for _, e := range list {
+		change[e.ID] = e.Change
+	}
+	for _, e := range list {
+		if e.Change != "changed-through" {
+			if len(e.Through) > 0 {
+				t.Errorf("system.cli.element-diff: %s %s names the chains %q", e.Change, e.ID, e.Through)
+			}
+			continue
+		}
+		if len(e.Through) == 0 {
+			t.Errorf("system.cli.element-diff: %s is changed through a dependency, but names no chain", e.ID)
+		}
+		for _, c := range e.Through {
+			if len(c) == 0 {
+				t.Errorf("system.cli.element-diff: %s names an empty chain", e.ID)
+				continue
+			}
+			if ch := change[c[0]]; ch != "added" && ch != "changed" && ch != "removed" {
+				t.Errorf("baseline.diff.dependency: the chain %q of %s starts at %s, which is not listed as added, changed or removed", c, e.ID, c[0])
+			}
+			for _, id := range c {
+				if id == e.ID {
+					t.Errorf("baseline.diff.dependency: the chain %q of %s passes %s itself", c, e.ID, id)
+				} else if change[id] == "" {
+					t.Errorf("baseline.diff.dependency: the chain %q of %s passes %s, which is not listed", c, e.ID, id)
+				}
 			}
 		}
 	}

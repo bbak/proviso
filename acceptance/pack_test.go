@@ -152,8 +152,8 @@ func TestBaselinePackContents(t *testing.T) {
 	})
 	t.Run("derived: every chain that reaches an element", func(t *testing.T) {
 		t.Parallel()
-		// The order of the chains is checked against element_diff's for
-		// every run, as a set (see the report).
+		// That the chains stand in diff's order is checked for every run
+		// (see checkAmendment).
 		o, _, _ := packOf(t, iItemDef, iParamValue)
 		st := o.item(t, "cart.add.limit").status
 		a, b := "`cart.item`", "`cart.max-quantity`"
@@ -288,6 +288,14 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line", "cart.item")
 	})
+	t.Run("derived: a removed member, while its holder stays, brings nothing", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.order depends on the removed cart.api.line.count, which
+		// stands under Amendment and is taken no further.
+		o, _, _ := packOf(t, removedFrom(packTree(), apiPath, "cart.api.line.count"), linesToLine)
+		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
+		o.exactly(t, "Context", "cart.api.line", "cart.item")
+	})
 }
 
 func TestBaselinePackOnce(t *testing.T) {
@@ -390,6 +398,29 @@ func TestBaselinePackOrder(t *testing.T) {
 		o, _, _ := packFrom(t, giftTree(), iCartGoal, change{giftPath, "Buyers give carts away.", "Buyers give whole carts away."})
 		o.inOrder(t, "Amendment", "cart-gift", "cart")
 		o.inOrder(t, "Frames", "cart.light", "cart.bounded", "system.fast", "system.honest")
+	})
+	t.Run("derived: the chains in diff's order", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.receipt marks cart.thematic-break, defined by
+		// system.ref.commonmark; both changed.
+		o, _, _ := packOf(t, commonmarkNew, breakDefinedBy)
+		want := "Changed through `cart.pay.receipt`: `cart.thematic-break`; `system.ref.commonmark` → `cart.thematic-break`."
+		if it := o.item(t, "cart.pay.receipt"); it.status != want {
+			t.Errorf("want the line %q, got %q", want, it.status)
+		}
+	})
+	t.Run("derived: the lines not decided in diff's order, each once", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.cap, undecided in its Provided and its Then step, and in
+		// two cells of one Examples row.
+		o, tr, _ := packOf(t, pCapOpen,
+			change{payPath, "Provided  <cart> holds at most ´max_quantity´ pieces of each product", "Provided  <cart> holds at most ? pieces of each product"},
+			change{payPath, "| the second cart | no | refused |", "| the second cart | no | refused |\n| the third cart | ? | ? |"})
+		at := func(sub string) string { return payPath + ":" + itoa(tr.line(payPath, sub)) }
+		want := "Not to be built: " + at("at most ? pieces") + ", " + at("Then      ?") + ", " + at("| the third cart | ? | ? |") + "."
+		if it := o.item(t, "cart.pay.cap"); it.notBuilt != want {
+			t.Errorf("want the line %q, got %q", want, it.notBuilt)
+		}
 	})
 	t.Run("derived: the parts in diff's order", func(t *testing.T) {
 		t.Parallel()

@@ -5,6 +5,7 @@ package acceptance
 // (proviso/contracts/cli.md).
 
 import (
+	"fmt"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -32,6 +33,8 @@ var (
 	itemContact     = change{glossaryPath, "- Contact: Dana Reyes\n- Status: defined\n- Aliases: items", "- Contact: Bruno Baketarić\n- Status: defined\n- Aliases: items"}
 	xThen           = change{xPath, "Then      the shop shows <id>", "Then      the shop lists <id>"}
 	breakDefinition = change{glossaryPath, "- Defined by: [CommonMark §4.1](../../references.md#system.ref.commonmark)", "- Definition: A line across the receipt."}
+	breakDefinedBy  = change{glossaryPath, "- Defined by: [CommonMark §4.1](", "- Defined by: [CommonMark, section 4.1]("}
+	commonmarkNew   = change{referencesPath, "- Version: 0.31.2", "- Version: 0.32"}
 )
 
 const extraRule = `
@@ -442,6 +445,21 @@ func handTree() tree {
 		"| quantity | product | provided | outcome |\n| --- | --- | --- | --- |\n| 1 | apple | yes | added |\n| 2 | apple | no | handed over |"))
 }
 
+// handItemTree is handTree with the rule cart.x.hand marking [item] as
+// well, so that it depends on cart.item directly and through cart.add.limit.
+func handItemTree() tree {
+	return handTree().edit(xPath, "for the product <product>", "for the [item] <product>")
+}
+
+// Amendments of the impact tree that remove the member cart.api.line.count,
+// while cart.api.line stays, and edit the rule referring to it to refer to
+// cart.api.line instead.
+var (
+	countRemoved = removedFrom(impactTree(), apiPath, "cart.api.line.count")
+	linesToLine  = change{payPath, "Then      the shop shows ´line.count´ for each line of <order>", "Then      the shop shows each ´line´ of <order>"}
+	amountAdded  = change{apiPath, "How many pieces the line holds.\n", "How many pieces the line holds.\n\n### <a id=\"cart.api.line.amount\"></a> amount\n\nWhat the line costs.\n"}
+)
+
 // checkThrough asserts that e is changed through a dependency, along exactly
 // the chains given, each written as identifiers joined by " > ", in any
 // order.
@@ -504,11 +522,27 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
 	})
-	t.Run("row7 a new alias only", func(t *testing.T) {
+	t.Run("row7 a reference with a new Version, while the term it defines has its Defined by changed too", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.thematic-break, marked by cart.x.line.
+		o := diffOf(t, diffTree(), commonmarkNew, breakDefinedBy)
+		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed", "cart.x.line:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.line"), "cart.thematic-break", "system.ref.commonmark > cart.thematic-break")
+	})
+	t.Run("row8 a member removed, while the element holding it stays", func(t *testing.T) {
+		t.Parallel()
+		// lint.findings.anchor-misplaced: cart.api.line.count, of
+		// cart.api.line; cart.pay.lines, which referred to it, now refers to
+		// cart.api.line and is changed itself.
+		o := diffOf(t, impactTree(), countRemoved, linesToLine)
+		o.only(t, "cart.api.line.count:removed", "cart.pay.lines:changed", "cart.pay.order:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line.count")
+	})
+	t.Run("row9 a new alias only", func(t *testing.T) {
 		t.Parallel()
 		diffOf(t, diffTree(), itemAlias).only(t, "cart.item:changed")
 	})
-	t.Run("row8 a reference with a new Contact only", func(t *testing.T) {
+	t.Run("row10 a reference with a new Contact only", func(t *testing.T) {
 		t.Parallel()
 		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
 	})
@@ -550,11 +584,36 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o := diffOf(t, handTree(), itemDefinition)
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
 	})
+	t.Run("derived: one rule reached directly and through a hand-over, listed once", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, handItemTree(), itemDefinition)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed-through", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item", "cart.item > cart.add.limit")
+	})
+	t.Run("derived: a member added, reaching the rules referring to the element holding it", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, impactTree(), amountAdded)
+		o.only(t, "cart.api.line.amount:added", "cart.pay.order:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line.amount")
+	})
+	t.Run("derived: a removed member's change passes on beyond the rules referring to its holder", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.ask hands over to cart.pay.order.
+		tr := impactTree().appendTo(payPath, "\n"+ruleMD("cart.pay.ask", "A buyer asks for an order",
+			"When      a buyer asks for the order of the products <products>\nProvided  the shop holds <products>\nThen      the shop shows the order\n  And     nothing else changes\nOtherwise → cart.pay.order",
+			"| products | provided | outcome |\n| --- | --- | --- |\n| apple | yes | shown |\n| pear | no | handed over |"))
+		o := diffOf(t, tr, countRemoved, linesToLine)
+		o.only(t, "cart.api.line.count:removed", "cart.pay.lines:changed", "cart.pay.order:changed-through", "cart.pay.ask:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.ask"), "cart.api.line.count > cart.pay.order")
+	})
 }
 
 // The undecided tree: diffTree with an open glossary entry, a rule that
-// marks it, a rule with an undecided outcome and a rule with an undecided
-// Examples cell.
+// marks it, a rule with an undecided outcome, a rule with an undecided
+// Examples cell, a rule with two undecided cells in one Examples row, a rule
+// undecided in its When and its Then step, a rule marking the open term in
+// its When step and undecided in its Then step, and a rule marking the open
+// term twice in one line.
 func undecidedTree() tree {
 	return diffTree().appendTo(glossaryPath, `
 ## <a id="cart.basket"></a> basket
@@ -599,6 +658,54 @@ Then      the shop names the price of <product>
 | product | outcome |
 | --- | --- |
 | apple | ? |
+
+## <a id="cart.x.bag"></a> Rule: The shop bags goods
+
+´´´guarded
+When      a buyer bags the product <product> in the bag <bag>
+Then      <bag> holds <product>
+  And     nothing else changes
+´´´
+
+| product | bag | outcome |
+| --- | --- | --- |
+| apple | ? | ? |
+
+## <a id="cart.x.scan"></a> Rule: The shop scans goods
+
+´´´guarded
+When      a buyer scans the product <product> with ?
+Then      ?
+  And     nothing else changes
+´´´
+
+| product | outcome |
+| --- | --- |
+| apple | scanned |
+
+## <a id="cart.x.carry"></a> Rule: A buyer carries a basket
+
+´´´guarded
+When      a buyer carries the [basket] <basket>
+Then      ?
+  And     nothing else changes
+´´´
+
+| basket | outcome |
+| --- | --- |
+| the first basket | carried |
+
+## <a id="cart.x.swap"></a> Rule: A buyer swaps baskets
+
+´´´guarded
+When      a buyer swaps the [basket] <basket> for another [basket]
+Then      <basket> is given back
+  And     nothing else changes
+´´´
+
+| basket | outcome |
+| --- | --- |
+| the first basket | given back |
 `)
 }
 
@@ -631,6 +738,14 @@ func TestBaselineDiffUndecided(t *testing.T) {
 	t.Run("row3 a rule marking an open term", func(t *testing.T) {
 		t.Parallel()
 		undecided(t, "cart.x.basket", place{xPath, tr.line(xPath, "[basket]")})
+	})
+	t.Run("row4 a rule with ? in two cells of one Examples row", func(t *testing.T) {
+		t.Parallel()
+		undecided(t, "cart.x.bag", place{xPath, tr.line(xPath, "| apple | ? | ? |")})
+	})
+	t.Run("derived: a rule marking an open term twice in one line", func(t *testing.T) {
+		t.Parallel()
+		undecided(t, "cart.x.swap", place{xPath, tr.line(xPath, "for another [basket]")})
 	})
 	t.Run("derived: an undecided Examples cell", func(t *testing.T) {
 		t.Parallel()
@@ -836,6 +951,35 @@ func TestBaselineDiffOrder(t *testing.T) {
 			t.Errorf("want %s, got %s", want, got)
 		}
 	})
+	t.Run("row3 a rule changed through the chains system.ref.commonmark, lint.step and lint.step", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.thematic-break, marked by cart.x.line.
+		r, _ := accepted(t, diffTree())
+		r.set(diffTree().apply(commonmarkNew, breakDefinedBy))
+		chainsAre(t, r.diff().elem(t, "cart.x.line"), "cart.thematic-break", "system.ref.commonmark > cart.thematic-break")
+	})
+	t.Run("row4 a rule changed through the chains lint.step, lint.keyword and lint.step", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.item; lint.keyword: cart.add.limit, which
+		// cart.x.hand hands over to.
+		r, _ := accepted(t, handItemTree())
+		r.set(handItemTree().apply(itemDefinition))
+		chainsAre(t, r.diff().elem(t, "cart.x.hand"), "cart.item", "cart.item > cart.add.limit")
+	})
+	// The undecided tree, every element added.
+	utr := undecidedTree()
+	udir := utr.write(t)
+	uo := diffIn(t, udir, udir, filepath.Join(udir, "proviso"))
+	t.Run("row5 a rule with ? in its Then step and in its When step", func(t *testing.T) {
+		t.Parallel()
+		linesAre(t, uo.elem(t, "cart.x.scan"),
+			place{xPath, utr.line(xPath, "with ?")}, place{xPath, utr.lineN(xPath, "Then      ?", 2)})
+	})
+	t.Run("row6 a rule marking an open term in its When step, with ? in its Then step", func(t *testing.T) {
+		t.Parallel()
+		linesAre(t, uo.elem(t, "cart.x.carry"),
+			place{xPath, utr.line(xPath, "carries the [basket]")}, place{xPath, utr.lineN(xPath, "Then      ?", 3)})
+	})
 	t.Run("derived: the parts in the order of their lines", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, diffTree())
@@ -850,6 +994,28 @@ func TestBaselineDiffOrder(t *testing.T) {
 			t.Errorf("want the parts %q, got %q", want, got)
 		}
 	})
+}
+
+// chainsAre asserts that e names exactly the chains given, in that order,
+// each written as identifiers joined by " > ".
+func chainsAre(t *testing.T, e diffElement, chains ...string) {
+	t.Helper()
+	var got []string
+	for _, c := range e.Through {
+		got = append(got, strings.Join(c, " > "))
+	}
+	if strings.Join(got, " | ") != strings.Join(chains, " | ") {
+		t.Errorf("want %s changed through %q, in that order, got %q", e.ID, chains, got)
+	}
+}
+
+// linesAre asserts that e names exactly the lines not decided given, in that
+// order.
+func linesAre(t *testing.T, e diffElement, want ...place) {
+	t.Helper()
+	if fmt.Sprint(e.Undecided) != fmt.Sprint(want) {
+		t.Errorf("want %s to name the lines %v, in that order, got %v", e.ID, want, e.Undecided)
+	}
 }
 
 func TestBaselineDiffExit(t *testing.T) {
