@@ -31,23 +31,47 @@ func TestLintReferencesTerm(t *testing.T) {
 Then      the shop sends a bill for <product>
   And     nothing else changes`, "| product | outcome |\n| --- | --- |\n| apple | billed |\n")
 	hyphen := withThenAnd(sys, "the cart stays in the [spec-tree]")
-	represents := baseline().with("proviso/capabilities/cart/contracts/api.md",
-		"# API\n\n## <a id=\"cart.order\"></a> order\n\n- Represents: [basket]\n\nWhat a buyer orders.\n")
+	nbsp := withThenAnd(sys, "the cart stays in the [spec\u00a0tree]")
+	underscore := withThenAnd(sys, "the cart stays in the [spec_tree]")
+	// api is the tree tr with a contract element that represents mark.
+	const apiPath = "proviso/capabilities/cart/contracts/api.md"
+	api := func(tr tree, mark string) tree {
+		return tr.with(apiPath, "# API\n\n## <a id=\"cart.order\"></a> order\n\n- Represents: "+mark+"\n\nWhat a buyer orders.\n")
+	}
+	represents := api(baseline(), "[basket]")
+	broken := api(sys, "[spec\n  tree]")
 	rows(t, "term-unresolved", []row{
 		{name: "row1 the system's entry", tree: withThenAnd(sys, "the cart stays in the [spec tree]"), holds: true},
 		{name: "row2 by an alias", tree: baseline(), holds: true},
 		{name: "row3 names are matched ignoring case", tree: withThenAnd(sys, "the cart stays in the [Spec Tree]"), holds: true},
-		{name: "row4 not visible in another capability", tree: other,
+		{name: "row4 any run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec  tree]"), holds: true},
+		{name: "row5 a line break within a field joins words too", tree: broken, holds: true},
+		{name: "row6 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
+		{name: "row7 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
+		{name: "row8 not visible in another capability", tree: other,
 			file: "proviso/capabilities/billing/features/pay.md", lines: lines(other.line("proviso/capabilities/billing/features/pay.md", "[item]"))},
-		{name: "row5 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
-		{name: "derived: a Represents field that resolves", tree: baseline().with("proviso/capabilities/cart/contracts/api.md",
-			"# API\n\n## <a id=\"cart.order\"></a> order\n\n- Represents: [item]\n\nWhat a buyer orders.\n"), holds: true},
+		{name: "row9 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
+		{name: "derived: a tab joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec\ttree]"), holds: true},
+		{name: "derived: a run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec \t \ttree]"), holds: true},
+		{name: "derived: tabs at either end do not count", tree: withThenAnd(sys, "the cart stays in the [\tspec tree\t]"), holds: true},
+		{name: "derived: a run of spaces in a glossary name counts as one", tree: withThenAnd(
+			withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf  label")), "the cart shows the [shelf label]"), holds: true},
+		{name: "derived: no other character joins the words of a name", tree: underscore, file: featurePath, lines: lines(thenAndLine(underscore))},
+		{name: "derived: a Represents field that resolves", tree: api(baseline(), "[item]"), holds: true},
 		{name: "derived: a Represents field that does not resolve", tree: represents,
-			file: "proviso/capabilities/cart/contracts/api.md", lines: lines(represents.line("proviso/capabilities/cart/contracts/api.md", "- Represents:"))},
+			file: apiPath, lines: lines(represents.line(apiPath, "- Represents:"))},
 	})
 	t.Run("row1 resolves without other findings", func(t *testing.T) {
 		t.Parallel()
 		check(t, withThenAnd(sys, "the cart stays in the [spec tree]")).clean(t)
+	})
+	t.Run("row4 resolves without other findings", func(t *testing.T) {
+		t.Parallel()
+		check(t, withThenAnd(sys, "the cart stays in the [spec  tree]")).clean(t)
+	})
+	t.Run("row5 resolves without other findings", func(t *testing.T) {
+		t.Parallel()
+		check(t, broken).clean(t)
 	})
 }
 
@@ -62,11 +86,23 @@ func TestLintReferencesMarked(t *testing.T) {
 	r2.name = "row2 an unmarked use"
 	r3 := unmarked(baseline(), "the cart keeps the item's price")
 	r3.name = "row3 a possessive is a use"
-	// Rows 5, 7 and 8 need terms of two words: the cart's own "shelf
+	// Rows 5, 6, 8 and 9 need terms of two words: the cart's own "shelf
 	// label" and "label", and billing's "price label" and "label date".
 	shelfLabel := withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf label"))
-	r8 := unmarked(withTerms(shelfLabel, "billing", entryMD("billing.label-date", "label date")), "the cart reads the shelf label date")
-	r8.name = "row8 the match that starts first wins"
+	r6 := unmarked(shelfLabel, "the cart keeps the shelf  label")
+	r6.name = "row6 any run of spaces and tabs joins the words of a name"
+	r9 := unmarked(withTerms(shelfLabel, "billing", entryMD("billing.label-date", "label date")), "the cart reads the shelf label date")
+	r9.name = "row9 the match that starts first wins"
+	tab := unmarked(shelfLabel, "the cart keeps the shelf\tlabel")
+	tab.name = "derived: a tab joins the words of a name"
+	run := unmarked(shelfLabel, "the cart keeps the shelf \t label")
+	run.name = "derived: a run of spaces and tabs joins the words of a name"
+	// Row 8 as written: two other capabilities, check defining "heading" and
+	// bundle "date heading".
+	dateHeading := withTerms(withTerms(baseline(), "check", entryMD("check.heading", "heading")),
+		"bundle", entryMD("bundle.date-heading", "date heading"))
+	priceLabel := withTerms(withTerms(baseline(), "cart", entryMD("cart.label", "label")),
+		"billing", entryMD("billing.price-label", "price label"))
 	plural := unmarked(baseline(), "the cart keeps the other items")
 	plural.name = "derived: a plural, by its alias"
 	upper := unmarked(baseline(), "Item counts stay as they were")
@@ -77,10 +113,15 @@ func TestLintReferencesMarked(t *testing.T) {
 		r3,
 		{name: "row4 a hyphen joins item-list into one word", tree: withThenAnd(baseline(), "the cart keeps the item-list"), holds: true},
 		{name: "row5 no match spans the placeholder taken out", tree: withThenAnd(shelfLabel, "the cart keeps the shelf <product> label"), holds: true},
-		{name: "row6 no term at all", tree: baseline(), holds: true},
-		{name: "row7 the foreign match that starts first wins", tree: withThenAnd(withTerms(withTerms(baseline(), "cart", entryMD("cart.label", "label")),
-			"billing", entryMD("billing.price-label", "price label")), "the cart shows the price label"), holds: true},
-		r8,
+		r6,
+		{name: "row7 no term at all", tree: baseline(), holds: true},
+		{name: "row8 the foreign match that starts first wins", tree: withThenAnd(dateHeading, "the cart reads the date heading"), holds: true},
+		{name: "row8 over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price label"), holds: true},
+		r9,
+		tab,
+		run,
+		{name: "derived: a non-breaking space does not join the words of a name", tree: withThenAnd(shelfLabel, "the cart keeps the shelf\u00a0label"), holds: true},
+		{name: "derived: a foreign match across a run of spaces wins over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price  label"), holds: true},
 		plural,
 		upper,
 		{name: "derived: only whole words", tree: withThenAnd(baseline(), "the bill stays itemized"), holds: true},
@@ -275,27 +316,58 @@ func TestLintReferencesTermAmbiguous(t *testing.T) {
 		appendTo(glossaryPath, fmt.Sprintf(label, "cart")).
 		with("proviso/capabilities/billing/glossary.md", "# Glossary\n"+fmt.Sprintf(label, "billing"))
 
+	// spaced is the system's glossary beside an entry of the cart named name.
+	spaced := func(name string) tree {
+		return withSystemGlossary().appendTo(glossaryPath, "\n## <a id=\"cart.spec-tree\"></a> "+name+"\n\n- Definition: The cart's own files.\n- Contact: Dana Reyes\n- Status: defined\n")
+	}
+	// levelled asserts term-ambiguous at the cart's entry cart.spec-tree and
+	// at the system's, each naming the other.
+	levelled := func(t *testing.T, tr tree) {
+		t.Helper()
+		o := checkGoesOn(t, tr)
+		own, sys := tr.line(glossaryPath, `id="cart.spec-tree"`), tr.line("proviso/glossary.md", `id="system.spec-tree"`)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, own), "proviso/glossary.md", sys)
+		relates(t, o.has(t, "term-ambiguous", "proviso/glossary.md", sys), glossaryPath, own)
+	}
+
 	t.Run("row1 finding", func(t *testing.T) {
 		t.Parallel()
 		checkGoesOn(t, baseline()).lacks(t, "term-ambiguous", "")
 	})
-	t.Run("row2 capabilities do not see each other's terms", func(t *testing.T) {
+	t.Run("row2 names are compared as marks are", func(t *testing.T) {
+		t.Parallel()
+		levelled(t, spaced("Spec  Tree"))
+	})
+	t.Run("row3 capabilities do not see each other's terms", func(t *testing.T) {
 		t.Parallel()
 		checkGoesOn(t, apart).lacks(t, "term-ambiguous", "")
 	})
-	t.Run("row3 the same glossary", func(t *testing.T) {
+	t.Run("row4 the same glossary", func(t *testing.T) {
 		t.Parallel()
 		o := checkGoesOn(t, list)
 		item, other := list.line(glossaryPath, `id="cart.item"`), list.line(glossaryPath, `id="cart.item-list"`)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, item), glossaryPath, other)
 		relates(t, o.has(t, "term-ambiguous", glossaryPath, other), glossaryPath, item)
 	})
-	t.Run("row4 a capability may not redefine a system term", func(t *testing.T) {
+	t.Run("row5 a capability may not redefine a system term", func(t *testing.T) {
 		t.Parallel()
-		o := checkGoesOn(t, redefined)
-		own, sys := redefined.line(glossaryPath, `id="cart.spec-tree"`), redefined.line("proviso/glossary.md", `id="system.spec-tree"`)
-		relates(t, o.has(t, "term-ambiguous", glossaryPath, own), "proviso/glossary.md", sys)
-		relates(t, o.has(t, "term-ambiguous", "proviso/glossary.md", sys), glossaryPath, own)
+		levelled(t, redefined)
+	})
+	t.Run("derived: a tab between the words of a name", func(t *testing.T) {
+		t.Parallel()
+		levelled(t, spaced("spec\ttree"))
+	})
+	t.Run("derived: a non-breaking space does not join the words of a name", func(t *testing.T) {
+		t.Parallel()
+		checkGoesOn(t, spaced("spec\u00a0tree")).lacks(t, "term-ambiguous", "")
+	})
+	t.Run("derived: an alias with a run of spaces in the same glossary", func(t *testing.T) {
+		t.Parallel()
+		tr := withTerms(baseline(), "cart", entryMD("cart.shelf-label", "shelf label"), entryMD("cart.tag", "tag", "Shelf  Label"))
+		o := checkGoesOn(t, tr)
+		label, tag := tr.line(glossaryPath, `id="cart.shelf-label"`), tr.line(glossaryPath, `id="cart.tag"`)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, label), glossaryPath, tag)
+		relates(t, o.has(t, "term-ambiguous", glossaryPath, tag), glossaryPath, label)
 	})
 }
 
