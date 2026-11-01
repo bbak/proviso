@@ -27,17 +27,12 @@ would then break references that resolved before.
 
 ```guarded
 When      lint reads a [term] mark naming <name>, in a [rule block] or a "Represents" [field] of the capability <capability>
-Provided  <name> is the name or an alias of a [glossary entry] in the glossary of <capability> or of the system
+Provided  <name> is the name or an alias of a [glossary entry] in the glossary of <capability> or of the system, compared as `name_comparison` says
 Then      the mark refers to that entry
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.term-unresolved` at the mark
   And     lint goes on with the rest of the [spec tree]
 ```
-
-Names are compared ignoring case: any run of spaces and tabs between
-two words, a line break within a field included, counts as one space,
-and spaces and tabs at either end of a mark or a name do not count. No
-other character joins or ends a name.
 
 | name | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -47,7 +42,10 @@ other character joins or ends a name.
 | spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
 | spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
 | " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
+| spec tree, followed by a non-breaking space | lint | yes | the system's entry | any white space at either end does not count |
+| übersicht, its "ü" written as "u" and a combining diaeresis | lint, while lint defines Übersicht, its "Ü" composed | yes | that entry | names are compared in NFC |
 | spec tree, with a non-breaking space between the words | lint | no | error | only spaces and tabs join the words of a name |
+| STRASSE, while lint defines Straße | lint | no | error | simple lower case, not full case folding |
 | finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 
@@ -62,7 +60,7 @@ what aliases are for.
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
-Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of <capability> or of the system
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of <capability> or of the system, compared as `name_comparison` says
 Then      lint reports nothing about <text> holding an unmarked [term]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.term-unmarked` at each such match
@@ -73,14 +71,13 @@ Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
 taken out. Matches are found from its start onwards: at each place, the
 longest name or alias of a glossary entry that starts there as a whole
-word, ignoring case, is a match, and matching goes on after it. For
-matching, a word is a run of letters, digits, hyphens and underscores;
-any other character ends it, and so does each piece taken out, which no
-match spans. A name of several words matches where its words follow
-each other with only spaces and tabs between them. Every glossary counts
-at once, its own capability's, the system's and the other capabilities',
-so the match that starts first wins, and a word within a match is no use
-of its own.
+word is a match, and matching goes on after it. For matching, a word is
+a run of letters, combining marks, digits, hyphens and underscores, so
+that a letter written with a combining mark stays in its word; any
+other character ends it, and so does each piece taken out, which no
+match spans. Every glossary counts at once, its own capability's, the
+system's and the other capabilities', so the match that starts first
+wins, and a word within a match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -90,6 +87,7 @@ of its own.
 | lint reads it as the guard-line | lint | yes | nothing reported | a hyphen joins "guard-line" into one word |
 | lint reads the line <x> ending | lint | yes | nothing reported | no match spans the placeholder taken out |
 | lint reads the line  ending | lint | no | error at "line  ending" | any run of spaces and tabs joins the words of a name |
+| lint reads the übersicht, its "ü" written as "u" and a combining diaeresis | lint, while lint defines Übersicht, its "Ü" composed | no | error at "übersicht" | the combining mark stays in its word, and names are compared in NFC |
 | lint reports nothing about | lint | yes | nothing reported | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
@@ -109,7 +107,7 @@ will be. A word that is a term here as well is left to
 
 ```guarded
 When      lint reads the unmarked text <text> of a [rule block] in the capability <capability>
-Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of another capability, and of none in the glossary of <capability> or of the system
+Provided  <text> holds no match that is a name or alias of a [glossary entry] in the glossary of another capability, and of none in the glossary of <capability> or of the system, compared as `name_comparison` says
 Then      lint reports nothing about <text> holding a [term] of another capability
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [ask] `findings.term-foreign` at each such match, naming each [glossary entry] that has it
@@ -136,20 +134,18 @@ at once.
 
 ```guarded
 When      lint reads the name or alias <name> of a [glossary entry] <entry>
-Provided  no other [glossary entry] in the same glossary has <name> as its name or an alias
-  And     no entry of a glossary at the [level] above or below has <name> as its name or an alias
+Provided  no other [glossary entry] in the same glossary has <name> as its name or an alias, compared as `name_comparison` says
+  And     no entry of a glossary at the [level] above or below has <name> as its name or an alias, compared so too
 Then      lint reports nothing about <name>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.term-ambiguous` at <entry>, naming the other entry
   And     lint goes on with the rest of the [spec tree]
 ```
 
-Names are compared as `lint.references.term` compares them.
-
 | name | entry | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | finding | `lint.finding` | yes | nothing reported | |
-| Spec  Tree | an entry of lint named Spec  Tree, with two spaces, while the system defines spec tree | no (level above or below) | error | names are compared as marks are |
+| Spec  Tree | an entry of lint named Spec  Tree, with two spaces, while the system defines spec tree | no (level above or below) | error | runs of spaces count as one |
 | finding | `lint.finding`, and `baseline.finding` in another capability | yes | nothing reported | capabilities do not see each other's terms |
 | findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | reported at each of the two |
 | element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term; reported at each of the two |

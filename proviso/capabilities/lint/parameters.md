@@ -68,3 +68,31 @@ place.
 | reference | Version, Link, Contact | Version, Link, Contact |
 | contract element | Represents | none |
 | system, capability, rule, invariant, constraint | none | none |
+
+## <a id="lint.name-comparison"></a> name_comparison
+
+- Configurable: no
+- Rationale: one comparison for every name, alias, mark and match in
+  text, so that a mark resolves wherever plain text would match, and
+  the reverse.
+
+Two names are the same when they are equal character by character
+after each step below, in this order. A name of a glossary entry, an
+alias, a term mark and a run of words in unmarked text are compared
+alike; a place reported in text is where the match stands as written.
+
+The composed form, as for paths, since the same word is stored composed
+or decomposed depending on the editor. White space at either end does
+not count, since it cannot be seen and the reader of headings and
+fields already drops it. Only spaces and tabs join words, so that no
+other character makes two words one name. Unicode's simple lower-case
+mapping, character by character, and not full case folding, which
+makes "ß" the same as "ss" and so changes a word's length while
+matching.
+
+| step | effect |
+| --- | --- |
+| 1 | the name is brought into Unicode's composed form, NFC |
+| 2 | any white space at either end, a non-breaking space included, is dropped |
+| 3 | each run of spaces and tabs between two words, a line break within a field included, becomes one space |
+| 4 | each character becomes its simple lower-case form |
