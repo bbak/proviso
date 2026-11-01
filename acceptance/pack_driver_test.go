@@ -562,29 +562,14 @@ func checkAmendment(t *testing.T, it packItem, e diffElement) {
 	if want := statusFor(e); want != "" && it.status != want {
 		t.Errorf("system.cli.pack-text: want the line %q, got %q", want, it.status)
 	}
-	if e.Change == "changed-through" {
-		prefix := "Changed through `" + e.ID + "`: "
-		var want []string
-		for _, c := range e.Through {
-			want = append(want, chainText(c))
-		}
-		got := strings.Split(strings.TrimSuffix(strings.TrimPrefix(it.status, prefix), "."), "; ")
-		if !strings.HasPrefix(it.status, prefix) || strings.Join(sorted(got), "|") != strings.Join(sorted(want), "|") {
-			t.Errorf("system.cli.pack-text: want %s changed through %q, separated by \"; \", got %q", e.ID, want, it.status)
-		}
-	}
-	// Not to be built.
+	// Not to be built: each line once, in the order diff gives them
+	// (baseline.pack.order).
 	if len(e.Undecided) == 0 && it.notBuilt != "" {
 		t.Errorf("system.cli.pack-text: %s is to be built, but has the line %q", e.ID, it.notBuilt)
 	}
 	if len(e.Undecided) > 0 {
-		var want []string
-		for _, u := range e.Undecided {
-			want = append(want, fmt.Sprintf("%s:%d", u.File, u.Line))
-		}
-		got := strings.Split(strings.TrimSuffix(strings.TrimPrefix(it.notBuilt, "Not to be built: "), "."), ", ")
-		if it.notBuilt == "" || strings.Join(sorted(got), " ") != strings.Join(sorted(want), " ") {
-			t.Errorf("system.cli.pack-text: want %s with the line Not to be built naming %v, got %q", e.ID, want, it.notBuilt)
+		if want := notBuiltFor(e); it.notBuilt != want {
+			t.Errorf("baseline.pack.order, system.cli.pack-text: want the line %q, got %q", want, it.notBuilt)
 		}
 	}
 	// Its text, or a removed element's former text.
@@ -698,8 +683,8 @@ func (p treePlace) String() string {
 	return fmt.Sprintf("%s:%d", p.file, p.line)
 }
 
-// statusFor writes the status line of e, except for an element changed
-// through a dependency, whose chains have no order (see the report).
+// statusFor writes the status line of e, its parts and its chains in the
+// order diff gives them (baseline.pack.order).
 func statusFor(e diffElement) string {
 	switch e.Change {
 	case "added":
@@ -712,8 +697,24 @@ func statusFor(e diffElement) string {
 			parts = append(parts, "`"+p.Part+"` "+p.Change)
 		}
 		return "Changed `" + e.ID + "`: " + strings.Join(parts, ", ") + "."
+	case "changed-through":
+		var chains []string
+		for _, c := range e.Through {
+			chains = append(chains, chainText(c))
+		}
+		return "Changed through `" + e.ID + "`: " + strings.Join(chains, "; ") + "."
 	}
 	return ""
+}
+
+// notBuiltFor writes the line Not to be built of e, which names lines not
+// decided.
+func notBuiltFor(e diffElement) string {
+	var lines []string
+	for _, u := range e.Undecided {
+		lines = append(lines, fmt.Sprintf("%s:%d", u.File, u.Line))
+	}
+	return "Not to be built: " + strings.Join(lines, ", ") + "."
 }
 
 // chainText writes a chain of identifiers as pack_text does.
