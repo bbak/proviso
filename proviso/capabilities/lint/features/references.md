@@ -43,6 +43,7 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
 | " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
 | spec tree, followed by a non-breaking space | lint | yes | the system's entry | any white space at either end does not count |
+| spec tree, followed by a zero-width space | lint | no | error | a zero-width space is no white space |
 | übersicht, its "ü" written as "u" and a combining diaeresis | lint, while lint defines Übersicht, its "Ü" composed | yes | that entry | names are compared in NFC |
 | spec tree, with a non-breaking space between the words | lint | no | error | only spaces and tabs join the words of a name |
 | STRASSE, while lint defines Straße | lint | no | error | simple lower case, not full case folding |

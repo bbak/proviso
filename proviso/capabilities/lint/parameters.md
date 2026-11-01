@@ -72,9 +72,9 @@ place.
 ## <a id="lint.name-comparison"></a> name_comparison
 
 - Configurable: no
-- Rationale: one comparison for every name, alias, mark and match in
-  text, so that a mark resolves wherever plain text would match, and
-  the reverse.
+- Rationale: one comparison for every name and alias of a glossary
+  entry, every term mark and every match in text, so that a mark
+  resolves wherever plain text would match, and the reverse.
 
 Two names are the same when they are equal character by character
 after each step below, in this order. A name of a glossary entry, an
@@ -93,6 +93,6 @@ matching.
 | step | effect |
 | --- | --- |
 | 1 | the name is brought into Unicode's composed form, NFC |
-| 2 | any white space at either end, a non-breaking space included, is dropped |
+| 2 | every character with Unicode's White_Space property at either end, a non-breaking space included, is dropped; a zero-width space has no such property and stays |
 | 3 | each run of spaces and tabs between two words, a line break within a field included, becomes one space |
 | 4 | each character becomes its simple lower-case form |
