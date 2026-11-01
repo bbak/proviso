@@ -39,7 +39,7 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | spec tree | lint | yes | the system's entry | |
 | findings | lint | yes | lint's entry `finding` | by an alias |
 | Spec Tree | lint | yes | the system's entry | names are matched ignoring case |
-| keyword | diff | no | error | lint's own terms are not visible in another capability |
+| finding | install, while lint defines finding | no | error | lint's own terms are not visible in another capability |
 | spec-tree | lint | no | error | neither a name nor an alias |
 
 ## <a id="lint.references.marked"></a> Rule: Every use of a term is marked
@@ -67,9 +67,11 @@ longest name or alias of a glossary entry that starts there as a whole
 word, ignoring case, is a match, and matching goes on after it. For
 matching, a word is a run of letters, digits, hyphens and underscores;
 any other character ends it, and so does each piece taken out, which no
-match spans. Every glossary counts at once, its own capability's,
-the system's and the other capabilities', so the match that starts
-first wins, and a word within a match is no use of its own.
+match spans. A name of several words matches where its words follow
+each other with only spaces and tabs between them. Every glossary counts
+at once, its own capability's, the system's and the other capabilities',
+so the match that starts first wins, and a word within a match is no use
+of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -78,6 +80,7 @@ first wins, and a word within a match is no use of its own.
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
 | lint reads it as the guard-line | lint | yes | nothing reported | a hyphen joins "guard-line" into one word |
 | lint reads the line <x> ending | lint | yes | nothing reported | no match spans the placeholder taken out |
+| lint reads the line  ending | lint | no | error at "line  ending" | any run of spaces and tabs joins the words of a name |
 | lint reports nothing about | lint | yes | nothing reported | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
@@ -135,7 +138,7 @@ Otherwise lint reports the [error] `findings.term-ambiguous` at <entry>, naming 
 | name | entry | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | finding | `lint.finding` | yes | nothing reported | |
-| keyword | `lint.keyword`, and `diff.keyword` in another capability | yes | nothing reported | capabilities do not see each other's terms |
+| finding | `lint.finding`, and `baseline.finding` in another capability | yes | nothing reported | capabilities do not see each other's terms |
 | findings | `lint.finding`, and `lint.findings-list` with the alias findings | no (same glossary) | error | reported at each of the two |
 | element | `lint.element`, while the system defines element | no (level above or below) | error | a capability may not redefine a system term; reported at each of the two |
 
