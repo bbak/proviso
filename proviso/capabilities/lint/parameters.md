@@ -94,5 +94,5 @@ matching.
 | --- | --- |
 | 1 | the name is brought into Unicode's composed form, NFC |
 | 2 | every character with Unicode's White_Space property at either end, a non-breaking space included, is dropped; a zero-width space has no such property and stays |
-| 3 | each run of spaces and tabs between two words, a line break within a field included, becomes one space |
+| 3 | each run of spaces and tabs within the name, a line break within a field included, becomes one space |
 | 4 | each character becomes its simple lower-case form |

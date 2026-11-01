@@ -40,6 +40,7 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | findings | lint | yes | lint's entry `finding` | by an alias |
 | Spec Tree | lint | yes | the system's entry | names are matched ignoring case |
 | spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
+| U.S.  law, with two spaces | lint, while lint defines U.S. law | yes | that entry | every run of spaces and tabs within a name counts as one, next to punctuation too |
 | spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
 | " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
 | spec tree, followed by a non-breaking space | lint | yes | the system's entry | any white space at either end does not count |
