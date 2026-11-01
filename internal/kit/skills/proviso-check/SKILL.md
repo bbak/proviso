@@ -89,7 +89,11 @@ or makes it a finding: record it with `proviso judge` as
 
 Then run `proviso verify --json`. For every `open` finding, one at a time:
 what it says, the elements it names, the checker's recommendation, and
-your own recommendation with the reason. The engineer either:
+your own recommendation with the reason. If it repeats a finding
+already closed in this check, as `proviso/.coherence.json` records
+them, say so first: name the earlier finding and how it was closed, and
+recommend closing this one the same way, unless the tree has changed
+since in a way that touches it. The engineer either:
 
 - **resolves it by an edit:** make the edit on the amendment's branch,
   written and committed as the writing guide says, and record
