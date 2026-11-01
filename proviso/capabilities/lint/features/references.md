@@ -76,7 +76,7 @@ first wins, and a word within a match is no use of its own.
 | lint goes on with the rest of the spec tree | lint | no | error at "spec tree" | |
 | lint reads it as the guard's truth value | lint | no | error at "guard" | a possessive is a use |
 | lint reads it as the guard-line | lint | yes | nothing reported | a hyphen joins "guard-line" into one word |
-| lint reads the spec <x> tree | lint | yes | nothing reported | no match spans the placeholder taken out |
+| lint reads the line <x> ending | lint | yes | nothing reported | no match spans the placeholder taken out |
 | lint reports nothing about | lint | yes | nothing reported | |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
