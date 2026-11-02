@@ -32,7 +32,7 @@ const references = `# References
 
 const capability = "# <a id=\"c\"></a> C\n\n## Goal\n\ng\n\n## Rationale\n\nr\n"
 
-const other = "# <a id=\"k\"></a> K\n\n## Goal\n\ng\n\n## Rationale\n\nSee [s](../c/features/f.md#x.f.s), `[s](f.md#x.f.s)`.\n"
+const other = "# <a id=\"k\"></a> K\n\n## Goal\n\ng\n\n## Rationale\n\nSee [s](../c/features/f.md#x.f.s), `[s](f.md#x.f.s)`, [t][d].\n\n[d]: ../c/features/f.md#x.f.s\n"
 
 const feature = "# <a id=\"c.f\"></a> F\n\n- Contact: Ann\n\n## Goal\n\ng\n\n## Rationale\n\nr\n\n" +
 	"## <a id=\"c.f.r\"></a> Rule: R\n\n```guarded\n" +
@@ -117,7 +117,7 @@ func TestRewrite(t *testing.T) {
 	if s := string(got["capabilities/c/questions.md"]); s != strings.Replace(questions, "[x.f.s]", "[c.f.s]", 1) {
 		t.Errorf("questions %q", s)
 	}
-	if s := string(got["capabilities/d/capability.md"]); !strings.Contains(s, "(../c/features/f.md#c.f.s), `[s](f.md#x.f.s)`") {
+	if s := string(got["capabilities/d/capability.md"]); !strings.Contains(s, "(../c/features/f.md#c.f.s), `[s](f.md#x.f.s)`, [t][d].\n\n[d]: ../c/features/f.md#c.f.s\n") {
 		t.Errorf("capability %q", s)
 	}
 	if s := string(got["glossary.md"]); !strings.Contains(s, "(references.md#system.ref.std)") {

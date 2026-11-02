@@ -122,8 +122,9 @@ func Rewrite(t *tree.Tree, elements []lint.Element, renames []Rename) map[string
 
 // places returns the places of the file f, whose elements are elements,
 // that rehome_references lists and that hold an old identifier of to: the
-// anchors, the hand-overs, the fragments of links outside the Examples
-// tables, and in a questions.md the tags that start its list items.
+// anchors, the hand-overs, the fragments of inline links and autolinks
+// outside the Examples tables and of link reference definitions, and in a
+// questions.md the tags that start its list items.
 func places(f *tree.File, elements []lint.Element, to map[string]string) []edit {
 	examples := map[int]bool{}
 	for _, e := range elements {

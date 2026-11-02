@@ -22,6 +22,9 @@ const (
 	// PlaceTag is the text in brackets that starts a list item, such as
 	// "a.b" in "- [a.b] Should …".
 	PlaceTag
+	// PlaceDefinition is the fragment of the destination of a link
+	// reference definition, after its first "#".
+	PlaceDefinition
 )
 
 // Place is where a value stands in the source: the bytes Start..End of
@@ -35,12 +38,13 @@ type Place struct {
 
 // Places returns the places in src that may hold an identifier, in the
 // order of the source: the anchors that start document-level headings,
-// the fragments of links outside code spans and fenced blocks, and the
-// tags in brackets that start list items. A reference link, whose
-// destination stands in its definition, and an image are no such place,
-// and neither is a fragment written with an escape or an entity, which
-// does not stand in the source as it reads, or on another line than the
-// end of its link's text.
+// the fragments of inline links, autolinks and link reference definitions
+// outside code spans and fenced blocks, and the tags in brackets that
+// start list items. A reference link, whose destination stands in its
+// definition, and an image are no such place, and neither is a fragment
+// written with an escape or an entity, which does not stand in the source
+// as it reads, or an inline link's fragment on another line than the end
+// of its link's text.
 func Places(src []byte) []Place {
 	trimmed := bytes.TrimPrefix(src, []byte("\xef\xbb\xbf"))
 	bom := len(src) - len(trimmed)
@@ -73,6 +77,10 @@ func Places(src []byte) []Place {
 		case *ast.AutoLink:
 			if start, end, ok := fragment(v, string(v.URL(trimmed)), trimmed); ok {
 				add(PlaceLink, start, end)
+			}
+		case *ast.LinkReferenceDefinition:
+			if start, end, ok := definitionFragment(v, trimmed); ok {
+				add(PlaceDefinition, start, end)
 			}
 		case *ast.ListItem:
 			if start, end, ok := tag(v, trimmed); ok {
@@ -227,3 +235,51 @@ func tag(it *ast.ListItem, src []byte) (int, int, bool) {
 	}
 	return seg.Start + 1, seg.Start + end, true
 }
+
+// definitionFragment returns the bytes of the fragment of the destination
+// of the link reference definition def, where it stands in the source: the
+// first destination after the "]:" that closes its label, on that line or
+// the next.
+func definitionFragment(def *ast.LinkReferenceDefinition, src []byte) (int, int, bool) {
+	_, frag, ok := strings.Cut(string(def.Destination), "#")
+	if !ok || frag == "" || def.Lines().Len() == 0 {
+		return 0, 0, false
+	}
+	lines := def.Lines()
+	from := lines.At(0).Start
+	to := lines.At(lines.Len() - 1).Stop
+	// The label holds no unescaped "]", so the first "]:" not escaped
+	// closes it.
+	i := from
+	for {
+		j := bytes.Index(src[i:to], []byte("]:"))
+		if j < 0 {
+			return 0, 0, false
+		}
+		i += j
+		if i == from || src[i-1] != '\\' {
+			break
+		}
+		i += 2
+	}
+	i += 2
+	for i < to && isSpace(src[i]) {
+		i++
+	}
+	end := i
+	if i < to && src[i] == '<' {
+		i++
+		for end = i; end < to && src[end] != '>'; end++ {
+		}
+	} else {
+		for end = i; end < to && !isSpace(src[end]); end++ {
+		}
+	}
+	hash := bytes.IndexByte(src[i:end], '#')
+	if hash < 0 || string(src[i+hash+1:end]) != frag {
+		return 0, 0, false
+	}
+	return i + hash + 1, end, true
+}
+
+func isSpace(c byte) bool { return c == ' ' || c == '\t' || c == '\r' || c == '\n' }
