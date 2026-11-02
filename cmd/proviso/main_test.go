@@ -326,6 +326,11 @@ func TestInit(t *testing.T) {
 					t.Errorf("%s changed: %q, %v", rel, data, err)
 				}
 			}
+			for _, p := range all {
+				if _, err := os.Lstat(filepath.FromSlash(p)); err == nil && !strings.Contains(out.String(), " "+p+"\n") {
+					t.Errorf("%s is left, though no line names it", p)
+				}
+			}
 			if c.status == 0 {
 				out.Reset()
 				if status := run([]string{"init"}, &out, &errOut); status != 0 || out.String() != lines("skipped", all...) {

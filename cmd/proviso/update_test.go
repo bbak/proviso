@@ -48,6 +48,7 @@ func TestUpdate(t *testing.T) {
 		{"no frontmatter", all("0.2.0", map[string]string{build: "# X\n"}), 0, "updated", ""},
 		{"missing", all("0.2.0", map[string]string{build: ""}), 0, "written", ""},
 		{"folder", all("0.2.0", map[string]string{build: "", build + "/x": "x"}), 2, "", "cannot write " + build},
+		{"agents a file", all("0.2.0", map[string]string{".claude/agents/proviso-checker.md": "", ".claude/agents/proviso-coder.md": "", ".claude/agents/proviso-tester.md": "", ".claude/agents": "mine"}), 2, "skipped", "cannot write .claude/agents/proviso-coder.md"},
 		{"only one", map[string]string{".git/HEAD": "", build: stamped("0.2.0")}, 0, "skipped", ""},
 		{"before init", map[string]string{".git/HEAD": ""}, 2, "", "proviso init installs them"},
 		{"notes only", map[string]string{".git/HEAD": "", "proviso/system.md": "x", ".proviso/build.md": "x"}, 2, "", "no Proviso skill"},
@@ -66,6 +67,11 @@ func TestUpdate(t *testing.T) {
 			}
 			if c.build != "" && !strings.Contains(out.String(), c.build+" "+build+"\n") || c.build == "" && strings.Contains(out.String(), build) {
 				t.Errorf("stdout %q, want %s %s", out.String(), c.build, build)
+			}
+			if c.name == "agents a file" {
+				if got, _ := os.ReadFile(filepath.FromSlash(".claude/agents")); string(got) != "mine" || strings.Contains(out.String(), ".claude/agents/") {
+					t.Errorf(".claude/agents %q, stdout %q", got, out.String())
+				}
 			}
 			if c.status == 2 && c.build == "" && c.name != "folder" && out.Len() > 0 {
 				t.Errorf("stdout %q, want nothing", out.String())
