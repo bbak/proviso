@@ -55,10 +55,10 @@ written manifest stays, and `verify` then reports what is left over.
 ```guarded
 When      `manifest` has written `manifest_file` into <root> and removes the entries <entries> named as `coherence_file` and `amendment_note` there
 Provided  each of <entries> can be removed
-Then      each of <entries> is removed, a folder with everything in it and a [symbolic link] without what it points to
+Then      each of <entries> is removed without following any [symbolic link]: a folder with everything in it, and a [symbolic link] without what it points to
   And     `manifest` exits with `manifest.exit-status` 0
 Otherwise `manifest` writes to "stderr" which of <entries> it could not remove
-  And     each of <entries> that can be removed is removed
+  And     each of <entries> that can be removed is removed without following any [symbolic link]: a folder with everything in it, and a [symbolic link] without what it points to
   And     `manifest` exits with `manifest.exit-status` 2
   And     `manifest_file` stays as written
 ```
@@ -70,5 +70,6 @@ Otherwise `manifest` writes to "stderr" which of <entries> it could not remove
 | `repo/proviso/` | `.amendment.md`, a folder holding a file | yes | the folder and its file removed, exit status 0 | anything of that name is the note |
 | `repo/proviso/` | `.amendment.md`, a link to `capabilities/x.md` | yes | the link removed, `capabilities/x.md` unchanged, exit status 0 | the tree stays as recorded |
 | `repo/proviso/` | `.amendment.md`, a Windows junction to a folder outside the spec root | yes | the junction removed, the folder and its files unchanged, exit status 0 | a junction is a symbolic link on Windows |
+| `repo/proviso/` | `.amendment.md`, a folder holding a Windows junction to `capabilities/` | yes | the folder and the junction removed, `capabilities/` unchanged, exit status 0 | a link inside the folder is not followed either |
 | `repo/proviso/` | `.coherence.json`, which cannot be removed | no | exit status 2, `manifest.sum` written | |
 | `repo/proviso/` | `.coherence.json`, which cannot be removed, and `.amendment.md`, which can | no | `.amendment.md` removed, exit status 2 | the one that fails holds up no other |
