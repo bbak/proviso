@@ -28,9 +28,10 @@ const (
 //     system's contracts/cli.md;
 //   - billing.x and its rule billing.x.r, a feature in the folder of the
 //     capability cart; the rule cart.add.show hands over to billing.x.r and
-//     holds it in an Examples cell; x.md links to it in prose, and names it
-//     in a code span, in plain text and in a fenced block; questions.md tags
-//     a question with it, and names it in another;
+//     holds it in an Examples cell; x.md links to it in prose, by an
+//     inline link and an autolink, and names it in a code span, in plain
+//     text, in a fenced block, in a link reference definition and in an
+//     image; questions.md tags a question with it, and names it in another;
 //   - the capability pay in the folder capabilities/billing/, with the
 //     features pay.card, at its identifier home, and billing.refund, named
 //     after the folder.
@@ -100,6 +101,11 @@ Try out a rule.
 Moved here from billing: see [the rule](x.md#billing.x.r), not
 ´billing.x.r´ nor ´[the rule](x.md#billing.x.r)´, and billing.x.r in
 plain text.
+
+Online at <https://example.com/x.md#billing.x.r>, as the [defined rule][rule],
+and drawn in ![a picture](x.md#billing.x.r).
+
+[rule]: x.md#billing.x.r
 
 ´´´text
 <a id="billing.x.r"></a> [the rule](x.md#billing.x.r)
@@ -197,6 +203,7 @@ func mainRehomed() tree {
 		edit(xPath, `# <a id="billing.x"></a>`, `# <a id="cart.x"></a>`).
 		edit(xPath, `## <a id="billing.x.r"></a>`, `## <a id="cart.x.r"></a>`).
 		edit(xPath, "see [the rule](x.md#billing.x.r), not", "see [the rule](x.md#cart.x.r), not").
+		edit(xPath, "<https://example.com/x.md#billing.x.r>", "<https://example.com/x.md#cart.x.r>").
 		edit(cartQuestions, "- [billing.x.r] Should", "- [cart.x.r] Should").
 		edit(payRefundPath, `<a id="billing.refund">`, `<a id="pay.refund">`)
 }

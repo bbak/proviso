@@ -66,6 +66,7 @@ var severities = map[string]string{
 	"identifier-malformed":         "error",
 	"identifier-duplicate":         "error",
 	"system-identifier":            "error",
+	"capability-identifier":        "error",
 	"file-unknown":                 "error",
 	"name-malformed":               "error",
 	"line-ending":                  "error",

@@ -97,3 +97,19 @@ func TestLintIdentifiersSystem(t *testing.T) {
 			file: systemPath, lines: lines(1)},
 	})
 }
+
+func TestLintIdentifiersCapability(t *testing.T) {
+	t.Parallel()
+	rows(t, "capability-identifier", []row{
+		// The baseline's features and rules have several segments, and
+		// are no capabilities: nothing is reported anywhere.
+		{name: "row1 coherence", tree: baseline(), holds: true},
+		{name: "row2 cash.withdrawal", tree: baseline().edit(capPath, `id="cart"`, `id="cart.shop"`),
+			file: capPath, lines: lines(1)},
+		// identifier-duplicate reports it (TestLintIdentifiersUnique).
+		{name: "row3 system", tree: baseline().edit(capPath, `id="cart"`, `id="system"`), holds: true},
+		{name: "derived: three segments, in a second capability", tree: withBilling(baseline(), idBlock, idTable).
+			edit("proviso/capabilities/billing/capability.md", `id="billing"`, `id="billing.pay.now"`),
+			file: "proviso/capabilities/billing/capability.md", lines: lines(1)},
+	})
+}
