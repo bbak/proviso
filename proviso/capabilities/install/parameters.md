@@ -34,6 +34,7 @@ separator.
 | `.claude/skills/proviso-check/SKILL.md` | the kit's skill that checks an amendment |
 | `.claude/skills/proviso-integrate/SKILL.md` | the kit's skill that brings a request into the spec tree |
 | `.claude/skills/proviso-recover/SKILL.md` | the kit's skill that recovers the spec tree of an existing system |
+| `.claude/skills/proviso-rehome/SKILL.md` | the kit's skill that gives moved elements the identifiers of their place |
 | `.proviso/build.md` | the kit's stub for the engineers' notes to the skills |
 | `.proviso/coder.md` | the kit's stub for the engineers' notes to the coding agent |
 | `.proviso/tester.md` | the kit's stub for the engineers' notes to the testing agent |

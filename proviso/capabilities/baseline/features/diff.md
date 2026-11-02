@@ -77,12 +77,12 @@ the contract says is damage, such as a merge conflict left in it. A
 guess at what it meant could hide every change it records.
 
 ```guarded
-When      `diff`, `impact`, `pack`, `judge` or `verify` reads the line <line> of `manifest_file`, after its first
+When      `diff`, `impact`, `pack`, `judge`, `verify` or `rehome` reads the line <line> of `manifest_file`, after its first
 Provided  <line> is as `manifest_file` describes
 Then      the command takes the [fingerprint] it records
   And     the command goes on with the next line
 Otherwise the command writes to "stderr" that `manifest_file` cannot be read, naming <line>
-  And     the command exits with 2, as `diff.exit-status`, `impact.exit-status`, `pack.exit-status`, `judge.exit-status` and `verify.exit-status` define
+  And     the command exits with 2, as `diff.exit-status`, `impact.exit-status`, `pack.exit-status`, `judge.exit-status`, `verify.exit-status` and `rehome.exit-status` define
   And     nothing goes to "stdout"
 ```
 

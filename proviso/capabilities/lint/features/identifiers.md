@@ -96,8 +96,9 @@ Otherwise lint reports the [error] `findings.identifier-duplicate` at <id>, nami
 
 ### Rationale
 
-`system` identifies the system and prefixes the elements born at system
-level, so that a prefix always says where an element was born. Once the
+`system` identifies the system and prefixes the elements at system
+level, as a capability's identifier prefixes the elements in it, so that
+a prefix says where an element stands. Once the
 system itself always has that identifier, uniqueness keeps every other
 element from having it, so reserving it needs no rule of its own.
 

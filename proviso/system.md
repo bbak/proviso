@@ -24,6 +24,8 @@ line. Proviso is those mechanics.
 - Impact sets for an amendment.
 - Context packs for the implementing agents and the checking agent.
 - Acceptance checks.
+- Upkeep of a spec tree: giving elements that moved the identifiers
+  of their place.
 - A command line that names its commands and refuses what it does not
   know.
 - Installing and updating the files a repository needs beside its code:
