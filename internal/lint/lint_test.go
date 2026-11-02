@@ -259,6 +259,11 @@ func TestFindings(t *testing.T) {
 		}},
 		{"two blocks", withRule("When      lint reads <id>\nThen      x\n  And     y\n```\n\n```guarded\nWhen x\n", "| id | outcome |\n| --- | --- |\n| a | x |\n"),
 			[]string{"rule-block-count@capabilities/c/features/f.md:13"}},
+		{"capability identifier", map[string]string{
+			"system.md":                    baseSystem,
+			"capabilities/c/capability.md": strings.Replace(baseCapability, `id="c"`, `id="cash.withdrawal"`, 1),
+			"capabilities/d/capability.md": strings.Replace(baseCapability, `id="c"`, `id="d"`, 1),
+		}, []string{"capability-identifier@capabilities/c/capability.md:1"}},
 		{"structure", map[string]string{
 			"system.md":                    strings.Replace(baseSystem, `id="system"`, `id="proviso"`, 1),
 			"capabilities/c/capability.md": baseCapability + "\n## Scope\n\nx\n\n## Goal\n\n?\n",
