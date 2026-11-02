@@ -106,7 +106,7 @@ When      `rehome` has planned the renames <renames>
 Provided  no new [identifier] of <renames> is the [identifier] of an [element] of the [spec tree]
   And     no new [identifier] of <renames> is planned for two [elements]
 Then      `rehome` goes on with <renames>
-  And     `rehome` writes <renames>, naming no collision
+  And     no collision is named
 Otherwise `rehome` writes <renames>, naming each collision with the [identifier] it would take and the old [identifiers] planned for it
   And     `rehome` exits with `rehome.exit-status` 1
   And     nothing is written under the [spec root]
@@ -176,8 +176,14 @@ Then      <renames> appear ordered by their old [identifier], compared byte by b
 
 ## <a id="upkeep.rehome.exit"></a> Rule: The exit status tells whether the plan holds
 
+### Rationale
+
+A run that stops earlier, because lint finds an error, the tree is not
+as the manifest records it, or a file cannot be opened for writing,
+writes no plan and exits with 2 by its own rule.
+
 ```guarded
-When      `rehome` exits, having found the collisions <collisions>
+When      `rehome` exits, having written the plan of its renames, with the collisions <collisions>
 Provided  <collisions> is empty
 Then      `rehome` exits with `rehome.exit-status` 0
   And     everything else stays as it was
