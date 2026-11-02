@@ -114,7 +114,7 @@ Otherwise nothing is taken for "Frames" because of <element>
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
 | `lint.run.exit`, its `Then` step changed | yes | `lint`, `lint.run`, `lint.run.read-only` and the system's constraints taken | |
-| `baseline.part`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
+| `baseline.former-text`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
 | `system.git`, its Property changed | yes | the system's constraints taken | no feature or capability holds it |
 | `lint.run.root`, removed | no | nothing taken because of it | what was built for it is retired, not built |
 
