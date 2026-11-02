@@ -135,8 +135,8 @@ Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s
 
 The agent host reads only the installed skill; a skill that pointed to
 another file of the kit would point to nothing. A skill reads no context
-pack, so it carries no reading guide. A skill that edits the spec tree
-carries the writing guide instead: the kit keeps it once for every such
+pack, so it carries no reading guide. A skill that writes decisions
+into the spec tree carries the writing guide instead: the kit keeps it once for every such
 skill, so that a decision written into the tree while integrating,
 recovering, building or checking reads the same, and `init` puts it in
 place.

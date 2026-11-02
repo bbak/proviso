@@ -19,6 +19,8 @@ over, although no meaning changed. `rehome` renames and writes the
 manifest in one step, so the element diff stays empty. For that, it
 works only on a tree the manifest records, with no check or amendment
 note beside it: a rename never mixes with an amendment's edits.
+`rehome` splits the spec tree into element parts and fingerprints them
+as `manifest` does.
 
 Only the first segment of an identifier names a place; the rest stays,
 so an element moved between features of one capability keeps its

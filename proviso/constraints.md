@@ -99,7 +99,9 @@ are design aids and stay beside the code.
 ### Property
 
 The acceptance tests and their test trees live in `acceptance/` and are
-changed only by the testing agent. They run the binary as a black box,
+changed only by the testing agent, but for renaming a test after its
+element is rehomed, as the approved renames say, which changes no check
+and is done with the rehome. They run the binary as a black box,
 built by the tests themselves. The coding agent's tests live beside its
 code in `cmd/` and `internal/`, and the coding agent never changes
 anything in `acceptance/`.

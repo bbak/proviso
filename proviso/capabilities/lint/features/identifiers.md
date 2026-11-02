@@ -12,9 +12,9 @@ where tooling and links expect it.
 Identifiers are what everything else refers to: links, hand-overs, the
 manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
-reference to it ambiguous. Lint checks the identifiers as they stand. A
-renamed identifier shows in the element diff, as one element removed
-and one added. That a removed identifier is never reused is left to the
+reference to it ambiguous. Lint checks the identifiers as they stand. An
+identifier renamed by hand shows in the element diff, as one element
+removed and one added. That a removed identifier is never reused is left to the
 authors: the manifest forgets a removed element, and within the tree,
 unique identifiers are all that references need.
 
