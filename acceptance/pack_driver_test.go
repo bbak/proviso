@@ -89,7 +89,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 		text: execProviso(t, cwd, append([]string{"pack"}, args...)...),
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, before, after, "")
+	checkWrites(t, "baseline.run.writes", before, after, "")
 	if o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
