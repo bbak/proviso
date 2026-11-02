@@ -7,8 +7,9 @@ nav_order: 3
 
 The terms the other pages use, in the order an engineer meets them. The
 exact definitions are in the glossaries of Proviso's own spec tree:
-[system-wide](https://github.com/bbak/proviso/blob/main/proviso/glossary.md)
-and for the [baseline](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/glossary.md).
+[system-wide](https://github.com/bbak/proviso/blob/main/proviso/glossary.md),
+for the [baseline](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/glossary.md)
+and for the [coherence check](https://github.com/bbak/proviso/blob/main/proviso/capabilities/coherence/glossary.md).
 
 ## The spec tree
 

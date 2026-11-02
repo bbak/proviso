@@ -178,7 +178,7 @@ reasons it is one.
 | 0 | the candidates were found, whether there are any or none |
 | 2 | the command could not run |
 
-Specified in [baseline/features/impact.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/impact.md).
+Specified in [coherence/features/impact.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/coherence/features/impact.md).
 
 ## pack
 
@@ -218,7 +218,7 @@ reported before anything wrong with the input.
 | 1 | the result was refused, and nothing was recorded |
 | 2 | the coherence file could not be read or written, or the command could not run |
 
-Specified in [baseline/features/judge.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/judge.md).
+Specified in [coherence/features/judge.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/coherence/features/judge.md).
 
 ## verify
 
@@ -241,7 +241,7 @@ reported.
 | 1 | at least one problem |
 | 2 | the coherence file could not be read, or the command could not run |
 
-Specified in [baseline/features/verify.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/verify.md).
+Specified in [coherence/features/verify.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/coherence/features/verify.md).
 
 ## manifest
 
