@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -476,5 +477,89 @@ func TestBaselineVerifyUndecided(t *testing.T) {
 		r.set(impactTree())
 		r.judgeAll(nil)
 		r.verify().only(t)
+	})
+}
+
+// TestBaselineDiffFormer_Verify runs the cases of baseline.diff.former with
+// `verify`. verify names no revision, so a case that reads former text shows
+// only in verify running; verifyIn checks that nothing goes to stdout with
+// exit status 2.
+func TestBaselineDiffFormer_Verify(t *testing.T) {
+	t.Parallel()
+	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
+		t.Parallel()
+		covered(t, iLimitThen).verify().only(t)
+	})
+	t.Run("row2 a merge that took the manifest from the mainline", func(t *testing.T) {
+		t.Parallel()
+		// The branch's Body of the count changed; the merge commit holds it
+		// as changed too, so only e5f6 holds its former text.
+		r := mergedMainline(t, []change{iCountBody}, []change{iLimitThen})
+		r.set(amended(impactTree(), iCountBody, iLimitThen, iLimitProvided))
+		r.verify().ran(t)
+	})
+	t.Run("row3 the spec root in no git repository", func(t *testing.T) {
+		t.Parallel()
+		dir := impactTree().write(t)
+		skipIfGitAbove(t, dir)
+		manifestOK(t, dir)
+		amended(impactTree(), iLimitThen).writeTo(t, dir, false)
+		verifyIn(t, dir, dir, filepath.Join(dir, "proviso")).exits(t, 2)
+	})
+	t.Run("row4 the manifest written but never committed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.commit("tree")
+		r.manifest()
+		r.set(amended(impactTree(), iLimitThen))
+		r.verify().exits(t, 2)
+	})
+	t.Run("row5 the manifest written again since and not committed", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, impactTree())
+		r.set(amended(impactTree(), iLimitThen))
+		r.manifest()
+		r.set(amended(impactTree(), iLimitThen, iLimitProvided))
+		r.verify().exits(t, 2)
+	})
+	t.Run("row6 the manifest committed together with a tree that differs from it in a part the element diff lists as changed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iLimitProvided))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+		r.verify().exits(t, 2)
+	})
+	t.Run("row7 the manifest committed together with a tree that differs from it only in parts the element diff does not list as changed or removed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iCountBody))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitThen))
+		r.judgeAll(nil)
+		r.verify().only(t)
+	})
+	t.Run("derived: row6 with the check recorded", func(t *testing.T) {
+		t.Parallel()
+		// A check that covers the amendment does not stand in for its
+		// former text.
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iLimitProvided))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitThen))
+		r.judgeAll(nil)
+		r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+		r.verify().exits(t, 2)
+	})
+	t.Run("derived: added rules need no former text, and no git", func(t *testing.T) {
+		t.Parallel()
+		dir := impactTree().write(t)
+		manifestOK(t, dir)
+		skipIfGitAbove(t, dir)
+		amended(impactTree(), addTip).writeTo(t, dir, false)
+		verifyIn(t, dir, dir, filepath.Join(dir, "proviso")).only(t, "missing")
 	})
 }

@@ -565,7 +565,7 @@ func TestBaselineDiffFormer_Pack(t *testing.T) {
 		r.set(amended(packTree(), pCapThen, pCapProvided))
 		r.pack().stopped(t)
 	})
-	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+	t.Run("row6 the manifest committed together with a tree that differs from it in a part the element diff lists as changed", func(t *testing.T) {
 		t.Parallel()
 		r := newRepo(t, packTree())
 		r.manifest()
@@ -573,6 +573,20 @@ func TestBaselineDiffFormer_Pack(t *testing.T) {
 		r.commit("a1b2")
 		r.set(amended(packTree(), pCapProvided, pCapThen))
 		r.pack().stopped(t)
+	})
+	t.Run("row7 the manifest committed together with a tree that differs from it only in parts the element diff does not list as changed or removed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, packTree())
+		r.manifest()
+		r.set(amended(packTree(), iCountBody))
+		a1b2 := r.commit("a1b2")
+		r.set(amended(packTree(), pCapThen))
+		o := r.pack()
+		o.ran(t)
+		if deref(o.cp.Revision) != a1b2 || o.revision != a1b2 {
+			t.Errorf("want the revision %s, got %s in context_pack and %q in pack_text", a1b2, deref(o.cp.Revision), o.revision)
+		}
+		checkThen(t, o, formerThen)
 	})
 	t.Run("derived: added elements need no former text, and no git", func(t *testing.T) {
 		t.Parallel()

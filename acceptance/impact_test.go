@@ -445,7 +445,7 @@ func TestBaselineDiffFormer_Impact(t *testing.T) {
 		r.set(amended(impactTree(), iLimitThen, iLimitProvided))
 		impactStopped(t, r.impact())
 	})
-	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+	t.Run("row6 the manifest committed together with a tree that differs from it in a part the element diff lists as changed", func(t *testing.T) {
 		t.Parallel()
 		r := newRepo(t, impactTree())
 		r.manifest()
@@ -453,6 +453,19 @@ func TestBaselineDiffFormer_Impact(t *testing.T) {
 		r.commit("a1b2")
 		r.set(amended(impactTree(), iLimitProvided, iLimitThen))
 		impactStopped(t, r.impact())
+	})
+	t.Run("row7 the manifest committed together with a tree that differs from it only in parts the element diff does not list as changed or removed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iCountBody))
+		a1b2 := r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitThen))
+		o := r.impact()
+		o.ran(t)
+		if o.is.Revision == nil || *o.is.Revision != a1b2 {
+			t.Errorf("want the revision %s, got %s", a1b2, deref(o.is.Revision))
+		}
 	})
 	t.Run("derived: added rules need no former text, and no git", func(t *testing.T) {
 		t.Parallel()

@@ -252,6 +252,70 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		line := "cart heading " + fp("Cart")
 		packNames(t, packWith(t, replaced(line)), line, headingLine+1)
 	})
+	// The same rows for judge and verify, on the plain tree with a rule
+	// added, so that the element diff lists an element without needing
+	// former text, and judge has an amendment to record a check of.
+	// judgeIn checks that coherence_file stays as it was unless judge exits
+	// with 0, and that nothing goes to stdout; verifyIn that nothing goes to
+	// stdout with exit status 2.
+	withAdded := func(t *testing.T, manifest string) string {
+		return plainTree().appendTo(featurePath, extraRule).with(manifestPath, manifest).write(t)
+	}
+	namesLine := func(t *testing.T, r run, line string, number int) {
+		t.Helper()
+		if !strings.Contains(r.stderr, line) && !strings.Contains(r.stderr, strconv.Itoa(number)) {
+			t.Errorf("want stderr to name the line %q (line %d), got: %s", line, number, r.stderr)
+		}
+	}
+	judgeWith := func(t *testing.T, manifest string) run {
+		dir := withAdded(t, manifest)
+		return judgeIn(t, dir, dir, filepath.Join(dir, "proviso"), "{}")
+	}
+	judgeNames := func(t *testing.T, r run, line string, number int) {
+		t.Helper()
+		refused(t, r, 2)
+		namesLine(t, r, line, number)
+	}
+	t.Run("judge/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
+		refused(t, judgeWith(t, good), 0)
+	})
+	t.Run("judge/row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
+		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
+		judgeNames(t, judgeWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
+	})
+	t.Run("judge/row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
+		line := "cart heading " + fp("Cart")
+		judgeNames(t, judgeWith(t, replaced(line)), line, headingLine+1)
+	})
+	verifyWith := func(t *testing.T, manifest string) verifyOutcome {
+		dir := withAdded(t, manifest)
+		return verifyIn(t, dir, dir, filepath.Join(dir, "proviso"))
+	}
+	verifyNames := func(t *testing.T, o verifyOutcome, line string, number int) {
+		t.Helper()
+		o.exits(t, 2)
+		for _, r := range o.runs() {
+			namesLine(t, r, line, number)
+		}
+	}
+	t.Run("verify/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
+		// The rule added, and no check recorded.
+		verifyWith(t, good).only(t, "missing")
+	})
+	t.Run("verify/row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
+		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
+		verifyNames(t, verifyWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
+	})
+	t.Run("verify/row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
+		line := "cart heading " + fp("Cart")
+		verifyNames(t, verifyWith(t, replaced(line)), line, headingLine+1)
+	})
 	derived := []struct{ name, line string }{
 		{"derived: a short fingerprint", "cart\theading\th1:5b0d"},
 		{"derived: uppercase hexadecimal", "cart\theading\t" + strings.ToUpper(fp("Cart"))},
@@ -853,7 +917,7 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.set(diffTree().apply(limitThen, limitProvided))
 		r.diff().stopped(t)
 	})
-	t.Run("row6 the manifest committed together with a tree it does not record", func(t *testing.T) {
+	t.Run("row6 the manifest committed together with a tree that differs from it in a part the element diff lists as changed", func(t *testing.T) {
 		t.Parallel()
 		r := newRepo(t, diffTree())
 		r.manifest()
@@ -861,6 +925,68 @@ func TestBaselineDiffFormer(t *testing.T) {
 		r.commit("a1b2")
 		r.set(diffTree().apply(limitProvided, limitThen))
 		r.diff().stopped(t)
+	})
+	t.Run("row7 the manifest committed together with a tree that differs from it only in parts the element diff does not list as changed or removed", func(t *testing.T) {
+		t.Parallel()
+		// The tree in a1b2 has the Then step of cart.x.r changed, which the
+		// tree now has as the manifest records it again.
+		r := newRepo(t, diffTree())
+		r.manifest()
+		r.set(diffTree().apply(xThen))
+		a1b2 := r.commit("a1b2")
+		r.set(diffTree().apply(limitThen))
+		o := r.diff()
+		o.only(t, "cart.add.limit:changed")
+		checkRevision(t, o, a1b2)
+		checkFormer(t, part(t, o.elem(t, "cart.add.limit"), "step Then"), formerThen)
+	})
+	t.Run("derived: the tree in a1b2 differs in another part of an element listed as changed", func(t *testing.T) {
+		t.Parallel()
+		// Only the parts listed as changed or removed are checked, not
+		// every part of the elements listed.
+		r := newRepo(t, diffTree())
+		r.manifest()
+		r.set(diffTree().apply(limitProvided))
+		a1b2 := r.commit("a1b2")
+		r.set(diffTree().apply(limitThen))
+		o := r.diff()
+		o.only(t, "cart.add.limit:changed")
+		onlyParts(t, o.elem(t, "cart.add.limit"), "step Then:changed")
+		checkRevision(t, o, a1b2)
+		checkFormer(t, part(t, o.elem(t, "cart.add.limit"), "step Then"), formerThen)
+	})
+	t.Run("derived: the tree in a1b2 holds an element listed as added", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, diffTree())
+		r.manifest()
+		withExtra := diffTree().appendTo(featurePath, extraRule)
+		r.set(withExtra)
+		a1b2 := r.commit("a1b2")
+		r.set(withExtra.apply(limitThen))
+		o := r.diff()
+		o.only(t, "cart.add.extra:added", "cart.add.limit:changed")
+		checkRevision(t, o, a1b2)
+		checkFormer(t, part(t, o.elem(t, "cart.add.limit"), "step Then"), formerThen)
+	})
+	t.Run("derived: the tree in a1b2 differs in a part the element diff lists as removed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, diffTree())
+		r.manifest()
+		r.set(diffTree().apply(change{featurePath, "A shelf holds ten pieces.", "A shelf holds ten pieces at most."}))
+		r.commit("a1b2")
+		r.set(diffTree().apply(limitNoRatio))
+		r.diff().stopped(t)
+	})
+	t.Run("derived: an added part needs no former text, and no git", func(t *testing.T) {
+		t.Parallel()
+		dir := diffTree().write(t)
+		skipIfGitAbove(t, dir)
+		manifestOK(t, dir)
+		diffTree().apply(limitNewRow).writeTo(t, dir, false)
+		o := diffIn(t, dir, dir, filepath.Join(dir, "proviso"))
+		o.only(t, "cart.add.limit:changed")
+		onlyParts(t, o.elem(t, "cart.add.limit"), "row "+rowKey("quantity", "5", "product", "pear")+":added")
+		checkRevision(t, o, "")
 	})
 	t.Run("derived: the spec root in a folder of the repository", func(t *testing.T) {
 		t.Parallel()
