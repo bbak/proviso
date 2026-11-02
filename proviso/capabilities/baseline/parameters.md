@@ -22,31 +22,6 @@ rule or a contract element's member, has parts of its own.
 | each row of the Examples table | its placeholder values | `row <fingerprint of the values>` |
 | everything else the element holds, such as a contract element's prose and blocks or a parameter's table | none: one per element | `body` |
 
-## <a id="baseline.change-effects"></a> change_effects
-
-- Configurable: no
-- Rationale: only a change that can alter behaviour, or the frame in
-  which agents fill the gaps between rules, may affect other elements; a
-  reworded rationale or a new contact cannot.
-
-What a changed part does beyond its own element. "Dependents" passes the
-changed meaning on to every element that depends on it, which the
-element diff lists as changed through a dependency; the other entries
-are sources of impact candidates. A part of an added or removed element
-counts as changed, and so does every part of an element changed through
-a dependency, whose meaning changed while its text did not.
-
-| changed part | dependents | candidate sources |
-| --- | --- | --- |
-| a step or Examples row of a rule | yes | events, ranges |
-| the field `Definition` or `Defined by` of a glossary entry | yes | none |
-| the field `Version` or `Link` of a reference | yes | none |
-| any part of a contract element, and any part of a parameter but its field `Rationale` | yes | none |
-| the section `Property` or `Ranges over` of an invariant or a constraint | no | scope |
-| any section of the system | no | scope |
-| the section `Goal` of a capability or a feature | no | scope |
-| any other part, such as a field `Contact` or a section `Rationale` | no | none |
-
 ## <a id="baseline.dependencies"></a> dependencies
 
 - Configurable: no
