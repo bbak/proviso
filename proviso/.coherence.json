@@ -1333,7 +1333,7 @@
       "id": "system.acceptance-tests",
       "now": {
         "heading": "h1:426fbf601861ed56b805afbb4cf534efb4b43b680ac83dba28b84a5fd92703ff",
-        "section Property": "h1:de5007a784e9596e6d1376014b006067b0a47cbba54de42e7d51596c669e8c1d",
+        "section Property": "h1:91fddafb0ce72896c6acadd210a3d8e42fb4b5360e6a82e3623f4c30a8c1ef88",
         "section Rationale": "h1:904a08d96049bf716fb79aa2bf8a1820e3c69341edc631d1f4cf55c4a422be19"
       },
       "baseline": {
@@ -1490,7 +1490,7 @@
         "row h1:e8fc040014ebe9d9057fc167225a2e01c9402a42e53f82b9ccdd8eec46cf2c5d": "h1:4545b950d94483d6b187ef1bef8850ea2913a0356659a92dfe9e02dd87db9d21",
         "step Otherwise": "h1:78f7994a285a999077aaf7636c9f609141fd3063ffb8e72ec80b96e9fce6c6a7",
         "step Provided": "h1:d73ca7c91ed761e13000f357bbab56fab20b248656efa2789d992a042701b762",
-        "step Then": "h1:30c89bf48842780c8f2f306034bb7a802108635c09f4196cd2f4c52cae36cecd",
+        "step Then": "h1:6d75bcc7833442a6f3e76fde6a45581bb477d9bf27cce6dd1785b3aa9182626d",
         "step When": "h1:48b9bee8d8ce610e77142293a92549060b90a89789901cad1eaa01ceee518abd"
       },
       "baseline": {}
@@ -1502,10 +1502,11 @@
         "row h1:3c043c65b80e2c79e3f8254180afeaa694d5efd2cce5ec1af3d87dce4ad143af": "h1:0fc9190b905d3cb0bc062a9f4a161d62935404f132e219a54d1d4b49dbb37de7",
         "row h1:8d1bebe03ac0b11029faad434891eb84b5dbc3f0604aca6cf45a9eac40cb3aa3": "h1:0442cca4d48e909e8ab86783c4f2baa02aa292d94109a52ed6a7c40b4e89a5ec",
         "row h1:f64bf4fb4e291813b8b5021c806183094592c392af1840e687bca424db099cd8": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "section Rationale": "h1:5ff2b133b5f49b9b12326db3cffba9af53b7201f3be7cc16beba6fd8b52b674c",
         "step Otherwise": "h1:aafbf2a798c3731fae3a90a7d9dac813d2c924139fd33c133f9937c9bad4f7a6",
         "step Provided": "h1:c72d2293b2d83a91863c850a59c8e9b4d8d831e15db603bd3e51e638b22e4dcf",
         "step Then": "h1:7b15270fad6499355af00b63d75b571acba79d3f125c117d4dcb74bfa390b500",
-        "step When": "h1:6afdc289700e7982a6a423599253760f34ceeb273f1e134d326a2d6fdfeecf8a"
+        "step When": "h1:113799fe1b821b4affdd70086fcaed7b617ec742697e9168a1714978aabd6e0b"
       },
       "baseline": {}
     },
@@ -3410,7 +3411,8 @@
         "system.acceptance-tests"
       ],
       "text": "The new exception lets a test in acceptance/ be renamed after its element is rehomed, 'as the approved renames say', but nothing in the tree says who performs that rename or what approves the renames: `upkeep.rehome` only shows the plan before writing, and its capability Rationale leaves the code beside the tree to the engineer, while `install.init.skills` says the `proviso-rehome` skill edits only through `rehome`.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 38c6f8d"
     },
     {
       "id": "f9",
@@ -3421,7 +3423,8 @@
         "upkeep.rehome.collision"
       ],
       "text": "system.test-names requires that no two identifiers in the spec tree give the same test name, and system.acceptance-tests now renames tests after a rehome, but upkeep.rehome.collision refuses only a new identifier equal to an existing one; a rename such as `baseline.impact.events` to `coherence.impact.events` beside an existing `coherence.impact-events` passes and leaves two identifiers giving `TestCoherenceImpactEvents`.",
-      "status": "open"
+      "status": "dismissed",
+      "reason": "As f3: system.test-names binds only Proviso's tree and is checked by review; proviso-rehome checks each new identifier's derived name against the names taken before it writes."
     },
     {
       "id": "f10",
@@ -3432,7 +3435,20 @@
         "upkeep.rehome.collision"
       ],
       "text": "On a run with rehome.write where a file cannot be opened, upkeep.rehome.write requires exit status 2 and nothing on stdout, while upkeep.rehome.exit requires 0 whenever no collision was found, and upkeep.rehome.collision Then requires the renames to be written.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 38c6f8d"
+    },
+    {
+      "id": "f11",
+      "kind": "gap",
+      "elements": [
+        "system.acceptance-tests",
+        "system.test-names",
+        "upkeep.rehome.collision"
+      ],
+      "text": "system.acceptance-tests now lets whoever runs the rehome rename a test after its element is rehomed, but upkeep.rehome.collision refuses only a new identifier that equals an existing or planned one. Two different identifiers can give the same test name under system.test-names (for example `coherence.x.root2` and `coherence.x.root-2` both give `TestCoherenceXRoot2`). So a rehome of Proviso's own tree can exit with 0 and produce a tree that system.test-names forbids, where the renamed test would clash with an existing one, and no element says what happens then.",
+      "status": "resolved",
+      "reason": "edited in 73967cd"
     }
   ]
 }
