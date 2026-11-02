@@ -10,7 +10,8 @@
 
 The places where `rehome` renames an identifier. Nothing else is
 rewritten: an identifier in plain text, in an Examples cell, in a code
-span, in a fenced block or in an image stays as it is.
+span, in a fenced block or in an image stays as it is. A fragment is
+renamed wherever its link leads, inside the spec tree or out of it.
 
 | reference | the identifier it holds | such as |
 | --- | --- | --- |
