@@ -303,4 +303,15 @@ func TestFormer(t *testing.T) {
 	if err := Former(entries, base, other, "rev"); err == nil {
 		t.Error("former text that is not the baseline's was taken")
 	}
+	// baseline.diff.former: a part the element diff does not list as
+	// changed or removed may differ at the revision.
+	entries = Compare(files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(feature, "Then      it is read", "Then      it is read twice", 1)
+	}), base)
+	elsewhere := files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(feature, "\nwhy\n", "\nanother reason\n", 1)
+	})
+	if err := Former(entries, base, elsewhere, "rev"); err != nil {
+		t.Errorf("a difference in a part not listed: %v", err)
+	}
 }

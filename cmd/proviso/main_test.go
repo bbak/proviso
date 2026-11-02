@@ -211,6 +211,30 @@ func TestImpactDamagedManifest(t *testing.T) {
 	}
 }
 
+// baseline.diff.malformed and baseline.judge.input: judge and verify stop
+// on a damaged manifest as diff does, but judge reads its input first.
+func TestJudgeVerifyDamagedManifest(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": "model 0\n<<<<<<< HEAD\n"})
+	call := func(input string, args ...string) (int, string, string) {
+		stdin = strings.NewReader(input)
+		defer func() { stdin = os.Stdin }()
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	for _, cmd := range []string{"judge", "verify"} {
+		if status, out, errOut := call("{}", cmd); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
+			t.Errorf("%s: %d %q %q", cmd, status, out, errOut)
+		}
+	}
+	if status, out, errOut := call("not json", "judge"); status != 1 || out != "" || !strings.Contains(errOut, "no check_result") {
+		t.Errorf("judge, input that is no JSON: %d %q %q", status, out, errOut)
+	}
+	if _, err := os.Lstat(filepath.Join("proviso", ".coherence.json")); err == nil {
+		t.Error("judge recorded a check on a damaged manifest")
+	}
+}
+
 func TestPackCommand(t *testing.T) {
 	inRepo(t, map[string]string{"proviso/system.md": system})
 	call := func(args ...string) (int, string, string) {

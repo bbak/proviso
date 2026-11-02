@@ -25,8 +25,9 @@ check afterwards.
 `judge` derives the element diff and the candidates as `impact` does,
 and records them in `coherence_file`, which only `judge` writes.
 `judge` reads `coherence_file`, if the spec root holds one, before it
-reads its input or derives the element diff, once lint has found no
-error; one it cannot read stops it, as `baseline.judge.unreadable` says.
+reads its input, and its input before it derives the element diff, once
+lint has found no error; one it cannot read stops it, as
+`baseline.judge.unreadable` says.
 
 ## <a id="baseline.judge.input"></a> Rule: Judge reads a check result
 
@@ -45,6 +46,7 @@ Otherwise `judge` writes to "stderr" why <input> is no `check_result`
 | one judgement naming two elements, and one new finding | yes | read | |
 | no judgements and no findings | yes | read | an amendment without candidates still needs its check |
 | not JSON | no | exit status 1 | |
+| not JSON, with a merge conflict left in `manifest.sum` | no | exit status 1 | the input is read before the element diff is derived |
 | a finding with both a `kind` and an `id` | no | exit status 1 | it is new or it changes one, not both |
 | one element in two judgements | no | exit status 1 | which reason holds would be a guess |
 | a judgement and a finding with an `id` | no | exit status 1 | a check and a decision are recorded apart |
