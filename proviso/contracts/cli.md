@@ -632,9 +632,10 @@ properties:
 
 The command `proviso init`, run in the root of a git repository; it
 takes no argument. It writes the installed files that are missing, and names each installed
-file on standard output: one line each, in the byte order of their
-paths, `written` or `skipped`, a space and the path, as
-`installed_files` gives it.
+file it wrote or skipped on standard output: one line each, in the byte
+order of their paths, `written` or `skipped`, a space and the path, as
+`installed_files` gives it. A file it could not write is named on
+standard error only.
 
 ```text
 written .claude/agents/proviso-coder.md
@@ -658,10 +659,11 @@ enum: [0, 2]
 
 The command `proviso update`, run in the root of a git repository; it
 takes no argument. It brings the skills and agent definitions that
-`installed_files` names to the binary's version, and names each on
-standard output: one line each, in the byte order of their paths,
-`written`, `updated` or `skipped`, a space and the path, as
-`installed_files` gives it.
+`installed_files` names to the binary's version, and names each it
+wrote, updated or skipped on standard output: one line each, in the
+byte order of their paths, `written`, `updated` or `skipped`, a space
+and the path, as `installed_files` gives it. A file it could not write
+is named on standard error only.
 
 ```text
 updated .claude/agents/proviso-coder.md

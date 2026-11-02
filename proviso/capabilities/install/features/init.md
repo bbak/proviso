@@ -41,7 +41,7 @@ Otherwise `init` writes to "stderr" that <directory> is not the root of a git re
 ```guarded
 When      `init` takes the [installed file] <file>
 Provided  no entry exists at the path of <file>
-Then      `init` writes <file>, with the folders above it that are missing
+Then      `init` writes <file>, with the folders above it that are missing, where it can
   And     `init` writes to "stdout" the line naming <file> as written, where it could write it
 Otherwise `init` leaves that entry as it is, without reading it
   And     `init` writes to "stdout" the line naming <file> as skipped

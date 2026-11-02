@@ -101,7 +101,7 @@ Otherwise `update` writes to "stderr" one line saying that no [skill] or [agent 
 ```guarded
 When      `update` takes the [agent definition] or [skill] <file>
 Provided  no entry exists at the path of <file>
-Then      `update` writes <file> as `init` of its own [Proviso version] writes it, with the folders above it that are missing
+Then      `update` writes <file> as `init` of its own [Proviso version] writes it, with the folders above it that are missing, where it can
   And     `update` writes to "stdout" the line naming <file> as written, where it could write it
 Otherwise → install.update.stamp
 ```
@@ -122,7 +122,7 @@ Provided  <file> can be read as a file whose frontmatter holds exactly one [vers
 Then      `update` leaves <file> as it is
   And     `update` writes to "stdout" the line naming <file> as skipped
   And     `update` writes to "stderr" one line naming <file> and <stamp> as newer than <version>, where <stamp> is not <version>
-Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it
+Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it, where it can
   And     `update` writes to "stdout" the line naming <file> as updated, where it could write it
 ```
 
