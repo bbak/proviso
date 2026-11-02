@@ -39,7 +39,7 @@ func TestRefused(t *testing.T) {
 		{"help", "diff"}, {"--help", "--json"}, {"lint", "--since", "HEAD~1"}, {"diff", "--help"},
 		{"diff", "--since"}, {"pack", "--since", ""}, {"diff", "--since", "--json"},
 		{"diff", "--since", "-x"}, {"diff", "--since", "HEAD~1", "--since", "HEAD~2"},
-		{"diff", "HEAD~1"},
+		{"diff", "HEAD~1"}, {"rehome", "--since", "HEAD~1"}, {"lint", "--write"},
 	}
 	for _, args := range cases {
 		t.Chdir(t.TempDir()) // nothing to check: a refusal reads no tree
@@ -60,19 +60,22 @@ func TestReadArgs(t *testing.T) {
 		cmd    string
 		args   []string
 		asJSON bool
+		write  bool
 		since  string
 	}{
-		{"lint", []string{"--json"}, true, ""},
-		{"lint", []string{"--json", "--json"}, true, ""},
-		{"diff", []string{"--since", "HEAD~1"}, false, "HEAD~1"},
-		{"pack", []string{"--json", "--since", "a1b2c3d"}, true, "a1b2c3d"},
-		{"diff", []string{"--since", "HEAD~1", "--json"}, true, "HEAD~1"},
+		{"lint", []string{"--json"}, true, false, ""},
+		{"lint", []string{"--json", "--json"}, true, false, ""},
+		{"diff", []string{"--since", "HEAD~1"}, false, false, "HEAD~1"},
+		{"pack", []string{"--json", "--since", "a1b2c3d"}, true, false, "a1b2c3d"},
+		{"diff", []string{"--since", "HEAD~1", "--json"}, true, false, "HEAD~1"},
+		{"rehome", []string{"--json", "--write"}, true, true, ""},
+		{"rehome", nil, false, false, ""},
 	}
 	for _, c := range cases {
 		var errOut bytes.Buffer
-		asJSON, since, ok := readArgs(c.cmd, c.cmd, c.args, &errOut)
-		if !ok || asJSON != c.asJSON || since != c.since {
-			t.Errorf("%s %q: %v %q %v (stderr %q)", c.cmd, c.args, asJSON, since, ok, errOut.String())
+		asJSON, write, since, ok := readArgs(c.cmd, c.cmd, c.args, &errOut)
+		if !ok || asJSON != c.asJSON || write != c.write || since != c.since {
+			t.Errorf("%s %q: %v %v %q %v (stderr %q)", c.cmd, c.args, asJSON, write, since, ok, errOut.String())
 		}
 	}
 }

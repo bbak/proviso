@@ -15,8 +15,8 @@ var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop", "0.1.1-dev")
-	if len(got) != 14 {
-		t.Fatalf("%d files, want 14", len(got))
+	if len(got) != 15 {
+		t.Fatalf("%d files, want 15", len(got))
 	}
 	reading := read("agents/reading.md")
 	for i, f := range got {
@@ -66,11 +66,13 @@ func TestFiles(t *testing.T) {
 		}
 		skills++
 		name := strings.TrimSuffix(strings.TrimPrefix(f.Path, ".claude/skills/"), "/SKILL.md")
-		// The skills that edit the spec tree carry the writing guide where
-		// they mark it; proviso-accept never edits it and carries none.
+		// The skills that write decisions into the spec tree carry the
+		// writing guide where they mark it; proviso-accept never edits the
+		// tree and proviso-rehome edits it only through rehome, so they
+		// carry none.
 		kit := read("skills/" + name + "/SKILL.md")
 		want := stamp.Add(kit, "0.1.1-dev")
-		if name != "proviso-accept" {
+		if name != "proviso-accept" && name != "proviso-rehome" {
 			if !strings.Contains(kit, writingMark) {
 				t.Errorf("%s: the kit's skill marks no writing guide", f.Path)
 			}
@@ -83,8 +85,8 @@ func TestFiles(t *testing.T) {
 			t.Errorf("%s not named %s", f.Path, name)
 		}
 	}
-	if skills != 5 {
-		t.Errorf("%d skills, want 5", skills)
+	if skills != 6 {
+		t.Errorf("%d skills, want 6", skills)
 	}
 	if sys := got[len(got)-1]; sys.Path != "proviso/system.md" || !bytes.HasPrefix(sys.Data, []byte("# <a id=\"system\"></a> shop\n")) {
 		t.Errorf("skeleton %s: %q", sys.Path, sys.Data)

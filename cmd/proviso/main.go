@@ -1,8 +1,8 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
 // Model: `proviso init`, `proviso update`, `proviso lint`,
 // `proviso manifest`, `proviso diff`, `proviso impact`, `proviso pack`,
-// `proviso judge`, `proviso verify`, `proviso version` and
-// `proviso help`.
+// `proviso judge`, `proviso verify`, `proviso rehome`, `proviso version`
+// and `proviso help`.
 package main
 
 import (
@@ -25,10 +25,11 @@ import (
 // system.cli.manifest.exit-status, system.cli.diff.exit-status,
 // system.cli.impact.exit-status, system.cli.pack.exit-status,
 // system.cli.judge.exit-status, system.cli.verify.exit-status,
-// system.cli.version.exit-status and cli.cli.help.exit-status.
+// system.cli.rehome.exit-status, system.cli.version.exit-status and
+// cli.cli.help.exit-status.
 const (
 	exitClean   = 0
-	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem
+	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem; a rename would take an identifier
 	exitCantRun = 2
 )
 
@@ -60,7 +61,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return exitCantRun
 	}
 	// cli.help.argument: the arguments are read before anything else.
-	asJSON, since, ok := readArgs(cmd, name, opts, stderr)
+	asJSON, write, since, ok := readArgs(cmd, name, opts, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -82,10 +83,11 @@ func run(args []string, stdout, stderr io.Writer) int {
 	switch cmd {
 	case "lint":
 		return lintRun(t, res, asJSON, stdout, stderr)
-	case "manifest", "diff", "impact", "pack", "judge", "verify":
+	case "manifest", "diff", "impact", "pack", "judge", "verify", "rehome":
 		// baseline.run.lint for manifest, diff and pack, coherence.run.lint
-		// for impact, judge and verify: only where lint finds no error, and
-		// without writing what lint would write.
+		// for impact, judge and verify, upkeep.rehome.lint for rehome: only
+		// where lint finds no error, and without writing what lint would
+		// write.
 		if lint.HasError(res.Findings) {
 			report.Text(stderr, res.Findings)
 			return exitCantRun
@@ -101,6 +103,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 			return judgeRun(t, res, stderr)
 		case "verify":
 			return verifyRun(t, res, asJSON, stdout, stderr)
+		case "rehome":
+			return rehomeRun(t, res, asJSON, write, stdout, stderr)
 		}
 		return impactRun(t, res, asJSON, stdout, stderr)
 	}

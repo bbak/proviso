@@ -37,16 +37,22 @@ Commands the skills run:
   judge               Record the check result on standard input in the
                       coherence file.
   manifest            Record the spec tree as the baseline.
+  rehome [--write] [--json]
+                      Plan the renames that give moved elements the
+                      identifiers of their place; with --write, write
+                      them into the spec tree and the manifest.
 
 Options:
   --json              Write JSON instead of text.
   --since <revision>  Compare with the spec tree at that git revision
                       instead of the baseline.
+  --write             Write the planned renames (rehome only).
 
 Exit statuses:
   0                   The command did what it was asked.
-  1                   lint, diff or verify found what it reports, or
-                      judge refused its input.
+  1                   lint, diff or verify found what it reports,
+                      judge refused its input, or a rename of rehome
+                      would take an identifier.
   2                   The command could not run, or was misused.
 
 Documentation: https://github.com/bbak/proviso/blob/main/docs/commands.md
@@ -68,17 +74,18 @@ var commandOptions = map[string][]string{
 	"pack":     {"--json", "--since"},
 	"judge":    nil,
 	"verify":   {"--json"},
+	"rehome":   {"--write", "--json"},
 	"help":     nil,
 }
 
 // readArgs reads the arguments of the command name, which is cmd as it
 // was given, following cli.help.argument. It writes to stderr one line
 // naming the command and the first argument it does not take.
-func readArgs(cmd, name string, args []string, stderr io.Writer) (asJSON bool, since string, ok bool) {
+func readArgs(cmd, name string, args []string, stderr io.Writer) (asJSON, write bool, since string, ok bool) {
 	takes := commandOptions[cmd]
-	refuse := func(a, why string) (bool, string, bool) {
+	refuse := func(a, why string) (bool, bool, string, bool) {
 		fmt.Fprintf(stderr, "proviso %s: %s %q; %s\n", name, why, a, helpHint)
-		return false, "", false
+		return false, false, "", false
 	}
 	for i := 0; i < len(args); i++ {
 		a := args[i]
@@ -87,6 +94,8 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (asJSON bool, s
 			return refuse(a, "does not take the argument")
 		case a == "--json":
 			asJSON = true
+		case a == "--write":
+			write = true
 		case since != "":
 			return refuse(a, "takes one revision only, so it refuses a second")
 		case i+1 == len(args) || args[i+1] == "" || args[i+1][0] == '-':
@@ -97,7 +106,7 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (asJSON bool, s
 			since = args[i]
 		}
 	}
-	return asJSON, since, true
+	return asJSON, write, since, true
 }
 
 // helpRun writes the help page to stdout.
