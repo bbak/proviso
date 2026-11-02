@@ -42,7 +42,7 @@ Otherwise `init` writes to "stderr" that <directory> is not the root of a git re
 When      `init` takes the [installed file] <file>
 Provided  no entry exists at the path of <file>
 Then      `init` writes <file>, with the folders above it that are missing
-  And     `init` writes to "stdout" the line naming <file> as written
+  And     `init` writes to "stdout" the line naming <file> as written, where it could write it
 Otherwise `init` leaves that entry as it is, without reading it
   And     `init` writes to "stdout" the line naming <file> as skipped
 ```
@@ -54,6 +54,7 @@ Otherwise `init` leaves that entry as it is, without reading it
 | `.proviso/tester.md`, an empty file | no | skipped, unchanged | an empty file is the engineers' too |
 | `proviso/.gitattributes`, a folder of that name | no | skipped, unchanged | any entry counts |
 | `.claude/agents/proviso-tester.md`, beside other agents in `.claude/agents/` | yes | written, the other agents unchanged | only the named path counts |
+| `.claude/agents/proviso-tester.md`, `.claude` being a file | yes | not written, no line on stdout names it | a folder cannot be made below a file |
 
 ## <a id="install.init.skeleton"></a> Rule: The system skeleton starts a tree that lint accepts
 
