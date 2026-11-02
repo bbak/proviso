@@ -149,6 +149,7 @@ Then      `update` exits with `update.exit-status` 0
   And     everything else stays as it was
 Otherwise `update` writes to "stderr" why each of <failed> could not be written
   And     no line on "stdout" names any of <failed>
+  And     each of <failed> is as it was before the run, or absent where no entry existed, so that a later run writes it
   And     the files it wrote stay
   And     `update` exits with `update.exit-status` 2
 ```
@@ -158,3 +159,4 @@ Otherwise `update` writes to "stderr" why each of <failed> could not be written
 | none, every file updated | yes | exit status 0 | |
 | none, every file skipped, some as newer | yes | exit status 0 | a newer file is no failure |
 | `.claude/skills/proviso-build/SKILL.md`, a folder of that name | no | exit status 2, the other files written | |
+| `.claude/skills/proviso-build/SKILL.md`, stamped `0.1.0`, not written completely, as on a full disk | no | exit status 2, the file as it was, stamped `0.1.0` | a part of a file stamped with the new version would be skipped by the next run |

@@ -165,6 +165,7 @@ Then      `init` exits with `init.exit-status` 0
   And     everything else stays as it was
 Otherwise `init` writes to "stderr" why each of <failed> could not be written
   And     no line on "stdout" names any of <failed>
+  And     no entry is left at the path of any of <failed>, so that a later run writes it
   And     the [installed files] it wrote stay
   And     `init` exits with `init.exit-status` 2
 ```
@@ -174,3 +175,4 @@ Otherwise `init` writes to "stderr" why each of <failed> could not be written
 | none, every file written | yes | exit status 0 | |
 | none, every file skipped | yes | exit status 0 | a second run is no failure |
 | every installed file below `.claude/`, `.claude` being a file | no | exit status 2, the other files written | a folder cannot be made below a file |
+| `proviso/system.md`, created but not written completely, as on a full disk | no | exit status 2, nothing left at `proviso/system.md` | a part of a file would be skipped by the next run |
