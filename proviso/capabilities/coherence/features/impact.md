@@ -70,7 +70,7 @@ its own words; the event head does.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `change_effects` opens "events" for a [part] of <element>
+Provided  `change_effects` opens "events" for an [element part] of <element>
 Then      every [rule] with the [event head] of <element>, now or in the [baseline], is found through "events", naming that [event head]
   And     everything else stays as it was
 Otherwise nothing is found through "events" from <element>
@@ -109,7 +109,7 @@ event. It is coarse, and the mirror of scope.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `change_effects` opens "ranges" for a [part] of <element>
+Provided  `change_effects` opens "ranges" for an [element part] of <element>
 Then      every invariant of the feature and the capability of <element>, and every invariant of the system, is found through "ranges", naming the [level] it stands at
   And     everything else stays as it was
 Otherwise nothing is found through "ranges" from <element>
@@ -135,7 +135,7 @@ on wording.
 
 ```guarded
 When      `impact` takes the [touched element] <element>
-Provided  `change_effects` opens "scope" for a [part] of <element>
+Provided  `change_effects` opens "scope" for an [element part] of <element>
 Then      every [rule] and invariant at and below the [level] of <element> is found through "scope", naming <element>
   And     the [candidates] found through "scope" are also listed together under <element>, so they can be judged in bulk
 Otherwise nothing is found through "scope" from <element>

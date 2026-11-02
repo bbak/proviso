@@ -78,7 +78,7 @@ Otherwise `judge` writes to "stderr" that there is no [amendment] to judge
 ```guarded
 When      `judge` takes a [judgement] with the reason <reason> for the [element] <element>
 Provided  <element> is one of the current [candidates]
-Then      `judge` records for <element> that it stays as it is because of <reason>, with the [fingerprints] of its [parts] as they are now
+Then      `judge` records for <element> that it stays as it is because of <reason>, with the [fingerprints] of its [element parts] as they are now
   And     a [judgement] recorded for <element> before is replaced
 Otherwise `judge` writes to "stderr" that <element> is no [candidate], naming it
   And     `judge` exits with `judge.exit-status` 1
@@ -171,7 +171,7 @@ then shows as stale, and the next run checks it.
 ```guarded
 When      `judge` records the input <input> in `coherence_file`
 Provided  <input> closes no [finding]
-Then      every [touched element] is recorded with the [fingerprints] of its [parts] now and in the [baseline]
+Then      every [touched element] is recorded with the [fingerprints] of its [element parts] now and in the [baseline]
   And     the check covers every [touched element] as it stands
 Otherwise every [touched element] keeps what `coherence_file` recorded for it before, and one recorded for none stays so
   And     an edit of a [touched element] since the last check is left for the next check to read

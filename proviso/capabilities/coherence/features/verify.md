@@ -125,7 +125,7 @@ baseline while the branch's own text stays the same.
 
 ```guarded
 When      `verify` compares the [element] <element>, a [touched element] or a judged [candidate], with what `coherence_file` records for it
-Provided  the [fingerprints] of the [parts] of <element> now, and for a [touched element] also in the [baseline], are the ones recorded
+Provided  the [fingerprints] of the [element parts] of <element> now, and for a [touched element] also in the [baseline], are the ones recorded
 Then      nothing is reported as "stale" for <element>
   And     everything else stays as it was
 Otherwise `verify` reports "stale" for <element>

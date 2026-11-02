@@ -346,14 +346,14 @@
 - Status: defined
 - Aliases: symbolic links
 
-## <a id="baseline.part"></a> part
+## <a id="baseline.part"></a> element part
 
 - Definition: A piece of an element with a fingerprint of its own: its
   heading, a field, a section, a step, an Examples row, or everything
   else it holds. `part_kinds` lists them.
 - Contact: Bruno Baketarić
 - Status: defined
-- Aliases: parts
+- Aliases: element parts
 
 ## <a id="baseline.fingerprint"></a> fingerprint
 

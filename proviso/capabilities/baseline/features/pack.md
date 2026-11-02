@@ -176,7 +176,7 @@ that the order is the same on every platform.
 When      `pack` writes the [elements] <elements> under the heading <heading> of `pack_text`
 Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], written as `report` writes paths, compared byte by byte, then by where they stand in that file
   And     removed [elements] follow them, ordered by [identifier], compared byte by byte, since they no longer stand in the [spec tree]
-  And     the [parts] named for each appear in the order `diff` gives them
+  And     the [element parts] named for each appear in the order `diff` gives them
   And     the chains of [identifiers] and the lines not decided named for each appear in the order `diff` gives them
 ```
 

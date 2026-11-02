@@ -21,8 +21,8 @@ hides a change.
 
 ```guarded
 When      `manifest` or `diff` reads the [element] <element>
-Then      <element> has one [part] for each entry of `part_kinds` it holds, with that entry's key
-  And     an [element] below <element> is not a [part] of <element>
+Then      <element> has one [element part] for each entry of `part_kinds` it holds, with that entry's key
+  And     an [element] below <element> is not an [element part] of <element>
 ```
 
 | element | outcome | why |
@@ -36,7 +36,7 @@ Then      <element> has one [part] for each entry of `part_kinds` it holds, with
 ## <a id="baseline.parts.fingerprint"></a> Rule: A fingerprint ignores whitespace and nothing else
 
 ```guarded
-When      `manifest` or `diff` takes the [fingerprint] of the [part] <part>
+When      `manifest` or `diff` takes the [fingerprint] of the [element part] <part>
 Then      the [fingerprint] is the hash of the text of <part>, each run of spaces, tabs and line feeds in it made one space, none left at its start or end
   And     nothing else in the text counts as the same as anything else
 ```
@@ -59,7 +59,7 @@ that repeat each other's values, except where a cell is undecided, so
 only an undecided row can share its values with another.
 
 ```guarded
-When      `manifest` or `diff` keys the row <row> of an [Examples table] as a [part]
+When      `manifest` or `diff` keys the row <row> of an [Examples table] as an [element part]
 Provided  no row above <row> in the same table has the same [placeholder] values
 Then      the key of <row> is the [fingerprint] of its [placeholder] values, each with its column's name
   And     the order of the columns does not change the key
