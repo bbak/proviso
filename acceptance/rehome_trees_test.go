@@ -28,10 +28,12 @@ const (
 //     system's contracts/cli.md;
 //   - billing.x and its rule billing.x.r, a feature in the folder of the
 //     capability cart; the rule cart.add.show hands over to billing.x.r and
-//     holds it in an Examples cell; x.md links to it in prose, by an
-//     inline link and an autolink, and names it in a code span, in plain
-//     text, in a fenced block, in a link reference definition and in an
-//     image; questions.md tags a question with it, and names it in another;
+//     holds it in an Examples cell, as text, in an inline link and in an
+//     autolink; x.md links to it in prose, by an inline link, an autolink
+//     and a link reference definition, and names it in a code span, in
+//     plain text, in a fenced block (as an anchor, a link and a link
+//     reference definition) and in an image; questions.md tags a question
+//     with it, and names it in another;
 //   - the capability pay in the folder capabilities/billing/, with the
 //     features pay.card, at its identifier home, and billing.refund, named
 //     after the folder.
@@ -84,8 +86,8 @@ Otherwise → billing.x.r
 
 | code | provided | outcome | why |
 | --- | --- | --- | --- |
-| billing.x.r | yes | shown | a code may look like an identifier |
-| a-very-long-code | no | handed over | |
+| billing.x.r | yes | shown | a code may look like [an identifier](x.md#billing.x.r) |
+| a-very-long-code | no | handed over | <https://example.com/x.md#billing.x.r> |
 `
 
 const mainXMD = `# <a id="billing.x"></a> Experiments
@@ -109,6 +111,7 @@ and drawn in ![a picture](x.md#billing.x.r).
 
 ´´´text
 <a id="billing.x.r"></a> [the rule](x.md#billing.x.r)
+[rule]: x.md#billing.x.r
 ´´´
 
 ## <a id="billing.x.r"></a> Rule: Under test
@@ -203,7 +206,8 @@ func mainRehomed() tree {
 		edit(xPath, `# <a id="billing.x"></a>`, `# <a id="cart.x"></a>`).
 		edit(xPath, `## <a id="billing.x.r"></a>`, `## <a id="cart.x.r"></a>`).
 		edit(xPath, "see [the rule](x.md#billing.x.r), not", "see [the rule](x.md#cart.x.r), not").
-		edit(xPath, "<https://example.com/x.md#billing.x.r>", "<https://example.com/x.md#cart.x.r>").
+		edit(xPath, "Online at <https://example.com/x.md#billing.x.r>", "Online at <https://example.com/x.md#cart.x.r>").
+		edit(xPath, "[rule]: x.md#billing.x.r\n\n", "[rule]: x.md#cart.x.r\n\n").
 		edit(cartQuestions, "- [billing.x.r] Should", "- [cart.x.r] Should").
 		edit(payRefundPath, `<a id="billing.refund">`, `<a id="pay.refund">`)
 }

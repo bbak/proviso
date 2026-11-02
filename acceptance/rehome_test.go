@@ -541,26 +541,32 @@ func TestUpkeepRehomeReferences(t *testing.T) {
 		holds(t, xPath, "and billing.x.r in\nplain text.")
 		holds(t, cartQuestions, "- Who decides on [billing.x.r] later?")
 	})
+	t.Run("row5 a link reference definition, outside code spans and fenced blocks", func(t *testing.T) {
+		t.Parallel()
+		holds(t, xPath, "\n[rule]: x.md#cart.x.r\n\n")
+		// The link that uses it holds no destination of its own.
+		holds(t, xPath, "as the [defined rule][rule],")
+	})
 	t.Run("derived: an identifier in an Examples cell stays", func(t *testing.T) {
 		t.Parallel()
 		holds(t, featurePath, "| billing.x.r | yes | shown |")
+	})
+	t.Run("derived: an inline link or an autolink in an Examples cell stays", func(t *testing.T) {
+		t.Parallel()
+		holds(t, featurePath, "| a code may look like [an identifier](x.md#billing.x.r) |")
+		holds(t, featurePath, "| handed over | <https://example.com/x.md#billing.x.r> |")
 	})
 	t.Run("derived: an identifier in a code span stays", func(t *testing.T) {
 		t.Parallel()
 		holds(t, xPath, "´billing.x.r´ nor ´[the rule](x.md#billing.x.r)´")
 	})
-	t.Run("derived: an identifier in a link reference definition stays", func(t *testing.T) {
-		t.Parallel()
-		holds(t, xPath, "[rule]: x.md#billing.x.r\n")
-		holds(t, xPath, "as the [defined rule][rule],")
-	})
 	t.Run("derived: an identifier in an image stays", func(t *testing.T) {
 		t.Parallel()
 		holds(t, xPath, "![a picture](x.md#billing.x.r)")
 	})
-	t.Run("derived: an identifier in a fenced block stays", func(t *testing.T) {
+	t.Run("derived: an identifier in a fenced block stays, a link reference definition too", func(t *testing.T) {
 		t.Parallel()
-		holds(t, xPath, "´´´text\n<a id=\"billing.x.r\"></a> [the rule](x.md#billing.x.r)\n´´´")
+		holds(t, xPath, "´´´text\n<a id=\"billing.x.r\"></a> [the rule](x.md#billing.x.r)\n[rule]: x.md#billing.x.r\n´´´")
 	})
 }
 
