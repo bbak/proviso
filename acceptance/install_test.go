@@ -42,6 +42,26 @@ func TestSystemCliInit(t *testing.T) {
 		r := freshRepo(t, "repo", false)
 		misused(t, provisoIn(t, r.dir, r.dir, "", "init", "proviso"), "init", "proviso")
 	})
+	t.Run("derived: a file it could not write is named on standard error only", func(t *testing.T) {
+		t.Parallel()
+		// .claude/agents a file: the agent definitions cannot be written;
+		// the skills are written, proviso/system.md is skipped.
+		r := freshRepo(t, "repo", false)
+		r.set(tree{".claude/agents": "not a folder\n", "proviso/system.md": "# Our own system\n"})
+		o := r.init()
+		o.failed(t, installedFiles[:3]...)
+		want := ""
+		for _, q := range installedFiles[3:] {
+			if q == "proviso/system.md" {
+				want += "skipped " + q + "\n"
+			} else {
+				want += "written " + q + "\n"
+			}
+		}
+		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
+			t.Errorf("system.cli.init: want stdout\n%s\ngot\n%s", want, got)
+		}
+	})
 }
 
 // TestInstallInstalledFiles checks the rows of installed_files that the
@@ -418,6 +438,21 @@ func TestInstallInitExisting(t *testing.T) {
 		o.exits(t, 0)
 		o.says(t, "written", ".claude/agents/proviso-tester.md")
 	})
+	t.Run("row6 .claude/agents/proviso-tester.md, .claude being a file", func(t *testing.T) {
+		t.Parallel()
+		// Not written, and no line on stdout names it; the exit status
+		// is install.init.exit's.
+		r := freshRepo(t, "repo", false)
+		r.set(tree{".claude": "not a folder\n"})
+		r.init().failed(t, ".claude/agents/proviso-tester.md")
+	})
+	t.Run("derived: proviso/system.md, below a folder without write permission", func(t *testing.T) {
+		t.Parallel()
+		r := freshRepo(t, "repo", false)
+		mkdir(t, r.dir, "proviso")
+		lockFolder(t, filepath.Join(r.dir, "proviso"))
+		r.init().writtenOrFailed(t, "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md")
+	})
 	t.Run("derived: a file left alone is not read", func(t *testing.T) {
 		t.Parallel()
 		r := freshRepo(t, "repo", false)
@@ -451,21 +486,21 @@ func TestInstallInitExit(t *testing.T) {
 		o.exits(t, 0)
 		o.all(t, "skipped")
 	})
-	t.Run("row3 both agent definitions, .claude being a file", func(t *testing.T) {
+	t.Run("row3 every installed file below .claude/, .claude being a file", func(t *testing.T) {
 		t.Parallel()
 		r := freshRepo(t, "repo", false)
 		r.set(tree{".claude": "not a folder\n"})
 		o := r.init()
 		o.exits(t, 2)
-		// That no line names a failed file, and that a file not named was
-		// not written, initIn checks; here, that the others were. The
-		// skill lies below .claude too, and cannot be written either.
+		// Each below .claude/ named on stderr only, with no entry left at
+		// its path; the others written, and they stay.
 		below := 0
 		for _, q := range installedFiles {
 			if strings.HasPrefix(q, ".claude/") {
 				below++
 			}
 		}
+		o.failed(t, installedFiles[:below]...)
 		if len(o.lines) != len(installedFiles)-below {
 			t.Errorf("install.init.exit: want the %d files outside .claude named as written, got:\n%s", len(installedFiles)-below, o.stdout)
 		}
@@ -473,6 +508,52 @@ func TestInstallInitExit(t *testing.T) {
 			o.says(t, "written", q)
 		}
 	})
+	t.Run("derived: a later run writes what an earlier one failed to write", func(t *testing.T) {
+		t.Parallel()
+		r := freshRepo(t, "repo", false)
+		r.set(tree{".claude/agents": "not a folder\n"})
+		r.init().failed(t, installedFiles[:3]...)
+		remove(t, r.dir, ".claude/agents")
+		o := r.init()
+		o.exits(t, 0)
+		for i, q := range installedFiles {
+			if i < 3 {
+				o.says(t, "written", q)
+			} else {
+				o.says(t, "skipped", q)
+			}
+		}
+	})
+	t.Run("derived: the stubs, below a folder without write permission", func(t *testing.T) {
+		t.Parallel()
+		// Where the platform lets the permission stop the write, the
+		// stubs are failed and the rest written; the exit status follows.
+		r := freshRepo(t, "repo", false)
+		mkdir(t, r.dir, ".proviso")
+		lockFolder(t, filepath.Join(r.dir, ".proviso"))
+		o := r.init()
+		stubs := []string{".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md"}
+		o.writtenOrFailed(t, stubs...)
+		for _, q := range installedFiles {
+			if !strings.HasPrefix(q, ".proviso/") {
+				o.says(t, "written", q)
+			}
+		}
+		if len(o.lines) == len(installedFiles) {
+			o.exits(t, 0)
+		}
+	})
+}
+
+// lockFolder takes the write permission from the folder dir for the rest of
+// the test. Where the platform ignores it for folders, as Windows does, the
+// folder stays writable.
+func lockFolder(t *testing.T, dir string) {
+	t.Helper()
+	if err := os.Chmod(dir, 0o555); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.Chmod(dir, 0o755) })
 }
 
 // TestInstallInitKeeps checks install.init.keeps, a property checked by

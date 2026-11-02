@@ -215,6 +215,49 @@ func (o initOutcome) all(t *testing.T, status string) {
 	}
 }
 
+// failed asserts, for install.init.exit, that each file could not be
+// written: no line on stdout names it, a line on stderr names it, no entry is
+// left at its path, and the exit status is 2. A path counts as named in the
+// slash form installed_files gives or in the platform's form.
+func (o initOutcome) failed(t *testing.T, files ...string) {
+	t.Helper()
+	o.exits(t, 2)
+	for _, f := range files {
+		for _, l := range o.lines {
+			if l.path == f {
+				t.Errorf("install.init.exit: %s could not be written, but stdout names it as %s", f, l.status)
+			}
+		}
+		if !strings.Contains(o.stderr, f) && !strings.Contains(o.stderr, filepath.FromSlash(f)) {
+			t.Errorf("install.init.exit: %s could not be written, but no line on stderr names it:\n%s", f, o.stderr)
+		}
+		if e, ok := o.after[o.prefix+f]; ok {
+			t.Errorf("install.init.exit: %s could not be written, but an entry is left at its path: %.40q", f, e)
+		}
+	}
+}
+
+// writtenOrFailed asserts, for each file, that the run either wrote it,
+// naming it so, or failed it as failed asserts: which one depends on whether
+// the platform lets a permission taken away stop the write.
+func (o initOutcome) writtenOrFailed(t *testing.T, files ...string) {
+	t.Helper()
+	for _, f := range files {
+		named := false
+		for _, l := range o.lines {
+			if l.path == f {
+				named = true
+				if l.status != "written" {
+					t.Errorf("want %s written or not named, got %s %s", f, l.status, f)
+				}
+			}
+		}
+		if !named {
+			o.failed(t, f)
+		}
+	}
+}
+
 // nothingWritten asserts that the run left every entry below base as it was
 // and wrote nothing to stdout.
 func (o initOutcome) nothingWritten(t *testing.T) {

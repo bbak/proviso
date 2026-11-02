@@ -73,6 +73,29 @@ func TestInstallCliUpdate(t *testing.T) {
 			t.Errorf("install.cli.update: want one line per skill and agent definition, got:\n%s", o.stdout)
 		}
 	})
+	t.Run("derived: a file it could not write is named on standard error only", func(t *testing.T) {
+		t.Parallel()
+		// .claude/agents a file: the agent definitions cannot be written;
+		// the skills, stamped 0.1.0, are updated.
+		tr := installedAs("0.1.0")
+		var agents []string
+		for _, f := range stampedFiles {
+			if strings.HasPrefix(f, ".claude/agents/") {
+				agents = append(agents, f)
+				delete(tr, f)
+			}
+		}
+		tr[".claude/agents"] = "not a folder\n"
+		o := versionRepo(t, tr).update("0.2.0")
+		o.failed(t, agents...)
+		want := ""
+		for _, f := range stampedFiles[len(agents):] {
+			want += "updated " + f + "\n"
+		}
+		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
+			t.Errorf("install.cli.update: want stdout\n%s\ngot\n%s", want, got)
+		}
+	})
 	t.Run("derived: it takes no argument", func(t *testing.T) {
 		t.Parallel()
 		r := initialised(t)
@@ -152,6 +175,52 @@ func TestInstallUpdateExit(t *testing.T) {
 			if f != buildSkill {
 				o.says(t, "written", f)
 			}
+		}
+	})
+	t.Run("derived: a later run writes what an earlier one failed to write", func(t *testing.T) {
+		t.Parallel()
+		tr := installedAs("0.2.0").without(stampedFiles[:3]...)
+		tr[".claude/agents"] = "not a folder\n"
+		r := versionRepo(t, tr)
+		r.update("0.2.0").failed(t, stampedFiles[:3]...)
+		remove(t, r.dir, ".claude/agents")
+		o := r.update("0.2.0")
+		o.exits(t, 0)
+		for i, f := range stampedFiles {
+			if i < 3 {
+				o.says(t, "written", f)
+			} else {
+				o.says(t, "skipped", f)
+			}
+		}
+	})
+	t.Run("derived: a stale file without write permission is updated or left as it was", func(t *testing.T) {
+		t.Parallel()
+		// Where the platform lets the permissions stop the replacement,
+		// the file is failed and stays byte for byte as it was, which
+		// updateIn checks for every file it does not name; otherwise it
+		// is updated, as updateIn checks too.
+		r := versionRepo(t, installedAs("0.2.0").with(buildSkill, stampedAs(buildSkill, "0.1.0")))
+		file := filepath.Join(r.dir, filepath.FromSlash(buildSkill))
+		if err := os.Chmod(file, 0o444); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { os.Chmod(file, 0o644) })
+		lockFolder(t, filepath.Dir(file))
+		o := r.update("0.2.0")
+		named := false
+		for _, l := range o.lines {
+			if l.path == buildSkill {
+				named = true
+				if l.status != "updated" {
+					t.Errorf("install.update.stamp: want %s updated or not named, got %s", buildSkill, l.status)
+				}
+			}
+		}
+		if named {
+			o.exits(t, 0)
+		} else {
+			o.failed(t, buildSkill)
 		}
 	})
 	t.Run("derived: two files fail, the others are updated", func(t *testing.T) {

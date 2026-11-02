@@ -41,8 +41,8 @@ Otherwise `init` writes to "stderr" that <directory> is not the root of a git re
 ```guarded
 When      `init` takes the [installed file] <file>
 Provided  no entry exists at the path of <file>
-Then      `init` writes <file>, with the folders above it that are missing
-  And     `init` writes to "stdout" the line naming <file> as written
+Then      `init` writes <file>, with the folders above it that are missing, where it can
+  And     `init` writes to "stdout" the line naming <file> as written, where it could write it
 Otherwise `init` leaves that entry as it is, without reading it
   And     `init` writes to "stdout" the line naming <file> as skipped
 ```
@@ -54,6 +54,7 @@ Otherwise `init` leaves that entry as it is, without reading it
 | `.proviso/tester.md`, an empty file | no | skipped, unchanged | an empty file is the engineers' too |
 | `proviso/.gitattributes`, a folder of that name | no | skipped, unchanged | any entry counts |
 | `.claude/agents/proviso-tester.md`, beside other agents in `.claude/agents/` | yes | written, the other agents unchanged | only the named path counts |
+| `.claude/agents/proviso-tester.md`, `.claude` being a file | yes | not written, no line on stdout names it | a folder cannot be made below a file |
 
 ## <a id="install.init.skeleton"></a> Rule: The system skeleton starts a tree that lint accepts
 
@@ -164,6 +165,7 @@ Then      `init` exits with `init.exit-status` 0
   And     everything else stays as it was
 Otherwise `init` writes to "stderr" why each of <failed> could not be written
   And     no line on "stdout" names any of <failed>
+  And     no entry is left at the path of any of <failed>, so that a later run writes it
   And     the [installed files] it wrote stay
   And     `init` exits with `init.exit-status` 2
 ```
