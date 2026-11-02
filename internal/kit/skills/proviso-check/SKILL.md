@@ -93,7 +93,14 @@ your own recommendation with the reason. If it repeats a finding
 already closed in this check, as `proviso/.coherence.json` records
 them, say so first: name the earlier finding and how it was closed, and
 recommend closing this one the same way, unless the tree has changed
-since in a way that touches it. The engineer either:
+since in a way that touches it. If the findings of successive runs keep
+finding finer cases of one concern, each edit opening the next edge,
+say so before you bring the next one, and recommend deciding the
+concern once: in one element the rules refer to, such as a term, a
+parameter or an invariant, or, where its cases are ones the system can
+take as given, in a line of the system's Design boundary that names the
+border, which cases stay the system's to decide. Only the engineer
+draws it. The engineer either:
 
 - **resolves it by an edit:** make the edit on the amendment's branch,
   written and committed as the writing guide says, and record
