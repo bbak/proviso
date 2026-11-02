@@ -4,7 +4,6 @@ package acceptance
 
 import (
 	bin "encoding/binary"
-	"errors"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -77,11 +76,16 @@ func makeJunction(link, target string) error {
 	return err
 }
 
-// makeSpecial would make an entry that is neither a regular file, a folder,
-// a symbolic link nor a junction. Windows has none that a test can place in
-// a folder.
+// makeSpecial makes, in the tree written to dir, an entry that is neither a
+// regular file nor a folder, and returns its name: here the capability's
+// glossary.md, a socket in place of the file, a reparse point that is no
+// name surrogate and holds no data (system.regular-file).
 func makeSpecial(dir string) (string, error) {
-	return "", errors.New("Windows has no such entry besides links and junctions, which their own subtests cover")
+	path := filepath.Join(dir, filepath.FromSlash(glossaryPath))
+	if err := os.Remove(path); err != nil {
+		return "", err
+	}
+	return "glossary.md", makeSocket(path)
 }
 
 // makeUnwritable keeps the manifest.sum of the spec root root open without

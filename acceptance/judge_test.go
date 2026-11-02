@@ -605,6 +605,29 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 				t.Parallel()
 				linked(t, func(r *repo) string { return filepath.Join(r.dir, "coherence.json") })
 			})
+			t.Run("derived: a Windows junction to a folder holding a file written by judge", func(t *testing.T) {
+				t.Parallel()
+				// system.symbolic-link: a junction is one.
+				r := amendedRepo(t, iLimitThen)
+				r.judgeAll(nil)
+				w := r.coherence()
+				outside := t.TempDir()
+				if err := os.WriteFile(filepath.Join(outside, coherenceName), []byte(w), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				p := filepath.Join(r.root(), coherenceName)
+				if err := os.Remove(p); err != nil {
+					t.Fatal(err)
+				}
+				if err := makeJunction(p, outside); err != nil {
+					t.Skipf("cannot create a junction here: %v", err)
+				}
+				if cmd == "judge" {
+					refused(t, r.judge(checkResult{}), 2, coherenceName)
+					return
+				}
+				r.verify().stoppedNaming(t, coherenceName)
+			})
 		})
 	}
 }

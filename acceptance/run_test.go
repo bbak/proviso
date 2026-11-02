@@ -224,6 +224,25 @@ func TestLintRunUnreadable(t *testing.T) {
 		}
 		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "shared")
 	})
+	t.Run("derived: shared, a Windows junction to capabilities/ in the tree", func(t *testing.T) {
+		t.Parallel()
+		// Following it would read every feature twice.
+		dir := marked.write(t)
+		if err := makeJunction(filepath.Join(dir, "proviso", "shared"), filepath.Join(dir, "proviso", "capabilities")); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "shared")
+	})
+	t.Run("derived: capabilities/cart/glossary.md, a Windows junction to a folder holding glossary.md", func(t *testing.T) {
+		t.Parallel()
+		// A junction at the path of a file the layout lists counts as a
+		// link, not as a folder hiding the file; either way it is named.
+		dir := marked.without(glossaryPath).with("outside/glossary.md", glossaryMD).write(t)
+		if err := makeJunction(filepath.Join(dir, filepath.FromSlash(glossaryPath)), filepath.Join(dir, "outside")); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "glossary.md")
+	})
 	t.Run("row6 x.md a link to another feature in the tree", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.write(t)
@@ -353,7 +372,7 @@ func TestLintRunUnreadable(t *testing.T) {
 	})
 	// Any other entry that is neither a regular file nor a folder counts as
 	// unreadable, as a link or a junction does.
-	t.Run("derived: neither a regular file nor a folder (a named pipe)", func(t *testing.T) {
+	t.Run("derived: neither a regular file nor a folder (a named pipe, on Windows a socket)", func(t *testing.T) {
 		t.Parallel()
 		dir := marked.with("outside/glossary.md", glossaryMD).write(t)
 		name, err := makeSpecial(dir)
