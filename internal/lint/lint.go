@@ -143,6 +143,11 @@ func (l *linter) checkIdentifier(e *element) {
 	if e.typ == tSystem && e.id != "system" {
 		l.report(Error, "system-identifier", e.pos(), "the system is identified as %q, not \"system\"", e.id)
 	}
+	// lint.identifiers.capability: a capability's identifier prefixes the
+	// elements in it, and a prefix is one segment.
+	if e.typ == tCapability && strings.Contains(e.id, ".") {
+		l.report(Error, "capability-identifier", e.pos(), "the capability is identified as %q, which has more than one segment", e.id)
+	}
 }
 
 func (l *linter) checkSections(e *element) {
