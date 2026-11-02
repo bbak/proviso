@@ -30,15 +30,45 @@ func manifestRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		return exitCantRun
 	}
 	// baseline.manifest.remove: whatever stands under either name goes, a
-	// folder with everything in it, a link without what it points to.
+	// folder with everything in it, a symbolic link without what it points
+	// to.
 	status := exitClean
 	for _, name := range []string{tree.CoherenceName, tree.NoteName} {
-		if err := os.RemoveAll(filepath.Join(t.Root, name)); err != nil {
+		if err := removeEntry(filepath.Join(t.Root, name)); err != nil {
 			fmt.Fprintf(stderr, "proviso manifest: %s is written, but %s cannot be removed: %v\n", path.Join(tree.RootName, tree.ManifestName), path.Join(tree.RootName, name), err)
 			status = exitCantRun
 		}
 	}
 	return status
+}
+
+// removeEntry removes the entry p, if there is one, without following any
+// symbolic link: a folder with everything in it, as far as it can be
+// removed, and anything else, a symbolic link too, as the entry alone. It
+// returns the first error.
+func removeEntry(p string) error {
+	kind, err := tree.Lkind(p)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if kind == tree.Folder {
+		entries, rerr := os.ReadDir(p)
+		for _, e := range entries {
+			if err := removeEntry(filepath.Join(p, e.Name())); err != nil && rerr == nil {
+				rerr = err
+			}
+		}
+		if rerr != nil {
+			return rerr
+		}
+	}
+	if err := os.Remove(p); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		return err
+	}
+	return nil
 }
 
 // replace writes the file name into the folder root. It writes a new file
@@ -231,11 +261,11 @@ func emit(cmd string, stdout, stderr io.Writer, write func(io.Writer) error) boo
 // name at all, and why it could not read one it holds.
 func readRegular(t *tree.Tree, name string) ([]byte, bool, error) {
 	p := filepath.Join(t.Root, name)
-	info, err := os.Lstat(p)
+	kind, err := tree.Lkind(p)
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, false, nil
 	}
-	if err == nil && !info.Mode().IsRegular() {
+	if err == nil && kind != tree.RegularFile {
 		err = errors.New("it is not a regular file")
 	}
 	var data []byte
