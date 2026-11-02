@@ -4,6 +4,7 @@ package tree
 
 import (
 	"errors"
+	"io/fs"
 	"maps"
 	"os"
 	"path"
@@ -113,15 +114,14 @@ func holds(dir, name string, folder bool) bool {
 	if err != nil {
 		return false
 	}
-	return hasEntry(dir, entries, name, folder)
+	return hasEntry(entries, name, folder)
 }
 
-// hasEntry reports whether entries, listed from the folder dir, hold one
-// named exactly name, read in NFC, a folder if folder is true, and
-// anything but a folder if not.
-func hasEntry(dir string, entries []os.DirEntry, name string, folder bool) bool {
+// hasEntry reports whether entries hold one named exactly name, read in
+// NFC, a plain folder if folder is true, and anything but a folder if not.
+func hasEntry(entries []os.DirEntry, name string, folder bool) bool {
 	return slices.ContainsFunc(entries, func(e os.DirEntry) bool {
-		return norm.NFC.String(e.Name()) == name && (KindOf(filepath.Join(dir, e.Name()), e.Type()) == Folder) == folder
+		return norm.NFC.String(e.Name()) == name && (e.Type() == fs.ModeDir) == folder
 	})
 }
 
@@ -215,9 +215,9 @@ func wellNamed(name string) bool {
 }
 
 // Load reads the spec tree at root, every name read in NFC. It never
-// follows a link: a symbolic link, such as a Windows junction, and any
-// other entry that is neither a regular file nor a folder is unreadable
-// wherever it stands.
+// follows a link: a symbolic link, a Windows junction or any other entry
+// that is neither a regular file nor a folder is unreadable wherever it
+// stands.
 func Load(root string) *Tree {
 	t := &Tree{Root: root}
 	t.walk("", t.Root)
@@ -229,7 +229,7 @@ func Load(root string) *Tree {
 func (t *Tree) walk(dir, disk string) {
 	entries, err := os.ReadDir(disk)
 	if path.Dir(dir) == "capabilities" {
-		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(disk, entries, "capability.md", false)})
+		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(entries, "capability.md", false)})
 	}
 	if err != nil {
 		t.Unreadable = append(t.Unreadable, dirName(dir))
@@ -251,17 +251,16 @@ func (t *Tree) walk(dir, disk string) {
 			}
 			seen[name] = 0
 		}
-		full := filepath.Join(disk, e.Name())
-		kind := KindOf(full, e.Type())
+		mode := e.Type()
 		switch {
-		case kind == Folder && isListed(rel):
+		case mode == fs.ModeDir && isListed(rel):
 			// lint.run.unreadable: a folder at the path of a file the
 			// layout lists hides that file; nothing in it is read.
 			t.Unreadable = append(t.Unreadable, rel)
-		case kind == Folder:
-			t.walk(rel, full)
-		case kind == RegularFile:
-			t.read(rel, full)
+		case mode == fs.ModeDir:
+			t.walk(rel, filepath.Join(disk, e.Name()))
+		case mode.IsRegular():
+			t.read(rel, filepath.Join(disk, e.Name()))
 		default:
 			t.Unreadable = append(t.Unreadable, rel)
 		}

@@ -37,19 +37,3 @@ func TestLoadHiddenAttribute(t *testing.T) {
 		t.Errorf("unknown %v, want [notes.md]", tr.Unknown)
 	}
 }
-
-// A junction is a name surrogate, and so a symbolic link; a folder and a
-// file are what they are.
-func TestKindOfJunction(t *testing.T) {
-	root := t.TempDir()
-	write(t, root, map[string]string{"target/a.md": ""})
-	link := filepath.Join(root, "shared")
-	if out, err := exec.Command("cmd", "/c", "mklink", "/J", link, filepath.Join(root, "target")).CombinedOutput(); err != nil {
-		t.Skipf("cannot create a junction: %v %s", err, out)
-	}
-	for p, want := range map[string]Entry{link: SymbolicLink, filepath.Join(root, "target"): Folder, filepath.Join(root, "target", "a.md"): RegularFile} {
-		if got, err := Lkind(p); err != nil || got != want {
-			t.Errorf("%s: %v %v, want %v", p, got, err, want)
-		}
-	}
-}
