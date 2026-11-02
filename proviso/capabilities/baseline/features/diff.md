@@ -214,13 +214,15 @@ records, so the revision that last changed it holds the baseline's text.
 A merge that brought in a newer manifest changed nothing of its own:
 the revision that wrote that manifest is the one that counts. If the
 manifest in the tree differs from the one in that revision, the former
-text found there would not belong to the baseline.
+text found there would not belong to the baseline. Only what the command
+reads is checked against the manifest: a difference anywhere else
+changes nothing it writes.
 
 ```guarded
 When      `diff`, `impact` or `pack`, run without `diff.since` or `pack.since`, needs the [former text] of a removed [element] or of a [part], in the git history <history>
 Provided  <history> names the newest revision that changed `manifest_file`, not counting a merge that took it unchanged from one of its parents
   And     `manifest_file` in that revision is the same as in the [spec root]
-  And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records
+  And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records for each [element] and [part] whose [former text] the command reads
 Then      the command reads the [former text] from the [spec tree] in that revision
   And     the command names that revision in what it writes
 Otherwise the command writes to "stderr" why it could not read the [former text]
@@ -235,7 +237,8 @@ Otherwise the command writes to "stderr" why it could not read the [former text]
 | none: the spec root is in no git repository | no (a revision) | exit status 2 | |
 | the manifest written but never committed | no (a revision) | exit status 2 | |
 | the manifest committed in `a1b2`, written again since and not committed | no (the same manifest) | exit status 2 | the text in `a1b2` is not the baseline's |
-| the manifest committed in `a1b2` together with a tree it does not record | no (the recorded fingerprints) | exit status 2 | the former text in `a1b2` is not the baseline's either |
+| the manifest committed in `a1b2` together with a tree that differs from it in a part whose former text is read | no (the recorded fingerprints) | exit status 2 | the former text in `a1b2` is not the baseline's either |
+| the manifest committed in `a1b2` together with a tree that differs from it only in parts whose former text is not read | yes | former text from `a1b2` | the text read is the baseline's |
 
 ## <a id="baseline.diff.output"></a> Rule: The element diff is written as text or as JSON
 
