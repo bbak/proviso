@@ -193,7 +193,7 @@ not followed: what it points to may lie outside the branch.
 
 ```guarded
 When      `judge` or `verify` reads the `coherence_file` <file>
-Provided  <file> is a regular file that holds what `judge` writes
+Provided  <file> is a [regular file] that holds what `judge` writes
 Then      the command takes what <file> records
   And     the command goes on
 Otherwise the command writes to "stderr" that `coherence_file` cannot be read

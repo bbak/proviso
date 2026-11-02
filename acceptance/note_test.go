@@ -268,6 +268,20 @@ func TestBaselinePackNoteUnreadable(t *testing.T) {
 		// The target's name starts with a dot, so lint skips it.
 		linked(t, func(r *repo) string { return filepath.Join(r.root(), ".note.md") })
 	})
+	t.Run(`derived: a Windows junction to a folder holding a file "- refunds"`, func(t *testing.T) {
+		t.Parallel()
+		// system.symbolic-link: a junction is one.
+		r, _ := accepted(t, packTree())
+		r.set(amended(packTree(), pCapThen))
+		outside := t.TempDir()
+		if err := os.WriteFile(filepath.Join(outside, "item.md"), []byte("- refunds\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if err := makeJunction(filepath.Join(r.root(), noteName), outside); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		r.pack().stoppedNaming(t, noteName)
+	})
 	t.Run("derived: an empty folder named .amendment.md", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, packTree())
