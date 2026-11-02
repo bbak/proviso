@@ -5,7 +5,7 @@
 ## Goal
 
 Rehoming gives every element whose identifier names another place than
-its home an identifier that names its home, renames every reference to
+its identifier home an identifier that names it, renames every reference to
 it that the notation marks, and writes the manifest of the rewritten
 tree, so that the tree says the same as before under identifiers that
 say where their elements stand. It shows what it would rename before it
@@ -76,14 +76,14 @@ Otherwise `rehome` writes to "stderr" which of these does not hold
 | `repo/proviso/`, holding `.coherence.json` | no (neither file) | exit status 2 | a check left over |
 | `repo/proviso/`, holding `.amendment.md` | no (neither file) | exit status 2 | an amendment note left over |
 
-## <a id="upkeep.rehome.home"></a> Rule: An identifier that names another place is renamed to name its home
+## <a id="upkeep.rehome.home"></a> Rule: An identifier that names another place is renamed to name its identifier home
 
 ```guarded
 When      `rehome` plans the renames of the [spec tree], and reads the [identifier] <id> of the [element] <element>
-Provided  the first segment of <id>, up to its first ".", is the [home] of <element>
+Provided  the first segment of <id>, up to its first ".", is the [identifier home] of <element>
 Then      <id> stays as it is
   And     no rename is planned for <element>
-Otherwise `rehome` plans to rename <id> to the [home] of <element>, followed by what follows the first segment of <id>
+Otherwise `rehome` plans to rename <id> to the [identifier home] of <element>, followed by what follows the first segment of <id>
   And     every place `rehome_references` lists that holds <id> is planned to hold the new [identifier]
 ```
 
@@ -93,9 +93,9 @@ Otherwise `rehome` plans to rename <id> to the [home] of <element>, followed by 
 | `baseline.impact.events` | a rule of the capability `coherence` | no | renamed to `coherence.impact.events` | only the first segment names a place |
 | `baseline.part` | a glossary entry of the system | no | renamed to `system.part` | |
 | `lint.cli.lint.exit-status` | a member in `contracts/cli.md` of the system | no | renamed to `system.cli.lint.exit-status` | |
-| `coherence` | the capability `coherence` | yes | stays | a capability is its own home |
+| `coherence` | the capability `coherence` | yes | stays | a capability is its own identifier home |
 | `system` | the system | yes | stays | |
-| `checks.run`, in the folder `capabilities/coherence/`, whose `capability.md` is identified as `checks` | a feature of that capability | yes | stays | the home is the capability's identifier, not its folder's name |
+| `checks.run`, in the folder `capabilities/coherence/`, whose `capability.md` is identified as `checks` | a feature of that capability | yes | stays | the identifier home is the capability's identifier, not its folder's name |
 
 ## <a id="upkeep.rehome.collision"></a> Rule: A rename that would take an identifier refuses the run
 
@@ -186,7 +186,7 @@ Otherwise `rehome` exits with `rehome.exit-status` 1
 | collisions | provided | outcome | why |
 | --- | --- | --- | --- |
 | none | yes | 0 | |
-| none, and no renames | yes | 0 | a tree whose identifiers all name their home |
+| none, and no renames | yes | 0 | a tree whose identifiers all name their identifier home |
 | one | no | 1 | |
 
 ## <a id="upkeep.rehome.writes"></a> Invariant: Rehome changes nothing but the renamed identifiers and the manifest

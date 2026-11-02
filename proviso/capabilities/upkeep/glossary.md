@@ -1,6 +1,6 @@
 # Glossary
 
-## <a id="upkeep.home"></a> home
+## <a id="upkeep.identifier-home"></a> identifier home
 
 - Definition: Where an element stands, as the first segment of an
   identifier names it: the identifier of the capability whose folder
