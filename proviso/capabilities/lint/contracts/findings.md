@@ -23,6 +23,10 @@ An identifier that another element has too.
 
 A system whose identifier is not `system`.
 
+### <a id="lint.findings.capability-identifier"></a> capability-identifier
+
+A capability whose identifier has more than one segment.
+
 ### <a id="lint.findings.file-unknown"></a> file-unknown
 
 A file in the spec tree that the layout does not list.

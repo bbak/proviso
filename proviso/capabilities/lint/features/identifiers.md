@@ -116,3 +116,26 @@ Otherwise lint reports the [error] `findings.system-identifier` at <id>
 | `system` | yes | nothing reported | |
 | `proviso` | no | error | the system's name instead of the reserved identifier |
 | `system.root` | no | error | a prefix of `system` is not `system` |
+
+## <a id="lint.identifiers.capability"></a> Rule: A capability is identified by one segment
+
+### Rationale
+
+A capability's identifier prefixes the elements in it, and a prefix is
+the first segment of an identifier, so a capability identified by
+several segments could never prefix its own elements.
+
+```guarded
+When      lint reads the [identifier] <id> of a capability
+Provided  <id> is a single segment, holding no "."
+Then      lint reports nothing about the segments of <id>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.capability-identifier` at <id>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| `coherence` | yes | nothing reported | |
+| `cash.withdrawal` | no | error | two segments |
+| `system` | yes | nothing reported | uniqueness reports it, as the system's identifier |
