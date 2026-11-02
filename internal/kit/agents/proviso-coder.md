@@ -54,6 +54,9 @@ learnt in earlier rounds of it.
 - Match the contracts exactly: names, formats, exit statuses and every
   output a contract fixes. Output a contract leaves free should still be
   useful to its reader.
+- Build what the pack decides. Add no handling of your own for a case
+  no rule names, such as a failure of what the system's Design boundary
+  takes as given: list the case as a decision the pack did not make.
 - Write unit tests beside the code as design aids; they are yours, and
   do not count at acceptance.
 - Where the system can check its own specification, run it on the

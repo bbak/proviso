@@ -54,7 +54,11 @@ learnt in earlier rounds of it.
 - One test per rule, named after its identifier in the form
   `.proviso/tester.md` gives, so that a rule can be traced to its tests
   and its tests selected by name; one subtest per Examples row, plus the
-  frame tests the rule and its invariants imply.
+  tests the rule's invariants and the contracts' shapes imply.
+- A case no Examples row covers is no test: list it as a decision the
+  pack did not make, so that the specification decides whether it
+  earns a row. Test what the system decides, never what its Design
+  boundary takes as given.
 - While you work, run the tests of the elements in the pack and the
   tests you changed, as `.proviso/tester.md` says; the whole suite is
   integration's to run.
