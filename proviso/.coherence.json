@@ -1,0 +1,255 @@
+{
+  "touched": [
+    {
+      "id": "baseline.judge.unreadable",
+      "now": {
+        "heading": "h1:7d531c5dfb9d585df212d0f89f11a2f5938576714641ce6581ea9bda37727c34",
+        "row h1:66fb29dc3ead38412b33ed4d891438b1d844dbc5c0303ae7707ad2ea73895dab": "h1:1166933176b1e7ad23ba6a93eb045759efd798e8336afec170ecb5262ef49a70",
+        "row h1:84dcc4496945be80051e363981f90347eab89e6a003df4cd415dfd431ef541be": "h1:697cdef7229aedb68f1e787825718c998b5ce23a4f98f66668307c3649061bde",
+        "row h1:88e3ce3eda6ed6e24a650c2e3a06d9e69a1c2c1237c57b910b68ddc3d8649743": "h1:0c5ede0c227694c18e543faa8e440c4698dd3b53193671ef972516e9d24671da",
+        "row h1:949911acb373e997dbc41fb395689ce74f88a5aac76481ee40180e3aec326ebe": "h1:11662d2d68ac57da0884272b5da9e108838cf0564ce4a1e287211e27bde8f44f",
+        "row h1:94bf7b3b2a33dc7a9f3726a3ce323f52364079c1dce34a4792092483978b7fb5": "h1:6cd4f1e60958506ce9f271256da5200645f5e828e9e9908176198e5ea3c3a3b7",
+        "row h1:bfb02e7f8db4733dbb11299ba53febd4e70c0bf16b197c21287c50f07c309c07": "h1:45bd9da40ea39a9d10dccf773977b4f6db785ca47c33343cba55f11e63766774",
+        "section Rationale": "h1:9dc6b867e6281789e2966bbb5c6656eed109abb81f95f7758539199582cfe21e",
+        "step Otherwise": "h1:15247df68bc082c95bf834c204259c7f1f0e8a70468628b0999564cad88169e6",
+        "step Provided": "h1:18e0f690e0bf90174dce9327c380cbba9f7f7bcce88b02f49aeb937fe43bb6d8",
+        "step Then": "h1:8de2be295857ba157b4d3e1c51ea3b2e2f9ece940c2139cf08e36e30576f456d",
+        "step When": "h1:4f447f43777a4478a7e6240a1a9bccf5cc41a1a9f83407f3c612d74b553f42d8"
+      },
+      "baseline": {
+        "heading": "h1:7d531c5dfb9d585df212d0f89f11a2f5938576714641ce6581ea9bda37727c34",
+        "row h1:66fb29dc3ead38412b33ed4d891438b1d844dbc5c0303ae7707ad2ea73895dab": "h1:1166933176b1e7ad23ba6a93eb045759efd798e8336afec170ecb5262ef49a70",
+        "row h1:84dcc4496945be80051e363981f90347eab89e6a003df4cd415dfd431ef541be": "h1:697cdef7229aedb68f1e787825718c998b5ce23a4f98f66668307c3649061bde",
+        "row h1:88e3ce3eda6ed6e24a650c2e3a06d9e69a1c2c1237c57b910b68ddc3d8649743": "h1:0c5ede0c227694c18e543faa8e440c4698dd3b53193671ef972516e9d24671da",
+        "row h1:949911acb373e997dbc41fb395689ce74f88a5aac76481ee40180e3aec326ebe": "h1:11662d2d68ac57da0884272b5da9e108838cf0564ce4a1e287211e27bde8f44f",
+        "row h1:94bf7b3b2a33dc7a9f3726a3ce323f52364079c1dce34a4792092483978b7fb5": "h1:6cd4f1e60958506ce9f271256da5200645f5e828e9e9908176198e5ea3c3a3b7",
+        "row h1:bfb02e7f8db4733dbb11299ba53febd4e70c0bf16b197c21287c50f07c309c07": "h1:45bd9da40ea39a9d10dccf773977b4f6db785ca47c33343cba55f11e63766774",
+        "section Rationale": "h1:9dc6b867e6281789e2966bbb5c6656eed109abb81f95f7758539199582cfe21e",
+        "step Otherwise": "h1:15247df68bc082c95bf834c204259c7f1f0e8a70468628b0999564cad88169e6",
+        "step Provided": "h1:e8e1f21b7c2c381e24fdcab70fcf226d13fcd60b4c23de4e1869bcdbcfc21487",
+        "step Then": "h1:8de2be295857ba157b4d3e1c51ea3b2e2f9ece940c2139cf08e36e30576f456d",
+        "step When": "h1:4f447f43777a4478a7e6240a1a9bccf5cc41a1a9f83407f3c612d74b553f42d8"
+      }
+    },
+    {
+      "id": "baseline.manifest.remove",
+      "now": {
+        "heading": "h1:38a789133a8aec5a27f821586d1b6af053fa2e0673da8b49c18f21d08b5463a3",
+        "row h1:0350727c0763451c75bec9931a08b7f8b3b36d559a9b6176b205b519910af831": "h1:d173bfa131aa9a4aa4fcc074fba5e807d0cfb87143c2c7c175b11dc1484cf693",
+        "row h1:204975d82f48fb14070139c87f56f77f335c81e7a85f437b3d31c967f8821f5a": "h1:d89e92f8ef7cfb7eb1305c2c64b54841f1994b004a9d1cbede02b5a4b38dfc84",
+        "row h1:92f4c44914c9fa069f5a2f127c8a09370f472c61ee73e7d5adf9b52f6746cbb6": "h1:6d3b9a5da877bc84f963699555e46fc8fec29dcb5affc338c139fda3c8cf9730",
+        "row h1:a8600d78c7e2f5eba78bc9817bbc2f82cf706672c6e06994a55302a7b2b43a24": "h1:b0b9a8ddcb2081e0b58b66672193e1cbb09a05e02261ae4791a4a33c7c968908",
+        "row h1:aa674fb6bc6b6ad11ec0a14e4051e5ec5a6b0bbb08deaaacf49be76837877f77": "h1:c7b24f047b48ed2cb28b2f193a426bd25fc998c387a9bead3e064ddbf83a3a13",
+        "row h1:b42e1d9b7aba0a76db0e532457f34e044c72f0fa6853b07580b13ae07e15bca8": "h1:48eae35c9ac878b345558ca1fa3a6ed73da7c626c9bc3d6c276e855c3e4cdbd1",
+        "row h1:db39651dba8a42129465c5bcb04e5e1f6c258640183d1036b1e3cbdd9acde289": "h1:bb376a33531163772689e3e313ef5bd3fbf92f8e7b3d403a9c3e16409d5f4209",
+        "row h1:ee30afc147c15aaec090530ac275fde61e6e7c91ccd3ecd7919ce92bdfff29b3": "h1:1a8c8707502fae32e69f977607bc3419012fb888e4425e9c44d89294848325e8",
+        "section Rationale": "h1:9e74ac357534b119c57a580899b57915df0f3c541528cd0a168af0f07d88b01c",
+        "step Otherwise": "h1:43e371cbd7000fe61049bee39824fdd19d2662f33b787df512f6e83006b40c70",
+        "step Provided": "h1:dfe06f8633d34674a69c2d3a41851b7379a51ef1df8f9583ebcd0a1550cdeca4",
+        "step Then": "h1:d180e8f20ceec0a89c93fe1f3dd3eb9dbf9987d5d60a710c7cf81a257c36d63d",
+        "step When": "h1:2a0a2d34357980357548f846b8b428c73126a07126803c11d9f20333c45a8f67"
+      },
+      "baseline": {
+        "heading": "h1:38a789133a8aec5a27f821586d1b6af053fa2e0673da8b49c18f21d08b5463a3",
+        "row h1:0350727c0763451c75bec9931a08b7f8b3b36d559a9b6176b205b519910af831": "h1:d173bfa131aa9a4aa4fcc074fba5e807d0cfb87143c2c7c175b11dc1484cf693",
+        "row h1:204975d82f48fb14070139c87f56f77f335c81e7a85f437b3d31c967f8821f5a": "h1:d89e92f8ef7cfb7eb1305c2c64b54841f1994b004a9d1cbede02b5a4b38dfc84",
+        "row h1:92f4c44914c9fa069f5a2f127c8a09370f472c61ee73e7d5adf9b52f6746cbb6": "h1:6d3b9a5da877bc84f963699555e46fc8fec29dcb5affc338c139fda3c8cf9730",
+        "row h1:aa674fb6bc6b6ad11ec0a14e4051e5ec5a6b0bbb08deaaacf49be76837877f77": "h1:c7b24f047b48ed2cb28b2f193a426bd25fc998c387a9bead3e064ddbf83a3a13",
+        "row h1:b42e1d9b7aba0a76db0e532457f34e044c72f0fa6853b07580b13ae07e15bca8": "h1:48eae35c9ac878b345558ca1fa3a6ed73da7c626c9bc3d6c276e855c3e4cdbd1",
+        "row h1:ee30afc147c15aaec090530ac275fde61e6e7c91ccd3ecd7919ce92bdfff29b3": "h1:1a8c8707502fae32e69f977607bc3419012fb888e4425e9c44d89294848325e8",
+        "section Rationale": "h1:ad37e2088f4a9744294dd2280339dc1cead1754587b3a04707a445bc5ae613d0",
+        "step Otherwise": "h1:8387559d9df33052d4051754ac5435d2100eed1e2751e79cdd4f385b0bddc189",
+        "step Provided": "h1:dfe06f8633d34674a69c2d3a41851b7379a51ef1df8f9583ebcd0a1550cdeca4",
+        "step Then": "h1:1c08ad0a190683c82471925e2f75ad2e10a472e161c356cc4f50a76bdfe8d8ae",
+        "step When": "h1:2a0a2d34357980357548f846b8b428c73126a07126803c11d9f20333c45a8f67"
+      }
+    },
+    {
+      "id": "baseline.pack.note-unreadable",
+      "now": {
+        "heading": "h1:e2fd90e97b3eeb7f3e346e158a460f2fd8f0ec270785a9eda27a1f3c2aa05dd0",
+        "row h1:0ce268a8a3ff73f793747e4ce37b3e897f6a345aa594ff3c1ca8cc08284be84d": "h1:2504a9d0d8f680d17502f2bf39a7638ebce01726446355f6a201cec78fc076d9",
+        "row h1:1a54a58e8f7c6d7517fe68221847f99fb79f428460961c8337aca27d6c83203b": "h1:34a664c75e79cfdcf565dec43e75583b97fedd3f2fb2f67408dfd934e003881c",
+        "row h1:af6534c381d79285c59aeca3c42b9e09564afcdbd53a90b10abce41e69d315ba": "h1:aa8f1afc7e6d4762ab4f120ca73701791c14358f242d6e6dae4a0215293f6534",
+        "row h1:b9ccc93f324da2bc3e38c7d405843f939f0ed3f71a19729dbb23acd65463c7d2": "h1:b839f24cec039c30e8347914433d97c6b423e9165dead1b0988615c90ebeebb1",
+        "section Rationale": "h1:1dc6dd2355035b4fcbc04d3b665f1879c09a37a4dadd66724005e50f09d7d3f4",
+        "step Otherwise": "h1:b92d8f79bcd0c4dfaa8b8b2de39e7eabc68f534aae6aeea8c5aa01951fd5735c",
+        "step Provided": "h1:d476ea7d048535d2431e4f5b6c25d7131c4368559784c361286776f7a5944931",
+        "step Then": "h1:f78e5b7f262cbc0333a192a655201c7d04e97ff234eb26f2a3ee5ad6e06682c5",
+        "step When": "h1:cc125c0af3badf42c8a6848e80f903b9c9cd5ec2e40ab35a568df44701af4ed9"
+      },
+      "baseline": {
+        "heading": "h1:e2fd90e97b3eeb7f3e346e158a460f2fd8f0ec270785a9eda27a1f3c2aa05dd0",
+        "row h1:0ce268a8a3ff73f793747e4ce37b3e897f6a345aa594ff3c1ca8cc08284be84d": "h1:2504a9d0d8f680d17502f2bf39a7638ebce01726446355f6a201cec78fc076d9",
+        "row h1:1a54a58e8f7c6d7517fe68221847f99fb79f428460961c8337aca27d6c83203b": "h1:34a664c75e79cfdcf565dec43e75583b97fedd3f2fb2f67408dfd934e003881c",
+        "row h1:af6534c381d79285c59aeca3c42b9e09564afcdbd53a90b10abce41e69d315ba": "h1:aa8f1afc7e6d4762ab4f120ca73701791c14358f242d6e6dae4a0215293f6534",
+        "row h1:b9ccc93f324da2bc3e38c7d405843f939f0ed3f71a19729dbb23acd65463c7d2": "h1:b839f24cec039c30e8347914433d97c6b423e9165dead1b0988615c90ebeebb1",
+        "section Rationale": "h1:1dc6dd2355035b4fcbc04d3b665f1879c09a37a4dadd66724005e50f09d7d3f4",
+        "step Otherwise": "h1:b92d8f79bcd0c4dfaa8b8b2de39e7eabc68f534aae6aeea8c5aa01951fd5735c",
+        "step Provided": "h1:f222a5735abbb077f30877aa8187f0dec82af0a660a8d5a8e2e1f9785f9140a1",
+        "step Then": "h1:f78e5b7f262cbc0333a192a655201c7d04e97ff234eb26f2a3ee5ad6e06682c5",
+        "step When": "h1:cc125c0af3badf42c8a6848e80f903b9c9cd5ec2e40ab35a568df44701af4ed9"
+      }
+    },
+    {
+      "id": "lint.run.unreadable",
+      "now": {
+        "heading": "h1:30a64cda4d5ef7334e3a2bfb4e5d5983956dd6e9ec7e32c444dcabb13ab36174",
+        "row h1:02e74dfb7a253f2c5e3c1350760654821f9ac56afb1623aafbd31de316e4ad93": "h1:5b8e613f6e090f94b62c5df958171148ceca8f8d8fde577230c68fa0769b9d6e",
+        "row h1:08ea045c3eecf1548abf87321da43da5fd579195416cee4d314f6921aff967ef": "h1:85b2e465b1b9950b615c5919d2b2b0f599ad01b0de60c79778beb66ee35f5b84",
+        "row h1:16a9508a19c1d84cd0d798759ddb0f1201810bb4ee9210e3e106480d3a21fdff": "h1:75fee696cceb0851d274937770bd577323cb0a87bbc5aa6b9826bfdabe169ad6",
+        "row h1:226454a77e269cb87940bc0a20ec1da3092104abfa05fd8193484b3252eb91ea": "h1:8527a3406af9f742a6724e97292e800538dc1fa9a25eafec525972627db52b5a",
+        "row h1:2cf4d96ee827dee1a5a94b592a8307384eebf3d649f631019e0dce814358be94": "h1:4a9fab772bc803a4dfcb4cc4f83ff34324a685722752be2cd5ede4c2ff48da53",
+        "row h1:3e36fc98e91eaeb91b3fdace7952e2d95dd3f6a67f5ad88bc0eeb550356cc130": "h1:6a317857dbd78e88a0ca54235a5b4005cff524dcd008b2e4a5e18cba87dba513",
+        "row h1:5188511be4bb2d01382c6ef6176714a2d33f39b383ecd3215b4257dbd7580c3c": "h1:d0d9a9c3599e945ffcd84a2bbfaae377423b2fc5057a1cad353572693499a1d0",
+        "row h1:5508c40609d7831ca7e5161c89f8ff3df492f58f7ee8f31765792c3c41f9661b": "h1:211a92296d8012c46221893f97b7a65889c0dd7dbcd791b50f3373c3f081bb74",
+        "row h1:5ffa17a870d56d81385df47645a321154c1ba8462120b3c1452cc39da1761529": "h1:e5f87215c44c0315e86fdf1be239176bd021aa6ea925abb74e96482800b22a4f",
+        "row h1:824debb5051884dea7e85152e977fb8b212e64df09dd6393551960e93a7fac8f": "h1:165eb71f30429ee6945212963a9d6a262f98a7b318cab7ba137e51954eaa7656",
+        "row h1:83678a0cc1e0dd9e03bf5299b06b5a850becdb923e46f89af3643422097e31b4": "h1:bb355a9f7de8a97e61c1a423737cddf607c02efb6a9f8061ac984ee3f6a53ad3",
+        "row h1:d0dd56aa974a7c2df98b7175433767cbd65831972aaf5544105bc5002c406483": "h1:cb872d0e468ff8e319b26153aa1b15f0b86fd87e324f1854921ec39add12cb42",
+        "row h1:d8ae768a65f8c6e79c7ad740d30d9e3885f1e5b13959f5595c35c1489d9f470d": "h1:f543a0728ddddca6f06199dd17e1c68b45c2f45bc8ab7efb2f2a83459ec02eea",
+        "row h1:ea5994263b887b704708c86f1384c1dc38ac07bdeead9a2c6cbaef7a29c17c20": "h1:db26543711258b2191fd5012698e8ad53561709fcf589bb1c7a7c1352e40ff29",
+        "section Rationale": "h1:2e8cda1d4f4f5aef03e83a34e191c061195505531f0eae643899c65408608fa9",
+        "step Given": "h1:3bea57c20e8b9221c4a6824250d812ff9d0d3f06849363669481068acf3aa82d",
+        "step Otherwise": "h1:3bdafa3468b63b86e4c4ab951ece3d37fd63b371e9b812029fb89fa37acb5d43",
+        "step Provided": "h1:f56e0d02a9e9a1664e61d1e3d681d295e2fd229960c19b8d3f0af44317ec9c36",
+        "step Then": "h1:3253993afbbfa85a063240217dcc3616e6db0af3def2d1ee9298b24fae4a9610",
+        "step When": "h1:bb8ea49f5468e1b0a81cd84e5efcc7151c7f2851686d9e36fe384016d0129d47"
+      },
+      "baseline": {
+        "heading": "h1:30a64cda4d5ef7334e3a2bfb4e5d5983956dd6e9ec7e32c444dcabb13ab36174",
+        "row h1:02e74dfb7a253f2c5e3c1350760654821f9ac56afb1623aafbd31de316e4ad93": "h1:5b8e613f6e090f94b62c5df958171148ceca8f8d8fde577230c68fa0769b9d6e",
+        "row h1:08ea045c3eecf1548abf87321da43da5fd579195416cee4d314f6921aff967ef": "h1:85b2e465b1b9950b615c5919d2b2b0f599ad01b0de60c79778beb66ee35f5b84",
+        "row h1:16a9508a19c1d84cd0d798759ddb0f1201810bb4ee9210e3e106480d3a21fdff": "h1:75fee696cceb0851d274937770bd577323cb0a87bbc5aa6b9826bfdabe169ad6",
+        "row h1:226454a77e269cb87940bc0a20ec1da3092104abfa05fd8193484b3252eb91ea": "h1:8527a3406af9f742a6724e97292e800538dc1fa9a25eafec525972627db52b5a",
+        "row h1:2cf4d96ee827dee1a5a94b592a8307384eebf3d649f631019e0dce814358be94": "h1:4a9fab772bc803a4dfcb4cc4f83ff34324a685722752be2cd5ede4c2ff48da53",
+        "row h1:3e36fc98e91eaeb91b3fdace7952e2d95dd3f6a67f5ad88bc0eeb550356cc130": "h1:40c627ae62599e3aa9b9f818c06e126857663ee83a59ee92a66c47095271ec37",
+        "row h1:5188511be4bb2d01382c6ef6176714a2d33f39b383ecd3215b4257dbd7580c3c": "h1:d0d9a9c3599e945ffcd84a2bbfaae377423b2fc5057a1cad353572693499a1d0",
+        "row h1:5508c40609d7831ca7e5161c89f8ff3df492f58f7ee8f31765792c3c41f9661b": "h1:211a92296d8012c46221893f97b7a65889c0dd7dbcd791b50f3373c3f081bb74",
+        "row h1:5ffa17a870d56d81385df47645a321154c1ba8462120b3c1452cc39da1761529": "h1:e5f87215c44c0315e86fdf1be239176bd021aa6ea925abb74e96482800b22a4f",
+        "row h1:824debb5051884dea7e85152e977fb8b212e64df09dd6393551960e93a7fac8f": "h1:165eb71f30429ee6945212963a9d6a262f98a7b318cab7ba137e51954eaa7656",
+        "row h1:83678a0cc1e0dd9e03bf5299b06b5a850becdb923e46f89af3643422097e31b4": "h1:bb355a9f7de8a97e61c1a423737cddf607c02efb6a9f8061ac984ee3f6a53ad3",
+        "row h1:d0dd56aa974a7c2df98b7175433767cbd65831972aaf5544105bc5002c406483": "h1:cb872d0e468ff8e319b26153aa1b15f0b86fd87e324f1854921ec39add12cb42",
+        "row h1:d8ae768a65f8c6e79c7ad740d30d9e3885f1e5b13959f5595c35c1489d9f470d": "h1:f543a0728ddddca6f06199dd17e1c68b45c2f45bc8ab7efb2f2a83459ec02eea",
+        "row h1:ea5994263b887b704708c86f1384c1dc38ac07bdeead9a2c6cbaef7a29c17c20": "h1:db26543711258b2191fd5012698e8ad53561709fcf589bb1c7a7c1352e40ff29",
+        "section Rationale": "h1:50d520245a807064e592be02a6a32fbfd38670cb2cebac964655e4b71f1393b6",
+        "step Given": "h1:3bea57c20e8b9221c4a6824250d812ff9d0d3f06849363669481068acf3aa82d",
+        "step Otherwise": "h1:3bdafa3468b63b86e4c4ab951ece3d37fd63b371e9b812029fb89fa37acb5d43",
+        "step Provided": "h1:f56e0d02a9e9a1664e61d1e3d681d295e2fd229960c19b8d3f0af44317ec9c36",
+        "step Then": "h1:3253993afbbfa85a063240217dcc3616e6db0af3def2d1ee9298b24fae4a9610",
+        "step When": "h1:4ee84e6296742c41eef4ccf7f4c101d2f690a36835fdf88447279eab5378abed"
+      }
+    },
+    {
+      "id": "system.regular-file",
+      "now": {
+        "field Aliases": "h1:858fe157ea3382a5d950a4d3288abf6b2e1c8ecbd6ced0dc50afcf0349352691",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:5af22f1d70c4fda746bcdec9e9214b753c23b743c90e090b45241bb9e6afdbea",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:d8d43d525d1bed49352799a892bc413a8183d459cfe95eccf3d32ea7a14af475"
+      },
+      "baseline": {}
+    },
+    {
+      "id": "system.symbolic-link",
+      "now": {
+        "field Aliases": "h1:111abc466be730ad267a561913fc29d15eaca6b7ad24fb4351608f9af3f0c115",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:da5c5a5693ad415d1e812808b18bf50cfbdcc1de4c6b5fc89b7ff5f3c2058f25",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:5a0a9e195d052bf065c939319d8f2eff74a5dee34a1e1a120c2b0152ac9834f6"
+      },
+      "baseline": {}
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment only changes which entries count as readable and makes no rule write anything; a refused read leaves every file and folder as it was",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    },
+    {
+      "id": "lint.run.read-only",
+      "reason": "untouched: the amendment only changes which entries count as readable and makes no rule write anything; a refused read leaves every file and folder as it was",
+      "parts": {
+        "heading": "h1:722ad079f04817c22066ec2463efb103fc27cca172e514a8d362b2bead5f5675",
+        "section Property": "h1:0b098c1360b044c1e70ee67af1208af355c2094b467b65f15af594c33fea0224",
+        "section Ranges over": "h1:036d30bf759f64b1505db0ffef36f670d09744fe7d634512d9b2aebf4c5c3974",
+        "section Rationale": "h1:e20aac9fb9be134f2786c964c4994d53d634d5464bafc9a265fe64feffaa8be9"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "lint.run.unreadable",
+        "system.regular-file",
+        "system.platforms"
+      ],
+      "text": "lint.run.unreadable sorts entries into [symbolic links], [regular file]s and folders, but 'folder' is not defined. system.regular-file now counts a Windows reparse point that is no name surrogate as a regular file, but nothing says whether a folder carrying such a reparse point (such as a OneDrive Files On-Demand folder) is a folder or one of the 'other entries' lint refuses. That is a difference between platforms that system.platforms requires the tree to decide.",
+      "status": "resolved",
+      "reason": "edited in da17030"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "system.regular-file",
+        "system.symbolic-link"
+      ],
+      "text": "The two definitions do not settle every Windows reparse point that is no name surrogate. 'Holds a file's data itself' and 'includes a reparse point that is no name surrogate' disagree on one that holds no data (such as an AF_UNIX socket). One that stands for another entry by name without being a name surrogate (such as an app execution alias) fits both terms, because the Windows sentence of system.symbolic-link does not say whether its list is complete.",
+      "status": "resolved",
+      "reason": "edited in da17030"
+    },
+    {
+      "id": "f3",
+      "kind": "gap",
+      "elements": [
+        "baseline.manifest.remove",
+        "system.symbolic-link"
+      ],
+      "text": "baseline.manifest.remove says a 'link' named `.coherence.json` or `.amendment.md` is removed 'without what it points to', but uses plain prose instead of the new [symbolic link] term. So it is not decided whether a junction or mount point standing there counts as a link, removed alone, or as a folder, removed with everything in it, which could delete content outside the spec root.",
+      "status": "resolved",
+      "reason": "edited in da17030"
+    },
+    {
+      "id": "f4",
+      "kind": "gap",
+      "elements": [
+        "baseline.manifest.remove"
+      ],
+      "text": "The Then says how each entry is removed (a folder with everything in it, a [symbolic link] without what it points to), but the Otherwise says only that each of <entries> that can be removed is removed. So when one entry fails and another is a symbolic link or junction, no rule says that the link's target stays, or that a folder goes with everything in it.",
+      "status": "resolved",
+      "reason": "edited in b76e2f0"
+    },
+    {
+      "id": "f5",
+      "kind": "gap",
+      "elements": [
+        "baseline.manifest.remove",
+        "baseline.run.writes"
+      ],
+      "text": "Only a symbolic link that is itself one of <entries> is said to go without what it points to. A symbolic link or junction inside a folder named `.coherence.json` or `.amendment.md` falls under 'a folder with everything in it', and no rule or row says that its target, which may be in the spec tree or outside it, stays. `baseline.run.writes` allows those names to change 'each with everything in it' and does not settle it either.",
+      "status": "resolved",
+      "reason": "edited in b76e2f0"
+    },
+    {
+      "id": "f6",
+      "kind": "gap",
+      "elements": [
+        "baseline.manifest.remove"
+      ],
+      "text": "No rule or row says what happens to the contents of a folder entry (`.coherence.json` or `.amendment.md`) that cannot be removed as a whole because only part of what it holds can be removed: Otherwise removes only 'each of <entries> that can be removed', so whether the removable files and links inside such a folder are removed or left is undecided.",
+      "status": "dismissed",
+      "reason": "Pre-existing, and harmless: whatever part of the entry stays is left over, which verify reports, as the rule's Rationale says; the partial state decides nothing."
+    }
+  ]
+}
