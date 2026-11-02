@@ -86,7 +86,9 @@ into notes; they belong in the spec tree, where Proviso sees them.
 
 Open `proviso/system.md` and decide its six sections: Goal, Rationale,
 Scope, Out of scope, Audience and Design boundary. Each starts as `?`,
-an undecided place. Then add a capability, a feature and its first
+an undecided place. Decide the design boundary early: what it names,
+such as the operating system or a database, the agents take as given
+and do not test. Then add a capability, a feature and its first
 rules. [Writing specs](writing-specs.md) explains the notation, and
 [Proviso's own tree](https://github.com/bbak/proviso/tree/main/proviso)
 is a complete example.

@@ -125,6 +125,15 @@ and Design boundary. Out of scope says what the system does not do; the
 design boundary what it relies on without building it, such as a
 database or a version control system.
 
+Work the design boundary out early. The testing and the coding agent
+treat what it names as given: they neither test nor handle its
+failures. Without it, they test what the platform guarantees, such as a
+full disk or an output stream that cannot be written, and the suite
+grows with cases nobody decided. Name the border, too: which cases stay
+the system's to decide. Proviso's own tree, for example, takes the
+operating system as given, but counts a missing permission or an entry
+in the way as a state of the repository, which its rules decide.
+
 **A capability** groups features, with a Goal and a Rationale.
 
 **A feature** is one file: a Goal, a Rationale, a Contact, and its
