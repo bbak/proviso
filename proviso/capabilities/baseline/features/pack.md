@@ -85,7 +85,7 @@ points to may lie outside the branch.
 
 ```guarded
 When      `pack` reads the `amendment_note` <note>
-Provided  <note> is a regular file `pack` can read, in UTF-8
+Provided  <note> is a [regular file] `pack` can read, in UTF-8
 Then      `pack` goes on with the text of <note>
   And     everything else stays as it was
 Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read

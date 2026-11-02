@@ -56,8 +56,8 @@ not an error finding: the notation is not at fault, lint could not run.
 Lint reads only regular files and folders. It never follows a symbolic
 link, which could loop, read a file twice or reach outside the tree, so
 a link counts as unreadable wherever it stands and whatever its name,
-and so does a Windows junction or any other entry that is neither a
-regular file nor a folder, unless a hidden name has it skipped, which
+and so does any other entry that is neither a regular file nor a
+folder, unless a hidden name has it skipped, which
 loses nothing, and the tree stays self-contained. A folder standing
 where the layout lists a file hides that file as surely as a file
 without read permission, so it counts as unreadable too, whichever file
@@ -66,7 +66,7 @@ reported as unknown, and leaves no part of the tree unread.
 
 ```guarded
 Given     lint has found the [spec root] for the run
-When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its symbolic links, its other entries that are neither a regular file nor a folder, and its folders at the path of a file `tree_layout` lists, not skipped as hidden, among them <unreadable>
+When      lint reads the files of its [spec tree] that `tree_layout` lists, and finds its [symbolic links], its other entries that are neither a [regular file] nor a folder, and its folders at the path of a file `tree_layout` lists, not skipped as hidden, among them <unreadable>
 Provided  <unreadable> is empty
 Then      lint goes on to check the model version of the [spec tree]
   And     no file of it is left unread
@@ -81,7 +81,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | `glossary.md`, without read permission | no | exit status 2, naming `glossary.md` | |
 | `a.md`, not valid UTF-8 | no | exit status 2, naming `a.md` | text that cannot be decoded cannot be read |
 | `shared`, a symbolic link to a folder outside the tree | no | exit status 2, naming `shared` | a link is never followed |
-| `shared`, a Windows junction to a folder outside the tree | no | exit status 2, naming `shared` | neither a regular file nor a folder |
+| `shared`, a Windows junction to a folder outside the tree | no | exit status 2, naming `shared` | a junction is a symbolic link on Windows |
 | `x.md`, a symbolic link to another feature in the tree | no | exit status 2, naming `x.md` | following it would read the feature twice |
 | `a.md` and `b.md`, both unreadable | no | exit status 2, naming both | every unreadable file, not only the first |
 | `manifest.sum`, without read permission | no | exit status 2, naming `manifest.sum` | the model version is read only from a manifest that can be read |

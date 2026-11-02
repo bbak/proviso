@@ -324,3 +324,21 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: line endings
+
+## <a id="system.regular-file"></a> regular file
+
+- Definition: An entry that holds a file's data itself and stands for no
+  other entry. On Windows, this includes a reparse point that is no name
+  surrogate, such as a OneDrive placeholder or a deduplicated file.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: regular files
+
+## <a id="system.symbolic-link"></a> symbolic link
+
+- Definition: An entry that stands for another entry by its name. On
+  Windows, any name surrogate, such as a symbolic link, a junction or a
+  mount point.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: symbolic links
