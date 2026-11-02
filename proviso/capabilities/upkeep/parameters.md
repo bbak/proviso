@@ -10,11 +10,12 @@
 
 The places where `rehome` renames an identifier. Nothing else is
 rewritten: an identifier in plain text, in an Examples cell, in a code
-span or in a fenced block stays as it is.
+span, in a fenced block, in a link reference definition or in an image
+stays as it is.
 
 | reference | the identifier it holds | such as |
 | --- | --- | --- |
 | an anchor | its `id` | `<a id="baseline.impact.events"></a>` |
 | a hand-over | the identifier after `Otherwise →` | `Otherwise → lint.run.exit` |
-| a link, outside code spans and fenced blocks | the fragment of its destination, after `#` | `(../../references.md#system.ref.commonmark)` |
+| an inline link or an autolink, outside code spans and fenced blocks | the fragment of its destination, after `#` | `(../../references.md#system.ref.commonmark)` |
 | a question in a `questions.md` | the identifier in brackets that starts its list item | `- [baseline.dependencies] Should …` |
