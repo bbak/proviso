@@ -58,7 +58,8 @@ line. Proviso is those mechanics.
   code.
 - The operating system beneath each command, which reads and writes
   the files Proviso reads and writes, and takes what goes to standard
-  output and standard error. Where it fails, as on a full disk or an
-  I/O error, no rule or invariant decides what the command does or
-  leaves behind. A missing permission or an entry in the way is a
-  state of the repository, not such a failure.
+  output and standard error. Where it fails, as on a full disk, an I/O
+  error, or standard output or standard error that cannot be written,
+  no rule or invariant decides what the command does or leaves behind.
+  What a file holds, its permissions and an entry in the way are
+  states of the repository, not such failures.
