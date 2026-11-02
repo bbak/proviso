@@ -189,7 +189,7 @@ func TestBaselinePackFrames(t *testing.T) {
 	})
 	t.Run("row2 a glossary entry of the capability, its Definition changed", func(t *testing.T) {
 		t.Parallel()
-		// baseline.part: cart.shelf, which no rule marks.
+		// baseline.former-text: cart.shelf, which no rule marks.
 		o, _, _ := packOf(t, pShelfDef)
 		o.exactly(t, "Amendment", "cart.shelf")
 		o.exactly(t, "Frames", cartFrames...)

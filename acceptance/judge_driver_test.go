@@ -3,7 +3,7 @@ package acceptance
 // The driver of `proviso judge` and `proviso verify`: runs with what holds
 // for every run (the contracts system.cli.judge, system.cli.verify and
 // system.cli.verification, the order of the problems, the exit statuses, and
-// the invariant baseline.run.writes), and check_result inputs built in the
+// the invariant coherence.run.writes), and check_result inputs built in the
 // spec's terms. What coherence_file holds is not part of the contract, so
 // what judge recorded is observed through verify.
 
@@ -92,7 +92,7 @@ func judgeIn(t *testing.T, base, cwd, root, input string) run {
 		rel, _ := filepath.Rel(base, filepath.Join(root, coherenceName))
 		allowed = filepath.ToSlash(rel)
 	}
-	checkWrites(t, before, after, allowed)
+	checkWrites(t, "coherence.run.writes", before, after, allowed)
 	if r.exit < 0 || r.exit > 2 {
 		t.Fatalf("system.cli.judge.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
 	}
@@ -246,7 +246,7 @@ func runVerify(t *testing.T, text bool, base, cwd, root string) verifyOutcome {
 		o.text = &r
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, before, after, "")
+	checkWrites(t, "coherence.run.writes", before, after, "")
 	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}

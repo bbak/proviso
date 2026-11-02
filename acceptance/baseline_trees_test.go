@@ -1,8 +1,9 @@
 package acceptance
 
 // Test trees of the baseline capability. Each follows the notation in every
-// respect, so that lint reports no error about it and the baseline commands
-// run (baseline.run.lint). Backticks are written as ´ (see md).
+// respect, so that lint reports no error about it and the baseline and
+// coherence commands run (baseline.run.lint, coherence.run.lint). Backticks
+// are written as ´ (see md).
 
 import (
 	"strings"

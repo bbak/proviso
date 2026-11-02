@@ -51,7 +51,7 @@ func provisoIn(t *testing.T, base, cwd, stdin string, args ...string) run {
 		r = execProviso(t, cwd, args...)
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, before, after, "")
+	checkWrites(t, "a run of proviso", before, after, "")
 	return r
 }
 

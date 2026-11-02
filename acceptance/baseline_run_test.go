@@ -9,10 +9,10 @@ import (
 	"testing"
 )
 
-// baseRun runs the baseline command cmd in cwd: `manifest`, `judge` with a
-// check result of no judgements and no findings, or `diff`, `impact`, `pack`
-// or `verify` with --json (diffIn, impactIn, packIn and verifyIn run them
-// without as well). root
+// baseRun runs the baseline or coherence command cmd in cwd: `manifest`,
+// `judge` with a check result of no judgements and no findings, or `diff`,
+// `impact`, `pack` or `verify` with --json (diffIn, impactIn, packIn and
+// verifyIn run them without as well). root
 // is the spec root the command is expected to work on, if any.
 func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 	t.Helper()
@@ -45,8 +45,16 @@ func lintLines(t *testing.T, cwd string) []string {
 
 func TestBaselineRunLint(t *testing.T) {
 	t.Parallel()
+	runsOnlyWhereLintAccepts(t, "manifest", "diff", "pack")
+}
+
+// runsOnlyWhereLintAccepts checks, for each of the commands cmds, the Examples
+// rows of baseline.run.lint and coherence.run.lint, which share them, and the
+// checks derived from them.
+func runsOnlyWhereLintAccepts(t *testing.T, cmds ...string) {
+	t.Helper()
 	invalid := "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"
-	for _, cmd := range []string{"manifest", "diff", "impact", "pack", "judge", "verify"} {
+	for _, cmd := range cmds {
 		t.Run(cmd, func(t *testing.T) {
 			t.Parallel()
 			t.Run("row1 a tree without findings", func(t *testing.T) {
@@ -140,15 +148,24 @@ func TestBaselineRunLint(t *testing.T) {
 }
 
 // TestBaselineRunWrites checks the invariant baseline.run.writes over runs
-// of every kind, however they end: every file and folder below the test
-// directory, the git repository's .git included, is as it was, except
-// manifest.sum, .coherence.json, and .amendment.md with everything in it,
-// after a run of `manifest` that wrote manifest.sum, and .coherence.json
-// after a run of `judge` that exits with 0. Every
-// other test checks it too, for each run it makes (see manifestIn, diffIn,
-// impactIn, packIn, judgeIn and verifyIn).
+// of `manifest`, `diff` and `pack`, however they end: every file and folder
+// below the test directory, the git repository's .git included, is as it
+// was, except manifest.sum, .coherence.json, and .amendment.md with
+// everything in it, after a run of `manifest` that wrote manifest.sum. Every
+// other test checks it too, for each run it makes (see manifestIn, diffIn
+// and packIn).
 func TestBaselineRunWrites(t *testing.T) {
 	t.Parallel()
+	// Every case of diff is a case of pack as well.
+	writesOver(t, "manifest", "diff", "pack")
+}
+
+// writesOver runs the commands cmds in the cases that check the invariants
+// baseline.run.writes and coherence.run.writes. A case of `manifest` runs
+// only where manifest is among cmds; every case of `diff` runs every other
+// command of cmds. The runs check the invariant themselves (see baseRun).
+func writesOver(t *testing.T, cmds ...string) {
+	t.Helper()
 	// staged leaves an edit in the index and an untracked file, which a
 	// run must leave as they are.
 	staged := func(r *repo) {
@@ -272,13 +289,10 @@ func TestBaselineRunWrites(t *testing.T) {
 		}},
 	}
 	for _, c := range cases {
-		// Every case of diff is a case of impact, pack, judge and verify
-		// as well.
-		cmds := []string{c.cmd}
-		if c.cmd == "diff" {
-			cmds = append(cmds, "impact", "pack", "judge", "verify")
-		}
 		for _, cmd := range cmds {
+			if (c.cmd == "manifest") != (cmd == "manifest") {
+				continue
+			}
 			name := c.name
 			if cmd != c.cmd {
 				name = cmd + strings.TrimPrefix(c.name, "diff")
