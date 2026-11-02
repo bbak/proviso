@@ -1124,6 +1124,14 @@
       }
     },
     {
+      "id": "lint.findings.capability-identifier",
+      "now": {
+        "body": "h1:890d92871b629471f0a37843b3f2aeaa5d91629e9be98a375bf6c402c0f94c14",
+        "heading": "h1:2a4029220dc17b417060caffa4de4dfa2a076f0ea26f8e6007410300432aecdb"
+      },
+      "baseline": {}
+    },
+    {
       "id": "lint.glossary.defined-by",
       "now": {
         "heading": "h1:6a209530cabe56bffd217cab54afe53e6a869c4a0132728301683061439fd255",
@@ -1170,6 +1178,21 @@
         "section Goal": "h1:c19870711a7658ff83b3652f4ee9961dbb22ad8f2a69d4433d86d7ac11105a39",
         "section Rationale": "h1:7637ee70c14ce973322fa702f9822d782514ae89ed58067596f801f38e9e729c"
       }
+    },
+    {
+      "id": "lint.identifiers.capability",
+      "now": {
+        "heading": "h1:c7c233e39b83ac15d0fb5449e4f54e407963b8030ed91ed9a4380dfb5da03a32",
+        "row h1:72de444c92b883a198be29686b9b36ef75913a396c9bb899afaf8a176f7cbe92": "h1:6113467425c197fb320b4475b9112786fe6aa4482ef4f3e3a29bfc66bd11505e",
+        "row h1:965d17c9389a29f282b7b5b371b4949cc224815b80dba02a2dad726784009343": "h1:c190632c76b2dbc1a6337fa54e96c4c9ed17aff0a71d7e7949381c2935ce79d2",
+        "row h1:b8e170ec105319a5d190f4ec72ec72168868ba1a02225d0d3fd17e8580bbcb17": "h1:259d89353ba268a27995a926320a8fd0c24d33e7d8efae92e7105e79bbadd588",
+        "section Rationale": "h1:6dc5d7fa02dcc9079a4c5f8cfa5617ca9ff1484ed6569dff7a3cbdee3aec814b",
+        "step Otherwise": "h1:3bdb1677fe5bb1453ec112eb527144eba34e247b79a15f84f412075876afe2a4",
+        "step Provided": "h1:b40388a0c5e4c061ae8fe0fea85130faff51aa15c01c7fe103b29d166574bdb7",
+        "step Then": "h1:0983ccb890ac3ba6dd32c1355984f46923598c69bb184c8258b6d7354f18a58d",
+        "step When": "h1:48d27a77f4249942b96fe572df98616dac8c3e6fe1f70024ba8bcca63ac00a2d"
+      },
+      "baseline": {}
     },
     {
       "id": "lint.identifiers.form",
@@ -1453,7 +1476,7 @@
     {
       "id": "upkeep.rehome-references",
       "now": {
-        "body": "h1:ea7ddcb4f70698fa50d6bb18241e041d50af81111458ed49e0c4498625519dd3",
+        "body": "h1:1c02589a83aef0a96c4761519dcb4702ae4278c9b3e09c72d052c22b5a1b6f36",
         "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
         "field Rationale": "h1:85d864cdc531085cbb867fa7fe0663b519ecf99209817a43ef0a2a66e1990c53",
         "heading": "h1:ac02fe85078f3ed8984f65c162706703cf51bbaf92f8c848c555b52086d97240"
@@ -3449,6 +3472,27 @@
       "text": "system.acceptance-tests now lets whoever runs the rehome rename a test after its element is rehomed, but upkeep.rehome.collision refuses only a new identifier that equals an existing or planned one. Two different identifiers can give the same test name under system.test-names (for example `coherence.x.root2` and `coherence.x.root-2` both give `TestCoherenceXRoot2`). So a rehome of Proviso's own tree can exit with 0 and produce a tree that system.test-names forbids, where the renamed test would clash with an existing one, and no element says what happens then.",
       "status": "resolved",
       "reason": "edited in 73967cd"
+    },
+    {
+      "id": "f12",
+      "kind": "contradiction",
+      "elements": [
+        "upkeep.rehome-references",
+        "upkeep.rehome.write"
+      ],
+      "text": "The table of rehome_references renames the fragment of 'an inline link or an autolink, outside code spans and fenced blocks', while its prose says an identifier 'in an Examples cell' stays as it is. An inline link in an Examples cell that is not in a code span matches both, so whether rehome renames its fragment is not decided.",
+      "status": "open"
+    },
+    {
+      "id": "f13",
+      "kind": "gap",
+      "elements": [
+        "upkeep.rehome-references",
+        "lint.glossary.defined-by",
+        "upkeep.rehome"
+      ],
+      "text": "rehome_references leaves link reference definitions as they are, but lint.glossary.defined-by accepts any 'link' in a Defined by field, a reference-style link included. If such a link's definition holds the fragment of a renamed reference, rehome --write leaves it pointing at the old identifier, and lint then reports findings.defined-by-unresolved on a tree that rehome wrote and recorded in the manifest. That works against the Goal of upkeep.rehome, that the tree says the same as before.",
+      "status": "open"
     }
   ]
 }
