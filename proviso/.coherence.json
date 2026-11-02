@@ -1,0 +1,42 @@
+{
+  "touched": [
+    {
+      "id": "lint.run.exit",
+      "now": {
+        "heading": "h1:8bd80947f2e3fd83f28c234f3fd325233933c7a98f6e55f5e7fa0f751741464b",
+        "row h1:28078949af9fb9c728f485043f646027fe53b86e8876da2800c69182472a4926": "h1:148e86cfe0fa41f049833508f224fb4e45af9da95e9bb772472dbb6edd1fbd25",
+        "row h1:4dc13253cad06610686f01d1c9cbaee3d9a2ee5f33034bc7a843728e55dd2200": "h1:d4df8a86cee767b343a66400b601c005b92e57de4fd2055143de1bfd3d7e62de",
+        "row h1:62bd6f693e5a8d9d47f17c923de62a95eaee455750f652268c0b051076e540f6": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:8c47a901607ae81ed56ea53d1abf4973d37812bb2678a231f8f2a630949582f8": "h1:83a1db711e2b0f1a0329b8678c21bc420e7fdbe845ccb3db86c7d14e73800327",
+        "step Otherwise": "h1:caa4e7100227054762832afd480d9c5ea449ba6a3a18d7ccfdcc9547256b441d",
+        "step Provided": "h1:0992f3ab4155338f9caa04142cc81861ab4dedc92752d09f2f51059a3e73d5f2",
+        "step Then": "h1:64c0d323ab7e2785ed60bc82551e2bf23a435315f9492d28aea250e83066b921",
+        "step When": "h1:b70e70ee0e938850726f80418b1967eb006c87dfbed65bf74ef3bd9de3b03101"
+      },
+      "baseline": {
+        "heading": "h1:8bd80947f2e3fd83f28c234f3fd325233933c7a98f6e55f5e7fa0f751741464b",
+        "row h1:28078949af9fb9c728f485043f646027fe53b86e8876da2800c69182472a4926": "h1:148e86cfe0fa41f049833508f224fb4e45af9da95e9bb772472dbb6edd1fbd25",
+        "row h1:4dc13253cad06610686f01d1c9cbaee3d9a2ee5f33034bc7a843728e55dd2200": "h1:d4df8a86cee767b343a66400b601c005b92e57de4fd2055143de1bfd3d7e62de",
+        "row h1:62bd6f693e5a8d9d47f17c923de62a95eaee455750f652268c0b051076e540f6": "h1:e54bb2ef935c6d408729ba646e71a81ada970ad4170b5eafa7ee28c4bc02bac8",
+        "row h1:8c47a901607ae81ed56ea53d1abf4973d37812bb2678a231f8f2a630949582f8": "h1:83a1db711e2b0f1a0329b8678c21bc420e7fdbe845ccb3db86c7d14e73800327",
+        "step Otherwise": "h1:caa4e7100227054762832afd480d9c5ea449ba6a3a18d7ccfdcc9547256b441d",
+        "step Provided": "h1:0992f3ab4155338f9caa04142cc81861ab4dedc92752d09f2f51059a3e73d5f2",
+        "step Then": "h1:64c0d323ab7e2785ed60bc82551e2bf23a435315f9492d28aea250e83066b921",
+        "step When": "h1:83788d8cebeab0cebc1300410826fafc58d25fb1ddc86d80a1182e8b8078ba0b"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "lint.run.read-only",
+      "reason": "untouched: the amendment only narrows which exits lint.run.exit covers and adds no write; every run, however it ends, still leaves the spec root as it was",
+      "parts": {
+        "heading": "h1:722ad079f04817c22066ec2463efb103fc27cca172e514a8d362b2bead5f5675",
+        "section Property": "h1:0b098c1360b044c1e70ee67af1208af355c2094b467b65f15af594c33fea0224",
+        "section Ranges over": "h1:036d30bf759f64b1505db0ffef36f670d09744fe7d634512d9b2aebf4c5c3974",
+        "section Rationale": "h1:e20aac9fb9be134f2786c964c4994d53d634d5464bafc9a265fe64feffaa8be9"
+      }
+    }
+  ],
+  "findings": []
+}
