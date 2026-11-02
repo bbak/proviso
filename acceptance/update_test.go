@@ -56,7 +56,8 @@ func TestInstallCliUpdate(t *testing.T) {
 			"skipped .claude/skills/proviso-build/SKILL.md\n" +
 			"skipped .claude/skills/proviso-check/SKILL.md\n" +
 			"skipped .claude/skills/proviso-integrate/SKILL.md\n" +
-			"skipped .claude/skills/proviso-recover/SKILL.md\n"
+			"skipped .claude/skills/proviso-recover/SKILL.md\n" +
+			"skipped .claude/skills/proviso-rehome/SKILL.md\n"
 		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
 			t.Errorf("install.cli.update: want stdout\n%s\ngot\n%s", want, got)
 		}

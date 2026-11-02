@@ -316,6 +316,35 @@ func TestBaselineDiffMalformed(t *testing.T) {
 		line := "cart heading " + fp("Cart")
 		verifyNames(t, verifyWith(t, replaced(line)), line, headingLine+1)
 	})
+	// The same rows for rehome, on the plain tree in a git repository,
+	// whose identifiers all name their identifier home. rehomeIn checks
+	// that nothing goes to stdout with exit status 2, and that nothing is
+	// written.
+	rehomeWith := func(t *testing.T, manifest string) rehomeOutcome {
+		r := newRepo(t, plainTree().with(manifestPath, manifest))
+		return r.rehome("--write", "--json")
+	}
+	rehomeNames := func(t *testing.T, o rehomeOutcome, line string, number int) {
+		t.Helper()
+		o.exits(t, 2)
+		namesLine(t, o.run, line, number)
+	}
+	t.Run("rehome/row1 an identifier, a part and a fingerprint, separated by tabs", func(t *testing.T) {
+		t.Parallel()
+		o := rehomeWith(t, good)
+		o.exits(t, 0)
+		o.renames(t, nil)
+	})
+	t.Run("rehome/row2 <<<<<<< HEAD", func(t *testing.T) {
+		t.Parallel()
+		c := append(append(append([]string(nil), lines[:2]...), "<<<<<<< HEAD"), lines[2:]...)
+		rehomeNames(t, rehomeWith(t, strings.Join(c, "\n")+"\n"), "<<<<<<< HEAD", 3)
+	})
+	t.Run("rehome/row3 spaces for tabs", func(t *testing.T) {
+		t.Parallel()
+		line := "cart heading " + fp("Cart")
+		rehomeNames(t, rehomeWith(t, replaced(line)), line, headingLine+1)
+	})
 	derived := []struct{ name, line string }{
 		{"derived: a short fingerprint", "cart\theading\th1:5b0d"},
 		{"derived: uppercase hexadecimal", "cart\theading\t" + strings.ToUpper(fp("Cart"))},

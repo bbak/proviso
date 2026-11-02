@@ -15,10 +15,10 @@ import (
 )
 
 // commands are the commands of Proviso, as cli.help.command names them.
-var commands = []string{"init", "update", "version", "lint", "manifest", "diff", "impact", "pack", "judge", "verify", "help"}
+var commands = []string{"init", "update", "version", "lint", "manifest", "diff", "impact", "pack", "judge", "verify", "rehome", "help"}
 
 // options are the options the commands take.
-var options = []string{"--json", "--since"}
+var options = []string{"--json", "--since", "--write"}
 
 // anywhere gives a fresh directory in no git repository and with no spec
 // root, as far as the temporary folder allows.
@@ -171,7 +171,7 @@ func TestCliCliHelpPage(t *testing.T) {
 	// The commands in the page's order: first those engineers run, then
 	// those the skills run. A command is listed on the first line that
 	// starts with it, or with "proviso" and it.
-	order := []string{"init", "update", "version", "lint", "diff", "impact", "verify", "help", "pack", "judge", "manifest"}
+	order := []string{"init", "update", "version", "lint", "diff", "impact", "verify", "help", "pack", "judge", "manifest", "rehome"}
 	lines := strings.Split(strings.ReplaceAll(page, "\r\n", "\n"), "\n")
 	last, lastName := -1, ""
 	for _, name := range order {
@@ -295,10 +295,16 @@ func TestCliHelpCommand(t *testing.T) {
 		o.exits(t, 0)
 		o.all(t, "updated")
 	})
+	t.Run("row4 rehome", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, baseline())
+		// rehomeIn checks the plan on stdout and the exit status.
+		r.rehome("--json").exits(t, 0)
+	})
 	for _, c := range []struct{ name, cmd string }{
-		{"row4 help", "help"},
-		{"row5 --help", "--help"},
-		{"row6 -h", "-h"},
+		{"row5 help", "help"},
+		{"row6 --help", "--help"},
+		{"row7 -h", "-h"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
@@ -307,10 +313,10 @@ func TestCliHelpCommand(t *testing.T) {
 		})
 	}
 	for _, c := range []struct{ name, cmd string }{
-		{"row7 Lint", "Lint"},
-		{"row8 --version", "--version"},
-		{"row9 build", "build"},
-		{`row10 ""`, ""},
+		{"row8 Lint", "Lint"},
+		{"row9 --version", "--version"},
+		{"row10 build", "build"},
+		{`row11 ""`, ""},
 	} {
 		t.Run(c.name, func(t *testing.T) {
 			t.Parallel()
@@ -375,15 +381,15 @@ func TestCliHelpArgument(t *testing.T) {
 		command  string
 		argument string
 	}{
-		{"row6 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
-		{"row7 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
-		{"row8 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
-		{"row9 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
-		{"row10 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
-		{"row11 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
-		{`row12 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
-		{"row13 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
-		{"row14 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
+		{"row7 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
+		{"row8 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
+		{"row9 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
+		{"row10 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
+		{"row11 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
+		{"row12 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
+		{`row13 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
+		{"row14 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
+		{"row15 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
 		{"derived: a revision that starts with a hyphen", "amended", "", []string{"diff", "--since", "-HEAD"}, "diff", "--since"},
 		{"derived: the arguments are read before the spec root is looked for", "anywhere", "", []string{"lint", "--bogus"}, "lint", "--bogus"},
 	} {
@@ -407,7 +413,17 @@ func TestCliHelpArgument(t *testing.T) {
 			misused(t, provisoIn(t, dir, dir, c.stdin, c.args...), c.command, c.argument)
 		})
 	}
-	t.Run("row5 version, none, 0.1.0, none", func(t *testing.T) {
+	t.Run("row5 rehome, --json, --write, none", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, oneRehomeTree())
+		// rehomeIn checks the plan, and that the run wrote only the
+		// renamed identifier and the manifest.
+		o := r.rehome("--json", "--write")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"cart.item", "system.item"}})
+		o.holds(t, "cli.help.argument", "proviso/glossary.md", oneRehomed()["proviso/glossary.md"])
+	})
+	t.Run("row6 version, none, 0.1.0, none", func(t *testing.T) {
 		t.Parallel()
 		// After init, in a root whose skills are stale, so that anything
 		// checked would show; versionIn checks that nothing is written.
