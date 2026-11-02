@@ -584,6 +584,33 @@ func TestLintRunExit(t *testing.T) {
 			}
 		})
 	}
+
+	// The rule covers only runs that checked the spec tree. A run that
+	// could not check it reported no error, yet does not exit with 0:
+	// lint.cli.lint.exit-status gives it 2, and the rules that stop the
+	// run (lint.run.root, lint.run.unreadable, lint.run.model-other) own
+	// it. checkRun applies the rule to every run that did not exit with 2.
+	notChecked := []struct {
+		name string
+		tree tree
+	}{
+		{"derived: no spec root, not checked", tree{"proviso/glossary.md": glossaryMD}},
+		{"derived: an unreadable file, not checked", baseline().with("proviso/capabilities/cart/features/a.md", "\xff\xfe\n")},
+		{"derived: another model version, not checked", baseline().with("proviso/manifest.sum", "model 1\n")},
+	}
+	for _, c := range notChecked {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			dir := c.tree.write(t)
+			if strings.HasPrefix(c.name, "derived: no spec root") {
+				skipIfSpecRootAbove(t, dir)
+			}
+			o := lintIn(t, dir, dir, nil)
+			if o.json.exit != 2 {
+				t.Errorf("want exit status 2 for a run that did not check the tree, got %d\nstdout: %s", o.json.exit, o.json.stdout)
+			}
+		})
+	}
 }
 
 // TestLintRunReadOnly checks the invariant lint.run.read-only over runs of

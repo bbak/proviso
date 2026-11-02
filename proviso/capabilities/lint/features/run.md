@@ -189,7 +189,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 
 ```guarded
-When      lint exits, having found the [findings] <findings>
+When      lint exits, having checked the [spec tree] and found the [findings] <findings>
 Provided  none of <findings> is an [error]
 Then      lint exits with `lint.exit-status` 0
   And     everything else stays as it was
