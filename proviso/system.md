@@ -37,9 +37,11 @@ line. Proviso is those mechanics.
 - Reading, building or running the specified system's code.
 - Deciding what a rule means: the business decides, Proviso only checks.
 - Driving the agents: the agents call Proviso, not the other way round.
-- What a command does when the operating system fails beneath it, such
-  as a full disk, an I/O error, or standard output or standard error
-  that cannot be written.
+- What a command does, and what it leaves behind, when the operating
+  system fails beneath it, such as a full disk, an I/O error, or
+  standard output or standard error that cannot be written; no rule
+  or invariant decides it. A missing permission or an entry in the
+  way is a state of the repository, not such a failure.
 - Adapters for native contract formats, such as OpenAPI (deferred).
 - Traceability of requests, decisions and approvals (deferred).
 - Systems whose tree spans several repositories (deferred).
