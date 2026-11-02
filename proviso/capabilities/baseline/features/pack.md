@@ -114,7 +114,7 @@ Otherwise nothing is taken for "Frames" because of <element>
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
 | `lint.run.exit`, its `Then` step changed | yes | `lint`, `lint.run`, `lint.run.read-only` and the system's constraints taken | |
-| `baseline.part`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
+| `baseline.former-text`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
 | `system.git`, its Property changed | yes | the system's constraints taken | no feature or capability holds it |
 | `lint.run.root`, removed | no | nothing taken because of it | what was built for it is retired, not built |
 
@@ -176,7 +176,7 @@ that the order is the same on every platform.
 When      `pack` writes the [elements] <elements> under the heading <heading> of `pack_text`
 Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], written as `report` writes paths, compared byte by byte, then by where they stand in that file
   And     removed [elements] follow them, ordered by [identifier], compared byte by byte, since they no longer stand in the [spec tree]
-  And     the [parts] named for each appear in the order `diff` gives them
+  And     the [element parts] named for each appear in the order `diff` gives them
   And     the chains of [identifiers] and the lines not decided named for each appear in the order `diff` gives them
 ```
 

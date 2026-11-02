@@ -51,7 +51,7 @@ show changes nobody made.
 When      someone runs `diff` with `diff.since`, or `pack` with `pack.since`, with arguments it takes, naming the revision <revision>
 Provided  git knows <revision> as a commit
   And     `lint`, run on the [spec tree] at <revision>, would exit with `lint.exit-status` 0, or there is no [spec tree] at <revision>
-Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [part] fingerprinted as `manifest_file` describes, in place of the [baseline]
+Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [element part] fingerprinted as `manifest_file` describes, in place of the [baseline]
   And     the text the command lists as former is read from <revision>
   And     `manifest_file` is not read
 Otherwise the command writes to "stderr" why it cannot compare with <revision>
@@ -96,7 +96,7 @@ Otherwise the command writes to "stderr" that `manifest_file` cannot be read, na
 
 ```guarded
 When      `diff` compares the [element] <element> of the [spec tree] with the [baseline]
-Provided  the [baseline] holds no [part] of an [element] with the [identifier] of <element>
+Provided  the [baseline] holds no [element part] of an [element] with the [identifier] of <element>
 Then      <element> is listed as added, in full
   And     everything else stays as it was
 Otherwise → baseline.diff.changed
@@ -112,9 +112,9 @@ Otherwise → baseline.diff.changed
 
 ```guarded
 When      `diff` compares the [element] <element>, whose [identifier] the [baseline] holds, with the [baseline]
-Provided  a [part] of <element> is missing from the [baseline], or differs from it in its [fingerprint], or the [baseline] holds a [part] of <element> that the [spec tree] no longer has
-Then      <element> is listed as changed, in full, naming each such [part] as added, changed or removed
-  And     the [former text] of each changed or removed [part] is listed with it
+Provided  an [element part] of <element> is missing from the [baseline], or differs from it in its [fingerprint], or the [baseline] holds an [element part] of <element> that the [spec tree] no longer has
+Then      <element> is listed as changed, in full, naming each such [element part] as added, changed or removed
+  And     the [former text] of each changed or removed [element part] is listed with it
 Otherwise <element> is not listed as changed
   And     everything else stays as it was
 ```
@@ -166,8 +166,8 @@ to that contract element.
 
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
-Provided  `change_effects` gives "dependents" for a changed [part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added, changed or removed whose changed [part] `change_effects` gives "dependents" for, to the one it depends on directly
+Provided  `change_effects` gives "dependents" for a changed [element part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for, to the one it depends on directly
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
@@ -219,10 +219,10 @@ the element diff needs is checked against the manifest: a difference
 anywhere else changes nothing a command derives from it.
 
 ```guarded
-When      `diff`, `impact`, `pack`, `judge` or `verify`, run without `diff.since` or `pack.since`, derives the [element diff] and needs the [former text] of a removed [element] or of a changed or removed [part], in the git history <history>
+When      `diff`, `impact`, `pack`, `judge` or `verify`, run without `diff.since` or `pack.since`, derives the [element diff] and needs the [former text] of a removed [element] or of a changed or removed [element part], in the git history <history>
 Provided  <history> names the newest revision that changed `manifest_file`, not counting a merge that took it unchanged from one of its parents
   And     `manifest_file` in that revision is the same as in the [spec root]
-  And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records for each removed [element] and each changed or removed [part]
+  And     the [spec tree] in that revision has the [fingerprints] `manifest_file` records for each removed [element] and each changed or removed [element part]
 Then      the command reads the [former text] from the [spec tree] in that revision
   And     `diff`, `impact` and `pack` name that revision in what they write
 Otherwise the command writes to "stderr" why it could not read the [former text]
@@ -264,7 +264,7 @@ Otherwise `diff` writes <elements> to "stdout" as text
 ```guarded
 When      `diff` writes the listed [elements] <elements>
 Then      they appear ordered by [identifier], compared byte by byte
-  And     the [parts] named for each appear in the order of their lines in `manifest_file`
+  And     the [element parts] named for each appear in the order of their lines in `manifest_file`
   And     the chains of [identifiers] named for each appear ordered by their first [identifier], then by their second, and so on, each compared byte by byte, a chain that is the start of another coming first
   And     the [undecided] places and the marks of open [terms] named for each appear in the order of their lines
 ```

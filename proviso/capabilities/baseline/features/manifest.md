@@ -25,7 +25,7 @@ ambiguous.
 ```guarded
 When      someone runs `manifest`, and it works on the [spec tree] of the [spec root] <root>
 Provided  `manifest_file` can be written into <root>
-Then      `manifest` writes `manifest_file` into <root>, naming `model_version` on its first line and then one line for every [part] of every [element] of the [spec tree]
+Then      `manifest` writes `manifest_file` into <root>, naming `model_version` on its first line and then one line for every [element part] of every [element] of the [spec tree]
   And     a former `manifest_file` is replaced, not updated
   And     `manifest` goes on to remove a `coherence_file` and an `amendment_note` in <root>, since the [spec tree] they served is the [baseline] now
 Otherwise `manifest` writes to "stderr" why it could not write `manifest_file`

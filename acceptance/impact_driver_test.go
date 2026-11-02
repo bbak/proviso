@@ -2,7 +2,7 @@ package acceptance
 
 // The driver of `proviso impact`: runs with what holds for every run (the
 // impact_set's shape, its orders, the exit status, baseline.impact.listed
-// against the element diff, and the invariant baseline.run.writes).
+// against the element diff, and the invariant coherence.run.writes).
 
 import (
 	"bytes"
@@ -76,7 +76,7 @@ func runImpact(t *testing.T, text bool, base, cwd, root string) impactOutcome {
 		o.text = &r
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, before, after, "")
+	checkWrites(t, "coherence.run.writes", before, after, "")
 	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}

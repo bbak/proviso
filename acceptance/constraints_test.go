@@ -33,7 +33,7 @@ func TestSystemPlatforms(t *testing.T) {
 // reaches git, since the binary links no module beyond those agreed in
 // system.dependencies. That git is run only to find a revision and read the
 // tree's files is for review; that it is never written is the invariant
-// baseline.run.writes.
+// baseline.run.writes and coherence.run.writes.
 func TestSystemGit(t *testing.T) {
 	t.Parallel()
 	out, err := exec.Command("go", "list", "-deps", "-f", "{{if not .Standard}}{{.ImportPath}}{{end}}", "github.com/bbak/proviso/cmd/proviso").Output()
