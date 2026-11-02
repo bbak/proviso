@@ -1,0 +1,168 @@
+{
+  "touched": [
+    {
+      "id": "baseline.diff.former",
+      "now": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:5e65065dc154ade8b17e964081706caa5be9b2e874c245897ce4645a8a9a30f3": "h1:1b4c2e0283d826a1817765c9beba7cf1d904f554be55b356673c7f5fefad8dfe",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "row h1:f9fa4a2ed7159b61410608319f79bc36c055ba799d59fd0237ada5872b586257": "h1:cd853cd488ac9df9ef1eee8a7e9a75e48b195d5d59ddd4e200808808bedfee5f",
+        "section Rationale": "h1:864f86c002f08391da6b734d2bebb8d406cea4683514c1d12d3ff82dcb78d631",
+        "step Otherwise": "h1:c87347cfd2465b4b801baf8ec0ad8f121a5f0b3a44f6fa51334a302d3c155b60",
+        "step Provided": "h1:d2cdef233c6b8bb70f8cf874771ac3566ebb1c237d23811bd7d6aa2540bb4821",
+        "step Then": "h1:d5858bbe8c5d49cd476e7b9e96d91349b54a0c6d0f63c35bcf6ea51948a49e4e",
+        "step When": "h1:8178cf668562dfd25f56fec4a34a8fee0a89fa7f867654e07d37590ddb5e5fcd"
+      },
+      "baseline": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:c922d3c54af8b7821359207f5c6fe401c7c82007722d4dc6d88c0d81d57fe35f": "h1:00fb7e34dcff0f6123792519bfb39a49755f61d2433639da9b976ec5781f7f83",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "section Rationale": "h1:190204b3f079700bdfcb1a753d46143e3a0992cb814326eca862a13c7d814d97",
+        "step Otherwise": "h1:a770915f7a67d64b5f841fee5bbdaee9569a7474c2026203e217526d7efe6e7f",
+        "step Provided": "h1:337a31313a7903107d9b7a41d9c0467be14986588e4bc5bba98374a2f044ddc2",
+        "step Then": "h1:99e52d0b93244904456622cd89a0ed648084c99beb927911b9837a956527d4a0",
+        "step When": "h1:901789ece5d61eab7f35a2b393764236f2ffdf698dbe2981ba65c7d001e42167"
+      }
+    },
+    {
+      "id": "baseline.diff.malformed",
+      "now": {
+        "heading": "h1:88b50dd59dfa6d470cf1b3206102d38151861aa2a834481c8bda67ab8873b789",
+        "row h1:1e08305eab3455b1169db822d0a9ae65232b3d46e9ee59ae45adbcf5c6769e74": "h1:6a77c8fd8a8173f6fb4739296a522c20f367d76c38c37124de2f799bdf6b6699",
+        "row h1:3bf01c75d89ef979ca02a927ac357c5b80c1876da1ad63356ba93423a47c1c30": "h1:80b83d7cb996fe88309678d16a0e7f5eb75e366edeff94e82e136e46ba44ce4f",
+        "row h1:e9454ea33c047844c0875a776cb2d4a10b9f73178c6659f6ab08f3a371456150": "h1:ccb5b13334d8642e9a84037867f7fbd5b413fc7be97620642b5fd80457a6ca40",
+        "section Rationale": "h1:50502e87b69d962c86304424b1636f065fba726c42e60417ac1f71a022f63891",
+        "step Otherwise": "h1:7b2ed66feffb8a514249b3f37d0318bb6bb38adb63721104ac9ac1bb23dc74e9",
+        "step Provided": "h1:305df770d18a6337f5c2fd180bf29c4c67f4ed38ddd86adb875a91b6c604f524",
+        "step Then": "h1:59253366ff5850cbe9cf1a457f97600906901fae9c58afff32aa7c49f67c906a",
+        "step When": "h1:209be285778d8a337dd383675332e8544d14c4ed4203fcdb66f328a15852b3c1"
+      },
+      "baseline": {
+        "heading": "h1:88b50dd59dfa6d470cf1b3206102d38151861aa2a834481c8bda67ab8873b789",
+        "row h1:1e08305eab3455b1169db822d0a9ae65232b3d46e9ee59ae45adbcf5c6769e74": "h1:6a77c8fd8a8173f6fb4739296a522c20f367d76c38c37124de2f799bdf6b6699",
+        "row h1:3bf01c75d89ef979ca02a927ac357c5b80c1876da1ad63356ba93423a47c1c30": "h1:80b83d7cb996fe88309678d16a0e7f5eb75e366edeff94e82e136e46ba44ce4f",
+        "row h1:e9454ea33c047844c0875a776cb2d4a10b9f73178c6659f6ab08f3a371456150": "h1:ccb5b13334d8642e9a84037867f7fbd5b413fc7be97620642b5fd80457a6ca40",
+        "section Rationale": "h1:50502e87b69d962c86304424b1636f065fba726c42e60417ac1f71a022f63891",
+        "step Otherwise": "h1:b9af8bd610d1bac8270da55dda48a8d9c25c8f2843766bb262603a0bd7634b3a",
+        "step Provided": "h1:305df770d18a6337f5c2fd180bf29c4c67f4ed38ddd86adb875a91b6c604f524",
+        "step Then": "h1:59253366ff5850cbe9cf1a457f97600906901fae9c58afff32aa7c49f67c906a",
+        "step When": "h1:9915c97407882fd3309ac9f0b7ce123bff12e0b1b805fd90bade2f091d5879d6"
+      }
+    },
+    {
+      "id": "baseline.judge",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:dc45c3f34690964aa1474782aaee749a20da3ac8aa8c079bbc680b450a7e4116",
+        "section Goal": "h1:02f603fd1b352ebfc7b4b1a7c50429cda438c8d7e24082206b3548908b88748a",
+        "section Rationale": "h1:b47650a212d6513cb997db7820ee9474947abaff567c31b8c3b8badb6182ca13"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:dc45c3f34690964aa1474782aaee749a20da3ac8aa8c079bbc680b450a7e4116",
+        "section Goal": "h1:02f603fd1b352ebfc7b4b1a7c50429cda438c8d7e24082206b3548908b88748a",
+        "section Rationale": "h1:6462166e96b00ccd30d9afe89b24ed0763c37ae28da6a4847e937e92407db765"
+      }
+    },
+    {
+      "id": "baseline.judge.input",
+      "now": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:190bd6d1cb3f56d7fe7edc6c4f2fed643fd025f3ab2e9ab77a5de50062df88de": "h1:c93750cade9100bc88673ce1fce73cbcb8ff91d5f6fe6b80213778df98387ac0",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:17185c3262ffc0b5c7f0d5cf14c1adc2b0fba9adc7594b722d6071fa47879e2a"
+      },
+      "baseline": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:17185c3262ffc0b5c7f0d5cf14c1adc2b0fba9adc7594b722d6071fa47879e2a"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment only narrows which recorded fingerprints are compared in the manifest's revision; git is still only read and nothing new is written under the spec root",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:b10b6ae0570b22150982462aa7bd7bee5c89bbb07874cff73750c5086c6c0589",
+        "section Ranges over": "h1:1e4a2f2823dd20bfaa4138286d17f354a6bcc509462d5c76f12d9cf2411e7c72",
+        "section Rationale": "h1:9d613577fa197acd65e2e0d6e05f1f757f3dae1b469b03c8ee0eb9b094cbf3b7"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.former",
+        "baseline.impact",
+        "baseline.impact.events"
+      ],
+      "text": "The third Provided step of baseline.diff.former now depends on which former text the command reads, but for impact the tree says only that it 'derives the element diff as diff does'. It is not decided whether impact reads the former text of every changed and removed part, as diff does, or only the baseline When steps that baseline.impact.events needs. So whether impact refuses a tree that diff refuses, or accepts one diff accepts, is left open.",
+      "status": "resolved",
+      "reason": "edited in 1f29863"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.former",
+        "baseline.verify"
+      ],
+      "text": "verify derives the element diff and the candidates as impact does, and baseline.impact.events reads the event head of a touched rule 'in the baseline', which is former text from git. But the When of baseline.diff.former names only diff, impact and pack, so no rule says where verify reads that former text, what it checks first, or what it does when it cannot read it.",
+      "status": "resolved",
+      "reason": "edited in 1f29863"
+    },
+    {
+      "id": "f3",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.malformed",
+        "baseline.diff.former",
+        "baseline.judge",
+        "baseline.verify"
+      ],
+      "text": "baseline.diff.former now names judge and verify beside diff, impact and pack, but baseline.diff.malformed, the rule for a manifest line that cannot be read, still names only diff, impact and pack and their exit statuses. judge and verify read manifest_file too, since they derive the element diff as impact does, so no rule says what they do with a damaged manifest, such as a merge conflict left in it.",
+      "status": "resolved",
+      "reason": "edited in fe0d365"
+    },
+    {
+      "id": "f4",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.malformed",
+        "baseline.diff.former",
+        "baseline.judge.input"
+      ],
+      "text": "baseline.diff.malformed and baseline.diff.former now stop judge with exit status 2 when manifest_file or the former text cannot be read, and baseline.judge.input stops it with exit status 1 when its input is no check_result. The judge feature orders only coherence_file before both (\"before it reads its input or derives the element diff\"). No rule decides whether the input or the element diff comes first, so a run with input that is not JSON and a damaged manifest_file (or a manifest committed with a tree that differs from it) may exit with 1 or with 2.",
+      "status": "resolved",
+      "reason": "edited in a6ed768"
+    }
+  ]
+}
