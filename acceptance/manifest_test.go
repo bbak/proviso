@@ -240,7 +240,88 @@ func TestBaselineManifestRemove(t *testing.T) {
 			t.Errorf("want %s unchanged: %v", featurePath, err)
 		}
 	})
-	t.Run("row5 .coherence.json, which cannot be removed", func(t *testing.T) {
+	t.Run("row5 .amendment.md, a Windows junction to a folder outside the spec root", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		outside := filledFolder(t, filepath.Join(r.dir, "outside"))
+		before := snapshotAll(t, outside)
+		if err := makeJunction(filepath.Join(r.root(), noteName), outside); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		removedAlone(t, r, outside, before)
+	})
+	t.Run("row6 .amendment.md, a folder holding a Windows junction to capabilities/", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		caps := filepath.Join(r.root(), "capabilities")
+		before := snapshotAll(t, caps)
+		note := filepath.Join(r.root(), noteName)
+		if err := os.Mkdir(note, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := makeJunction(filepath.Join(note, "caps"), caps); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		removedAlone(t, r, caps, before)
+	})
+	// A symbolic link to a folder is removed alone, as a junction is, where
+	// it stands for the note and inside a folder that does.
+	t.Run("derived: .amendment.md, a symbolic link to a folder outside the spec root", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		outside := filledFolder(t, filepath.Join(r.dir, "outside"))
+		before := snapshotAll(t, outside)
+		if err := os.Symlink(outside, filepath.Join(r.root(), noteName)); err != nil {
+			t.Skipf("cannot create a symbolic link here: %v", err)
+		}
+		removedAlone(t, r, outside, before)
+	})
+	t.Run("derived: .amendment.md, a folder holding a symbolic link to capabilities/", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		caps := filepath.Join(r.root(), "capabilities")
+		before := snapshotAll(t, caps)
+		note := filepath.Join(r.root(), noteName)
+		if err := os.Mkdir(note, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.Symlink(caps, filepath.Join(note, "caps")); err != nil {
+			t.Skipf("cannot create a symbolic link here: %v", err)
+		}
+		removedAlone(t, r, caps, before)
+	})
+	t.Run("derived: .amendment.md, a folder holding a folder holding a junction to a folder outside the spec root", func(t *testing.T) {
+		t.Parallel()
+		// No link is followed at any depth.
+		r := amendedRepo(t, iLimitThen)
+		outside := filledFolder(t, filepath.Join(r.dir, "outside"))
+		before := snapshotAll(t, outside)
+		deep := filepath.Join(r.root(), noteName, "a", "b")
+		if err := os.MkdirAll(deep, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(filepath.Join(deep, "item.md"), []byte("- refunds\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		if err := makeJunction(filepath.Join(deep, "out"), outside); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		removedAlone(t, r, outside, before)
+	})
+	t.Run("derived: .coherence.json, a Windows junction to a folder outside the spec root", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		outside := filledFolder(t, filepath.Join(r.dir, "outside"))
+		before := snapshotAll(t, outside)
+		if err := makeJunction(filepath.Join(r.root(), coherenceName), outside); err != nil {
+			t.Skipf("cannot create a junction here: %v", err)
+		}
+		removedAlone(t, r, outside, before)
+		if r.hasCoherence() {
+			t.Errorf("want the junction %s removed", coherenceName)
+		}
+	})
+	t.Run("row7 .coherence.json, which cannot be removed", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
 		r.judgeAll(nil)
@@ -258,7 +339,7 @@ func TestBaselineManifestRemove(t *testing.T) {
 			t.Errorf("want %s, which could not be removed, still there", coherenceName)
 		}
 	})
-	t.Run("row6 .coherence.json, which cannot be removed, and .amendment.md, which can", func(t *testing.T) {
+	t.Run("row8 .coherence.json, which cannot be removed, and .amendment.md, which can", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
 		r.judgeAll(nil)
@@ -291,6 +372,45 @@ func TestBaselineManifestRemove(t *testing.T) {
 			t.Errorf("want the folder %s removed", coherenceName)
 		}
 	})
+}
+
+// filledFolder makes dir a folder holding a file and a folder holding a
+// file, and returns it.
+func filledFolder(t *testing.T, dir string) string {
+	t.Helper()
+	if err := os.MkdirAll(filepath.Join(dir, "sub"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, f := range []string{"a.md", filepath.Join("sub", "b.md")} {
+		if err := os.WriteFile(filepath.Join(dir, f), []byte("- kept\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return dir
+}
+
+// removedAlone runs manifest in r, which must exit with 0 and remove the
+// amendment note (see manifestIn), and checks that the folder target, which
+// a link in what it removes points to, is entry for entry as before.
+func removedAlone(t *testing.T, r *repo, target string, before map[string]string) {
+	t.Helper()
+	r.manifest()
+	if r.hasNote() {
+		t.Errorf("want %s removed", noteName)
+	}
+	after := snapshotAll(t, target)
+	for p, v := range before {
+		if w, ok := after[p]; !ok {
+			t.Errorf("want %s, which a link pointed to, unchanged, but %s was removed", target, p)
+		} else if v != w {
+			t.Errorf("want %s, which a link pointed to, unchanged, but %s changed", target, p)
+		}
+	}
+	for p := range after {
+		if _, ok := before[p]; !ok {
+			t.Errorf("want %s, which a link pointed to, unchanged, but %s was created", target, p)
+		}
+	}
 }
 
 // lockCoherence makes the coherence file of r one that cannot be removed,
