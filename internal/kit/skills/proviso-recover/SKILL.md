@@ -135,7 +135,9 @@ only:
 - read the docs, the entry points and the layout of the code, and what
   the system's interfaces offer;
 - write `system.md`: its Goal, Rationale, Scope, Out of scope, Audience
-  and Design boundary, in place of the skeleton's `?`;
+  and Design boundary, in place of the skeleton's `?`; in the Design
+  boundary, name what the system takes as given beneath it and where
+  that stops, as the writing guide says;
 - propose to the engineer how the system falls into capabilities, by
   what it does, not by how its code is packaged; for each capability
   the engineer agrees to, write its `capability.md`, Goal and Rationale

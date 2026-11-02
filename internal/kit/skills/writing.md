@@ -46,6 +46,13 @@ Write for that reader.
 - Before you add a term, read the glossaries of the capability and the
   system. Reuse a term that means the same thing; never add a second
   term for it, and never redefine a system term in a capability.
+- What the system takes as given beneath it, such as the operating
+  system, a database, the network or a clock, goes in the system's
+  Design boundary, with the border where it stops: which cases stay the
+  system's to decide, such as a missing permission, and which it takes
+  as given, such as a full disk. The agents neither test nor handle
+  what it names, so it is worth naming early: without it they test
+  what the platform guarantees.
 
 ### Rules
 
