@@ -1476,7 +1476,7 @@
     {
       "id": "upkeep.rehome-references",
       "now": {
-        "body": "h1:9e20065d99c3ca086257e983234104a54e9a34799677adb3b21d6533ca8530b4",
+        "body": "h1:8b88719cacdb4c21237f9906141d2bdb5de9be59f897e9511a1c617ba7fe7106",
         "field Configurable": "h1:9390298f3fb0c5b160498935d79cb139aef28e1c47358b4bbba61862b9c26e59",
         "field Rationale": "h1:85d864cdc531085cbb867fa7fe0663b519ecf99209817a43ef0a2a66e1990c53",
         "heading": "h1:ac02fe85078f3ed8984f65c162706703cf51bbaf92f8c848c555b52086d97240"
@@ -3505,7 +3505,31 @@
         "upkeep.rehome.write"
       ],
       "text": "The inline-link and link reference definition rows of rehome_references rename any fragment that holds an old identifier, wherever the link's path leads. No rule says what happens to a link whose path leads to a file outside the spec tree, or to a file that does not hold that element, where the fragment only happens to read like an identifier. Upkeep's Rationale says rehome touches only what the notation marks as an identifier, so that case is open.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 46d6954"
+    },
+    {
+      "id": "f15",
+      "kind": "contradiction",
+      "elements": [
+        "upkeep.rehome-references",
+        "upkeep.rehome",
+        "upkeep.rehome.writes"
+      ],
+      "text": "upkeep.rehome-references renames the fragment of a link that leads out of the spec tree. upkeep.rehome.writes keeps every change under the spec root, so the anchor that link leads to stays as it was, and the link stops reaching it or reaches something else. That works against the Goal of upkeep.rehome that 'the tree says the same as before', and against the parameter's own Rationale that only places where the notation marks an identifier are renamed: the notation marks nothing about an anchor outside the tree.",
+      "status": "dismissed",
+      "reason": "Decided in f14: a link out of the tree whose fragment is an identifier of the tree is taken as a link to that element, such as a repository URL of the tree's file."
+    },
+    {
+      "id": "f16",
+      "kind": "gap",
+      "elements": [
+        "upkeep.rehome-references",
+        "upkeep.rehome.write"
+      ],
+      "text": "A reference link inside an Examples cell, such as `[cm]`, takes its destination from a link reference definition outside the cell. upkeep.rehome-references renames that definition, so the cell's link now leads to the new identifier although its text is unchanged. Yet the parameter says that an identifier in an Examples cell may be data and stays as it is. No rule says whether a definition that such a cell uses is renamed.",
+      "status": "dismissed",
+      "reason": "The cell holds no identifier, only a label; the identifier stands in the link reference definition, which rehome_references lists, so the link keeps reaching its element."
     }
   ]
 }
