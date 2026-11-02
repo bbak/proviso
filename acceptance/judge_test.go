@@ -108,9 +108,9 @@ func TestBaselineJudgeInput(t *testing.T) {
 	// judgeIn), and the same bytes where judge wrote it before.
 	refusedInputs := []struct{ name, input string }{
 		{"row3 not JSON", "this is no JSON"},
-		{"row4 a finding with both a kind and an id", `{"findings": [{"kind": "gap", "text": "A gap.", "id": "f1", "status": "resolved"}]}`},
-		{"row5 one element in two judgements", `{"judgements": [{"reason": "one", "elements": ["cart.add.full"]}, {"reason": "two", "elements": ["cart.add.full", "cart.bounded"]}]}`},
-		{"row6 a judgement and a finding with an id", `{"judgements": [{"reason": "untouched", "elements": ["cart.add.full"]}], "findings": [{"id": "f1", "status": "resolved"}]}`},
+		{"row5 a finding with both a kind and an id", `{"findings": [{"kind": "gap", "text": "A gap.", "id": "f1", "status": "resolved"}]}`},
+		{"row6 one element in two judgements", `{"judgements": [{"reason": "one", "elements": ["cart.add.full"]}, {"reason": "two", "elements": ["cart.add.full", "cart.bounded"]}]}`},
+		{"row7 a judgement and a finding with an id", `{"judgements": [{"reason": "untouched", "elements": ["cart.add.full"]}], "findings": [{"id": "f1", "status": "resolved"}]}`},
 		{"derived: a new finding and a finding with an id", `{"findings": [{"kind": "gap", "text": "Another gap."}, {"id": "f1", "status": "dismissed", "reason": "decided in system.git"}]}`},
 		{"derived: nothing on stdin", ""},
 		{"derived: a JSON array", `[]`},
@@ -148,6 +148,44 @@ func TestBaselineJudgeInput(t *testing.T) {
 			}
 		})
 	}
+
+	// The input is read before the element diff is derived, so input that
+	// is no check_result is refused even where manifest.sum cannot be read
+	// (baseline.diff.malformed).
+	conflicted := func(t *testing.T, r *repo) {
+		t.Helper()
+		p := filepath.Join(r.root(), "manifest.sum")
+		b, err := os.ReadFile(p)
+		if err != nil {
+			t.Fatal(err)
+		}
+		first, rest, _ := strings.Cut(string(b), "\n")
+		if err := os.WriteFile(p, []byte(first+"\n<<<<<<< HEAD\n"+rest), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	t.Run("row4 not JSON, with a merge conflict left in manifest.sum", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		conflicted(t, r)
+		refused(t, r.judgeRaw("this is no JSON"), 1)
+		if r.hasCoherence() {
+			t.Errorf("want no %s, as nothing was recorded", coherenceName)
+		}
+		// A check_result, given the same manifest.sum, reaches it.
+		refused(t, r.judgeRaw("{}"), 2)
+	})
+	t.Run("row4 not JSON, with a merge conflict left in manifest.sum, with a check recorded before", func(t *testing.T) {
+		t.Parallel()
+		r := amendedRepo(t, iLimitThen)
+		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
+		before := r.coherence()
+		conflicted(t, r)
+		refused(t, r.judgeRaw("this is no JSON"), 1)
+		if r.coherence() != before {
+			t.Errorf("want %s as it was", coherenceName)
+		}
+	})
 }
 
 func TestBaselineJudgeAmendment(t *testing.T) {
@@ -721,5 +759,91 @@ func TestSystemCoherenceFile(t *testing.T) {
 		if p := r.verify().has(t, "open f1"); p.Text != "Lücke — „quoted“" {
 			t.Errorf("want the finding's text as given, got %q", p.Text)
 		}
+	})
+}
+
+// TestBaselineDiffFormer_Judge runs the cases of baseline.diff.former with
+// `judge`, given a check_result that holds no judgement and no finding. judge
+// names no revision, so a case that reads former text shows only in judge
+// recording the check; judgeIn checks that coherence_file stays as it was
+// where judge does not exit with 0.
+func TestBaselineDiffFormer_Judge(t *testing.T) {
+	t.Parallel()
+	t.Run("row1 the manifest committed, the tree edited since", func(t *testing.T) {
+		t.Parallel()
+		amendedRepo(t, iLimitThen).judgeOK(checkResult{})
+	})
+	t.Run("row2 a merge that took the manifest from the mainline", func(t *testing.T) {
+		t.Parallel()
+		// The branch's Body of the count changed; the merge commit holds it
+		// as changed too, so only e5f6 holds its former text.
+		r := mergedMainline(t, []change{iCountBody}, []change{iLimitThen})
+		r.set(amended(impactTree(), iCountBody, iLimitThen, iLimitProvided))
+		r.judgeOK(checkResult{})
+	})
+	t.Run("row3 the spec root in no git repository", func(t *testing.T) {
+		t.Parallel()
+		dir := impactTree().write(t)
+		skipIfGitAbove(t, dir)
+		manifestOK(t, dir)
+		amended(impactTree(), iLimitThen).writeTo(t, dir, false)
+		refused(t, judgeIn(t, dir, dir, filepath.Join(dir, "proviso"), "{}"), 2)
+	})
+	t.Run("row4 the manifest written but never committed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.commit("tree")
+		r.manifest()
+		r.set(amended(impactTree(), iLimitThen))
+		refused(t, r.judge(checkResult{}), 2)
+	})
+	t.Run("row5 the manifest written again since and not committed", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, impactTree())
+		r.set(amended(impactTree(), iLimitThen))
+		r.manifest()
+		r.set(amended(impactTree(), iLimitThen, iLimitProvided))
+		refused(t, r.judge(checkResult{}), 2)
+	})
+	t.Run("row6 the manifest committed together with a tree that differs from it in a part the element diff lists as changed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iLimitProvided))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+		refused(t, r.judge(checkResult{}), 2)
+	})
+	t.Run("row7 the manifest committed together with a tree that differs from it only in parts the element diff does not list as changed or removed", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iCountBody))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitThen))
+		r.judgeOK(checkResult{})
+	})
+	t.Run("derived: row6 with a check recorded before", func(t *testing.T) {
+		t.Parallel()
+		r := newRepo(t, impactTree())
+		r.manifest()
+		r.set(amended(impactTree(), iLimitProvided))
+		r.commit("a1b2")
+		r.set(amended(impactTree(), iLimitThen))
+		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
+		before := r.coherence()
+		r.set(amended(impactTree(), iLimitProvided, iLimitThen))
+		refused(t, r.judge(checkResult{}), 2)
+		if r.coherence() != before {
+			t.Errorf("want %s as it was", coherenceName)
+		}
+	})
+	t.Run("derived: added rules need no former text, and no git", func(t *testing.T) {
+		t.Parallel()
+		dir := impactTree().write(t)
+		manifestOK(t, dir)
+		skipIfGitAbove(t, dir)
+		amended(impactTree(), addTip).writeTo(t, dir, false)
+		refused(t, judgeIn(t, dir, dir, filepath.Join(dir, "proviso"), "{}"), 0)
 	})
 }
