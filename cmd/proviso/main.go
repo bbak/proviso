@@ -83,8 +83,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 	case "lint":
 		return lintRun(t, res, asJSON, stdout, stderr)
 	case "manifest", "diff", "impact", "pack", "judge", "verify":
-		// baseline.run.lint: only where lint finds no error, and without
-		// writing what lint would write.
+		// baseline.run.lint for manifest, diff and pack, coherence.run.lint
+		// for impact, judge and verify: only where lint finds no error, and
+		// without writing what lint would write.
 		if lint.HasError(res.Findings) {
 			report.Text(stderr, res.Findings)
 			return exitCantRun
