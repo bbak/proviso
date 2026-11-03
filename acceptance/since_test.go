@@ -179,6 +179,63 @@ func TestBaselineDiffSince(t *testing.T) {
 				}
 				since(t, r, cmd, c3d4).stopped(t)
 			})
+			t.Run("row8 a1b2, whose manifest.sum names another model version", func(t *testing.T) {
+				t.Parallel()
+				r, _ := accepted(t, diffTree())
+				path := filepath.Join(r.root(), "manifest.sum")
+				intact, err := os.ReadFile(path)
+				if err != nil {
+					t.Fatal(err)
+				}
+				_, rest, _ := strings.Cut(string(intact), "\n")
+				if err := os.WriteFile(path, []byte("model 1\n"+rest), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				r.set(diffTree().apply(xThen))
+				if l := execLint(t, r.dir); l.exit == 0 {
+					t.Fatalf("want lint to refuse the tree whose manifest names model 1, got exit status 0")
+				}
+				a1b2 := r.commit("round 1, the manifest of another model version")
+				// The manifest in the spec root of this model version again,
+				// so that only the one at the revision names another.
+				if err := os.WriteFile(path, intact, 0o644); err != nil {
+					t.Fatal(err)
+				}
+				r.set(diffTree().apply(xThen, limitThen))
+				if l := execLint(t, r.dir); l.exit != 0 {
+					t.Fatalf("want the tree as it stands now to pass lint, got exit status %d:\n%s%s", l.exit, l.stdout, l.stderr)
+				}
+				since(t, r, cmd, a1b2).stopped(t)
+			})
+			t.Run("row9 a1b2, whose tree holds x.md as a symbolic link", func(t *testing.T) {
+				t.Parallel()
+				r, _ := accepted(t, diffTree())
+				// The link points out of the tree to a file holding x.md as
+				// it was, committed beside it: followed, it would give a
+				// tree lint accepts; skipped, it
+				// would show x.md's elements removed. Either way the command
+				// would run. The link goes into the commit through git's
+				// index, so that no platform has to create one on disk.
+				xMD := diffTree()[xPath]
+				r.set(diffTree().without(xPath).with("outside/x.md", xMD))
+				r.git("add", "-A")
+				target := filepath.Join(t.TempDir(), "target")
+				if err := os.WriteFile(target, []byte("../../../../outside/x.md"), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				blob := r.git("hash-object", "-w", target)
+				r.git("update-index", "--add", "--cacheinfo", "120000,"+blob+","+xPath)
+				r.git("commit", "-q", "-m", "round 1, x.md a link")
+				a1b2 := r.git("rev-parse", "HEAD")
+				if mode := strings.Fields(r.git("ls-tree", a1b2, "--", xPath)); len(mode) == 0 || mode[0] != "120000" {
+					t.Fatalf("want x.md a symbolic link at %s, got %v", a1b2, mode)
+				}
+				r.set(diffTree().apply(limitThen))
+				if l := execLint(t, r.dir); l.exit != 0 {
+					t.Fatalf("want the tree as it stands now to pass lint, got exit status %d:\n%s%s", l.exit, l.stdout, l.stderr)
+				}
+				since(t, r, cmd, a1b2).stopped(t)
+			})
 			t.Run("derived: the manifest written but never committed", func(t *testing.T) {
 				t.Parallel()
 				// Without --since, this stops (baseline.diff.former).
