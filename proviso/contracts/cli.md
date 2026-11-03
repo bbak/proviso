@@ -544,7 +544,7 @@ A run of the coherence check:
       "elements": ["lint.examples.cells", "lint.run.root"] }
   ],
   "findings": [
-    { "kind": "gap", "elements": ["baseline.impact.events"],
+    { "kind": "gap", "elements": ["coherence.impact.events"],
       "text": "No rule says what happens when a When has no step text." }
   ]
 }
