@@ -27,7 +27,7 @@ and records them in `coherence_file`, which only `judge` writes.
 `judge` reads `coherence_file`, if the spec root holds one, before it
 reads its input, and its input before it derives the element diff, once
 lint has found no error; one it cannot read stops it, as
-`baseline.judge.unreadable` says.
+`coherence.judge.unreadable` says.
 
 ## <a id="coherence.judge.input"></a> Rule: Judge reads a check result
 
@@ -106,7 +106,7 @@ Otherwise `judge` writes to "stderr" that the [finding] names an [element] neith
 
 | elements | provided | outcome | why |
 | --- | --- | --- | --- |
-| `baseline.impact.events`, with `f1` and `f2` recorded before | yes | recorded as `f3` | |
+| `coherence.impact.events`, with `f1` and `f2` recorded before | yes | recorded as `f3` | |
 | none, with no finding recorded before | yes | recorded as `f1` | a gap may stand beside every element |
 | `lint.run.root`, removed by the amendment | yes | recorded | the baseline holds it |
 | `lint.run.nosuch` | no | exit status 1 | |
