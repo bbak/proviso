@@ -12,7 +12,8 @@ import (
 // baseRun runs the baseline or coherence command cmd in cwd: `manifest`,
 // `judge` with a check result of no judgements and no findings, or `diff`,
 // `impact`, `pack` or `verify` with --json (diffIn, impactIn, packIn and
-// verifyIn run them without as well). root
+// verifyIn run them without as well), or "pack --element", which names the
+// system (packElementIn runs it without --json as well). root
 // is the spec root the command is expected to work on, if any.
 func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 	t.Helper()
@@ -27,6 +28,8 @@ func baseRun(t *testing.T, cmd, base, cwd, root string) run {
 		return impactIn(t, base, cwd, root).json
 	case "pack":
 		return packIn(t, base, cwd, root).json
+	case "pack --element":
+		return packElementIn(t, base, cwd, root, "system").json
 	}
 	return diffIn(t, base, cwd, root).json
 }
@@ -45,7 +48,9 @@ func lintLines(t *testing.T, cwd string) []string {
 
 func TestBaselineRunLint(t *testing.T) {
 	t.Parallel()
-	runsOnlyWhereLintAccepts(t, "manifest", "diff", "pack")
+	// "pack --element": the pack of a named element is a run of pack with
+	// an argument it takes.
+	runsOnlyWhereLintAccepts(t, "manifest", "diff", "pack", "pack --element")
 }
 
 // runsOnlyWhereLintAccepts checks, for each of the commands cmds, the Examples

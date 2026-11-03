@@ -20,11 +20,13 @@ import (
 var installedFiles = []string{
 	".claude/agents/proviso-checker.md",
 	".claude/agents/proviso-coder.md",
+	".claude/agents/proviso-mutator.md",
 	".claude/agents/proviso-tester.md",
 	".claude/skills/proviso-accept/SKILL.md",
 	".claude/skills/proviso-build/SKILL.md",
 	".claude/skills/proviso-check/SKILL.md",
 	".claude/skills/proviso-integrate/SKILL.md",
+	".claude/skills/proviso-mutate/SKILL.md",
 	".claude/skills/proviso-recover/SKILL.md",
 	".claude/skills/proviso-rehome/SKILL.md",
 	".proviso/build.md",
@@ -34,6 +36,18 @@ var installedFiles = []string{
 	"proviso/.markdownlint.jsonc",
 	"proviso/system.md",
 }
+
+// agentDefinitions is the number of agent definitions installed_files names:
+// they come first in the byte order of the paths.
+var agentDefinitions = func() int {
+	n := 0
+	for _, q := range installedFiles {
+		if strings.HasPrefix(q, ".claude/agents/") {
+			n++
+		}
+	}
+	return n
+}()
 
 func isInstalled(p string) bool {
 	for _, q := range installedFiles {
