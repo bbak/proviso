@@ -446,10 +446,13 @@ func TestSince(t *testing.T) {
 	write("proviso/system.md", system)
 	a1 := commit()
 	write("proviso/system.md", strings.Replace(system, "\ng\n", "\ngoal\n", 1))
-	write("proviso/manifest.sum", "<<<<<<< HEAD\n")
+	write("proviso/manifest.sum", "model 99\n")
+	m9 := commit()
+	write("proviso/manifest.sum", "model 0\n<<<<<<< HEAD\n")
 	write("proviso/notes.md", "x")
 	c3 := commit()
 	os.Remove("proviso/notes.md")
+	d5 := commit()
 
 	cases := []struct {
 		name   string
@@ -461,7 +464,9 @@ func TestSince(t *testing.T) {
 		{"former text from a1", []string{"diff", "--json", "--since", a1}, 1, `"former": "g\n"`},
 		{"before the tree", []string{"diff", "--json", "--since", before}, 1, `"change": "added"`},
 		{"no former text needed", []string{"diff", "--json", "--since", before}, 1, `"revision": null`},
-		{"pack since a1", []string{"pack", "--since", "HEAD~1"}, 0, "Former text from `" + a1 + "`."},
+		{"pack since a1", []string{"pack", "--since", "HEAD~3"}, 0, "Former text from `" + a1 + "`."},
+		{"manifest there damaged after its first line", []string{"diff", "--since", d5}, 0, ""},
+		{"another model version there", []string{"diff", "--since", m9}, 2, ""},
 		{"no such commit", []string{"diff", "--since", "nosuch"}, 2, ""},
 		{"lint error there", []string{"pack", "--since", c3}, 2, ""},
 		{"no revision", []string{"diff", "--since"}, 2, ""},
@@ -483,6 +488,13 @@ func TestSince(t *testing.T) {
 				t.Error("nothing on stderr")
 			}
 		})
+	}
+	// baseline.run.lint: lint refuses a manifest of another model version,
+	// with --since too.
+	write("proviso/manifest.sum", "model 99\n")
+	var out, errOut bytes.Buffer
+	if status := run([]string{"diff", "--since", a1}, &out, &errOut); status != 2 || out.Len() > 0 || !strings.Contains(errOut.String(), "model version 99") {
+		t.Errorf("another model version here: %d %q %q", status, out.String(), errOut.String())
 	}
 }
 

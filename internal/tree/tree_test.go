@@ -259,7 +259,7 @@ func TestFromFiles(t *testing.T) {
 	for _, f := range tr.Files {
 		rels = append(rels, f.Rel)
 	}
-	if want := []string{"capabilities/c/capability.md", "capabilities/d/features/Run.md", "capabilities/e/features/\u00fc.md", "system.md"}; !slices.Equal(rels, want) {
+	if want := []string{"capabilities/c/capability.md", "capabilities/d/features/Run.md", "capabilities/e/features/\u00fc.md", "manifest.sum", "system.md"}; !slices.Equal(rels, want) {
 		t.Errorf("files %v, want %v", rels, want)
 	}
 }

@@ -75,10 +75,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 	case "version":
 		return versionRun(stdout, stderr)
 	}
-	// baseline.diff.since: since a revision, manifest.sum is not read. The
-	// pack of a named element derives nothing from it, but lint.run.model
-	// checks its first line as for every command lint precedes.
-	t, res, ok := check(cmd, o.since == "", stderr)
+	// lint.run.model checks the first line of manifest.sum for every command
+	// lint precedes, with --since and --element too.
+	t, res, ok := check(cmd, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -117,9 +116,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 
 // check finds the spec root as lint does, reads its tree completely,
-// checks, if readManifest, that it is of this binary's model version, and
-// lints it. It writes to stderr why it could not.
-func check(cmd string, readManifest bool, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
+// checks that it is of this binary's model version, and lints it. It
+// writes to stderr why it could not.
+func check(cmd string, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
 	wd, err := os.Getwd()
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso %s: %v\n", cmd, err)
@@ -138,7 +137,7 @@ func check(cmd string, readManifest bool, stderr io.Writer) (*tree.Tree, *lint.R
 		}
 		return nil, nil, false
 	}
-	if data, ok := t.Manifest(); ok && readManifest {
+	if data, ok := t.Manifest(); ok {
 		if err := baseline.CheckModel(data); err != nil {
 			fmt.Fprintf(stderr, "proviso %s: %v\n", cmd, err)
 			return nil, nil, false
