@@ -293,12 +293,13 @@ func TestPackCommand(t *testing.T) {
 	}
 }
 
-// The pack of a named element reads neither the manifest, the amendment
-// note nor git history: none of them stops it.
+// The pack of a named element reads neither the manifest beyond the first
+// line lint checks, the amendment note nor git history: none of them
+// stops it.
 func TestPackElementCommand(t *testing.T) {
 	inRepo(t, map[string]string{
 		"proviso/system.md":     system,
-		"proviso/manifest.sum":  "model 99\n<<<<<<< HEAD\n",
+		"proviso/manifest.sum":  "model 0\n<<<<<<< HEAD\n",
 		"proviso/.amendment.md": "- refunds\n",
 	})
 	call := func(args ...string) (int, string, string) {
@@ -317,6 +318,11 @@ func TestPackElementCommand(t *testing.T) {
 	}
 	if status, out, errOut := call("pack", "--element", "system.gone"); status != 2 || out != "" || !strings.Contains(errOut, `no element "system.gone"`) {
 		t.Errorf("no such element: %d %q %q", status, out, errOut)
+	}
+	// lint.run.model: lint, which precedes it, checks the first line.
+	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 1\n"), 0o644)
+	if status, out, errOut := call("pack", "--element", "system"); status != 2 || out != "" || !strings.Contains(errOut, "model version 1") {
+		t.Errorf("another model version: %d %q %q", status, out, errOut)
 	}
 }
 

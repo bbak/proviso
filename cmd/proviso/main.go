@@ -75,9 +75,10 @@ func run(args []string, stdout, stderr io.Writer) int {
 	case "version":
 		return versionRun(stdout, stderr)
 	}
-	// baseline.diff.since: since a revision, manifest.sum is not read;
-	// baseline.pack.element: nor for the pack of a named element.
-	t, res, ok := check(cmd, o.since == "" && o.element == "", stderr)
+	// baseline.diff.since: since a revision, manifest.sum is not read. The
+	// pack of a named element derives nothing from it, but lint.run.model
+	// checks its first line as for every command lint precedes.
+	t, res, ok := check(cmd, o.since == "", stderr)
 	if !ok {
 		return exitCantRun
 	}
