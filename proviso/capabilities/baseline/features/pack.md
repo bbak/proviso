@@ -109,9 +109,9 @@ A test of an element can need writing when no amendment touches it,
 such as when a mutant of the code that carries out a rule survives
 every test. Its pack gives the testing agent that element and what it
 needs to read it, as the pack of an amendment would. It derives no
-element diff, so that nothing of the manifest is read beyond the first
-line `lint`, run first, checks, and no git history: the element is
-read as it stands. The amendment note belongs to an
+element diff, so that nothing of the manifest is read beyond what
+`lint`, run first, checks, and no git history: the element is read as
+it stands. The amendment note belongs to an
 amendment, and is not read either, so that an amendment in progress
 never stops the pack of an element. One element per pack keeps the option as
 simple as `--since`; a skill asks again for the next.
