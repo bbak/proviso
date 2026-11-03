@@ -14,4 +14,6 @@ A line diff cannot tell a moved rule from a new one, or a reflowed
 paragraph from a changed guard, and a flag set by hand is forgotten.
 Fingerprints of each element's parts, kept in a manifest, let the element
 diff find every change mechanically. Everything derived from an amendment
-later, impact sets and context packs, starts from this diff.
+later, impact sets and context packs, starts from this diff. Only the
+context pack of one named element starts from none: it serves a test
+written outside any amendment.

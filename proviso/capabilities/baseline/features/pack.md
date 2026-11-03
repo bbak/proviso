@@ -5,8 +5,8 @@
 ## Goal
 
 The context pack gives the implementing agents and the checking agent
-the element diff and everything they need to read it, and nothing else
-of the spec tree, so that each builds or checks from what the tree says
+the element diff, or one element a skill names, and everything they
+need to read it, and nothing else of the spec tree, so that each builds or checks from what the tree says
 and lists what it does not say.
 
 ## Rationale
@@ -30,12 +30,13 @@ between testing, coding and checking is the skill's job. The pack holds what the
 tree says about the system; how to read it is Proviso's own, and comes
 with the agents, not with the pack.
 
-`pack` derives the element diff as `diff` does.
+`pack` derives the element diff as `diff` does, unless it is run with
+`pack.element`.
 
 ## <a id="baseline.pack.contents"></a> Rule: The system and the element diff are always in the pack
 
 ```guarded
-When      `pack` assembles the [context pack] of the [element diff] <diff>
+When      `pack`, run without `pack.element`, assembles the [context pack] of the [element diff] <diff>
 Then      the system is taken for "System"
   And     every [element] <diff> lists is taken for "Amendment", with everything <diff> lists for it
 ```
@@ -59,7 +60,7 @@ than the commit message, which is written for people, so that the pack
 does not depend on how a message is worded.
 
 ```guarded
-When      `pack` assembles the [context pack] of the [spec root] <root>
+When      `pack`, run without `pack.element`, assembles the [context pack] of the [spec root] <root>
 Provided  <root> holds an `amendment_note` that holds more than whitespace
 Then      the text of that `amendment_note` is taken for "Not in this amendment", as the file holds it
   And     everything else stays as it was
@@ -100,11 +101,42 @@ Otherwise `pack` writes to "stderr" that `amendment_note` cannot be read
 | a file holding bytes that are not UTF-8 | no | exit status 2 | the JSON could not carry it unchanged |
 | a symbolic link to a file holding "- refunds" | no | exit status 2 | a link is not followed |
 
+## <a id="baseline.pack.element"></a> Rule: A named element takes the place of the element diff
+
+### Rationale
+
+A test of an element can need writing when no amendment touches it,
+such as when a mutant of the code that carries out a rule survives
+every test. Its pack gives the testing agent that element and what it
+needs to read it, as the pack of an amendment would. It derives no
+element diff, so that neither the manifest nor git history is read:
+the element is read as it stands. The amendment note belongs to an
+amendment, and stays out. One element per pack keeps the option as
+simple as `--since`; a skill asks again for the next.
+
+```guarded
+When      `pack` assembles the [context pack], run with `pack.element` naming the [identifier] <id>
+Provided  the [spec tree] has an [element] with the [identifier] <id>
+Then      the system is taken for "System", and that [element] for "Element"
+  And     nothing is taken for "Amendment" or "Not in this amendment", and no [element diff] is derived, so that neither `manifest_file` nor git history is read
+Otherwise `pack` writes to "stderr" that the [spec tree] holds no [element] <id>
+  And     `pack` exits with `pack.exit-status` 2
+  And     nothing goes to "stdout"
+```
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| `lint.run.exit` | yes | `system` and `lint.run.exit` taken | |
+| `lint.run.exit`, with `.amendment.md` holding "- refunds" and an element diff listing `lint.run.root` | yes | `system` and `lint.run.exit` taken, nothing else for "Amendment" or "Not in this amendment" | the amendment in progress stays out |
+| `lint.run.exit`, with no `manifest.sum` | yes | `system` and `lint.run.exit` taken | no manifest is read |
+| `lint.run.gone`, an identifier the tree does not hold | no | exit status 2 | |
+| `lint.run.root`, removed since the baseline | no | exit status 2 | a removed element is no longer in the tree |
+
 ## <a id="baseline.pack.frames"></a> Rule: A listed element brings the frames of its levels
 
 ```guarded
-When      `pack` takes the [element] <element>, which the [element diff] lists
-Provided  <element> is listed as added, changed or changed through a dependency
+When      `pack` takes the [element] <element>, which the [element diff] lists or `pack.element` names
+Provided  <element> is named by `pack.element`, or listed as added, changed or changed through a dependency
 Then      the feature and the capability that hold <element> or are <element>, where there are such, are taken for "Frames"
   And     so is every invariant of that feature, every invariant and constraint of that capability, and every invariant and constraint of the system
 Otherwise nothing is taken for "Frames" because of <element>
@@ -117,11 +149,12 @@ Otherwise nothing is taken for "Frames" because of <element>
 | `baseline.former-text`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
 | `system.git`, its Property changed | yes | the system's constraints taken | no feature or capability holds it |
 | `lint.run.root`, removed | no | nothing taken because of it | what was built for it is retired, not built |
+| `lint.run.exit`, named by `--element` | yes | `lint`, `lint.run`, `lint.run.read-only` and the system's constraints taken | a named element is read as an added one |
 
 ## <a id="baseline.pack.chain"></a> Rule: The context follows the reading chain to its end
 
 ```guarded
-When      `pack` takes the [element] <element> for "Amendment" or "Context"
+When      `pack` takes the [element] <element> for "Amendment", "Element" or "Context"
 Provided  <element> is not listed as removed
 Then      every [element] <element> depends on by `dependencies`, and the [contract element] holding <element> if it is a [member], is taken for "Context"
   And     every [element] taken so is taken in turn, and every [element] once
@@ -136,6 +169,7 @@ Otherwise nothing is taken for "Context" because of <element>
 | a changed rule marking a term defined by `system.ref.commonmark` | yes | the term and `system.ref.commonmark` taken | an unchanged standard still needs its version read |
 | a changed rule marking [spec root] | yes | `system.spec-root` taken, and none of the other rules marking it | sharing a term is no link |
 | `lint.run.root`, removed | no | nothing taken because of it | |
+| `baseline.diff.added`, named by `--element` | yes | `baseline.diff.changed` taken, and every term both rules mark | followed as for a listed element |
 
 ## <a id="baseline.pack.once"></a> Rule: Every element appears once
 
@@ -143,12 +177,13 @@ Otherwise nothing is taken for "Context" because of <element>
 
 An element written twice costs the agents its length again, and two
 copies read as two elements. A listed element shows what happened to
-it, so it stands under "Amendment" wherever else it was taken.
+it, so it stands under "Amendment" wherever else it was taken; a named
+element is the one the agent works on, so it stands under "Element".
 
 ```guarded
 When      `pack` has taken the [element] <element> for "System", "Frames" or "Context"
-Provided  the [element diff] lists <element>
-Then      <element> appears under "Amendment" only
+Provided  the [element diff] lists <element>, or `pack.element` names it
+Then      <element> appears under "Amendment" or "Element" only, whichever it was taken for
   And     everything else stays as it was
 Otherwise <element> appears once under the heading it was taken for, however often it was taken
   And     everything else stays as it was
@@ -159,6 +194,7 @@ Otherwise <element> appears once under the heading it was taken for, however oft
 | `system`, its Scope changed | yes | under "Amendment" only | the change shows |
 | `lint.run`, its Goal changed, holding a changed rule | yes | under "Amendment" only | not repeated under "Frames" |
 | `lint.step`, its Definition changed, marked by a changed rule | yes | under "Amendment" only | not repeated under "Context" |
+| `system`, named by `--element` | yes | under "Element" only | not repeated under "System" |
 | `lint.run`, unchanged, holding two changed rules | no | under "Frames" once | |
 | `system.spec-root`, unchanged, marked by two changed rules | no | under "Context" once | |
 
@@ -204,3 +240,4 @@ Otherwise `pack` writes <pack> to "stdout" as `pack_text`
 | for one changed rule | `--json` | yes | a `context_pack`, exit status 0 | |
 | for one changed rule | none | no | `pack_text`, exit status 0 | |
 | for an empty element diff, without `.amendment.md` | none | no | `pack_text` with "System" only, exit status 0 | |
+| for `lint.run.exit`, named by `--element` | `--json` | yes | a `context_pack` with an empty `diff` and a null `note`, exit status 0 | |

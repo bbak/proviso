@@ -84,17 +84,20 @@ Otherwise → cli.help.argument
 
 `--json` given twice asks for the same thing twice, so it is read
 twice; a second `--since` would ask for two revisions, and the command
-would have to choose one. The revision after `--since` belongs to that
-option and is not read as an argument of its own. No revision git
-accepts starts with "-", so an argument that does is a forgotten
-revision, not one to ask git about.
+would have to choose one. A second `--element` would ask for a pack of
+two elements, which `pack` does not assemble, and a pack of a named
+element comes from no revision, so `--since` and `--element` exclude
+each other. The value after either belongs to that option and is not
+read as an argument of its own. No revision git accepts and no
+identifier starts with "-", so an argument that does is a forgotten
+value, not one to look up.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `verify.json`, `rehome.write` and `rehome.json` define
-  And     <rest> start with a revision that is not empty and does not start with "-", where <argument> is "--since"
-  And     <before> hold no "--since", where <argument> is "--since"
-Then      <command> reads <argument>, with the revision after it where <argument> is "--since"
+Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write` and `rehome.json` define
+  And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since" or "--element"
+  And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element"
+Then      <command> reads <argument>, with the value after it where <argument> is "--since" or "--element"
   And     <command> goes on with the arguments after them
 Otherwise <command> writes to "stderr" one line naming <command> and <argument>, and that "proviso help" shows the help page
   And     <command> exits with 2, as its exit status defines
@@ -107,6 +110,7 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | lint | --json | --json | none | yes | read | the same option twice asks for the same |
 | diff | none | --since | `HEAD~1` | yes | read, with `HEAD~1` | |
 | pack | --json | --since | `a1b2c3d` | yes | read, with `a1b2c3d` | |
+| pack | --json | --element | `lint.run.exit` | yes | read, with `lint.run.exit` | |
 | rehome | --json | --write | none | yes | read | |
 | version | none | 0.1.0 | none | no (takes) | refused, exit status 2 | `version` takes no argument |
 | init | none | --json | none | no (takes) | refused, exit status 2 | |
@@ -114,7 +118,12 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | help | none | diff | none | no (takes) | refused, exit status 2 | |
 | lint | none | --since | `HEAD~1` | no (takes) | refused, exit status 2 | only `diff` and `pack` compare with a revision |
 | diff | none | --help | none | no (takes) | refused, exit status 2 | the page is `help`'s alone |
-| diff | none | --since | none | no (a revision after it) | refused, exit status 2 | |
-| pack | none | --since | `""` | no (a revision after it) | refused, exit status 2 | an empty revision names nothing |
-| diff | none | --since | --json | no (a revision after it) | refused, exit status 2 | an option is no revision |
-| diff | --since `HEAD~1` | --since | `HEAD~2` | no (no "--since" before it) | refused, exit status 2 | two revisions contradict |
+| diff | none | --element | `lint.run.exit` | no (takes) | refused, exit status 2 | only `pack` names an element |
+| diff | none | --since | none | no (a value after it) | refused, exit status 2 | |
+| pack | none | --since | `""` | no (a value after it) | refused, exit status 2 | an empty revision names nothing |
+| diff | none | --since | --json | no (a value after it) | refused, exit status 2 | an option is no revision |
+| pack | none | --element | none | no (a value after it) | refused, exit status 2 | |
+| diff | --since `HEAD~1` | --since | `HEAD~2` | no (neither before it) | refused, exit status 2 | two revisions contradict |
+| pack | --element `lint.run.exit` | --element | `lint.run.root` | no (neither before it) | refused, exit status 2 | one element per pack |
+| pack | --since `HEAD~1` | --element | `lint.run.exit` | no (neither before it) | refused, exit status 2 | a named element comes from no revision |
+| pack | --element `lint.run.exit` | --since | `HEAD~1` | no (neither before it) | refused, exit status 2 | |
