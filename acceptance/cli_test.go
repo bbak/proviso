@@ -18,7 +18,7 @@ import (
 var commands = []string{"init", "update", "version", "lint", "manifest", "diff", "impact", "pack", "judge", "verify", "rehome", "help"}
 
 // options are the options the commands take.
-var options = []string{"--json", "--since", "--write"}
+var options = []string{"--json", "--since", "--element", "--write"}
 
 // anywhere gives a fresh directory in no git repository and with no spec
 // root, as far as the temporary folder allows.
@@ -370,6 +370,14 @@ func TestCliHelpArgument(t *testing.T) {
 		p.ran(t)
 		p.diff.only(t, "cart.add.limit:changed")
 	})
+	t.Run("row5 pack, --json, --element, lint.run.exit", func(t *testing.T) {
+		t.Parallel()
+		r := sinceAccepted(t)
+		// lint.run.exit: cart.add.limit. packElementIn runs
+		// `pack --json --element cart.add.limit`, and the same without --json.
+		p := packElementIn(t, r.dir, r.dir, r.root(), "cart.add.limit")
+		p.exactly(t, "Element", "cart.add.limit")
+	})
 
 	// The refused rows. Each runs where the command, had it run, would
 	// have checked or written something.
@@ -381,16 +389,27 @@ func TestCliHelpArgument(t *testing.T) {
 		command  string
 		argument string
 	}{
-		{"row7 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
-		{"row8 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
-		{"row9 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
-		{"row10 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
-		{"row11 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
-		{"row12 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
-		{`row13 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
-		{"row14 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
-		{"row15 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
+		{"row8 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
+		{"row9 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
+		{"row10 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
+		{"row11 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
+		{"row12 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
+		// lint.run.exit: cart.add.limit, here and below.
+		{"row13 diff, none, --element, lint.run.exit", "amended", "", []string{"diff", "--element", "cart.add.limit"}, "diff", "--element"},
+		{"row14 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
+		{`row15 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
+		{"row16 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
+		{"row17 pack, none, --element, none", "amended", "", []string{"pack", "--element"}, "pack", "--element"},
+		{"row18 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
+		// lint.run.root: cart.add.empty.
+		{"row19 pack, --element lint.run.exit, --element, lint.run.root", "amended", "", []string{"pack", "--element", "cart.add.limit", "--element", "cart.add.empty"}, "pack", "--element"},
+		{"row20 pack, --since HEAD~1, --element, lint.run.exit", "amended", "", []string{"pack", "--since", "HEAD~1", "--element", "cart.add.limit"}, "pack", "--element"},
+		{"row21 pack, --element lint.run.exit, --since, HEAD~1", "amended", "", []string{"pack", "--element", "cart.add.limit", "--since", "HEAD~1"}, "pack", "--since"},
 		{"derived: a revision that starts with a hyphen", "amended", "", []string{"diff", "--since", "-HEAD"}, "diff", "--since"},
+		{"derived: an identifier that starts with a hyphen", "amended", "", []string{"pack", "--element", "-cart.add.limit"}, "pack", "--element"},
+		{"derived: an option is no identifier", "amended", "", []string{"pack", "--element", "--json"}, "pack", "--element"},
+		{`derived: pack, none, --element, ""`, "amended", "", []string{"pack", "--element", ""}, "pack", "--element"},
+		{"derived: an element named with --json between --since and --element", "amended", "", []string{"pack", "--since", "HEAD~1", "--json", "--element", "cart.add.limit"}, "pack", "--element"},
 		{"derived: the arguments are read before the spec root is looked for", "anywhere", "", []string{"lint", "--bogus"}, "lint", "--bogus"},
 	} {
 		t.Run(c.name, func(t *testing.T) {
@@ -413,7 +432,7 @@ func TestCliHelpArgument(t *testing.T) {
 			misused(t, provisoIn(t, dir, dir, c.stdin, c.args...), c.command, c.argument)
 		})
 	}
-	t.Run("row5 rehome, --json, --write, none", func(t *testing.T) {
+	t.Run("row6 rehome, --json, --write, none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, oneRehomeTree())
 		// rehomeIn checks the plan, and that the run wrote only the
@@ -423,7 +442,7 @@ func TestCliHelpArgument(t *testing.T) {
 		o.renames(t, []planRename{{"cart.item", "system.item"}})
 		o.holds(t, "cli.help.argument", "proviso/glossary.md", oneRehomed()["proviso/glossary.md"])
 	})
-	t.Run("row6 version, none, 0.1.0, none", func(t *testing.T) {
+	t.Run("row7 version, none, 0.1.0, none", func(t *testing.T) {
 		t.Parallel()
 		// After init, in a root whose skills are stale, so that anything
 		// checked would show; versionIn checks that nothing is written.

@@ -31,11 +31,13 @@ const modelVersion = "0"
 var stampedFiles = []string{
 	".claude/agents/proviso-checker.md",
 	".claude/agents/proviso-coder.md",
+	".claude/agents/proviso-mutator.md",
 	".claude/agents/proviso-tester.md",
 	".claude/skills/proviso-accept/SKILL.md",
 	".claude/skills/proviso-build/SKILL.md",
 	".claude/skills/proviso-check/SKILL.md",
 	".claude/skills/proviso-integrate/SKILL.md",
+	".claude/skills/proviso-mutate/SKILL.md",
 	".claude/skills/proviso-recover/SKILL.md",
 	".claude/skills/proviso-rehome/SKILL.md",
 }

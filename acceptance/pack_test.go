@@ -233,6 +233,26 @@ func TestBaselinePackFrames(t *testing.T) {
 		o.exactly(t, "Amendment", "system.price", "cart.pay.total", "cart.add.spoken", "billing.refund.full")
 		o.exactly(t, "Frames", union(addFrames, payFrames, refundFrames)...)
 	})
+	t.Run("row5 a rule named by --element", func(t *testing.T) {
+		t.Parallel()
+		// lint.run.exit: cart.pay.cap, read as an added one.
+		r, _ := accepted(t, packTree())
+		o := r.packElement("cart.pay.cap")
+		o.exactly(t, "Frames", payFrames...)
+		o.standsAt(t, packTree())
+	})
+	t.Run("derived: a glossary entry of the capability named by --element", func(t *testing.T) {
+		t.Parallel()
+		// As row2: no feature holds it.
+		r, _ := accepted(t, packTree())
+		r.packElement("cart.shelf").exactly(t, "Frames", cartFrames...)
+	})
+	t.Run("derived: a system constraint named by --element", func(t *testing.T) {
+		t.Parallel()
+		// As row3: no feature or capability holds it.
+		r, _ := accepted(t, packTree())
+		r.packElement("system.fast").exactly(t, "Frames", "system.honest")
+	})
 }
 
 func TestBaselinePackChain(t *testing.T) {
@@ -296,6 +316,21 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line", "cart.item")
 	})
+	t.Run("row6 a rule handing over, named by --element", func(t *testing.T) {
+		t.Parallel()
+		// baseline.diff.added: cart.add.spoken, as in row1.
+		r, _ := accepted(t, packTree())
+		o := r.packElement("cart.add.spoken")
+		o.exactly(t, "Element", "cart.add.spoken")
+		o.exactly(t, "Context", "cart.add.limit", "cart.item", "cart.max-quantity", "system.price")
+		o.standsAt(t, packTree())
+	})
+	t.Run("derived: a rule referring to a member, named by --element", func(t *testing.T) {
+		t.Parallel()
+		// As row2: the member's holder, and the term the holder represents.
+		r, _ := accepted(t, packTree())
+		r.packElement("cart.pay.lines").exactly(t, "Context", "cart.api.line", "cart.api.line.count", "cart.item")
+	})
 }
 
 func TestBaselinePackOnce(t *testing.T) {
@@ -334,6 +369,23 @@ func TestBaselinePackOnce(t *testing.T) {
 		o, _, _ := packOf(t, pTotalThen, pRefundThen)
 		o.exactly(t, "Amendment", "billing.refund.full", "cart.pay.total")
 		o.exactly(t, "Context", "cart.item", "system.price")
+	})
+	t.Run("row4 the system, named by --element", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, packTree())
+		o := r.packElement("system")
+		o.headingsAre(t, "Element", "Frames")
+		o.exactly(t, "Element", "system")
+		o.exactly(t, "System")
+		o.exactly(t, "Frames", sysFrames...)
+	})
+	t.Run("derived: a feature named by --element is not repeated under Frames", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay is the feature baseline.pack.frames takes for it.
+		r, _ := accepted(t, packTree())
+		o := r.packElement("cart.pay")
+		o.exactly(t, "Element", "cart.pay")
+		o.exactly(t, "Frames", cartFrames...)
 	})
 }
 
@@ -484,6 +536,33 @@ func TestBaselinePackOutput(t *testing.T) {
 		if strings.Join(got, " ") != "system:system" {
 			t.Errorf("want the system alone among the elements, got %v", got)
 		}
+	})
+	t.Run("row4 lint.run.exit named by --element, --json", func(t *testing.T) {
+		t.Parallel()
+		// lint.run.exit: cart.pay.cap. packElementIn checks that diff is
+		// empty and note null in every pack of a named element.
+		r, _ := accepted(t, packTree())
+		o := r.packElement("cart.pay.cap")
+		exit0(t, o)
+		if !o.cpOK || len(o.cp.Diff) != 0 || o.cp.Note != nil {
+			t.Errorf("want a context_pack with an empty diff and a null note, got %s", o.json.stdout)
+		}
+		var got []string
+		for _, e := range o.cp.Elements {
+			if e.Heading == "element" {
+				got = append(got, e.ID)
+			}
+		}
+		if len(got) != 1 || got[0] != "cart.pay.cap" {
+			t.Errorf("want cart.pay.cap alone with the heading element, got %v", got)
+		}
+	})
+	t.Run("derived: lint.run.exit named by --element, as text", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, packTree())
+		o := r.packElement("cart.pay.cap")
+		exit0(t, o)
+		o.headingsAre(t, "System", "Element", "Frames", "Context")
 	})
 }
 

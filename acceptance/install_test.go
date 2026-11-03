@@ -22,11 +22,13 @@ func TestSystemCliInit(t *testing.T) {
 	o.exits(t, 0)
 	want := "written .claude/agents/proviso-checker.md\n" +
 		"written .claude/agents/proviso-coder.md\n" +
+		"written .claude/agents/proviso-mutator.md\n" +
 		"written .claude/agents/proviso-tester.md\n" +
 		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
 		"written .claude/skills/proviso-check/SKILL.md\n" +
 		"written .claude/skills/proviso-integrate/SKILL.md\n" +
+		"written .claude/skills/proviso-mutate/SKILL.md\n" +
 		"written .claude/skills/proviso-recover/SKILL.md\n" +
 		"written .claude/skills/proviso-rehome/SKILL.md\n" +
 		"written .proviso/build.md\n" +
@@ -50,9 +52,9 @@ func TestSystemCliInit(t *testing.T) {
 		r := freshRepo(t, "repo", false)
 		r.set(tree{".claude/agents": "not a folder\n", "proviso/system.md": "# Our own system\n"})
 		o := r.init()
-		o.failed(t, installedFiles[:3]...)
+		o.failed(t, installedFiles[:agentDefinitions]...)
 		want := ""
-		for _, q := range installedFiles[3:] {
+		for _, q := range installedFiles[agentDefinitions:] {
 			if q == "proviso/system.md" {
 				want += "skipped " + q + "\n"
 			} else {
@@ -68,8 +70,9 @@ func TestSystemCliInit(t *testing.T) {
 // TestInstallInstalledFiles checks the rows of installed_files that the
 // other tests do not: the skills that accept, build and check an amendment,
 // the one that brings a request into the spec tree, the one that recovers
-// the spec tree of an existing system and the one that gives moved elements
-// the identifiers of their place are written, and are no empty files.
+// the spec tree of an existing system, the one that gives moved elements
+// the identifiers of their place and the one that measures with mutants how
+// many slips the tests catch are written, and are no empty files.
 // Their wording, and that of the stubs, is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
@@ -81,6 +84,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-build/SKILL.md",
 		".claude/skills/proviso-check/SKILL.md",
 		".claude/skills/proviso-integrate/SKILL.md",
+		".claude/skills/proviso-mutate/SKILL.md",
 		".claude/skills/proviso-recover/SKILL.md",
 		".claude/skills/proviso-rehome/SKILL.md",
 	}
@@ -152,6 +156,7 @@ func TestInstallInitAgents(t *testing.T) {
 		{"row1 the testing agent's definition, stamped with init's Proviso version", ".claude/agents/proviso-tester.md", "proviso-tester", ".proviso/tester.md"},
 		{"row2 the coding agent's definition, stamped with init's Proviso version", ".claude/agents/proviso-coder.md", "proviso-coder", ".proviso/coder.md"},
 		{"row3 the checking agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-checker.md", "proviso-checker", ""},
+		{"row4 the mutating agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-mutator.md", "proviso-mutator", ""},
 	}
 	definitions := make([]string, len(rows))
 	for i, row := range rows {
@@ -191,16 +196,19 @@ func TestInstallInitAgents(t *testing.T) {
 			checkInitStamp(t, "install.init.agents", row.definition, versioned.read(row.definition), "0.1.0")
 
 			// The same reading guide in every definition: one block that
-			// this definition shares with both others.
+			// this definition shares with all the others.
 			var others []string
 			for _, d := range definitions {
 				if d != row.definition {
 					others = append(others, d)
 				}
 			}
-			between, _ := sharedBlock(r.read(others[0]), r.read(others[1]))
+			between := strings.ReplaceAll(r.read(others[0]), "\r\n", "\n")
+			for _, d := range others[1:] {
+				between, _ = sharedBlock(between, r.read(d))
+			}
 			if block, n := sharedBlock(def, between); n < guideLines {
-				t.Errorf("install.init.agents: %s shares no reading guide with %s and %s; the longest block all three share has %d lines that are not blank:\n%s", row.definition, others[0], others[1], n, block)
+				t.Errorf("install.init.agents: %s shares no reading guide with %s; the longest block they all share has %d lines that are not blank:\n%s", row.definition, strings.Join(others, " and "), n, block)
 			}
 
 			// No reference to a file that is not there.
@@ -269,6 +277,7 @@ func TestInstallInitSkills(t *testing.T) {
 		{"row4 the skill that recovers the spec tree of an existing system, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-recover/SKILL.md", "proviso-recover", true},
 		{"row5 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
 		{"row6 the skill that gives moved elements the identifiers of their place, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-rehome/SKILL.md", "proviso-rehome", false},
+		{"row7 the skill that measures with mutants how many slips the tests catch, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-mutate/SKILL.md", "proviso-mutate", false},
 	}
 	var writers []string
 	for _, row := range rows {
@@ -279,6 +288,7 @@ func TestInstallInitSkills(t *testing.T) {
 	agents := []string{
 		".claude/agents/proviso-checker.md",
 		".claude/agents/proviso-coder.md",
+		".claude/agents/proviso-mutator.md",
 		".claude/agents/proviso-tester.md",
 	}
 	for _, row := range rows {
@@ -333,8 +343,10 @@ func TestInstallInitSkills(t *testing.T) {
 
 			// As the kit holds it, with no reading guide put in: no block
 			// the agent definitions share.
-			between, _ := sharedBlock(r.read(agents[0]), r.read(agents[1]))
-			guide, _ := sharedBlock(between, r.read(agents[2]))
+			guide := strings.ReplaceAll(r.read(agents[0]), "\r\n", "\n")
+			for _, a := range agents[1:] {
+				guide, _ = sharedBlock(guide, r.read(a))
+			}
 			if block, n := sharedBlock(skill, guide); n >= guideLines {
 				t.Errorf("install.init.skills: %s carries the reading guide the agent definitions share, %d lines that are not blank:\n%s", row.skill, n, block)
 			}
@@ -516,12 +528,12 @@ func TestInstallInitExit(t *testing.T) {
 		t.Parallel()
 		r := freshRepo(t, "repo", false)
 		r.set(tree{".claude/agents": "not a folder\n"})
-		r.init().failed(t, installedFiles[:3]...)
+		r.init().failed(t, installedFiles[:agentDefinitions]...)
 		remove(t, r.dir, ".claude/agents")
 		o := r.init()
 		o.exits(t, 0)
 		for i, q := range installedFiles {
-			if i < 3 {
+			if i < agentDefinitions {
 				o.says(t, "written", q)
 			} else {
 				o.says(t, "skipped", q)
