@@ -223,6 +223,7 @@ func manifestOf(t *testing.T, tr tree) string {
 type partChange struct {
 	Part   string  `json:"part"`
 	Change string  `json:"change"`
+	Text   *string `json:"text"`
 	Former *string `json:"former"`
 }
 
@@ -389,6 +390,9 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 				if f, ok := p["former"]; ok && json.Unmarshal(f, &s) != nil {
 					t.Errorf("system.cli.element-diff: element %d: part former is not a string", i)
 				}
+				if f, ok := p["text"]; ok && json.Unmarshal(f, &s) != nil {
+					t.Errorf("system.cli.element-diff: element %d: part text is not a string", i)
+				}
 			}
 		}
 		if v, ok := it["through"]; ok {
@@ -437,6 +441,13 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 		}
 		if e.Change != "removed" && e.Former != nil {
 			t.Errorf("system.cli.element-diff: former is for a removed element only, but %s element %s has one", e.Change, e.ID)
+		}
+		// baseline.diff.changed: the text of each added or changed part as it
+		// stands now is listed with it.
+		for _, p := range e.Parts {
+			if (p.Change == "added" || p.Change == "changed") && p.Text == nil {
+				t.Errorf("baseline.diff.changed, system.cli.element-diff: the %s part %s of %s has no text", p.Change, p.Part, e.ID)
+			}
 		}
 	}
 	return ed
