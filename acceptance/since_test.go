@@ -63,6 +63,24 @@ func checkSinceRevision(t *testing.T, o diffOutcome, want string, needed bool) {
 	}
 }
 
+// damageManifest puts a merge conflict into the manifest.sum in r's spec
+// root, below its first line, so that lint still reads the model version
+// (lint.run.model). It returns the manifest as it was.
+func damageManifest(t *testing.T, r *repo) []byte {
+	t.Helper()
+	path := filepath.Join(r.root(), "manifest.sum")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	first, rest, _ := strings.Cut(string(b), "\n")
+	damaged := first + "\n<<<<<<< HEAD\n" + rest + "=======\n>>>>>>> main\n"
+	if err := os.WriteFile(path, []byte(damaged), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return b
+}
+
 func TestBaselineDiffSince(t *testing.T) {
 	t.Parallel()
 	formerThen := "Then      the cart holds <quantity> more of <product>\n  And     nothing else changes"
@@ -108,7 +126,7 @@ func TestBaselineDiffSince(t *testing.T) {
 				d.only(t, withChange(diffIDs, "added")...)
 				checkSinceRevision(t, d, e5f6, false)
 			})
-			t.Run("row4 a1b2, with manifest.sum damaged by a merge conflict", func(t *testing.T) {
+			t.Run("row4 a1b2, with the manifest.sum in the spec root damaged by a merge conflict after its first line", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				r.set(diffTree().apply(xThen))
@@ -116,16 +134,7 @@ func TestBaselineDiffSince(t *testing.T) {
 				r.set(diffTree().apply(xThen, limitThen))
 				// The conflict below the first line, so that lint still
 				// reads the model version (lint.run.model).
-				path := filepath.Join(r.root(), "manifest.sum")
-				b, err := os.ReadFile(path)
-				if err != nil {
-					t.Fatal(err)
-				}
-				first, rest, _ := strings.Cut(string(b), "\n")
-				damaged := first + "\n<<<<<<< HEAD\n" + rest + "=======\n>>>>>>> main\n"
-				if err := os.WriteFile(path, []byte(damaged), 0o644); err != nil {
-					t.Fatal(err)
-				}
+				damageManifest(t, r)
 				if plain := diffIn(t, r.dir, r.dir, r.root()); plain.json.exit != 2 {
 					t.Fatalf("want the damage to stop diff without --since (baseline.diff.malformed), got exit status %d", plain.json.exit)
 				}
@@ -133,13 +142,33 @@ func TestBaselineDiffSince(t *testing.T) {
 				d.only(t, "cart.add.limit:changed")
 				checkSinceRevision(t, d, a1b2, true)
 			})
-			t.Run("row5 nosuch", func(t *testing.T) {
+			t.Run("row5 a1b2, whose manifest.sum is damaged by a merge conflict after its first line", func(t *testing.T) {
+				t.Parallel()
+				r, _ := accepted(t, diffTree())
+				intact := damageManifest(t, r)
+				r.set(diffTree().apply(xThen))
+				if l := execLint(t, r.dir); l.exit != 0 {
+					t.Fatalf("want lint to accept the tree with the damaged manifest, got exit status %d:\n%s%s", l.exit, l.stdout, l.stderr)
+				}
+				a1b2 := r.commit("round 1, the manifest damaged")
+				// The manifest in the spec root intact again, so that only
+				// the one at the revision is damaged.
+				if err := os.WriteFile(filepath.Join(r.root(), "manifest.sum"), intact, 0o644); err != nil {
+					t.Fatal(err)
+				}
+				r.set(diffTree().apply(xThen, limitThen))
+				d := since(t, r, cmd, a1b2).ran(t)
+				d.only(t, "cart.add.limit:changed")
+				onlyParts(t, d.elem(t, "cart.add.limit"), "step Then:changed")
+				checkSinceRevision(t, d, a1b2, true)
+			})
+			t.Run("row6 nosuch", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				r.set(diffTree().apply(limitThen))
 				since(t, r, cmd, "nosuch").stopped(t)
 			})
-			t.Run("row6 c3d4, whose tree has a lint error", func(t *testing.T) {
+			t.Run("row7 c3d4, whose tree has a lint error", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				r.set(diffTree().with("proviso/notes.md", "# Notes\n"))

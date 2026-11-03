@@ -51,6 +51,40 @@ func TestBaselineRunLint(t *testing.T) {
 	// "pack --element": the pack of a named element is a run of pack with
 	// an argument it takes.
 	runsOnlyWhereLintAccepts(t, "manifest", "diff", "pack", "pack --element")
+
+	// Rows 6 and 7 are baseline.run.lint's own; coherence.run.lint does
+	// not share them, so they stay out of runsOnlyWhereLintAccepts.
+	t.Run("row6 a manifest.sum naming another model version", func(t *testing.T) {
+		t.Parallel()
+		for _, cmd := range []string{"manifest", "diff", "pack", "pack --element"} {
+			t.Run(cmd, func(t *testing.T) {
+				t.Parallel()
+				dir := plainTree().with(manifestPath, "model 1\n").write(t)
+				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
+					t.Errorf("want exit status 2, got %d", r.exit)
+				}
+			})
+		}
+	})
+	t.Run("row7 the same, diff or pack run with --since HEAD~1", func(t *testing.T) {
+		t.Parallel()
+		// Only diff and pack take --since; pack --element is not given
+		// with it.
+		for _, cmd := range []string{"diff", "pack"} {
+			t.Run(cmd, func(t *testing.T) {
+				t.Parallel()
+				r, _ := accepted(t, diffTree())
+				r.set(diffTree().apply(limitThen))
+				r.commit("round 1")
+				// HEAD~1 holds a tree lint accepts; only the manifest in
+				// the spec root names another model version.
+				if err := os.WriteFile(filepath.Join(r.root(), "manifest.sum"), []byte("model 1\n"), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				since(t, r, cmd, "HEAD~1").stopped(t)
+			})
+		}
+	})
 }
 
 // runsOnlyWhereLintAccepts checks, for each of the commands cmds, the Examples
