@@ -39,7 +39,7 @@ Otherwise "proviso" writes `help.page` to "stderr"
 
 ```guarded
 When      "proviso" reads its command <command>
-Provided  <command> is `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify` or `help`, or "--help" or "-h"
+Provided  <command> is `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify`, `rehome` or `help`, or "--help" or "-h"
 Then      "proviso" runs <command>, and runs `help` for "--help" and "-h"
   And     the command reads its arguments as its own [rules] say
 Otherwise "proviso" writes to "stderr" one line naming <command> as no command of Proviso, and that "proviso help" shows the help page
@@ -52,6 +52,7 @@ Otherwise "proviso" writes to "stderr" one line naming <command> as no command o
 | lint | yes | `lint` runs | |
 | verify | yes | `verify` runs | |
 | update | yes | `update` runs | |
+| rehome | yes | `rehome` runs | |
 | help | yes | `help` runs | |
 | --help | yes | `help` runs | |
 | -h | yes | `help` runs | |
@@ -90,7 +91,7 @@ revision, not one to ask git about.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since` and `verify.json` define
+Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `verify.json`, `rehome.write` and `rehome.json` define
   And     <rest> start with a revision that is not empty and does not start with "-", where <argument> is "--since"
   And     <before> hold no "--since", where <argument> is "--since"
 Then      <command> reads <argument>, with the revision after it where <argument> is "--since"
@@ -106,6 +107,7 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | lint | --json | --json | none | yes | read | the same option twice asks for the same |
 | diff | none | --since | `HEAD~1` | yes | read, with `HEAD~1` | |
 | pack | --json | --since | `a1b2c3d` | yes | read, with `a1b2c3d` | |
+| rehome | --json | --write | none | yes | read | |
 | version | none | 0.1.0 | none | no (takes) | refused, exit status 2 | `version` takes no argument |
 | init | none | --json | none | no (takes) | refused, exit status 2 | |
 | judge | none | --json | none | no (takes) | refused, exit status 2 | `judge` reads its input on stdin |

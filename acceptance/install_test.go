@@ -28,6 +28,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-check/SKILL.md\n" +
 		"written .claude/skills/proviso-integrate/SKILL.md\n" +
 		"written .claude/skills/proviso-recover/SKILL.md\n" +
+		"written .claude/skills/proviso-rehome/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -66,8 +67,9 @@ func TestSystemCliInit(t *testing.T) {
 
 // TestInstallInstalledFiles checks the rows of installed_files that the
 // other tests do not: the skills that accept, build and check an amendment,
-// the one that brings a request into the spec tree and the one that recovers
-// the spec tree of an existing system are written, and are no empty files.
+// the one that brings a request into the spec tree, the one that recovers
+// the spec tree of an existing system and the one that gives moved elements
+// the identifiers of their place are written, and are no empty files.
 // Their wording, and that of the stubs, is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
@@ -80,6 +82,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-check/SKILL.md",
 		".claude/skills/proviso-integrate/SKILL.md",
 		".claude/skills/proviso-recover/SKILL.md",
+		".claude/skills/proviso-rehome/SKILL.md",
 	}
 	for _, p := range append(skills, ".proviso/build.md") {
 		o.says(t, "written", p)
@@ -265,6 +268,7 @@ func TestInstallInitSkills(t *testing.T) {
 		{"row3 the skill that brings a request into the spec tree, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-integrate/SKILL.md", "proviso-integrate", true},
 		{"row4 the skill that recovers the spec tree of an existing system, with the same writing guide, stamped with init's Proviso version", ".claude/skills/proviso-recover/SKILL.md", "proviso-recover", true},
 		{"row5 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
+		{"row6 the skill that gives moved elements the identifiers of their place, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-rehome/SKILL.md", "proviso-rehome", false},
 	}
 	var writers []string
 	for _, row := range rows {
@@ -335,7 +339,7 @@ func TestInstallInitSkills(t *testing.T) {
 				t.Errorf("install.init.skills: %s carries the reading guide the agent definitions share, %d lines that are not blank:\n%s", row.skill, n, block)
 			}
 
-			// The same writing guide in every skill that edits the spec
+			// The same writing guide in every skill that writes decisions into the spec
 			// tree, and none in the others: the longest block this skill
 			// shares with all the other skills that carry it.
 			var others []string

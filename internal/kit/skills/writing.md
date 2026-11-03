@@ -29,16 +29,19 @@ Write for that reader.
   invariant, constraint or contract used by one capability in that
   capability's sibling file; anything used by several at the system
   level. When a second capability starts using one, move it up; its
-  identifier stays.
+  identifier stays until the engineer rehomes the tree, after the
+  amendment is accepted.
 - An identifier is readable, `<prefix>.<name>` in lowercase with
   hyphens, such as `cash.withdrawal.pay`. The prefix names where the
-  element was born, the capability or `system`; it is permanent, and
-  never reused once its element is removed, since history, commit
-  messages and links outside the tree still name the old element by it.
-  Search the tree and its history before you choose one.
+  element stands, the capability or `system`. An identifier is never
+  reused once its element is removed, since history, commit messages
+  and links outside the tree still name the old element by it. Search
+  the tree and its history before you choose one.
 - The layout follows what the system does, not its packages. Moving
   an element to another feature or capability changes no identifier and
-  no behaviour, so regrouping is cheap. Suggest it to the engineer when
+  no behaviour, so regrouping is cheap; `proviso-rehome` gives moved
+  elements the identifiers of their place afterwards, in a step of its
+  own. Suggest it to the engineer when
   a Goal can no longer be said in one to three sentences without joining
   unrelated purposes with "and", when the rules form groups that share
   no term and no event, or when amendments keep touching one part and

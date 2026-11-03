@@ -19,8 +19,8 @@ var files embed.FS
 // file of the kit.
 const readingMark = "<!-- proviso: reading.md -->\n"
 
-// writingMark is the line in a skill that edits the spec tree that the
-// shared writing guide replaces, so that the installed skill refers to no
+// writingMark is the line in a skill that writes decisions into the spec
+// tree that the shared writing guide replaces, so that the installed skill refers to no
 // other file of the kit. A skill without it carries no writing guide.
 const writingMark = "<!-- proviso: writing.md -->\n"
 
@@ -58,6 +58,7 @@ func Files(system, version string) []File {
 		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check"), true},
 		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate"), true},
 		{".claude/skills/proviso-recover/SKILL.md", skill("proviso-recover"), true},
+		{".claude/skills/proviso-rehome/SKILL.md", skill("proviso-rehome"), true},
 		{".proviso/build.md", []byte(read("notes/build.md")), false},
 		{".proviso/coder.md", []byte(read("notes/coder.md")), false},
 		{".proviso/tester.md", []byte(read("notes/tester.md")), false},

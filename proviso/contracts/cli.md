@@ -628,6 +628,82 @@ properties:
   `id` and the text of an `open` finding.
 - `message` is for people and not part of the contract.
 
+## <a id="system.cli.rehome"></a> rehome
+
+The command `proviso rehome`, run anywhere inside the system's
+repository. It writes the renames it plans, and the collisions that
+refuse them, as text by default, or a `rehome_plan` with `--json`; with
+`--write`, it also writes them into the spec tree and writes the
+manifest.
+
+### <a id="system.cli.rehome.write"></a> write
+
+The option `--write`: write the planned renames into the spec tree, and
+the manifest of the rewritten tree into the spec root. Without it,
+`rehome` writes nothing under the spec root.
+
+### <a id="system.cli.rehome.json"></a> json
+
+The option `--json`: write the `rehome_plan` to standard output instead
+of text. The text form is for people and not part of the contract.
+
+### <a id="system.cli.rehome.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 1, 2]
+```
+
+- `0`: the renames were planned, whether there are any or none, and
+  written with `--write`.
+- `1`: at least one rename would take an identifier; nothing was
+  written.
+- `2`: the tree is not as the manifest records it, a coherence file or
+  an amendment note lies in the spec root, a file could not be opened
+  for writing, or the command could not run; nothing was written.
+
+## <a id="system.cli.rehome-plan"></a> rehome_plan
+
+What `rehome --json` writes: the spec root that was planned for, every
+rename, and every collision. `root` follows the same conventions as in
+`report`.
+
+```yaml
+type: object
+required: [root, renames, collisions]
+properties:
+  root:
+    type: string
+  renames:
+    type: array
+    items:
+      type: object
+      required: [from, to]
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+  collisions:
+    type: array
+    items:
+      type: object
+      required: [identifier, from]
+      properties:
+        identifier:
+          type: string
+        from:
+          type: array
+          items:
+            type: string
+```
+
+- `from` and `to` are the old and the new identifier of a rename.
+- `identifier` is the identifier a collision would take, and `from` the
+  old identifiers of the renames planned to take it.
+
 ## <a id="system.cli.init"></a> init
 
 The command `proviso init`, run in the root of a git repository; it
@@ -729,7 +805,7 @@ anywhere; it takes no argument. It writes `page` to standard output.
 The help page: what Proviso is, in one line; every command with its
 options and one sentence on what it does, first those engineers run,
 `init`, `update`, `version`, `lint`, `diff`, `impact`, `verify` and
-`help`, then those the skills run, `pack`, `judge` and `manifest`; the
+`help`, then those the skills run, `pack`, `judge`, `manifest` and `rehome`; the
 exit statuses the commands share;
 and where the documentation is. It names every command and every
 option. Its wording is for people and not part of the contract.

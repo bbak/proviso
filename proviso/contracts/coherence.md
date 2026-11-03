@@ -3,7 +3,8 @@
 ## <a id="system.coherence-file"></a> coherence_file
 
 The entry `.coherence.json` in the spec root, whatever it is, written
-only by `judge`, read by `judge` and `verify`, removed by `manifest`,
+only by `judge`, read by `judge` and `verify`, looked for by `rehome`,
+removed by `manifest`,
 and never edited by hand. As `judge` writes it, it is a file of JSON in
 UTF-8.
 

@@ -53,8 +53,8 @@
 
 ## <a id="system.identifier"></a> identifier
 
-- Definition: The permanent name of an element, written as an anchor at
-  the start of its heading. No two elements in a spec tree share one.
+- Definition: The name of an element, written as an anchor at the start
+  of its heading. No two elements in a spec tree share one.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: identifiers

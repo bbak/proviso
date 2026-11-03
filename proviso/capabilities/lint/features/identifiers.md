@@ -12,9 +12,9 @@ where tooling and links expect it.
 Identifiers are what everything else refers to: links, hand-overs, the
 manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
-reference to it ambiguous. Lint checks the identifiers as they stand. A
-renamed identifier shows in the element diff, as one element removed
-and one added. That a removed identifier is never reused is left to the
+reference to it ambiguous. Lint checks the identifiers as they stand. An
+identifier renamed by hand shows in the element diff, as one element
+removed and one added. That a removed identifier is never reused is left to the
 authors: the manifest forgets a removed element, and within the tree,
 unique identifiers are all that references need.
 
@@ -96,8 +96,9 @@ Otherwise lint reports the [error] `findings.identifier-duplicate` at <id>, nami
 
 ### Rationale
 
-`system` identifies the system and prefixes the elements born at system
-level, so that a prefix always says where an element was born. Once the
+`system` identifies the system and prefixes the elements at system
+level, as a capability's identifier prefixes the elements in it, so that
+a prefix says where an element stands. Once the
 system itself always has that identifier, uniqueness keeps every other
 element from having it, so reserving it needs no rule of its own.
 
@@ -115,3 +116,26 @@ Otherwise lint reports the [error] `findings.system-identifier` at <id>
 | `system` | yes | nothing reported | |
 | `proviso` | no | error | the system's name instead of the reserved identifier |
 | `system.root` | no | error | a prefix of `system` is not `system` |
+
+## <a id="lint.identifiers.capability"></a> Rule: A capability is identified by one segment
+
+### Rationale
+
+A capability's identifier prefixes the elements in it, and a prefix is
+the first segment of an identifier, so a capability identified by
+several segments could never prefix its own elements.
+
+```guarded
+When      lint reads the [identifier] <id> of a capability
+Provided  <id> is a single segment, holding no "."
+Then      lint reports nothing about the segments of <id>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.capability-identifier` at <id>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| `coherence` | yes | nothing reported | |
+| `cash.withdrawal` | no | error | two segments |
+| `system` | yes | nothing reported | uniqueness reports it, as the system's identifier |
