@@ -1,0 +1,155 @@
+{
+  "touched": [
+    {
+      "id": "coherence.judge",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:dc45c3f34690964aa1474782aaee749a20da3ac8aa8c079bbc680b450a7e4116",
+        "section Goal": "h1:02f603fd1b352ebfc7b4b1a7c50429cda438c8d7e24082206b3548908b88748a",
+        "section Rationale": "h1:e3910f0878f63462312930291f5d157dc561b58f3f255b5638a7e487e038d986"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:dc45c3f34690964aa1474782aaee749a20da3ac8aa8c079bbc680b450a7e4116",
+        "section Goal": "h1:02f603fd1b352ebfc7b4b1a7c50429cda438c8d7e24082206b3548908b88748a",
+        "section Rationale": "h1:b47650a212d6513cb997db7820ee9474947abaff567c31b8c3b8badb6182ca13"
+      }
+    },
+    {
+      "id": "coherence.judge.input",
+      "now": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:190bd6d1cb3f56d7fe7edc6c4f2fed643fd025f3ab2e9ab77a5de50062df88de": "h1:c93750cade9100bc88673ce1fce73cbcb8ff91d5f6fe6b80213778df98387ac0",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:17185c3262ffc0b5c7f0d5cf14c1adc2b0fba9adc7594b722d6071fa47879e2a"
+      },
+      "baseline": {
+        "heading": "h1:04223c488582b606b0cb6acb1228bac993bdf81d71989c7bf603b3b8a20d4fee",
+        "row h1:190bd6d1cb3f56d7fe7edc6c4f2fed643fd025f3ab2e9ab77a5de50062df88de": "h1:c93750cade9100bc88673ce1fce73cbcb8ff91d5f6fe6b80213778df98387ac0",
+        "row h1:2d591c56f10122ead4f578af2cd3da54f8032eb408afd04ed3834ee646f4fbe7": "h1:82a324148b5619b9693ba57211c058c0691e847b98bff09174536dd6bfa4e672",
+        "row h1:2f3125304404a4c7118184a304b54358304abb45712599a2068faf481a05c1fb": "h1:cea2a66063e3cec01a37742b42c6c7a5eb90583244321abc551d97567bf5625d",
+        "row h1:b00a4872da928264c39f408c02a796e8ab8dd56378def61a0668319ddbbab96c": "h1:1e1be13ef94317623068790a291aaf41c02550de2f312115f4706754708cfde8",
+        "row h1:b8157342b37b1559f8d6cd1002d443eef8b244c555438c41fb8dc48e7198da2b": "h1:1a509d6b5cd68dd09270d102f1e71173c3d1bfe61a218c15d99919347ed1e764",
+        "row h1:e77b860cac60c934901a9b045bd153b3aa296b13acded1f5a4ed1b09ea415104": "h1:693f08f0c8b7504af32c678c25b609213abff4de1e4362c9b338f49bd652d3ef",
+        "row h1:e9599ccc17b85419165a386b18a267d82521d0a5b7c5dd9b5408c18fc048f5d3": "h1:2d556d1c6396a6c8e8ca425ea16dd71325b88ae5107d7dfc1b301b82741a97a9",
+        "step Otherwise": "h1:81852fca653eb60a830363f9f64037be310b53fb93ef1751e69ba29b1e094689",
+        "step Provided": "h1:e7b8444a204563aeafca946c3aacefddd07ea9efe7f8a3063381c688bce91cfa",
+        "step Then": "h1:52905ac35eb767db5a8fefeb8f4d4c83e62e5a2d561676001632c81f7121057e",
+        "step When": "h1:17185c3262ffc0b5c7f0d5cf14c1adc2b0fba9adc7594b722d6071fa47879e2a"
+      }
+    },
+    {
+      "id": "coherence.judge.new-finding",
+      "now": {
+        "heading": "h1:ce69ec65772baa1ee5dd83b673ffa4bcb34314fb437fe7c92b149cd82f2a4c50",
+        "row h1:366b38b9f8e58e2c512e27501bf45db5c7ba4d200c9128cacf4c68235d934924": "h1:3ec8bf47fc1c5714935630934e83a4e98dcded9c166666c14c172c19baafec21",
+        "row h1:58873119fdf98067bd883351b8a4ae911a416cdbbfb9eab63fc6deb94f9cefd3": "h1:855bad1d37b75c5a3a580816158f221e2c09e7047c38db71fee4c4b7e9c8eddf",
+        "row h1:66874db1e45023b06edcefea7cf0195887587e4767ae99d01913232309cd0094": "h1:21d08ee9e034487c34a97485019ef04aa65231677065c09dd4072efcc9e5d863",
+        "row h1:e05c2ce0872b30c55e917acb8d4719601cdec62b32b66cd2776ff6c371c47e5c": "h1:2f7516956928e7703b5a0e79ab96776208c6a431237aacf4771f4ffabd5148c1",
+        "step Otherwise": "h1:76eedf7f4a0de14bc2006a239a9a244ce9149c3428c698439680003e28c253df",
+        "step Provided": "h1:c21c9464c08f9938c89ce0263381603e7cfb2f3c5ac02d1a4e7968b7d490f3a5",
+        "step Then": "h1:4c2cc1be1ed18ccf70f569a855b9937924f218f68baf48d2771082f882972926",
+        "step When": "h1:b29c693b4dfeb60a309f254419ae91734526bdd8435eb2f7356a99410db78386"
+      },
+      "baseline": {
+        "heading": "h1:ce69ec65772baa1ee5dd83b673ffa4bcb34314fb437fe7c92b149cd82f2a4c50",
+        "row h1:58873119fdf98067bd883351b8a4ae911a416cdbbfb9eab63fc6deb94f9cefd3": "h1:855bad1d37b75c5a3a580816158f221e2c09e7047c38db71fee4c4b7e9c8eddf",
+        "row h1:66874db1e45023b06edcefea7cf0195887587e4767ae99d01913232309cd0094": "h1:21d08ee9e034487c34a97485019ef04aa65231677065c09dd4072efcc9e5d863",
+        "row h1:758cb62570dac10e24da28ec50743bbb6718b552dc546a3ac0d90bf82b505490": "h1:c27c4efe88d4efa93b54dca9f7d1186c3d39bc40fedf0383be2094c56ab1d7d5",
+        "row h1:e05c2ce0872b30c55e917acb8d4719601cdec62b32b66cd2776ff6c371c47e5c": "h1:2f7516956928e7703b5a0e79ab96776208c6a431237aacf4771f4ffabd5148c1",
+        "step Otherwise": "h1:76eedf7f4a0de14bc2006a239a9a244ce9149c3428c698439680003e28c253df",
+        "step Provided": "h1:c21c9464c08f9938c89ce0263381603e7cfb2f3c5ac02d1a4e7968b7d490f3a5",
+        "step Then": "h1:4c2cc1be1ed18ccf70f569a855b9937924f218f68baf48d2771082f882972926",
+        "step When": "h1:b29c693b4dfeb60a309f254419ae91734526bdd8435eb2f7356a99410db78386"
+      }
+    },
+    {
+      "id": "coherence.verify",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8df8dc897d2d4b4a36e60bf4620340586a440122d5f05f177fedcfc462162453",
+        "section Goal": "h1:0366bfcb3019a265cdea31eb6f75ddedaed9be0d578a24a5c37ac45f64f02150",
+        "section Rationale": "h1:0f3632fc720f612c1c8a85a003a8b3c9f959254014386347a265dfadff56cd4a"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "heading": "h1:8df8dc897d2d4b4a36e60bf4620340586a440122d5f05f177fedcfc462162453",
+        "section Goal": "h1:0366bfcb3019a265cdea31eb6f75ddedaed9be0d578a24a5c37ac45f64f02150",
+        "section Rationale": "h1:ab3de9a39f4c7ae69fac3eebf17a5a3466265c9354b0eef8f693690926081bd3"
+      }
+    },
+    {
+      "id": "coherence.verify.leftover",
+      "now": {
+        "heading": "h1:25e69590b51f706a886aec9a02474573e3182735ed54454f7052eb748031fa21",
+        "row h1:09e3f293ee9fc19ca38938fe15e99b0cfb67740542d89b963316977bf474bf7f": "h1:7c5cdeae2c4c314f26f9ae46e6a0635ba5b23c22a2a1f65bbd16df6ad3c1bced",
+        "row h1:766766eaca4718c21f2f5ca9a354c1dcdd2d3af82bce942d0f1d68b11f523801": "h1:f46071730e61df988ff0b5184e3387bb40fd5c52a77bc77c04983cd27cf3af66",
+        "row h1:77296d96a42a9be192ba5960f008658a3713a290204719f782f1fcd81d16681b": "h1:22d17b30fe132229137d78d20b085af17232ac0164d5d80bd28addb994833c69",
+        "row h1:8433b1ca30e7913ae8a74f5b4133d43e8b029c5dd84c28c6b00e55c28fe12cfe": "h1:0cf41ad8aef67e3e715a5e3ae21112e088370b05c26013f1a117021148a9ae85",
+        "row h1:affc5697992cdbfa09d38b930b7a7002b277a875af5a1ce0523b1f1be80771ee": "h1:6c6d57e0a65d46fea73aa9ead073ffcb9ad1db150a517a86d5dd78122993bd50",
+        "section Rationale": "h1:c505265e4c088c3344aa5f2748ba1bc8afe180694b972043a4716c4c1951edc6",
+        "step Otherwise": "h1:0f4ab50e99dcdb42b0f135569be61a9b223f956e750218274b629fb9fad5d841",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:cb02f4fa34ffff5ac79250b7d84303b70f1b05d6534a5a81ae2837cf25bccc1d",
+        "step When": "h1:14436b750dfec5e15a6b3a10fcc692024f49c6c4024287fc1dc19076ef70bdc5"
+      },
+      "baseline": {
+        "heading": "h1:25e69590b51f706a886aec9a02474573e3182735ed54454f7052eb748031fa21",
+        "row h1:09e3f293ee9fc19ca38938fe15e99b0cfb67740542d89b963316977bf474bf7f": "h1:7c5cdeae2c4c314f26f9ae46e6a0635ba5b23c22a2a1f65bbd16df6ad3c1bced",
+        "row h1:766766eaca4718c21f2f5ca9a354c1dcdd2d3af82bce942d0f1d68b11f523801": "h1:f46071730e61df988ff0b5184e3387bb40fd5c52a77bc77c04983cd27cf3af66",
+        "row h1:77296d96a42a9be192ba5960f008658a3713a290204719f782f1fcd81d16681b": "h1:6096b63cfc16f36ba1b1b57e4a184fe9a0a79efd4a3bfc64de0ec9355cf3b168",
+        "row h1:8433b1ca30e7913ae8a74f5b4133d43e8b029c5dd84c28c6b00e55c28fe12cfe": "h1:0cf41ad8aef67e3e715a5e3ae21112e088370b05c26013f1a117021148a9ae85",
+        "row h1:affc5697992cdbfa09d38b930b7a7002b277a875af5a1ce0523b1f1be80771ee": "h1:6c6d57e0a65d46fea73aa9ead073ffcb9ad1db150a517a86d5dd78122993bd50",
+        "section Rationale": "h1:c505265e4c088c3344aa5f2748ba1bc8afe180694b972043a4716c4c1951edc6",
+        "step Otherwise": "h1:0f4ab50e99dcdb42b0f135569be61a9b223f956e750218274b629fb9fad5d841",
+        "step Provided": "h1:f828cbc0502be4bbed286e4ff20441a2bdf1c70c135602546fb2af5e0675ed43",
+        "step Then": "h1:cb02f4fa34ffff5ac79250b7d84303b70f1b05d6534a5a81ae2837cf25bccc1d",
+        "step When": "h1:14436b750dfec5e15a6b3a10fcc692024f49c6c4024287fc1dc19076ef70bdc5"
+      }
+    },
+    {
+      "id": "system.cli.check-result",
+      "now": {
+        "body": "h1:955dfb12c12a70ce90d7b5547a051d43d0434a551b214c2b184d02ef59230db6",
+        "heading": "h1:62b4a6df379bd411f5f72ca4372e5f6b4f927f4115a52b8e810e95f9e50255d1"
+      },
+      "baseline": {
+        "body": "h1:e8bc0c4cb29e5d8c961bfb82a6bc455b8a013b67e5bdd0ffe45df212e8806d98",
+        "heading": "h1:62b4a6df379bd411f5f72ca4372e5f6b4f927f4115a52b8e810e95f9e50255d1"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "coherence.run.writes",
+      "reason": "untouched: the amendment only renames hand-over identifiers in two Rationales and one why cell (baseline.* to coherence.*), so no behaviour of impact, judge or verify changes, and neither does what they may write",
+      "parts": {
+        "heading": "h1:f718946e116b052da3ff43a5f16b173570ca6dc32d464b3734e62efd6fb0aedf",
+        "section Property": "h1:58290c157352677d7eee298fbf95f857591312d5cf424488169c78317bbe02ff",
+        "section Ranges over": "h1:b3ba98dde78af78ba35e49353729429b10aa5e8dde8bda566177a489ec474dfd",
+        "section Rationale": "h1:699c689c696bc59ac2acb81eccea982c300fcdac8dc527752c008434ff4fb38a"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "coherence.judge.new-finding",
+        "coherence.impact.events"
+      ],
+      "text": "The first Examples row of coherence.judge.new-finding names `baseline.impact.events` with provided \"yes\". That identifier is now coherence.impact.events, and the tree and the baseline hold no `baseline.impact.events`, so under the rule's own guard the row should be \"no\". This amendment renames the other stale baseline.* references in the coherence capability but leaves this one.",
+      "status": "resolved",
+      "reason": "edited in 7c2a1de"
+    }
+  ]
+}
