@@ -85,7 +85,7 @@ without anyone seeing why. A symbolic link is not followed: what it
 points to may lie outside the branch.
 
 ```guarded
-When      `pack` reads the `amendment_note` <note>
+When      `pack`, run without `pack.element`, reads the `amendment_note` <note>
 Provided  <note> is a [regular file] `pack` can read, in UTF-8
 Then      `pack` goes on with the text of <note>
   And     everything else stays as it was
@@ -111,14 +111,15 @@ every test. Its pack gives the testing agent that element and what it
 needs to read it, as the pack of an amendment would. It derives no
 element diff, so that neither the manifest nor git history is read:
 the element is read as it stands. The amendment note belongs to an
-amendment, and stays out. One element per pack keeps the option as
+amendment, and is not read either, so that an amendment in progress
+never stops the pack of an element. One element per pack keeps the option as
 simple as `--since`; a skill asks again for the next.
 
 ```guarded
 When      `pack` assembles the [context pack], run with `pack.element` naming the [identifier] <id>
 Provided  the [spec tree] has an [element] with the [identifier] <id>
 Then      the system is taken for "System", and that [element] for "Element"
-  And     nothing is taken for "Amendment" or "Not in this amendment", and no [element diff] is derived, so that neither `manifest_file` nor git history is read
+  And     nothing is taken for "Amendment" or "Not in this amendment", and no [element diff] is derived, so that neither `manifest_file`, `amendment_note` nor git history is read
 Otherwise `pack` writes to "stderr" that the [spec tree] holds no [element] <id>
   And     `pack` exits with `pack.exit-status` 2
   And     nothing goes to "stdout"
@@ -129,6 +130,7 @@ Otherwise `pack` writes to "stderr" that the [spec tree] holds no [element] <id>
 | `lint.run.exit` | yes | `system` and `lint.run.exit` taken | |
 | `lint.run.exit`, with `.amendment.md` holding "- refunds" and an element diff listing `lint.run.root` | yes | `system` and `lint.run.exit` taken, nothing else for "Amendment" or "Not in this amendment" | the amendment in progress stays out |
 | `lint.run.exit`, with no `manifest.sum` | yes | `system` and `lint.run.exit` taken | no manifest is read |
+| `lint.run.exit`, with a folder named `.amendment.md` | yes | `system` and `lint.run.exit` taken, exit status 0 | the note is not read |
 | `lint.run.gone`, an identifier the tree does not hold | no | exit status 2 | |
 | `lint.run.root`, removed since the baseline | no | exit status 2 | a removed element is no longer in the tree |
 
