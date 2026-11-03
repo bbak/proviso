@@ -210,6 +210,35 @@ manifest and the code are renamed together, the checks run, and one
 `refactor:` commit holds it all. Nothing changes what anything means,
 so no check is needed.
 
+## Mutate: `proviso-mutate`
+
+Tests written from the tree check the code only as far as the tree
+tells them to. To measure how far that is, ask Claude Code to **measure
+the tests with mutants**, outside any amendment and best on an accepted
+state. The mutating agent reads the tree and the code, never the tests,
+and writes one small slip per rule, the kind a coding agent could make:
+a guard inverted, a refusal skipped, a boundary moved by one, plus a few
+slips in code no rule covers. The skill applies each in a worktree of
+its own and runs the tests: a slip some test catches is killed, one no
+test catches survived.
+
+Before it starts, the skill runs the tests unmutated, tells you what a
+run of the whole system would cost, and lets you choose it or a part,
+such as one capability. It reports the share of slips killed and every
+survivor, and proposes for each what it shows:
+
+- **a hole in the tests:** an Examples row covers the case, but its test
+  does not check it. On your yes, the testing agent fixes the test from
+  the pack of that one rule, `proviso pack --element`, and the slip is
+  run again to see it caught;
+- **a hole in the tree:** no row or rule decides the case, so no test
+  could be derived. It becomes a request for `proviso-integrate`;
+- **equivalent:** nothing anyone could observe changes.
+
+You decide each. Name a folder for the records of runs in
+`.proviso/build.md`, and keep it out of git, if you want the kill share
+tracked over time; otherwise the skill asks, or only reports.
+
 ## Edits outside the skills
 
 The tree can be edited by hand, and an amendment need not be built by

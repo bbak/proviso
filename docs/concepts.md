@@ -137,19 +137,25 @@ branch.
 **Kit.** The files Proviso carries in its binary and `proviso init`
 installs. Proviso owns them.
 
-**Skill.** Instructions the agent host follows for one step of an
-amendment: `proviso-integrate`, `proviso-build`, `proviso-check`,
+**Skill.** Instructions the agent host follows for one task with a
+spec tree, such as a step of an amendment: `proviso-integrate`, `proviso-build`, `proviso-check`,
 `proviso-accept`, and `proviso-recover`, which writes the tree of an
 existing system one capability per amendment; and `proviso-rehome`,
-which renames moved elements outside any amendment. A skill runs Proviso's commands for every mechanical
+which renames moved elements outside any amendment; and
+`proviso-mutate`, which measures with mutants how many slips the tests
+catch. A skill runs Proviso's commands for every mechanical
 step and starts the agents. The skills that write decisions into the
 tree share a **writing guide**: how to write it for the agents that build from it.
 
 **Agent definition.** The instructions of one agent, in the form the
 agent host reads: its role, what it may read and write, how it reads a
-context pack and what it reports.
+context pack or the spec tree, and what it reports. Besides the
+testing, coding and checking agents, the **mutating agent** writes
+mutants of the code from the tree's rules, without ever seeing the
+tests they are run against.
 
 **Engineers' notes.** The files in `.proviso/` that the engineers own:
 `build.md` for the skills, `tester.md` and `coder.md` for the
 implementing agents. They hold working practice, such as commands. The
-checking agent gets no notes, so that nothing steers its judgement.
+checking agent and the mutating agent get no notes, so that nothing
+steers their judgement.

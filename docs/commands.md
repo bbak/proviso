@@ -193,7 +193,8 @@ changed since that revision, for an agent's later round. A note that is
 not a readable file in UTF-8 stops it, rather than drop out of the pack.
 `--element <identifier>` writes the pack of that one element as the
 tree holds it, under `# Element`, for a test written outside any
-amendment; it reads neither the manifest, the amendment note nor git
+amendment. Lint runs first, as for every baseline command; beyond what
+lint checks, it reads neither the manifest, the amendment note nor git
 history.
 
 | Exit status | Meaning |

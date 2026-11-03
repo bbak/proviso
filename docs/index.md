@@ -76,7 +76,8 @@ decide it:
 What Proviso is built to give in return:
 
 - **Tests with teeth:** written by a testing agent that never sees the
-  code, from rules with examples on both sides of every condition.
+  code, from rules with examples on both sides of every condition, and
+  measured with mutants written by an agent that never sees the tests.
 - **No silent defaults:** every gap is meant to end either decided by
   someone or marked as an open question, never filled in by a tool.
 - **One current truth:** new engineers and fresh agents read one tree,
@@ -124,8 +125,9 @@ How far Proviso reaches this goal is still being found out; see
 
 The agents call Proviso; Proviso never drives them. Four skills,
 installed into the repository, take an amendment through steps 2 to 5;
-a fifth recovers the spec tree of a system that exists already. Claude
-Code is the first agent host they run on.
+others recover the spec tree of a system that exists already, rehome
+moved elements, and measure the tests with mutants. Claude Code is the
+first agent host they run on.
 
 ## Limits
 
