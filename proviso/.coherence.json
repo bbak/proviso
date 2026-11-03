@@ -1,0 +1,121 @@
+{
+  "touched": [
+    {
+      "id": "baseline.diff.since",
+      "now": {
+        "heading": "h1:b956b9c4df346accf9a9a661919be712f8aef7fa912d8d57e6fafbee1f03bfee",
+        "row h1:313703dabe62379ee9c5671a138ca3109855e77b44472df114272d65aba3829a": "h1:7c64fb98dc23f8ea3b835232666cb809c3ba5f7a351288f11118d950796781d6",
+        "row h1:4e63d1b2ea095e86c7afdbfbbadda1eca82feea0b133b72c971ab0116cd3418d": "h1:2e434775de2b42a205b6104585c2f26c16c53bf0e3da34970148bfa947655697",
+        "row h1:9d969474dbed5eaad60aba2e1ea5f35d996c6e713f041b4d4ac0f0b8169ed4b9": "h1:968239d4c4b1b6b7a95dc813410203e17dd37d0df6edecbf59fd800e20684482",
+        "row h1:9f91ed7727980da2ab616d1b1b4e6d0c2cb176bcec58e011f8a5351c61d873d8": "h1:2d1caf1ac87d129b5759d511bf25b1a8db85163625ec6e24a27760cb07b244d5",
+        "row h1:d586ab291f3fa786eaa9e42de4af4c86e9f4a6903116a7fc42e47b2d1cca9335": "h1:6a0657d6bcdc0117b9484bfca34f94cca1252ff9a88857c0002f431d823a0908",
+        "row h1:d837b4e427451e8d7a7fba3110665f8eedc5a00e42c0e9acd12e8b7574135614": "h1:2afcdf1124bb2d6f174996296a0647755645b6eade73c8b4ce7e815a6328bf20",
+        "row h1:dcf52cd88535957734b27b2fb2cfc9597d0441f0f0a9299e2e804dfee8699ab8": "h1:940293a59d70744767ecd8cac2640443f996854b7209ba7365e268d52361dc27",
+        "section Rationale": "h1:05ad9c6c2cbd5e351dba58d81e79414189af190bb7da1386497be0c6e49eba9d",
+        "step Otherwise": "h1:b8880e427f6cae557a678efd91091bfc94c3163d902277a9b23e8815d05cea7c",
+        "step Provided": "h1:b18857709ec2e755681b8731ebcc2a950038c4b368a749e0ea424adc657c2de4",
+        "step Then": "h1:546b737edac32f4c8e46ace8acf23f2c57b43af9ec8d80de3e61f768d7c78de7",
+        "step When": "h1:76c3d51c031d010556830e1e787818b317635797542b0cd772b9576cfbea1756"
+      },
+      "baseline": {
+        "heading": "h1:b956b9c4df346accf9a9a661919be712f8aef7fa912d8d57e6fafbee1f03bfee",
+        "row h1:173e4f989319de97f7ce57117a2608fe1096e77e1f5fb442563ba3674b60b9fc": "h1:b6c3422eebbe760b2de34b95dc89efc01072c3bb245444f2cc7f8528d7fc5eca",
+        "row h1:4e63d1b2ea095e86c7afdbfbbadda1eca82feea0b133b72c971ab0116cd3418d": "h1:2e434775de2b42a205b6104585c2f26c16c53bf0e3da34970148bfa947655697",
+        "row h1:9f91ed7727980da2ab616d1b1b4e6d0c2cb176bcec58e011f8a5351c61d873d8": "h1:2d1caf1ac87d129b5759d511bf25b1a8db85163625ec6e24a27760cb07b244d5",
+        "row h1:d586ab291f3fa786eaa9e42de4af4c86e9f4a6903116a7fc42e47b2d1cca9335": "h1:6a0657d6bcdc0117b9484bfca34f94cca1252ff9a88857c0002f431d823a0908",
+        "row h1:d837b4e427451e8d7a7fba3110665f8eedc5a00e42c0e9acd12e8b7574135614": "h1:2afcdf1124bb2d6f174996296a0647755645b6eade73c8b4ce7e815a6328bf20",
+        "row h1:dcf52cd88535957734b27b2fb2cfc9597d0441f0f0a9299e2e804dfee8699ab8": "h1:940293a59d70744767ecd8cac2640443f996854b7209ba7365e268d52361dc27",
+        "section Rationale": "h1:4095760fe75386508290ca576e5f2228f72d3a59b91f960ab415cecdc8889736",
+        "step Otherwise": "h1:b8880e427f6cae557a678efd91091bfc94c3163d902277a9b23e8815d05cea7c",
+        "step Provided": "h1:b18857709ec2e755681b8731ebcc2a950038c4b368a749e0ea424adc657c2de4",
+        "step Then": "h1:1a2efc94f6db26b29b073b481ea49ef66faa05373cf9205382a7fc47d1316dc0",
+        "step When": "h1:4afacff9fe93f67613d8b4831fef1aad65989cf5c5c274775a90cb7a5aac25d1"
+      }
+    },
+    {
+      "id": "baseline.run.lint",
+      "now": {
+        "heading": "h1:19ecd0acbcc255c575111f9be6afb6acfaff889257fe4ffc816e3796d3bef030",
+        "row h1:2f5e9246c5706f183e489ca87224bbe810c82c69a6d2bf8ebb9a6860e5b0c18e": "h1:b835425b9306e9431f060b836907c7c5b3ba382af1a12267b065870bced8153b",
+        "row h1:351110243b10d03927e149d87fc4d2f36ee3e961dd496a469a2a3e3b18f9e8a1": "h1:fcdbf6d460f7c84befb983adcbbedc8536e9507635e6408d88eabde0acef0b85",
+        "row h1:576eeb1623b2be0929f569c782f85d7c969050bcc04a4a80f4d368a96b9b0da4": "h1:9572eeeaa051bc1c4dd44e9873451ec674c5651851e0cadb4b1677e19eb1e03b",
+        "row h1:83d093840b69ac888397254e91aac38d0bd916dcc9774f8e1c0b54350c546997": "h1:f2f687f68520aad5564d2ff4e12ee12838908da2c8672f31b722be9e552ef1d0",
+        "row h1:88c9dd4da3c4c06b323eced7d9d1ee6bce3fe379ece4dafd3d5ee63562808e4a": "h1:686e2a791084d2124f9b0269b762d686f3378d12f3e925216ae8be1674e03ff4",
+        "row h1:c51c3329760f8b5e90dcf00d983562c237219a75a9db74bfbfc5f987f304dbd9": "h1:51ede648d871cd56a2a0699209f109f7799f535286609f8c09174225a241daf4",
+        "row h1:dbf136094eca4da8a8094b3e4e27fb573f615c46b3e0b361500d94a5f901531a": "h1:bde69b6f242e4cafe0cfb402f8b6b1c65341d72220bf34c4bea190844c9c223e",
+        "step Otherwise": "h1:a9ab21da9ded8189d672c1382c1eb0633eb38cb0506a26aa521d6e423701ef00",
+        "step Provided": "h1:6ac6bd17134cb321471b8b629369b32634350b99204ca25937c18aa67ba7548b",
+        "step Then": "h1:fbdfda727671623d5b9c51c0b5d106e13e98b23efc0e001d13c8748620cc529e",
+        "step When": "h1:a2f2a517560ee8c3613d6f3295eda9d2df8fc098e3c1005ca693dda22de7f0d3"
+      },
+      "baseline": {
+        "heading": "h1:19ecd0acbcc255c575111f9be6afb6acfaff889257fe4ffc816e3796d3bef030",
+        "row h1:351110243b10d03927e149d87fc4d2f36ee3e961dd496a469a2a3e3b18f9e8a1": "h1:fcdbf6d460f7c84befb983adcbbedc8536e9507635e6408d88eabde0acef0b85",
+        "row h1:576eeb1623b2be0929f569c782f85d7c969050bcc04a4a80f4d368a96b9b0da4": "h1:9572eeeaa051bc1c4dd44e9873451ec674c5651851e0cadb4b1677e19eb1e03b",
+        "row h1:83d093840b69ac888397254e91aac38d0bd916dcc9774f8e1c0b54350c546997": "h1:f2f687f68520aad5564d2ff4e12ee12838908da2c8672f31b722be9e552ef1d0",
+        "row h1:c51c3329760f8b5e90dcf00d983562c237219a75a9db74bfbfc5f987f304dbd9": "h1:51ede648d871cd56a2a0699209f109f7799f535286609f8c09174225a241daf4",
+        "row h1:dbf136094eca4da8a8094b3e4e27fb573f615c46b3e0b361500d94a5f901531a": "h1:bde69b6f242e4cafe0cfb402f8b6b1c65341d72220bf34c4bea190844c9c223e",
+        "step Otherwise": "h1:a9ab21da9ded8189d672c1382c1eb0633eb38cb0506a26aa521d6e423701ef00",
+        "step Provided": "h1:6ac6bd17134cb321471b8b629369b32634350b99204ca25937c18aa67ba7548b",
+        "step Then": "h1:fbdfda727671623d5b9c51c0b5d106e13e98b23efc0e001d13c8748620cc529e",
+        "step When": "h1:a2f2a517560ee8c3613d6f3295eda9d2df8fc098e3c1005ca693dda22de7f0d3"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the added rows are refusals that write nothing, and the invariant already ranges over every run of manifest, diff and pack however it ends",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:0101c3acefa540bfda643e587bfa79163ed606518974c8a6a5a8fbc7ab252232",
+        "section Ranges over": "h1:383c70385ae62d1c0a1170d2e6a012d814227e3d85ca7b90d3bc6713d0b65ddf",
+        "section Rationale": "h1:9099ea22ad913d5fcbac510ed5cd2c12625dfa397c359d4385db12197a7dbf25"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.run.lint",
+        "baseline.diff.since"
+      ],
+      "text": "The new row says a run with `--since` is refused (exit 2) when lint refuses the current tree's `manifest.sum`, but baseline.diff.since's row '`a1b2`, with `manifest.sum` damaged by a merge conflict | yes | compared with the tree at `a1b2` | the manifest is not read' says that run compares. Lint refuses a manifest whose first line is a conflict marker (lint.run.model-other row `<<<<<<< HEAD`), so the two rows cannot both hold unless the damage is confined to lines after the first, which the row does not say.",
+      "status": "resolved",
+      "reason": "edited in 5425571"
+    },
+    {
+      "id": "f2",
+      "kind": "ignored",
+      "elements": [
+        "baseline.run.lint"
+      ],
+      "text": "The row '`repo/`, the same, run with `--since HEAD~1`' applies to every command of the rule, but `manifest` takes no argument (system.cli.manifest). For `manifest`, the case falls outside the rule's own When ('with arguments it takes'), so the row's exit status 2 would be asserted for a reason this rule does not cover.",
+      "status": "resolved",
+      "reason": "edited in 5425571"
+    },
+    {
+      "id": "f3",
+      "kind": "contradiction",
+      "elements": [
+        "baseline.diff.since",
+        "baseline.run.lint"
+      ],
+      "text": "The When of baseline.diff.since fires on every run of `diff`/`pack` with `--since`, whether or not lint accepts the current tree, and its Then compares and writes output. The row added to baseline.run.lint (`manifest.sum` naming another model version, run with `--since HEAD~1`) requires exit 2 with nothing on stdout. When HEAD~1 is a commit whose tree lint accepts, both rules fire on the same event and cannot both hold. baseline.diff.baseline avoids this with \"and it works on the [spec tree]\"; baseline.diff.since has no such qualifier.",
+      "status": "resolved",
+      "reason": "edited in c82d91a"
+    },
+    {
+      "id": "f4",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.since"
+      ],
+      "text": "`manifest_file` is the manifest in the current spec root. The row \"`a1b2`, with `manifest.sum` damaged by a merge conflict after its first line\" puts the damage in the revision column, so it reads as the manifest at a1b2. The third Then step only limits reading the current manifest. No step says whether the manifest at <revision> may be read, beyond what the lint run in the guard checks. The row also leaves open which of the two manifests is damaged.",
+      "status": "resolved",
+      "reason": "edited in c82d91a"
+    }
+  ]
+}
