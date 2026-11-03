@@ -113,6 +113,11 @@ installed.
   spec content.
 - **Elements cannot be shared between trees,** and a system spanning
   several repositories is not supported yet.
+- **Keep the checkout outside a synced folder,** such as OneDrive,
+  Dropbox or Google Drive. A sync tool and git get in each other's way:
+  conflicted copies inside `.git`, files locked while they upload,
+  changes that arrive late. Proviso reads a synced file as the file it
+  holds, but the repository is safer where only git moves its files.
 
 ## Conflicts in the manifest
 
