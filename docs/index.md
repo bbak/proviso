@@ -48,6 +48,54 @@ changed meaning from a reflowed line. Proviso is those mechanics.
 The essay [Decided Elsewhere](https://medium.com/@__bbak/decided-elsewhere-30bcfc233b6e)
 sets out the findings behind this.
 
+## Design goal
+
+Many spec-driven tools treat a specification as the input to one
+change: write it, build from it, move on, and let the next change bring
+the next one. Proviso is designed around a different goal: one
+specification that stays the system's lasting statement of what it
+does. Every amendment is folded into it, with the aim that one tree
+states the system as it stands, free of gaps and contradictions, so
+that tests derived from it fail when the code is wrong.
+
+Proviso deliberately trades development speed for that goal. Each
+change costs more than a prompt or a one-off spec: questions to answer,
+a check to pass, findings to decide. The trade is meant for systems
+where a wrong or undecided rule costs more than the time it takes to
+decide it:
+
+- **Systems that live long and change often,** where the people, and
+  the agents, who made last year's decisions are no longer around to
+  ask.
+- **Business rules that are expensive to get wrong,** such as pricing,
+  eligibility, limits or compliance, where "the code does something" is
+  not the same as "someone decided it".
+- **Teams that let agents implement at volume,** and need tests that
+  check the code instead of confirming it.
+
+What Proviso is built to give in return:
+
+- **Tests with teeth:** written by a testing agent that never sees the
+  code, from rules with examples on both sides of every condition.
+- **No silent defaults:** every gap is meant to end either decided by
+  someone or marked as an open question, never filled in by a tool.
+- **One current truth:** new engineers and fresh agents read one tree,
+  not a pile of change specs to piece together.
+- **Impact before build:** each amendment lists what it may affect
+  before any code is written.
+- **The business reads what it approves,** in its own words, through a
+  business view derived from the tree.
+- **A gate in CI:** no change reaches the main branch without its
+  check.
+
+For behaviour still being discovered by trying, such as prototypes,
+spikes or throwaway code, this is overhead by design. Explore without
+Proviso. Once the system is meant to last, `proviso-recover` writes the
+spec tree of what it does, and amendments take over from there.
+
+How far Proviso reaches this goal is still being found out; see
+[Limits](#limits).
+
 ## How it works
 
 ![The path of an amendment: request, specification, build, check, accept](images/pipeline.png)

@@ -17,6 +17,14 @@ boundaries lie, what its terms mean. The spec tree is written for that
 reader, and Proviso keeps it true as the system changes: a format can
 make someone decide, but it cannot make the decision arrive.
 
+Proviso's design goal is a specification that stays coherent across
+many changes, and tests that fail when the code is wrong. It
+deliberately trades development speed for that: it is meant for
+long-lived systems with rules that are expensive to get wrong, and is
+overhead for prototypes and explorations, where a recovered spec tree
+can follow once the system is meant to last. See the
+[design goal](https://bbak.github.io/proviso/#design-goal).
+
 ![The path of an amendment: request, specification, build, check, accept](docs/images/pipeline.png)
 
 ## Install
