@@ -60,7 +60,7 @@ func Files(edit func(map[string]string)) []lint.Element {
 	for k, v := range f {
 		m[k] = []byte(v)
 	}
-	return lint.Check(tree.FromFiles("root", m)).Elements
+	return lint.Check(tree.FromFiles("root", m, nil)).Elements
 }
 
 func Element(t testing.TB, els []lint.Element, id string) lint.Element {

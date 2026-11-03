@@ -323,12 +323,20 @@ func (t *Tree) Manifest() ([]byte, bool) {
 // the spec root, such as a former revision's, in the layout, as Load would
 // read them from disk, so that lint finds in them what it would find on
 // disk: unknown files, capability folders, malformed names and files that
-// are not UTF-8. Hidden paths are left out; names are read in NFC.
-func FromFiles(root string, files map[string][]byte) *Tree {
+// are not UTF-8. A symbolic link, given by its path in links, is never
+// followed: it is unreadable wherever it stands, as on disk. Hidden paths
+// are left out; names are read in NFC.
+func FromFiles(root string, files map[string][]byte, links []string) *Tree {
 	t := &Tree{Root: root}
 	stored := map[string]map[string]map[string]bool{} // by folder and name in NFC, the names as stored
 	isFile := map[string]bool{}                       // by path in NFC
-	for _, rel := range slices.Sorted(maps.Keys(files)) {
+	isLink := map[string]bool{}                       // by path as given
+	for _, l := range links {
+		isLink[l] = true
+	}
+	rels := append(slices.Collect(maps.Keys(files)), links...)
+	slices.Sort(rels)
+	for _, rel := range rels {
 		at, isHidden := "", false
 		for _, s := range strings.Split(rel, "/") {
 			name := path.Join(at, norm.NFC.String(s))
@@ -350,6 +358,8 @@ func FromFiles(root string, files map[string][]byte) *Tree {
 		isFile[at] = true
 		kind, cap := Classify(at)
 		switch {
+		case isLink[rel]:
+			t.Unreadable = append(t.Unreadable, at)
 		case kind == Unknown:
 			t.Unknown = append(t.Unknown, at)
 		case !utf8.Valid(files[rel]):

@@ -453,6 +453,13 @@ func TestSince(t *testing.T) {
 	c3 := commit()
 	os.Remove("proviso/notes.md")
 	d5 := commit()
+	// A symbolic link, stored as git stores one, whatever the platform.
+	blob := git("hash-object", "-w", "proviso/system.md")
+	git("update-index", "--add", "--cacheinfo", "120000,"+blob+",proviso/x.md")
+	git("commit", "-q", "-m", "link")
+	l7 := git("rev-parse", "HEAD")
+	git("rm", "-q", "--cached", "proviso/x.md")
+	git("commit", "-q", "-m", "no link")
 
 	cases := []struct {
 		name   string
@@ -464,9 +471,10 @@ func TestSince(t *testing.T) {
 		{"former text from a1", []string{"diff", "--json", "--since", a1}, 1, `"former": "g\n"`},
 		{"before the tree", []string{"diff", "--json", "--since", before}, 1, `"change": "added"`},
 		{"no former text needed", []string{"diff", "--json", "--since", before}, 1, `"revision": null`},
-		{"pack since a1", []string{"pack", "--since", "HEAD~3"}, 0, "Former text from `" + a1 + "`."},
+		{"pack since a1", []string{"pack", "--since", "HEAD~5"}, 0, "Former text from `" + a1 + "`."},
 		{"manifest there damaged after its first line", []string{"diff", "--since", d5}, 0, ""},
 		{"another model version there", []string{"diff", "--since", m9}, 2, ""},
+		{"a symbolic link there", []string{"diff", "--since", l7}, 2, ""},
 		{"no such commit", []string{"diff", "--since", "nosuch"}, 2, ""},
 		{"lint error there", []string{"pack", "--since", c3}, 2, ""},
 		{"no revision", []string{"diff", "--since"}, 2, ""},
