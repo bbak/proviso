@@ -40,6 +40,9 @@ func TestRefused(t *testing.T) {
 		{"diff", "--since"}, {"pack", "--since", ""}, {"diff", "--since", "--json"},
 		{"diff", "--since", "-x"}, {"diff", "--since", "HEAD~1", "--since", "HEAD~2"},
 		{"diff", "HEAD~1"}, {"rehome", "--since", "HEAD~1"}, {"lint", "--write"},
+		{"diff", "--element", "lint.run.exit"}, {"pack", "--element"}, {"pack", "--element", "-x"},
+		{"pack", "--element", "a", "--element", "b"}, {"pack", "--since", "HEAD~1", "--element", "a"},
+		{"pack", "--element", "a", "--since", "HEAD~1"},
 	}
 	for _, args := range cases {
 		t.Chdir(t.TempDir()) // nothing to check: a refusal reads no tree
@@ -57,25 +60,24 @@ func TestRefused(t *testing.T) {
 
 func TestReadArgs(t *testing.T) {
 	cases := []struct {
-		cmd    string
-		args   []string
-		asJSON bool
-		write  bool
-		since  string
+		cmd  string
+		args []string
+		want options
 	}{
-		{"lint", []string{"--json"}, true, false, ""},
-		{"lint", []string{"--json", "--json"}, true, false, ""},
-		{"diff", []string{"--since", "HEAD~1"}, false, false, "HEAD~1"},
-		{"pack", []string{"--json", "--since", "a1b2c3d"}, true, false, "a1b2c3d"},
-		{"diff", []string{"--since", "HEAD~1", "--json"}, true, false, "HEAD~1"},
-		{"rehome", []string{"--json", "--write"}, true, true, ""},
-		{"rehome", nil, false, false, ""},
+		{"lint", []string{"--json"}, options{json: true}},
+		{"lint", []string{"--json", "--json"}, options{json: true}},
+		{"diff", []string{"--since", "HEAD~1"}, options{since: "HEAD~1"}},
+		{"pack", []string{"--json", "--since", "a1b2c3d"}, options{json: true, since: "a1b2c3d"}},
+		{"pack", []string{"--json", "--element", "lint.run.exit"}, options{json: true, element: "lint.run.exit"}},
+		{"diff", []string{"--since", "HEAD~1", "--json"}, options{json: true, since: "HEAD~1"}},
+		{"rehome", []string{"--json", "--write"}, options{json: true, write: true}},
+		{"rehome", nil, options{}},
 	}
 	for _, c := range cases {
 		var errOut bytes.Buffer
-		asJSON, write, since, ok := readArgs(c.cmd, c.cmd, c.args, &errOut)
-		if !ok || asJSON != c.asJSON || write != c.write || since != c.since {
-			t.Errorf("%s %q: %v %v %q %v (stderr %q)", c.cmd, c.args, asJSON, write, since, ok, errOut.String())
+		got, ok := readArgs(c.cmd, c.cmd, c.args, &errOut)
+		if !ok || got != c.want {
+			t.Errorf("%s %q: %+v %v (stderr %q)", c.cmd, c.args, got, ok, errOut.String())
 		}
 	}
 }

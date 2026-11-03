@@ -111,6 +111,50 @@ func TestPack(t *testing.T) {
 	}
 }
 
+func TestPackElement(t *testing.T) {
+	elements := baselinetest.Files(baselinetest.ImpactTree)
+	cases := []struct {
+		id   string
+		want map[string][]string
+	}{
+		{"c.g.c", map[string][]string{
+			HeadingSystem:  {"system"},
+			HeadingElement: {"c.g.c"},
+			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
+			HeadingContext: {"system.api", "system.api.code", "system.thing"},
+		}},
+		{"system", map[string][]string{
+			HeadingElement: {"system"},
+			HeadingFrames:  {"system.inv"},
+		}},
+	}
+	for _, c := range cases {
+		t.Run(c.id, func(t *testing.T) {
+			packed, ok := PackElement(c.id, elements)
+			if !ok {
+				t.Fatal("not found")
+			}
+			got := map[string][]string{}
+			var order []string
+			for _, p := range packed {
+				got[p.Heading] = append(got[p.Heading], p.Element.ID)
+				if len(order) == 0 || order[len(order)-1] != p.Heading {
+					order = append(order, p.Heading)
+				}
+			}
+			if !maps.EqualFunc(got, c.want, slices.Equal) {
+				t.Errorf("got %v, want %v", got, c.want)
+			}
+			if !slices.IsSortedFunc(order, func(a, b string) int { return rank(a) - rank(b) }) {
+				t.Errorf("headings in the order %v", order)
+			}
+		})
+	}
+	if _, ok := PackElement("c.g.gone", elements); ok {
+		t.Error("an identifier the tree does not hold was found")
+	}
+}
+
 func TestPackOrder(t *testing.T) {
 	el := func(file string, line int) *lint.Element { return &lint.Element{File: file, Line: line} }
 	entries := []*Entry{

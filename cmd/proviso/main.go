@@ -61,7 +61,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return exitCantRun
 	}
 	// cli.help.argument: the arguments are read before anything else.
-	asJSON, write, since, ok := readArgs(cmd, name, opts, stderr)
+	o, ok := readArgs(cmd, name, opts, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -75,14 +75,15 @@ func run(args []string, stdout, stderr io.Writer) int {
 	case "version":
 		return versionRun(stdout, stderr)
 	}
-	// baseline.diff.since: since a revision, manifest.sum is not read.
-	t, res, ok := check(cmd, since == "", stderr)
+	// baseline.diff.since: since a revision, manifest.sum is not read;
+	// baseline.pack.element: nor for the pack of a named element.
+	t, res, ok := check(cmd, o.since == "" && o.element == "", stderr)
 	if !ok {
 		return exitCantRun
 	}
 	switch cmd {
 	case "lint":
-		return lintRun(t, res, asJSON, stdout, stderr)
+		return lintRun(t, res, o.json, stdout, stderr)
 	case "manifest", "diff", "impact", "pack", "judge", "verify", "rehome":
 		// baseline.run.lint for manifest, diff and pack, coherence.run.lint
 		// for impact, judge and verify, upkeep.rehome.lint for rehome: only
@@ -96,17 +97,20 @@ func run(args []string, stdout, stderr io.Writer) int {
 		case "manifest":
 			return manifestRun(t, res, stderr)
 		case "diff":
-			return diffRun(t, res, asJSON, since, stdout, stderr)
+			return diffRun(t, res, o.json, o.since, stdout, stderr)
 		case "pack":
-			return packRun(t, res, asJSON, since, stdout, stderr)
+			if o.element != "" {
+				return packElementRun(t, res, o.json, o.element, stdout, stderr)
+			}
+			return packRun(t, res, o.json, o.since, stdout, stderr)
 		case "judge":
 			return judgeRun(t, res, stderr)
 		case "verify":
-			return verifyRun(t, res, asJSON, stdout, stderr)
+			return verifyRun(t, res, o.json, stdout, stderr)
 		case "rehome":
-			return rehomeRun(t, res, asJSON, write, stdout, stderr)
+			return rehomeRun(t, res, o.json, o.write, stdout, stderr)
 		}
-		return impactRun(t, res, asJSON, stdout, stderr)
+		return impactRun(t, res, o.json, stdout, stderr)
 	}
 	return exitCantRun
 }

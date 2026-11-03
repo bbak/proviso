@@ -17,7 +17,7 @@ func TestUpdate(t *testing.T) {
 	stamped := func(v string) string { return "---\nname: x\nmetadata:\n  proviso-version: " + v + "\n---\n" }
 	all := func(v string, edit map[string]string) map[string]string {
 		files := map[string]string{".git/HEAD": "", "proviso/system.md": "mine\n", ".proviso/build.md": "mine\n"}
-		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", build, ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md"} {
+		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-mutator.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", build, ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-mutate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md"} {
 			files[f] = stamped(v)
 		}
 		for k, v := range edit {
@@ -48,7 +48,7 @@ func TestUpdate(t *testing.T) {
 		{"no frontmatter", all("0.2.0", map[string]string{build: "# X\n"}), 0, "updated", ""},
 		{"missing", all("0.2.0", map[string]string{build: ""}), 0, "written", ""},
 		{"folder", all("0.2.0", map[string]string{build: "", build + "/x": "x"}), 2, "", "cannot write " + build},
-		{"agents a file", all("0.2.0", map[string]string{".claude/agents/proviso-checker.md": "", ".claude/agents/proviso-coder.md": "", ".claude/agents/proviso-tester.md": "", ".claude/agents": "mine"}), 2, "skipped", "cannot write .claude/agents/proviso-coder.md"},
+		{"agents a file", all("0.2.0", map[string]string{".claude/agents/proviso-checker.md": "", ".claude/agents/proviso-coder.md": "", ".claude/agents/proviso-mutator.md": "", ".claude/agents/proviso-tester.md": "", ".claude/agents": "mine"}), 2, "skipped", "cannot write .claude/agents/proviso-coder.md"},
 		{"only one", map[string]string{".git/HEAD": "", build: stamped("0.2.0")}, 0, "skipped", ""},
 		{"before init", map[string]string{".git/HEAD": ""}, 2, "", "proviso init installs them"},
 		{"notes only", map[string]string{".git/HEAD": "", "proviso/system.md": "x", ".proviso/build.md": "x"}, 2, "", "no Proviso skill"},
@@ -102,8 +102,8 @@ func TestUpdateOrder(t *testing.T) {
 	if status := run([]string{"update"}, &out, &errOut); status != 0 || errOut.Len() > 0 {
 		t.Fatalf("status %d, stderr %q", status, errOut.String())
 	}
-	want := "written .claude/agents/proviso-checker.md\nupdated .claude/agents/proviso-coder.md\nwritten .claude/agents/proviso-tester.md\n" +
-		"written .claude/skills/proviso-accept/SKILL.md\nwritten .claude/skills/proviso-build/SKILL.md\nwritten .claude/skills/proviso-check/SKILL.md\nwritten .claude/skills/proviso-integrate/SKILL.md\nwritten .claude/skills/proviso-recover/SKILL.md\nwritten .claude/skills/proviso-rehome/SKILL.md\n"
+	want := "written .claude/agents/proviso-checker.md\nupdated .claude/agents/proviso-coder.md\nwritten .claude/agents/proviso-mutator.md\nwritten .claude/agents/proviso-tester.md\n" +
+		"written .claude/skills/proviso-accept/SKILL.md\nwritten .claude/skills/proviso-build/SKILL.md\nwritten .claude/skills/proviso-check/SKILL.md\nwritten .claude/skills/proviso-integrate/SKILL.md\nwritten .claude/skills/proviso-mutate/SKILL.md\nwritten .claude/skills/proviso-recover/SKILL.md\nwritten .claude/skills/proviso-rehome/SKILL.md\n"
 	if out.String() != want {
 		t.Errorf("stdout %q", out.String())
 	}

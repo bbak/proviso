@@ -32,8 +32,9 @@ Commands engineers run:
   help, --help, -h    Write this page.
 
 Commands the skills run:
-  pack [--json] [--since <revision>]
-                      Write the context pack the agents build from.
+  pack [--json] [--since <revision> | --element <identifier>]
+                      Write the context pack the agents build from; with
+                      --element, the pack of that one element.
   judge               Record the check result on standard input in the
                       coherence file.
   manifest            Record the spec tree as the baseline.
@@ -46,6 +47,9 @@ Options:
   --json              Write JSON instead of text.
   --since <revision>  Compare with the spec tree at that git revision
                       instead of the baseline.
+  --element <identifier>
+                      Pack the element with that identifier instead of
+                      the amendment (pack only).
   --write             Write the planned renames (rehome only).
 
 Exit statuses:
@@ -62,7 +66,8 @@ Documentation: https://github.com/bbak/proviso/blob/main/docs/commands.md
 const helpHint = `"proviso help" shows the help page`
 
 // commandOptions is, for every command of cli.help.command, the options
-// it takes; "--since" takes a revision after it.
+// it takes; "--since" takes a revision after it, "--element" an
+// identifier.
 var commandOptions = map[string][]string{
 	"init":     nil,
 	"update":   nil,
@@ -71,7 +76,7 @@ var commandOptions = map[string][]string{
 	"manifest": nil,
 	"diff":     {"--json", "--since"},
 	"impact":   {"--json"},
-	"pack":     {"--json", "--since"},
+	"pack":     {"--json", "--since", "--element"},
 	"judge":    nil,
 	"verify":   {"--json"},
 	"rehome":   {"--write", "--json"},
@@ -81,32 +86,44 @@ var commandOptions = map[string][]string{
 // readArgs reads the arguments of the command name, which is cmd as it
 // was given, following cli.help.argument. It writes to stderr one line
 // naming the command and the first argument it does not take.
-func readArgs(cmd, name string, args []string, stderr io.Writer) (asJSON, write bool, since string, ok bool) {
+func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool) {
 	takes := commandOptions[cmd]
-	refuse := func(a, why string) (bool, bool, string, bool) {
+	refuse := func(a, why string) (options, bool) {
 		fmt.Fprintf(stderr, "proviso %s: %s %q; %s\n", name, why, a, helpHint)
-		return false, false, "", false
+		return options{}, false
 	}
+	var o options
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		switch {
 		case !slices.Contains(takes, a):
 			return refuse(a, "does not take the argument")
 		case a == "--json":
-			asJSON = true
+			o.json = true
 		case a == "--write":
-			write = true
-		case since != "":
-			return refuse(a, "takes one revision only, so it refuses a second")
+			o.write = true
+		case o.since != "" || o.element != "":
+			// One revision or one element per run, never both.
+			return refuse(a, "takes one --since or one --element, so it refuses")
 		case i+1 == len(args) || args[i+1] == "" || args[i+1][0] == '-':
-			// No revision git accepts starts with "-".
-			return refuse(a, "needs a revision after")
+			// No revision git accepts and no identifier starts with "-".
+			return refuse(a, "needs a value after")
+		case a == "--since":
+			i++
+			o.since = args[i]
 		default:
 			i++
-			since = args[i]
+			o.element = args[i]
 		}
 	}
-	return asJSON, write, since, true
+	return o, true
+}
+
+// options are the arguments a command read: whether it was given --json
+// and --write, and the values of --since and --element, "" for none.
+type options struct {
+	json, write    bool
+	since, element string
 }
 
 // helpRun writes the help page to stdout.

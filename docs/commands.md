@@ -183,7 +183,7 @@ Specified in [coherence/features/impact.md](https://github.com/bbak/proviso/blob
 ## pack
 
 ```sh
-proviso pack [--json] [--since <revision>]
+proviso pack [--json] [--since <revision> | --element <identifier>]
 ```
 
 Writes the context pack of the amendment: the system, the element diff,
@@ -191,11 +191,15 @@ what the amendment note says the amendment leaves out, and every
 element needed to read it. `--since <revision>` writes the pack of what
 changed since that revision, for an agent's later round. A note that is
 not a readable file in UTF-8 stops it, rather than drop out of the pack.
+`--element <identifier>` writes the pack of that one element as the
+tree holds it, under `# Element`, for a test written outside any
+amendment; it reads neither the manifest, the amendment note nor git
+history.
 
 | Exit status | Meaning |
 | --- | --- |
 | 0 | the pack was written |
-| 2 | the amendment note could not be read, or the command could not run |
+| 2 | the amendment note could not be read, `--element` names no element of the tree, or the command could not run |
 
 Specified in [baseline/features/pack.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/pack.md).
 

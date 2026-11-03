@@ -293,6 +293,33 @@ func TestPackCommand(t *testing.T) {
 	}
 }
 
+// The pack of a named element reads neither the manifest, the amendment
+// note nor git history: none of them stops it.
+func TestPackElementCommand(t *testing.T) {
+	inRepo(t, map[string]string{
+		"proviso/system.md":     system,
+		"proviso/manifest.sum":  "model 99\n<<<<<<< HEAD\n",
+		"proviso/.amendment.md": "- refunds\n",
+	})
+	call := func(args ...string) (int, string, string) {
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	if status, out, errOut := call("pack", "--element", "system"); status != 0 || out != "# Element\n\n"+system {
+		t.Errorf("text: %d %q %q", status, out, errOut)
+	}
+	os.Remove(filepath.Join("proviso", ".amendment.md"))
+	os.Mkdir(filepath.Join("proviso", ".amendment.md"), 0o755)
+	status, out, errOut := call("pack", "--json", "--element", "system")
+	if status != 0 || !strings.Contains(out, `"diff": []`) || !strings.Contains(out, `"note": null`) || !strings.Contains(out, `"revision": null`) || !strings.Contains(out, `"heading": "element"`) || strings.Contains(out, `"heading": "system"`) {
+		t.Errorf("json: %d %s %q", status, out, errOut)
+	}
+	if status, out, errOut := call("pack", "--element", "system.gone"); status != 2 || out != "" || !strings.Contains(errOut, `no element "system.gone"`) {
+		t.Errorf("no such element: %d %q %q", status, out, errOut)
+	}
+}
+
 func TestManifestRemoves(t *testing.T) {
 	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/.coherence.json/inner/x": "x", "outside.md": "kept"})
 	note := filepath.Join("proviso", ".amendment.md")
@@ -315,7 +342,7 @@ func TestManifestRemoves(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	all := []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
+	all := []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-mutator.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-mutate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md", ".proviso/build.md", ".proviso/coder.md", ".proviso/tester.md", "proviso/.gitattributes", "proviso/.markdownlint.jsonc", "proviso/system.md"}
 	lines := func(verb string, paths ...string) string {
 		var b strings.Builder
 		for _, p := range paths {
@@ -332,8 +359,8 @@ func TestInit(t *testing.T) {
 		{"not a repository", map[string]string{"a.txt": "x"}, 2, ""},
 		{"fresh clone", map[string]string{".git/HEAD": "x"}, 0, lines("written", all...)},
 		{"worktree", map[string]string{".git": "gitdir: x"}, 0, lines("written", all...)},
-		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:14]...) + lines("skipped", all[14])},
-		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[9:]...)},
+		{"existing system", map[string]string{".git": "x", "proviso/system.md": "mine"}, 0, lines("written", all[:16]...) + lines("skipped", all[16])},
+		{".claude a file", map[string]string{".git": "x", ".claude": "mine"}, 2, lines("written", all[11:]...)},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -580,7 +607,7 @@ func TestVersionCommand(t *testing.T) {
 	stamped := func(v string) string { return "---\nname: x\nmetadata:\n  proviso-version: " + v + "\n---\n" }
 	all := func(edit map[string]string) map[string]string {
 		files := map[string]string{".git/HEAD": "", "proviso/manifest.sum": "model 0\n"}
-		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md"} {
+		for _, f := range []string{".claude/agents/proviso-checker.md", ".claude/agents/proviso-coder.md", ".claude/agents/proviso-mutator.md", ".claude/agents/proviso-tester.md", ".claude/skills/proviso-accept/SKILL.md", ".claude/skills/proviso-build/SKILL.md", ".claude/skills/proviso-check/SKILL.md", ".claude/skills/proviso-integrate/SKILL.md", ".claude/skills/proviso-mutate/SKILL.md", ".claude/skills/proviso-recover/SKILL.md", ".claude/skills/proviso-rehome/SKILL.md"} {
 			files[f] = stamped("0.2.0")
 		}
 		for k, v := range edit {
@@ -602,7 +629,7 @@ func TestVersionCommand(t *testing.T) {
 		{"all fit", all(nil), nil},
 		{"before init", map[string]string{".git/HEAD": ""}, []string{"no Proviso skill", "manifest.sum does not exist"}},
 		{"other claude files", map[string]string{".git/HEAD": "", ".claude/settings.json": "{}", "proviso/manifest.sum": "model 0\n"}, []string{"no Proviso skill"}},
-		{"one skill only", map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/SKILL.md": stamped("0.2.0"), "proviso/manifest.sum": "model 0\n"}, []string{"proviso-checker.md is not installed", "proviso-coder.md is not", "proviso-tester.md is not", "proviso-accept/SKILL.md is not", "proviso-check/SKILL.md is not", "proviso-integrate/SKILL.md is not", "proviso-recover/SKILL.md is not", "proviso-rehome/SKILL.md is not"}},
+		{"one skill only", map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/SKILL.md": stamped("0.2.0"), "proviso/manifest.sum": "model 0\n"}, []string{"proviso-checker.md is not installed", "proviso-coder.md is not", "proviso-mutator.md is not", "proviso-tester.md is not", "proviso-accept/SKILL.md is not", "proviso-check/SKILL.md is not", "proviso-integrate/SKILL.md is not", "proviso-mutate/SKILL.md is not", "proviso-recover/SKILL.md is not", "proviso-rehome/SKILL.md is not"}},
 		{"stale with model", all(map[string]string{tester: stamped("0.1.0")}), []string{tester + " was installed by Proviso 0.1.0, which reads model 0"}},
 		{"stale dev", all(map[string]string{tester: stamped("dev")}), []string{tester + " was installed by Proviso dev; this"}},
 		{"later release", all(map[string]string{tester: stamped("0.3.0")}), []string{tester + " was installed by Proviso 0.3.0; this"}},
