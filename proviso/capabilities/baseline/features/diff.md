@@ -43,7 +43,8 @@ An amendment is built in rounds, and a resumed agent needs only what
 changed since its last round. The tree at the revision it last received
 stands in for the baseline: its parts are fingerprinted as the manifest
 would record them, so the same comparison finds what changed, and the
-former text comes from the same revision. The manifest is not read. A
+former text comes from the same revision. Nothing of the manifest is
+read beyond what `lint`, run first, checks. A
 tree that lint would reject could be misread, and a misread tree would
 show changes nobody made.
 
@@ -53,7 +54,7 @@ Provided  git knows <revision> as a commit
   And     `lint`, run on the [spec tree] at <revision>, would exit with `lint.exit-status` 0, or there is no [spec tree] at <revision>
 Then      the command compares the [spec tree] with the [spec tree] at <revision>, every [element part] fingerprinted as `manifest_file` describes, in place of the [baseline]
   And     the text the command lists as former is read from <revision>
-  And     `manifest_file` is not read
+  And     nothing of `manifest_file` is read beyond what `lint` checks
 Otherwise the command writes to "stderr" why it cannot compare with <revision>
   And     the command exits with 2, as `diff.exit-status` and `pack.exit-status` define
   And     nothing goes to "stdout"
@@ -64,7 +65,7 @@ Otherwise the command writes to "stderr" why it cannot compare with <revision>
 | `a1b2`, the commit an agent received in its last round | yes | compared with the tree at `a1b2`, former text from `a1b2` | |
 | `HEAD~1` | yes | compared with the tree one commit back | any name git accepts |
 | `e5f6`, from before the tree existed | yes | every element added | an empty tree, as without a manifest |
-| `a1b2`, with `manifest.sum` damaged by a merge conflict | yes | compared with the tree at `a1b2` | the manifest is not read |
+| `a1b2`, with `manifest.sum` damaged by a merge conflict after its first line | yes | compared with the tree at `a1b2` | the manifest is not read beyond what lint checks |
 | `nosuch` | no (a commit) | exit status 2 | |
 | `c3d4`, whose tree has a lint error | no (no error) | exit status 2 | a misread tree would show changes nobody made |
 

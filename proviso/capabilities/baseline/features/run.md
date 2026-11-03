@@ -38,4 +38,4 @@ Otherwise the command writes to "stderr" what `lint` would write as text
 | `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
 | `repo/`, its `manifest.sum` naming another model version | no | exit status 2 | lint refuses a tree of another model version |
-| `repo/`, the same, run with `--since HEAD~1` | no | exit status 2 | comparing with a revision still needs a tree lint accepts |
+| `repo/`, the same, `diff` or `pack` run with `--since HEAD~1` | no | exit status 2 | comparing with a revision still needs a tree lint accepts |
