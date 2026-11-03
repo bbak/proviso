@@ -236,7 +236,7 @@ func readRegular(t *tree.Tree, name string) ([]byte, bool, error) {
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, false, nil
 	}
-	if err == nil && !info.Mode().IsRegular() {
+	if err == nil && !tree.Type(p, info.Mode()).IsRegular() {
 		err = errors.New("it is not a regular file")
 	}
 	var data []byte

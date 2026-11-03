@@ -9,6 +9,7 @@ import (
 
 	"github.com/bbak/proviso/internal/kit"
 	"github.com/bbak/proviso/internal/stamp"
+	"github.com/bbak/proviso/internal/tree"
 )
 
 // updateRun brings the skills and agent definitions installed in the
@@ -90,7 +91,7 @@ func overwrite(dst string, data []byte) error {
 	if err != nil {
 		return err
 	}
-	if !info.Mode().IsRegular() {
+	if !tree.Type(dst, info.Mode()).IsRegular() {
 		return errors.New("it is not a regular file, and update removes no entry")
 	}
 	f, err := os.OpenFile(dst, os.O_WRONLY|os.O_TRUNC, 0)

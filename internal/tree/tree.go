@@ -114,15 +114,27 @@ func holds(dir, name string, folder bool) bool {
 	if err != nil {
 		return false
 	}
-	return hasEntry(entries, name, folder)
+	return hasEntry(dir, entries, name, folder)
 }
 
-// hasEntry reports whether entries hold one named exactly name, read in
-// NFC, a plain folder if folder is true, and anything but a folder if not.
-func hasEntry(entries []os.DirEntry, name string, folder bool) bool {
+// hasEntry reports whether entries, the listing of the folder dir, hold
+// one named exactly name, read in NFC, a plain folder if folder is true,
+// and anything but a folder if not.
+func hasEntry(dir string, entries []os.DirEntry, name string, folder bool) bool {
 	return slices.ContainsFunc(entries, func(e os.DirEntry) bool {
-		return norm.NFC.String(e.Name()) == name && (e.Type() == fs.ModeDir) == folder
+		return norm.NFC.String(e.Name()) == name && (Type(filepath.Join(dir, e.Name()), e.Type()) == fs.ModeDir) == folder
 	})
+}
+
+// Type returns the type of the entry at path, whose mode Go reports as m,
+// as a regular file and a symbolic link count it: a reparse point on
+// Windows that is no link, which Go reports as irregular, counts as what
+// it holds, such as a cloud file that OneDrive is moving.
+func Type(path string, m fs.FileMode) fs.FileMode {
+	if m&fs.ModeIrregular == 0 {
+		return m.Type()
+	}
+	return held(path, m.Type())
 }
 
 // CapFolder is a folder in capabilities/.
@@ -229,7 +241,7 @@ func Load(root string) *Tree {
 func (t *Tree) walk(dir, disk string) {
 	entries, err := os.ReadDir(disk)
 	if path.Dir(dir) == "capabilities" {
-		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(entries, "capability.md", false)})
+		t.CapFolders = append(t.CapFolders, CapFolder{Rel: dir, HasCapability: hasEntry(disk, entries, "capability.md", false)})
 	}
 	if err != nil {
 		t.Unreadable = append(t.Unreadable, dirName(dir))
@@ -251,7 +263,7 @@ func (t *Tree) walk(dir, disk string) {
 			}
 			seen[name] = 0
 		}
-		mode := e.Type()
+		mode := Type(filepath.Join(disk, e.Name()), e.Type())
 		switch {
 		case mode == fs.ModeDir && isListed(rel):
 			// lint.run.unreadable: a folder at the path of a file the
