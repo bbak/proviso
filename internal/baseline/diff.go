@@ -28,9 +28,10 @@ type Entry struct {
 }
 
 // PartChange is a part of a changed element that was added, changed or
-// removed, with the former text of a changed or removed part.
+// removed, with the text as it stands now of an added or changed part, and
+// the former text of a changed or removed part.
 type PartChange struct {
-	Part, Change, Former string
+	Part, Change, Text, Former string
 }
 
 // Undecided returns the undecided places of an element to be built, and the
@@ -63,9 +64,9 @@ func Compare(elements []lint.Element, base Baseline) []*Entry {
 			now[p.Key] = true
 			switch fp, ok := recorded[p.Key]; {
 			case !ok:
-				parts = append(parts, PartChange{Part: p.Key, Change: Added})
+				parts = append(parts, PartChange{Part: p.Key, Change: Added, Text: p.Text})
 			case fp != p.FP:
-				parts = append(parts, PartChange{Part: p.Key, Change: Changed})
+				parts = append(parts, PartChange{Part: p.Key, Change: Changed, Text: p.Text})
 			}
 		}
 		for key := range recorded {

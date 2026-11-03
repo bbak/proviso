@@ -194,6 +194,14 @@ func TestCompare(t *testing.T) {
 	if !slices.Contains(got, "changed step") || !slices.Contains(got, "removed section") || !slices.Contains(got, "added row") {
 		t.Errorf("%q", got)
 	}
+	for _, p := range e.Parts {
+		switch {
+		case p.Change == Removed && p.Text != "",
+			p.Change == Changed && !strings.HasPrefix(p.Text, "it is read twice"),
+			p.Change == Added && !strings.Contains(p.Text, "| c | no | not read |"):
+			t.Errorf("the text now of %+v", p)
+		}
+	}
 	if d["c.new"] == nil || d["c.new"].Change != Added || len(d["c.new"].Undecided()) != 1 {
 		t.Errorf("%+v", d["c.new"])
 	}
