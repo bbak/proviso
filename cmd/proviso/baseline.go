@@ -112,7 +112,9 @@ func elementDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stder
 
 // sinceDiff derives the element diff against the spec tree at the revision
 // since names, fingerprinted as a manifest would record it, provided lint
-// accepts that tree or there is none.
+// would accept that tree or there is none. Of the manifest there, as of
+// the one in the spec root, nothing is read beyond what lint checks: that
+// it is UTF-8 without a carriage return, and its first line.
 func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr io.Writer) ([]*baseline.Entry, string, []lint.Element, bool) {
 	fail := func(format string, args ...any) ([]*baseline.Entry, string, []lint.Element, bool) {
 		fmt.Fprintf(stderr, "proviso %s: cannot compare with %s: %s\n", cmd, since, fmt.Sprintf(format, args...))
@@ -133,6 +135,11 @@ func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr 
 	if slices.ContainsFunc(formerTree.Files, func(f *tree.File) bool { return f.Kind == tree.System }) {
 		if len(formerTree.Unreadable) > 0 {
 			return fail("the spec tree there cannot be read completely: %s", strings.Join(formerTree.Unreadable, ", "))
+		}
+		if data, ok := formerTree.Manifest(); ok {
+			if err := baseline.CheckModel(data); err != nil {
+				return fail("the spec tree there: %v", err)
+			}
 		}
 		formerRes := lint.Check(formerTree)
 		if lint.HasError(formerRes.Findings) {
