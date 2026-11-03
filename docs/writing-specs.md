@@ -390,6 +390,48 @@ library does" hands the decision back to a library default. A reference
 has no rationale of its own: why a standard was chosen belongs to the
 feature or constraint that chose it.
 
+## Algorithms
+
+The tree has no element for an algorithm. First ask whether the
+algorithm is what is specified, or only how it gets built. How the
+machine picks its notes is how it gets built: the rule states the result
+as a relation, "notes adding up to exactly `<amount>`", and invariants
+state what holds for every result. The tests then check the property,
+and any correct implementation passes them. Prescribing the steps would
+only rule out other correct implementations.
+
+Where the algorithm is what is specified, it usually fits an element
+that exists:
+
+| The algorithm | Where it goes |
+| --- | --- |
+| defined by a standard, such as a check digit or a rounding rule | a reference, and a glossary term `Defined by` it |
+| a decision with more than two outcomes | a chain of rules, handing over with `Otherwise →` |
+| a lookup, such as tariffs or thresholds | a table-valued parameter, and one rule with a relational outcome |
+| a formula | the outcome of a rule, with Examples rows in concrete numbers; a named part, such as a rounding, as a term |
+| steps whose order can be observed, such as retries | not an algorithm, but behaviour: events and rules |
+
+A glossary entry is not the place for a procedure, and a flowchart not
+its form. A Definition says what a word means, in its contact's words.
+A flowchart gives the testing agent paths, but no values and no
+outcomes. Mermaid shows structure only, never a sequence.
+
+### The gap
+
+What fits none of these is a computation the business itself owns,
+defined nowhere else, with intermediate steps, such as a scoring model
+or a cost allocation key. As a single formula in a `Then` step it gets
+unreadable, and split into rules it invents events that do not happen.
+
+Proviso does not cover this case yet. Closing the gap would take a new
+element type, a *calculation*: named inputs, numbered steps in prose,
+and a required Examples table with the inputs, the values between the
+steps and the result, so that its tests have teeth. Its changes would
+reach every rule that refers to it, as a changed Definition reaches
+every rule that marks its term. Until a system needs one, write the
+formula into the rule, and its intermediate values into extra Examples
+columns.
+
 ## Rationale
 
 Rationale is prose in a `Rationale` section, never a step in a rule
