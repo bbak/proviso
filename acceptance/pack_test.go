@@ -482,13 +482,94 @@ func TestBaselinePackOrder(t *testing.T) {
 		if it := o.item(t, "cart.pay.cap"); it.status != want {
 			t.Errorf("want the line %q, got %q", want, it.status)
 		}
-		var formers []string
-		for _, f := range o.item(t, "cart.pay.cap").formers {
-			formers = append(formers, f.part)
+		// Each part's text now, then its former text.
+		want = "Now " + key + "|Former " + key + "|Now step Provided|Former step Provided|Now step Then|Former step Then"
+		if got := blocksOf(o.item(t, "cart.pay.cap")); got != want {
+			t.Errorf("want the lines Now and Former %s, in that order, got %s", want, got)
 		}
-		if got := strings.Join(formers, "|"); got != key+"|step Provided|step Then" {
-			t.Errorf("want the former text of %s, step Provided and step Then, in that order, got %s", key, got)
+	})
+}
+
+// blocksOf lists the lines Now and Former of it, in their order, joined by
+// "|".
+func blocksOf(it packItem) string {
+	var got []string
+	for _, b := range it.blocks {
+		if b.now {
+			got = append(got, "Now "+b.part)
+		} else {
+			got = append(got, "Former "+b.part)
 		}
+	}
+	return strings.Join(got, "|")
+}
+
+// blockOf returns the text after the line Now (now true) or Former of the
+// part named part of it.
+func blockOf(t *testing.T, it packItem, part string, now bool) string {
+	t.Helper()
+	for _, b := range it.blocks {
+		if b.part == part && b.now == now {
+			return b.content
+		}
+	}
+	t.Errorf("want a line Now or Former (now: %v) for %s of %s, got %s", now, part, it.id, blocksOf(it))
+	return ""
+}
+
+// TestSystemCliPackText checks what system.cli.pack-text says of each part
+// named under Amendment: the text of an added or changed part as it stands
+// now, after a line Now, then the former text of a changed or removed part,
+// after a line Former. The layout of both, and that they agree with the
+// element diff, is checked for every run (see checkAmendment); here against
+// the tree.
+func TestSystemCliPackText(t *testing.T) {
+	t.Parallel()
+	thenNow := "Then      the shop accepts the order\n  And     nothing else changes"
+	thenFormer := "Then      the shop takes the order\n  And     nothing else changes"
+	t.Run("derived: a changed step, its text now, then its former text", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packOf(t, pCapThen)
+		it := o.item(t, "cart.pay.cap")
+		if got, want := blocksOf(it), "Now step Then|Former step Then"; got != want {
+			t.Errorf("want the lines %s, got %s", want, got)
+		}
+		checkNow(t, partChange{Part: "step Then", Text: ptr(blockOf(t, it, "step Then", true))}, thenNow)
+		checkFormer(t, partChange{Part: "step Then", Former: ptr(blockOf(t, it, "step Then", false))}, thenFormer)
+	})
+	t.Run("derived: an added Examples row, its text now only", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packOf(t, change{payPath, "| the second cart | no | refused |\n", "| the second cart | no | refused |\n| the third cart | yes | taken |\n"})
+		it := o.item(t, "cart.pay.cap")
+		key := "row " + rowKey("cart", "the third cart")
+		if got, want := blocksOf(it), "Now "+key; got != want {
+			t.Errorf("want the lines %s, got %s", want, got)
+		}
+		checkNow(t, partChange{Part: key, Text: ptr(blockOf(t, it, key, true))}, "| the third cart | yes | taken |")
+	})
+	t.Run("derived: an Examples row with a new outcome, its text now, then its former text", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packOf(t, pCapRow)
+		it := o.item(t, "cart.pay.cap")
+		key := "row " + rowKey("cart", "the first cart")
+		if got, want := blocksOf(it), "Now "+key+"|Former "+key; got != want {
+			t.Errorf("want the lines %s, got %s", want, got)
+		}
+		checkNow(t, partChange{Part: key, Text: ptr(blockOf(t, it, key, true))}, "| the first cart | yes | accepted |")
+		checkFormer(t, partChange{Part: key, Former: ptr(blockOf(t, it, key, false))}, "| the first cart | yes | taken |")
+	})
+	t.Run("derived: a removed Examples row, its former text only", func(t *testing.T) {
+		t.Parallel()
+		// The pack tree accepted with a third row, which is then removed.
+		third := "| the third cart | yes | taken |\n"
+		withThird := amended(packTree(), change{payPath, "| the second cart | no | refused |\n", "| the second cart | no | refused |\n" + third})
+		o, _, _ := packFrom(t, withThird, change{payPath, third, ""})
+		it := o.item(t, "cart.pay.cap")
+		key := "row " + rowKey("cart", "the third cart")
+		if got, want := blocksOf(it), "Former "+key; got != want {
+			t.Errorf("want the lines %s, got %s", want, got)
+		}
+		checkFormer(t, partChange{Part: key, Former: ptr(blockOf(t, it, key, false))}, third)
 	})
 }
 
