@@ -119,6 +119,7 @@ When      `diff` compares the [element] <element>, whose [identifier] the [basel
 Provided  an [element part] of <element> is missing from the [baseline], or differs from it in its [fingerprint], or the [baseline] holds an [element part] of <element> that the [spec tree] no longer has
 Then      <element> is listed as changed, in full, naming each such [element part] as added, changed or removed
   And     the [former text] of each changed or removed [element part] is listed with it
+  And     the text of each added or changed [element part] as it stands now is listed with it, so that a part named only by its [fingerprint], such as an [Examples row], can be told from the others
 Otherwise <element> is not listed as changed
   And     everything else stays as it was
 ```
@@ -127,8 +128,8 @@ Otherwise <element> is not listed as changed
 | --- | --- | --- | --- |
 | `lint.run.exit`, its `Then` step reworded | yes | changed, naming `step Then` as changed | |
 | `lint.run.root`, its Rationale deleted | yes | changed, naming `section Rationale` as removed | |
-| `lint.run.exit`, with a new Examples row | yes | changed, naming that row as added | |
-| `lint.run.exit`, an Examples row with a new outcome | yes | changed, naming that row as changed | the placeholder values are the same |
+| `lint.run.exit`, with a new Examples row | yes | changed, naming that row as added, with its text | |
+| `lint.run.exit`, an Examples row with a new outcome | yes | changed, naming that row as changed, with its text now and its former text | the placeholder values are the same |
 | `lint.run.exit`, moved into another feature's file | no | not listed | |
 | `lint.run.exit`, its text wrapped at other places | no | not listed | |
 | `lint.run`, one of its rules changed | no | not listed | a rule is not a part of its feature |

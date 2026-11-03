@@ -178,6 +178,8 @@ properties:
                 type: string
               change:
                 enum: [added, changed, removed]
+              text:
+                type: string
               former:
                 type: string
         through:
@@ -207,8 +209,9 @@ properties:
   the next element's heading; a removed element has none. `former` is
   its former text, for a removed element only.
 - `parts` lists, for a changed element, each part that was added,
-  changed or removed, written as `part_kinds` writes it, with the former
-  text of a changed or removed part.
+  changed or removed, written as `part_kinds` writes it, with the text
+  of an added or changed part as it stands now, `text`, and the former
+  text of a changed or removed part, `former`.
 - `through` lists, for an element changed through a dependency, every
   chain of identifiers that reaches it, each from an element listed as
   added, changed or removed whose changed part passes its meaning on, to
@@ -381,12 +384,14 @@ of the contract.
     then each line that holds an undecided place or a mark of an open
     term, once, as its path and line joined by `:`, separated by a comma
     and a space, and a full stop.
-- **The former text** of each changed or removed part follows its
-  element, each after a line ``Former `<part>`:``.
+- **Each part named** follows its element, in the order of the line
+  naming them: the text of an added or changed part as it stands now,
+  after a line ``Now `<part>`:``, then the former text of a changed or
+  removed part, after a line ``Former `<part>`:``.
 - **Under Not in this amendment,** the text of `amendment_note` stands
   as the file holds it, with a blank line before and after.
-- **Former text** stands in a fenced block labelled `text`, its fence
-  longer than any run of backticks in it, so that nothing in it reads
+- **Former text, and a part's text now,** stand in a fenced block
+  labelled `text`, its fence longer than any run of backticks in it, so that nothing in it reads
   as Markdown.
 - Paths follow the same conventions as in `report`.
 
@@ -404,6 +409,12 @@ Changed `lint.run.exit`: `step Then` changed.
 
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 …
+
+Now `step Then`:
+
+```text
+Then      lint exits with `lint.exit-status` 1
+```
 
 Former `step Then`:
 
