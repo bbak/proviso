@@ -58,9 +58,11 @@ so that `a.b` never matches inside `a.b.c`:
   check that its derived form is not already taken.
 - **In the spec tree itself,** wherever the notation does not mark it:
   plain text, Examples cells, code spans, fenced blocks. Such a mention
-  may be a reference or data, such as an Examples row about
-  identifiers. `rehome` leaves it as it is, and so do you: changing it
-  is an edit of the tree, an amendment of its own.
+  may be a reference or data. A reference goes stale with the rename:
+  a rule named in a Rationale, or an Examples row whose outcome depends
+  on the tree holding the element. Data does not: an Examples row about
+  the form of identifiers. `rehome` leaves either as it is, and so do
+  you: changing it is an edit of the tree, an amendment of its own.
 
 Tell a reference from data by reading it, never by its form alone: a
 short identifier can also be a module path or a word in another
@@ -75,8 +77,8 @@ Show the engineer, and wait for the answer:
   match you will leave, with why;
 - every derived name already taken, which stops the step until the
   engineer decides;
-- the mentions in the tree that stay as they are, for a later
-  amendment if the engineer wants them changed.
+- the mentions in the tree that stay as they are, each with its file
+  and line, and whether it is a reference or data.
 
 Write nothing until the engineer agrees.
 
@@ -98,6 +100,8 @@ Write nothing until the engineer agrees.
 ## 6. Report
 
 The renames, the files changed beside the tree, the mentions left in
-the tree, the checks that ran, and the commit.
+the tree, the checks that ran, and the commit. If any mention left is a
+reference, recommend a small amendment that names it by its new
+identifier, before the next amendment builds on it.
 
 Never push, never edit the spec tree but through `proviso rehome`.
