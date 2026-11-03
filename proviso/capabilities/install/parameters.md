@@ -4,8 +4,8 @@
 
 - Configurable: no
 - Rationale: a repository needs the start of a spec tree and its
-  settings, the definitions of the implementing agents and the checking
-  agent and the skills for the first agent host, Claude Code, and a
+  settings, the definitions of the implementing agents, the checking
+  agent and the mutating agent, and the skills for the first agent host, Claude Code, and a
   place for the engineers' notes to the implementing agents and the
   skills; the checking agent gets no notes, so that nothing steers its
   judgement. Nothing more is installed until it is needed. The agent

@@ -320,7 +320,7 @@
 - Definition: The agent that writes mutants of the system's code from
   the spec tree, each a slip a rule's Examples should catch or a change
   of behaviour no rule covers, without seeing the tests, kept apart
-  from the agents that built them.
+  from the agents that built the code and its tests.
 - Contact: Bruno Baketarić
 - Status: defined
 
