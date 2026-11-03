@@ -14,6 +14,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/coherence"
 	"github.com/bbak/proviso/internal/git"
 	"github.com/bbak/proviso/internal/lint"
 	"github.com/bbak/proviso/internal/report"
@@ -176,7 +177,7 @@ func impactRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	if !ok {
 		return exitCantRun
 	}
-	candidates, frames := baseline.Impact(entries, res.Elements, formerElements)
+	candidates, frames := coherence.Impact(entries, res.Elements, formerElements)
 	if !emit("impact", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
 			return report.ImpactJSON(w, reportRoot(t.Root), revision, candidates, frames)
@@ -275,10 +276,10 @@ func hasNote(t *tree.Tree) bool {
 	return !errors.Is(err, fs.ErrNotExist)
 }
 
-// coherence derives what judge and verify start from: the element diff
+// checkStart derives what judge and verify start from: the element diff
 // against the baseline, the baseline and the candidates. It writes to
 // stderr why it could not.
-func coherence(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, baseline.Baseline, []baseline.Candidate, bool) {
+func checkStart(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, baseline.Baseline, []coherence.Candidate, bool) {
 	entries, _, formerElements, ok := elementDiff(cmd, t, res, "", stderr)
 	if !ok {
 		return nil, nil, nil, false
@@ -287,21 +288,21 @@ func coherence(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]
 	if data, ok := t.Manifest(); ok {
 		base, _ = baseline.Parse(data) // elementDiff refused it if it was damaged
 	}
-	candidates, _ := baseline.Impact(entries, res.Elements, formerElements)
+	candidates, _ := coherence.Impact(entries, res.Elements, formerElements)
 	return entries, base, candidates, true
 }
 
 // readCoherence reads coherence_file, if the spec root holds one,
 // following coherence.judge.unreadable. It writes to stderr why it could
 // not.
-func readCoherence(cmd string, t *tree.Tree, stderr io.Writer) (*baseline.Coherence, bool) {
+func readCoherence(cmd string, t *tree.Tree, stderr io.Writer) (*coherence.Coherence, bool) {
 	data, exists, err := readRegular(t, tree.CoherenceName)
 	if !exists {
 		return nil, true
 	}
-	var c *baseline.Coherence
+	var c *coherence.Coherence
 	if err == nil {
-		c, err = baseline.ParseCoherence(data)
+		c, err = coherence.ParseCoherence(data)
 	}
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso %s: %s cannot be read: %v\n", cmd, path.Join(tree.RootName, tree.CoherenceName), err)
@@ -322,12 +323,12 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso judge: cannot read standard input: %v\n", err)
 		return exitCantRun
 	}
-	in, err := baseline.ParseCheckResult(data)
+	in, err := coherence.ParseCheckResult(data)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso judge: the input is no check_result: %v\n", err)
 		return exitErrors
 	}
-	entries, base, candidates, ok := coherence("judge", t, res, stderr)
+	entries, base, candidates, ok := checkStart("judge", t, res, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -335,7 +336,7 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "proviso judge: there is no amendment to judge: the spec tree is as the manifest records it")
 		return exitErrors
 	}
-	after, err := baseline.Judge(before, in, entries, candidates, res.Elements, base)
+	after, err := coherence.Judge(before, in, entries, candidates, res.Elements, base)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso judge: %v; nothing is recorded\n", err)
 		return exitErrors
@@ -354,11 +355,11 @@ func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	if !ok {
 		return exitCantRun
 	}
-	entries, base, candidates, ok := coherence("verify", t, res, stderr)
+	entries, base, candidates, ok := checkStart("verify", t, res, stderr)
 	if !ok {
 		return exitCantRun
 	}
-	problems := baseline.Verify(c, hasNote(t), entries, candidates, res.Elements, base)
+	problems := coherence.Verify(c, hasNote(t), entries, candidates, res.Elements, base)
 	if !emit("verify", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
 			return report.VerifyJSON(w, reportRoot(t.Root), problems)

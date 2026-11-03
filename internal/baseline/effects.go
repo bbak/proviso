@@ -15,8 +15,6 @@ const (
 	Scope  = "scope"
 )
 
-var sourceOrder = []string{Events, Ranges, Scope}
-
 // The element types change_effects and dependencies name.
 const (
 	tSystem     = lint.TypeSystem
@@ -31,10 +29,10 @@ const (
 	tContract   = lint.TypeContract
 )
 
-// effects is the parameter change_effects: whether a changed part of an
+// Effects is the parameter change_effects: whether a changed part of an
 // element of the type typ passes its changed meaning on to its dependents,
 // and which candidate sources it opens.
-func effects(typ, part string) (dependents bool, sources []string) {
+func Effects(typ, part string) (dependents bool, sources []string) {
 	kind, name, _ := strings.Cut(part, " ")
 	switch {
 	case typ == tRule && (kind == "step" || kind == "row"):
@@ -55,10 +53,10 @@ func effects(typ, part string) (dependents bool, sources []string) {
 	return false, nil
 }
 
-// changedParts returns the parts of a listed element that count as
+// ChangedParts returns the parts of a listed element that count as
 // changed: every part of an added or removed element, or of one changed
 // through a dependency, and the parts named for a changed one.
-func changedParts(e *Entry, version *lint.Element) []string {
+func ChangedParts(e *Entry, version *lint.Element) []string {
 	var out []string
 	if e.Change == Changed {
 		for _, p := range e.Parts {
@@ -161,8 +159,8 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 		if version == nil {
 			continue
 		}
-		for _, p := range changedParts(e, version) {
-			if passes, _ := effects(version.Type, p); passes {
+		for _, p := range ChangedParts(e, version) {
+			if passes, _ := Effects(version.Type, p); passes {
 				seeds[id] = true
 				queue = append(queue, id)
 				break

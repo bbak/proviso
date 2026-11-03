@@ -1,4 +1,4 @@
-package baseline
+package coherence
 
 import (
 	"cmp"
@@ -7,6 +7,7 @@ import (
 	"strings"
 	"unicode"
 
+	"github.com/bbak/proviso/internal/baseline"
 	"github.com/bbak/proviso/internal/guarded"
 	"github.com/bbak/proviso/internal/lint"
 )
@@ -67,20 +68,19 @@ done:
 	return strings.Join(words, " "), true
 }
 
-// inFeature reports whether an element stands in a feature's file.
-func inFeature(e *lint.Element) bool { return strings.Contains(e.File, "/features/") }
+var sourceOrder = []string{baseline.Events, baseline.Ranges, baseline.Scope}
 
 // Impact finds the candidates of an amendment from the touched elements
 // of its element diff: the elements now, and those of the baseline, or nil
 // where no former text was read, as then no touched element held a part
 // in the baseline that it does not hold now.
-func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame) {
+func Impact(entries []*baseline.Entry, now, former []lint.Element) ([]Candidate, []Frame) {
 	listed := map[string]bool{}
 	for _, e := range entries {
 		listed[e.ID] = true
 	}
-	nowByID := byID(now)
-	formerByID := byID(former)
+	nowByID := baseline.ByID(now)
+	formerByID := baseline.ByID(former)
 	found := map[string]map[[2]string]map[string]bool{} // candidate, source and via, from
 	add := func(c *lint.Element, source, via, from string) bool {
 		if listed[c.ID] {
@@ -100,7 +100,7 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 	for _, e := range entries {
 		cur := nowByID[e.ID]
 		old := formerByID[e.ID]
-		if former == nil && e.Change != Added {
+		if former == nil && e.Change != baseline.Added {
 			old = cur
 		}
 		var versions []*lint.Element
@@ -114,14 +114,14 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 		}
 		open := map[string]bool{}
 		for _, v := range versions {
-			for _, p := range changedParts(e, v) {
-				_, sources := effects(v.Type, p)
+			for _, p := range baseline.ChangedParts(e, v) {
+				_, sources := baseline.Effects(v.Type, p)
 				for _, s := range sources {
 					open[s] = true
 				}
 			}
 		}
-		if open[Events] {
+		if open[baseline.Events] {
 			heads := map[string]bool{}
 			for _, v := range versions {
 				if h, ok := EventHead(v); ok {
@@ -130,28 +130,28 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 			}
 			for i := range now {
 				r := &now[i]
-				if h, ok := EventHead(r); ok && r.Type == tRule && heads[h] {
-					add(r, Events, h, e.ID)
+				if h, ok := EventHead(r); ok && r.Type == lint.TypeRule && heads[h] {
+					add(r, baseline.Events, h, e.ID)
 				}
 			}
 		}
-		if open[Ranges] {
+		if open[baseline.Ranges] {
 			for _, v := range versions {
 				for i := range now {
-					if inv := &now[i]; inv.Type == tInvariant {
+					if inv := &now[i]; inv.Type == lint.TypeInvariant {
 						if level := ranges(v, inv); level != "" {
-							add(inv, Ranges, level, e.ID)
+							add(inv, baseline.Ranges, level, e.ID)
 						}
 					}
 				}
 			}
 		}
-		if open[Scope] {
+		if open[baseline.Scope] {
 			f := Frame{ID: e.ID, Candidates: []string{}}
 			for _, v := range versions {
 				for i := range now {
 					c := &now[i]
-					if (c.Type == tRule || c.Type == tInvariant) && framed(v, c) && add(c, Scope, e.ID, e.ID) && !slices.Contains(f.Candidates, c.ID) {
+					if (c.Type == lint.TypeRule || c.Type == lint.TypeInvariant) && framed(v, c) && add(c, baseline.Scope, e.ID, e.ID) && !slices.Contains(f.Candidates, c.ID) {
 						f.Candidates = append(f.Candidates, c.ID)
 					}
 				}
@@ -175,14 +175,6 @@ func Impact(entries []*Entry, now, former []lint.Element) ([]Candidate, []Frame)
 	return out, frames
 }
 
-func byID(els []lint.Element) map[string]*lint.Element {
-	m := map[string]*lint.Element{}
-	for i := range els {
-		m[els[i].ID] = &els[i]
-	}
-	return m
-}
-
 // ranges returns the level of the invariant inv above the rule r: its
 // feature, for an invariant in the rule's feature file; its capability, for
 // one in the capability's invariants.md; the system, for one in the
@@ -191,7 +183,7 @@ func ranges(r, inv *lint.Element) string {
 	switch {
 	case inv.File == r.File:
 		return "feature"
-	case inFeature(inv):
+	case baseline.InFeature(inv):
 		return ""
 	case inv.Cap != "" && inv.Cap == r.Cap:
 		return "capability"
@@ -208,9 +200,9 @@ func ranges(r, inv *lint.Element) string {
 // constraint or invariant.
 func framed(f, c *lint.Element) bool {
 	switch {
-	case f.Type == tFeature || inFeature(f):
+	case f.Type == lint.TypeFeature || baseline.InFeature(f):
 		return c.File == f.File
-	case f.Type == tSystem || f.Cap == "":
+	case f.Type == lint.TypeSystem || f.Cap == "":
 		return true
 	default:
 		return c.Cap == f.Cap

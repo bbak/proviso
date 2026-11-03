@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/coherence"
 )
 
 type jsonProblem struct {
@@ -24,7 +24,7 @@ type jsonVerification struct {
 
 // VerifyJSON writes the verification: the spec root that was verified and
 // every problem found.
-func VerifyJSON(w io.Writer, root string, problems []baseline.Problem) error {
+func VerifyJSON(w io.Writer, root string, problems []coherence.Problem) error {
 	v := jsonVerification{Root: root, Problems: []jsonProblem{}}
 	for _, p := range problems {
 		v.Problems = append(v.Problems, jsonProblem{Kind: p.Kind, Element: p.Element, Finding: p.Finding, Text: p.Text, Message: message(p)})
@@ -37,7 +37,7 @@ func VerifyJSON(w io.Writer, root string, problems []baseline.Problem) error {
 
 // VerifyText writes one line per problem, its kind first. Nothing is
 // written when there is no problem.
-func VerifyText(w io.Writer, problems []baseline.Problem) error {
+func VerifyText(w io.Writer, problems []coherence.Problem) error {
 	var sb strings.Builder
 	for _, p := range problems {
 		subject := p.Element + p.Finding
@@ -51,17 +51,17 @@ func VerifyText(w io.Writer, problems []baseline.Problem) error {
 }
 
 // message says what a problem means, for people.
-func message(p baseline.Problem) string {
+func message(p coherence.Problem) string {
 	switch p.Kind {
-	case baseline.Missing:
+	case coherence.Missing:
 		return "the element diff lists elements, but no coherence check is recorded; run the coherence check and record it with judge"
-	case baseline.Leftover:
+	case coherence.Leftover:
 		return "a coherence check or an amendment note is left, but the spec tree is as the manifest records it; remove .coherence.json and .amendment.md"
-	case baseline.Undecided:
+	case coherence.Undecided:
 		return p.Element + " holds an undecided place or marks an open term; lint lists where"
-	case baseline.Unjudged:
+	case coherence.Unjudged:
 		return p.Element + " is a candidate without a judgement"
-	case baseline.Stale:
+	case coherence.Stale:
 		return p.Element + " changed since the coherence check covered it"
 	}
 	return "the finding " + p.Finding + " is neither resolved nor dismissed: " + p.Text

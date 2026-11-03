@@ -96,6 +96,12 @@ var (
 	fpValue    = regexp.MustCompile(`^` + hash + `$`)
 )
 
+// ValidPart reports whether key is a part's key as part_kinds writes it
+// and value a fingerprint, as a line of the manifest holds them.
+func ValidPart(key, value string) bool {
+	return partKey.MatchString(key) && fpValue.MatchString(value)
+}
+
 // Parse reads a manifest whose first line lint has accepted. It returns
 // what it records, or a message for each line after the first that is not
 // as manifest_file describes.

@@ -5,75 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bbak/proviso/internal/lint"
-	"github.com/bbak/proviso/internal/tree"
+	"github.com/bbak/proviso/internal/baseline/baselinetest"
 )
-
-const system = "# <a id=\"system\"></a> S\n\n## Goal\n\ng\n\n## Rationale\n\nr\n\n## Scope\n\ns\n\n## Out of scope\n\no\n\n## Audience\n\na\n\n## Design boundary\n\nd\n"
-
-const glossary = `# Glossary
-
-## <a id="system.thing"></a> thing
-
-- Definition: A thing.
-- Contact: Ann
-- Status: defined
-- Aliases: things
-
-## <a id="system.std"></a> std
-
-- Defined by: [Std](references.md#system.ref.std)
-- Contact: Ann
-- Status: defined
-`
-
-const references = `# References
-
-## <a id="system.ref.std"></a> Std
-
-- Version: 1
-- Link: https://example.org/std
-- Contact: Ann
-`
-
-const capability = "# <a id=\"c\"></a> C\n\n## Goal\n\ng\n\n## Rationale\n\nr\n"
-
-const feature = "# <a id=\"c.f\"></a> F\n\n- Contact: Ann\n\n## Goal\n\ng\n\n## Rationale\n\nr\n\n" +
-	"## <a id=\"c.f.r\"></a> Rule: R\n\n### Rationale\n\nwhy\n\n```guarded\n" +
-	"When      someone reads <id> of a [thing]\n" +
-	"Provided  <id> is \"a\"\n" +
-	"Then      it is read\n  And     everything else stays as it was\n" +
-	"Otherwise it is not read\n  And     everything else stays as it was\n```\n\n" +
-	"| id | provided | outcome | why |\n| --- | --- | --- | --- |\n| a | yes | read | |\n| b | no | not read | |\n"
-
-func files(edit func(map[string]string)) []lint.Element {
-	f := map[string]string{
-		"system.md":                    system,
-		"glossary.md":                  glossary,
-		"references.md":                references,
-		"capabilities/c/capability.md": capability,
-		"capabilities/c/features/f.md": feature,
-	}
-	if edit != nil {
-		edit(f)
-	}
-	m := map[string][]byte{}
-	for k, v := range f {
-		m[k] = []byte(v)
-	}
-	return lint.Check(tree.FromFiles("root", m)).Elements
-}
-
-func element(t *testing.T, els []lint.Element, id string) lint.Element {
-	t.Helper()
-	for _, e := range els {
-		if e.ID == id {
-			return e
-		}
-	}
-	t.Fatalf("no element %s", id)
-	return lint.Element{}
-}
 
 func keys(ps []Part) []string {
 	var out []string
@@ -110,7 +43,7 @@ func TestFingerprint(t *testing.T) {
 }
 
 func TestParts(t *testing.T) {
-	els := files(nil)
+	els := baselinetest.Files(nil)
 	cases := map[string][]string{
 		"c.f.r":          {"heading", "section Rationale", "step When", "step Provided", "step Then", "step Otherwise", "row", "row"},
 		"c.f":            {"heading", "field Contact", "section Goal", "section Rationale"},
@@ -118,19 +51,19 @@ func TestParts(t *testing.T) {
 		"system.ref.std": {"heading", "field Version", "field Link", "field Contact"},
 	}
 	for id, want := range cases {
-		if got := keys(Parts(element(t, els, id))); !slices.Equal(got, want) {
+		if got := keys(Parts(baselinetest.Element(t, els, id))); !slices.Equal(got, want) {
 			t.Errorf("%s: %q, want %q", id, got, want)
 		}
 	}
-	r := element(t, els, "c.f.r")
+	r := baselinetest.Element(t, els, "c.f.r")
 	ps := Parts(r)
 	if ps[0].Text != "Rule: R" || ps[1].Text != "why\n" || ps[4].Text != "it is read\n  And     everything else stays as it was" {
 		t.Errorf("%q", ps[:5])
 	}
 
 	// In a rule, a section ends at its rule block: prose after it is body.
-	after := strings.Replace(feature, "```\n\n|", "```\n\nmore prose\n\n|", 1)
-	r = element(t, files(func(m map[string]string) { m["capabilities/c/features/f.md"] = after }), "c.f.r")
+	after := strings.Replace(baselinetest.Feature, "```\n\n|", "```\n\nmore prose\n\n|", 1)
+	r = baselinetest.Element(t, baselinetest.Files(func(m map[string]string) { m["capabilities/c/features/f.md"] = after }), "c.f.r")
 	if r.Sections[0].Body != "why\n" || r.Body != "more prose\n" || Parts(r)[len(Parts(r))-1].Key != "body" {
 		t.Errorf("%+v %q", r.Sections, r.Body)
 	}
@@ -139,26 +72,26 @@ func TestParts(t *testing.T) {
 func TestRowKey(t *testing.T) {
 	key := func(f string) []string {
 		var out []string
-		for _, p := range Parts(element(t, files(func(m map[string]string) { m["capabilities/c/features/f.md"] = f }), "c.f.r")) {
+		for _, p := range Parts(baselinetest.Element(t, baselinetest.Files(func(m map[string]string) { m["capabilities/c/features/f.md"] = f }), "c.f.r")) {
 			if strings.HasPrefix(p.Key, "row ") {
 				out = append(out, p.Key)
 			}
 		}
 		return out
 	}
-	base := key(feature)
+	base := key(baselinetest.Feature)
 	if base[0] == base[1] {
 		t.Fatal("two cases share a key")
 	}
-	if got := key(strings.Replace(feature, "| a | yes | read | |", "| a | yes | still read | |", 1)); !slices.Equal(got, base) {
+	if got := key(strings.Replace(baselinetest.Feature, "| a | yes | read | |", "| a | yes | still read | |", 1)); !slices.Equal(got, base) {
 		t.Error("a new outcome changed the key")
 	}
 	swapped := strings.NewReplacer("| id | provided | outcome | why |", "| outcome | provided | id | why |",
-		"| a | yes | read | |", "| read | yes | a | |", "| b | no | not read | |", "| not read | no | b | |").Replace(feature)
+		"| a | yes | read | |", "| read | yes | a | |", "| b | no | not read | |", "| not read | no | b | |").Replace(baselinetest.Feature)
 	if got := key(swapped); !slices.Equal(got, base) {
 		t.Errorf("swapped columns: %q, want %q", got, base)
 	}
-	repeated := strings.Replace(feature, "| b | no | not read | |", "| ? | no | not read | |\n| ? | no | x | |", 1)
+	repeated := strings.Replace(baselinetest.Feature, "| b | no | not read | |", "| ? | no | not read | |\n| ? | no | x | |", 1)
 	got := key(repeated)
 	if len(got) != 3 || got[2] != got[1]+" #2" {
 		t.Errorf("repeated: %q", got)
@@ -166,7 +99,7 @@ func TestRowKey(t *testing.T) {
 }
 
 func TestManifest(t *testing.T) {
-	els := files(nil)
+	els := baselinetest.Files(nil)
 	m := Write(els)
 	if !strings.HasPrefix(string(m), "model 0\n") || !strings.HasSuffix(string(m), "\n") {
 		t.Fatalf("%q", m)
@@ -175,7 +108,7 @@ func TestManifest(t *testing.T) {
 	if !slices.IsSorted(lines) {
 		t.Error("not sorted")
 	}
-	if string(Write(files(nil))) != string(m) {
+	if string(Write(baselinetest.Files(nil))) != string(m) {
 		t.Error("not the same bytes for the same tree")
 	}
 	b, bad := Parse(m)
@@ -217,13 +150,13 @@ func TestNamedModel(t *testing.T) {
 
 func diff(t *testing.T, edit func(map[string]string)) map[string]*Entry {
 	t.Helper()
-	base, bad := Parse(Write(files(nil)))
+	base, bad := Parse(Write(baselinetest.Files(nil)))
 	if len(bad) > 0 {
 		t.Fatal(bad)
 	}
 	out := map[string]*Entry{}
-	now := files(edit)
-	entries := Through(Compare(now, base), now, files(nil))
+	now := baselinetest.Files(edit)
+	entries := Through(Compare(now, base), now, baselinetest.Files(nil))
 	for i, e := range entries {
 		if i > 0 && entries[i-1].ID >= e.ID {
 			t.Error("not ordered by identifier")
@@ -238,13 +171,13 @@ func TestCompare(t *testing.T) {
 		t.Errorf("an unchanged tree: %v", d)
 	}
 	reflowed := diff(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = strings.NewReplacer("Then      it is read", "Then it is read", "### Rationale\n\nwhy\n", "### Rationale\n\n  why\n\n").Replace(feature)
+		m["capabilities/c/features/f.md"] = strings.NewReplacer("Then      it is read", "Then it is read", "### Rationale\n\nwhy\n", "### Rationale\n\n  why\n\n").Replace(baselinetest.Feature)
 	})
 	if len(reflowed) != 0 {
 		t.Errorf("reflowed: %v", reflowed)
 	}
 	d := diff(t, func(m map[string]string) {
-		f := strings.Replace(feature, "Then      it is read", "Then      it is read twice", 1)
+		f := strings.Replace(baselinetest.Feature, "Then      it is read", "Then      it is read twice", 1)
 		f = strings.Replace(f, "### Rationale\n\nwhy\n\n", "", 1)
 		f += "| c | no | not read | |\n"
 		m["capabilities/c/features/f.md"] = f
@@ -265,7 +198,7 @@ func TestCompare(t *testing.T) {
 		t.Errorf("%+v", d["c.new"])
 	}
 	twice := diff(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = strings.Replace(feature, "| b | no | not read | |", "| b | no | ? | ? |", 1)
+		m["capabilities/c/features/f.md"] = strings.Replace(baselinetest.Feature, "| b | no | not read | |", "| b | no | ? | ? |", 1)
 	})
 	if u := twice["c.f.r"].Undecided(); len(u) != 1 {
 		t.Errorf("a row with two undecided cells: %v", u)
@@ -278,7 +211,7 @@ func TestCompare(t *testing.T) {
 	}
 
 	removed := diff(t, func(m map[string]string) {
-		m["capabilities/c/features/f.md"] = feature[:strings.Index(feature, "## <a id=\"c.f.r\">")]
+		m["capabilities/c/features/f.md"] = baselinetest.Feature[:strings.Index(baselinetest.Feature, "## <a id=\"c.f.r\">")]
 	})
 	if removed["c.f.r"] == nil || removed["c.f.r"].Change != Removed || removed["c.f.r"].Element != nil {
 		t.Errorf("%+v", removed)
@@ -286,30 +219,30 @@ func TestCompare(t *testing.T) {
 }
 
 func TestFormer(t *testing.T) {
-	m := Write(files(nil))
+	m := Write(baselinetest.Files(nil))
 	base, _ := Parse(m)
-	entries := Compare(files(func(f map[string]string) {
-		f["capabilities/c/features/f.md"] = strings.Replace(feature, "Then      it is read", "Then      it is read twice", 1)
+	entries := Compare(baselinetest.Files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(baselinetest.Feature, "Then      it is read", "Then      it is read twice", 1)
 	}), base)
-	if err := Former(entries, base, files(nil), "rev"); err != nil {
+	if err := Former(entries, base, baselinetest.Files(nil), "rev"); err != nil {
 		t.Fatal(err)
 	}
 	if p := entries[0].Parts[0]; !strings.HasPrefix(p.Former, "it is read\n") {
 		t.Errorf("%+v", p)
 	}
-	other := files(func(f map[string]string) {
-		f["capabilities/c/features/f.md"] = strings.Replace(feature, "Then      it is read", "Then      it is read thrice", 1)
+	other := baselinetest.Files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(baselinetest.Feature, "Then      it is read", "Then      it is read thrice", 1)
 	})
 	if err := Former(entries, base, other, "rev"); err == nil {
 		t.Error("former text that is not the baseline's was taken")
 	}
 	// baseline.diff.former: a part the element diff does not list as
 	// changed or removed may differ at the revision.
-	entries = Compare(files(func(f map[string]string) {
-		f["capabilities/c/features/f.md"] = strings.Replace(feature, "Then      it is read", "Then      it is read twice", 1)
+	entries = Compare(baselinetest.Files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(baselinetest.Feature, "Then      it is read", "Then      it is read twice", 1)
 	}), base)
-	elsewhere := files(func(f map[string]string) {
-		f["capabilities/c/features/f.md"] = strings.Replace(feature, "\nwhy\n", "\nanother reason\n", 1)
+	elsewhere := baselinetest.Files(func(f map[string]string) {
+		f["capabilities/c/features/f.md"] = strings.Replace(baselinetest.Feature, "\nwhy\n", "\nanother reason\n", 1)
 	})
 	if err := Former(entries, base, elsewhere, "rev"); err != nil {
 		t.Errorf("a difference in a part not listed: %v", err)

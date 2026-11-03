@@ -3,6 +3,7 @@ package baseline
 import (
 	"cmp"
 	"slices"
+	"strings"
 
 	"github.com/bbak/proviso/internal/lint"
 )
@@ -30,7 +31,7 @@ type Packed struct {
 // holds them (baseline.pack.order); PackOrder orders those under
 // Amendment.
 func Pack(entries []*Entry, elements []lint.Element) []Packed {
-	byID := byID(elements)
+	byID := ByID(elements)
 	listed := map[string]bool{}
 	for _, e := range entries {
 		listed[e.ID] = true
@@ -146,7 +147,7 @@ func frames(e, f *lint.Element) bool {
 		return f.Cap != "" && f.Cap == e.Cap
 	case tInvariant, tConstraint:
 		switch {
-		case inFeature(f):
+		case InFeature(f):
 			return f.File == e.File
 		case f.Cap == "":
 			return true
@@ -156,3 +157,15 @@ func frames(e, f *lint.Element) bool {
 	}
 	return false
 }
+
+// ByID maps the identifier of each element to the element.
+func ByID(els []lint.Element) map[string]*lint.Element {
+	m := map[string]*lint.Element{}
+	for i := range els {
+		m[els[i].ID] = &els[i]
+	}
+	return m
+}
+
+// InFeature reports whether an element stands in a feature's file.
+func InFeature(e *lint.Element) bool { return strings.Contains(e.File, "/features/") }

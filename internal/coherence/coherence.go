@@ -1,4 +1,4 @@
-package baseline
+package coherence
 
 import (
 	"bytes"
@@ -13,6 +13,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
+	"github.com/bbak/proviso/internal/baseline"
 	"github.com/bbak/proviso/internal/lint"
 )
 
@@ -117,7 +118,7 @@ func (c *Coherence) valid() error {
 			return false
 		}
 		for k, v := range m {
-			if !partKey.MatchString(k) || !fpValue.MatchString(v) {
+			if !baseline.ValidPart(k, v) {
 				return false
 			}
 		}
@@ -354,7 +355,7 @@ func names(m map[string]any, key, at string, required bool) ([]string, error) {
 func fingerprints(e *lint.Element) map[string]string {
 	m := map[string]string{}
 	if e != nil {
-		for _, p := range Parts(*e) {
+		for _, p := range baseline.Parts(*e) {
 			m[p.Key] = p.FP
 		}
 	}
@@ -369,7 +370,7 @@ func fingerprints(e *lint.Element) map[string]string {
 // it before, and one recorded for none stays so, following
 // coherence.judge.touched. It returns why it refuses the check result, if
 // it does; the caller then records nothing.
-func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Candidate, now []lint.Element, base Baseline) (*Coherence, error) {
+func Judge(before *Coherence, in *CheckResult, entries []*baseline.Entry, candidates []Candidate, now []lint.Element, base baseline.Baseline) (*Coherence, error) {
 	if before == nil {
 		before = &Coherence{}
 	}
@@ -390,7 +391,7 @@ func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Ca
 			judged[id] = Judged{ID: id, Reason: j.Reason, Parts: fingerprints(e)}
 		}
 	}
-	nowByID := byID(now)
+	nowByID := baseline.ByID(now)
 	findings := slices.Clone(before.Findings)
 	next := 1
 	for _, f := range findings {
@@ -440,7 +441,7 @@ func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Ca
 
 // recorded returns what the baseline records for an element, a copy, and
 // none for an element it does not hold.
-func recorded(base Baseline, id string) map[string]string {
+func recorded(base baseline.Baseline, id string) map[string]string {
 	m := maps.Clone(base[id])
 	if m == nil {
 		m = map[string]string{}
@@ -475,7 +476,7 @@ type Problem struct {
 // unchanged tree, it is left over as a coherence file is. A check missing
 // or left over is compared with nothing, but the tree is still taken for
 // undecided places.
-func Verify(c *Coherence, note bool, entries []*Entry, candidates []Candidate, now []lint.Element, base Baseline) []Problem {
+func Verify(c *Coherence, note bool, entries []*baseline.Entry, candidates []Candidate, now []lint.Element, base baseline.Baseline) []Problem {
 	out := undecided(now)
 	switch {
 	case len(entries) == 0 && (c != nil || note):
@@ -512,7 +513,7 @@ func undecided(now []lint.Element) []Problem {
 // compare returns what the recorded check c leaves to do for the element
 // diff and the candidates: elements stale, candidates unjudged or stale,
 // and findings open.
-func compare(c *Coherence, entries []*Entry, candidates []Candidate, base Baseline) []Problem {
+func compare(c *Coherence, entries []*baseline.Entry, candidates []Candidate, base baseline.Baseline) []Problem {
 	var out []Problem
 	covered := map[string]Covered{}
 	for _, t := range c.Touched {

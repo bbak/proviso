@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/coherence"
 )
 
 type jsonReason struct {
@@ -37,7 +37,7 @@ type jsonImpact struct {
 // ImpactJSON writes the impact_set: the spec root that was compared, the
 // revision the former text came from, or null, every candidate with its
 // reasons, and the candidates found through scope, by what framed them.
-func ImpactJSON(w io.Writer, root, revision string, candidates []baseline.Candidate, frames []baseline.Frame) error {
+func ImpactJSON(w io.Writer, root, revision string, candidates []coherence.Candidate, frames []coherence.Frame) error {
 	d := jsonImpact{Root: root, Candidates: []jsonCandidate{}, Scopes: []jsonScope{}}
 	if revision != "" {
 		d.Revision = &revision
@@ -62,7 +62,7 @@ func ImpactJSON(w io.Writer, root, revision string, candidates []baseline.Candid
 // text came from, then each candidate with where it stands and its
 // reasons, then the candidates found through scope, by what framed them.
 // Nothing is written when there is no candidate.
-func ImpactText(w io.Writer, revision string, candidates []baseline.Candidate, frames []baseline.Frame) error {
+func ImpactText(w io.Writer, revision string, candidates []coherence.Candidate, frames []coherence.Frame) error {
 	if len(candidates) == 0 {
 		return nil
 	}

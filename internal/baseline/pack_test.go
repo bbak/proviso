@@ -6,17 +6,18 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/bbak/proviso/internal/baseline/baselinetest"
 	"github.com/bbak/proviso/internal/lint"
 )
 
-// packOf compares the edited tree with the baseline of impactTree, and
+// packOf compares the edited tree with the baseline of baselinetest.ImpactTree, and
 // returns the identifiers of the pack by heading, "amendment" for the
 // element diff.
 func packOf(t *testing.T, edit func(map[string]string)) map[string][]string {
 	t.Helper()
-	before := files(impactTree)
+	before := baselinetest.Files(baselinetest.ImpactTree)
 	base, _ := Parse(Write(before))
-	now := files(editTree(edit))
+	now := baselinetest.Files(baselinetest.EditTree(edit))
 	entries := Through(Compare(now, base), now, before)
 	out := map[string][]string{}
 	for _, e := range PackOrder(entries) {
@@ -38,7 +39,7 @@ func TestPack(t *testing.T) {
 			HeadingSystem: {"system"},
 		}},
 		{"a rule referring to a contract element", func(m map[string]string) {
-			replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
 		}, map[string][]string{
 			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.c"},
@@ -46,7 +47,7 @@ func TestPack(t *testing.T) {
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
 		}},
 		{"a member's holder and the term it represents", func(m map[string]string) {
-			replace(m, "capabilities/c/features/g.md", "`api` answers", "`api.code` answers")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "`api` answers", "`api.code` answers")
 		}, map[string][]string{
 			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.c"},
@@ -54,7 +55,7 @@ func TestPack(t *testing.T) {
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
 		}},
 		{"a hand-over followed to its end, not a rule sharing a term", func(m map[string]string) {
-			replace(m, "capabilities/c/features/g.md", "Then      it is written", "Then      it is written down")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "Then      it is written", "Then      it is written down")
 		}, map[string][]string{
 			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.d"},
@@ -62,7 +63,7 @@ func TestPack(t *testing.T) {
 			HeadingContext: {"c.f.r", "system.thing"},
 		}},
 		{"an unchanged standard", func(m map[string]string) {
-			replace(m, "capabilities/c/features/g.md", "of the [thing]", "of the [std]")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "of the [thing]", "of the [std]")
 		}, map[string][]string{
 			HeadingSystem:  {"system"},
 			"amendment":    {"c.g.a"},
@@ -70,23 +71,23 @@ func TestPack(t *testing.T) {
 			HeadingContext: {"system.std", "system.ref.std"},
 		}},
 		{"a removed rule brings nothing", func(m map[string]string) {
-			m["capabilities/c/features/g.md"] = strings.Replace(m["capabilities/c/features/g.md"], rule("c.g.c", "`api` answers <x>", "it is answered"), "", 1)
+			m["capabilities/c/features/g.md"] = strings.Replace(m["capabilities/c/features/g.md"], baselinetest.Rule("c.g.c", "`api` answers <x>", "it is answered"), "", 1)
 		}, map[string][]string{
 			HeadingSystem: {"system"},
 			"amendment":   {"c.g.c"},
 		}},
 		{"a glossary entry of the system", func(m map[string]string) {
-			replace(m, "glossary.md", "- Contact: Ann\n- Status: defined\n- Aliases: things", "- Contact: Bob\n- Status: defined\n- Aliases: things")
+			baselinetest.Replace(m, "glossary.md", "- Contact: Ann\n- Status: defined\n- Aliases: things", "- Contact: Bob\n- Status: defined\n- Aliases: things")
 		}, map[string][]string{
 			HeadingSystem: {"system"},
 			"amendment":   {"system.thing"},
 			HeadingFrames: {"system.inv"},
 		}},
 		{"listed elements appear under Amendment only, others once", func(m map[string]string) {
-			replace(m, "capabilities/c/features/g.md", "## Goal\n\ng\n", "## Goal\n\nh\n")
-			replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
-			replace(m, "capabilities/c/features/g.md", "it is read", "it is read at once")
-			replace(m, "system.md", "## Scope\n\ns\n", "## Scope\n\nt\n")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "## Goal\n\ng\n", "## Goal\n\nh\n")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "it is answered", "it is answered at once")
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "it is read", "it is read at once")
+			baselinetest.Replace(m, "system.md", "## Scope\n\ns\n", "## Scope\n\nt\n")
 		}, map[string][]string{
 			"amendment":    {"c.g", "c.g.a", "c.g.c", "system"},
 			HeadingFrames:  {"c", "c.g.inv", "c.inv", "system.inv"},

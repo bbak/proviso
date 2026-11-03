@@ -1,10 +1,12 @@
-package baseline
+package coherence
 
 import (
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/bbak/proviso/internal/baseline"
+	"github.com/bbak/proviso/internal/baseline/baselinetest"
 	"github.com/bbak/proviso/internal/lint"
 )
 
@@ -42,19 +44,19 @@ func TestParseCheckResult(t *testing.T) {
 	}
 }
 
-// amendment changes the Then step of c.f.r in impactTree, so that c.g.a,
+// amendment changes the Then step of c.f.r in baselinetest.ImpactTree, so that c.g.a,
 // on the same event, and the invariants above it are candidates.
-func amendment(t *testing.T, edit func(map[string]string)) ([]*Entry, []Candidate, []lint.Element, Baseline) {
+func amendment(t *testing.T, edit func(map[string]string)) ([]*baseline.Entry, []Candidate, []lint.Element, baseline.Baseline) {
 	t.Helper()
-	before := files(impactTree)
-	base, _ := Parse(Write(before))
-	now := files(editTree(func(m map[string]string) {
-		replace(m, "capabilities/c/features/f.md", "Then      it is read", "Then      it is read twice")
+	before := baselinetest.Files(baselinetest.ImpactTree)
+	base, _ := baseline.Parse(baseline.Write(before))
+	now := baselinetest.Files(baselinetest.EditTree(func(m map[string]string) {
+		baselinetest.Replace(m, "capabilities/c/features/f.md", "Then      it is read", "Then      it is read twice")
 		if edit != nil {
 			edit(m)
 		}
 	}))
-	entries := Through(Compare(now, base), now, before)
+	entries := baseline.Through(baseline.Compare(now, base), now, before)
 	cands, _ := Impact(entries, now, before)
 	return entries, cands, now, base
 }
@@ -127,8 +129,8 @@ func TestJudgeAndVerify(t *testing.T) {
 	// c.g.a is edited after the check: it is touched now, and its
 	// judgement is stale; c.inv's text changes: its judgement is stale.
 	entries2, cands2, _, _ := amendment(t, func(m map[string]string) {
-		replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
-		replace(m, "capabilities/c/invariants.md", "\np\n", "\nq\n")
+		baselinetest.Replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
+		baselinetest.Replace(m, "capabilities/c/invariants.md", "\np\n", "\nq\n")
 	})
 	got = Verify(c, false, entries2, cands2, nil, base)
 	var stale []string
@@ -199,8 +201,8 @@ func TestJudgeClosingKeepsTouched(t *testing.T) {
 	// the run closes a finding, so c.f.r keeps what was recorded, and c.g.a,
 	// touched now and recorded for none, stays so.
 	entries2, cands2, now2, _ := amendment(t, func(m map[string]string) {
-		replace(m, "capabilities/c/features/f.md", "Then      it is read twice", "Then      it is read three times")
-		replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
+		baselinetest.Replace(m, "capabilities/c/features/f.md", "Then      it is read twice", "Then      it is read three times")
+		baselinetest.Replace(m, "capabilities/c/features/g.md", "it is read", "it is read again")
 	})
 	in, _ = ParseCheckResult([]byte(`{"findings": [{"id": "f1", "status": "resolved", "reason": "edited"}]}`))
 	c, err := Judge(first, in, entries2, cands2, now2, base)
