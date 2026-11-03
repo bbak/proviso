@@ -19,7 +19,10 @@
   request is: the engineer's, on the amendment's branch, so the skill
   that recovers the spec tree is installed with the other skills; only
   the authoring skill, for requesters who never see the tree, is
-  distributed on its own.
+  distributed on its own. Measuring the tests with mutants is a step
+  outside any amendment, but the engineer's in the same repository, so
+  its skill is installed with the others; the mutating agent gets no
+  notes, as nothing yet needs them.
 
 The paths are relative to the directory `init` runs in, with `/` as the
 separator.
@@ -28,11 +31,13 @@ separator.
 | --- | --- |
 | `.claude/agents/proviso-checker.md` | the kit's agent definition of the checking agent |
 | `.claude/agents/proviso-coder.md` | the kit's agent definition of the coding agent |
+| `.claude/agents/proviso-mutator.md` | the kit's agent definition of the mutating agent |
 | `.claude/agents/proviso-tester.md` | the kit's agent definition of the testing agent |
 | `.claude/skills/proviso-accept/SKILL.md` | the kit's skill that accepts an amendment |
 | `.claude/skills/proviso-build/SKILL.md` | the kit's skill that builds an amendment |
 | `.claude/skills/proviso-check/SKILL.md` | the kit's skill that checks an amendment |
 | `.claude/skills/proviso-integrate/SKILL.md` | the kit's skill that brings a request into the spec tree |
+| `.claude/skills/proviso-mutate/SKILL.md` | the kit's skill that measures with mutants how many slips the tests catch |
 | `.claude/skills/proviso-recover/SKILL.md` | the kit's skill that recovers the spec tree of an existing system |
 | `.claude/skills/proviso-rehome/SKILL.md` | the kit's skill that gives moved elements the identifiers of their place |
 | `.proviso/build.md` | the kit's stub for the engineers' notes to the skills |

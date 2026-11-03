@@ -315,6 +315,15 @@
 - Contact: Bruno Baketarić
 - Status: defined
 
+## <a id="system.mutating-agent"></a> mutating agent
+
+- Definition: The agent that writes mutants of the system's code from
+  the spec tree, each a slip a rule's Examples should catch or a change
+  of behaviour no rule covers, without seeing the tests, kept apart
+  from the agents that built them.
+- Contact: Bruno Baketarić
+- Status: defined
+
 ## <a id="system.line-ending"></a> line ending
 
 - Definition: The end of a line in a file Proviso reads: a line feed, or

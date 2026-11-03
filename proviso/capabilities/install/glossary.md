@@ -22,18 +22,18 @@
 
 ## <a id="install.agent-definition"></a> agent definition
 
-- Definition: The instructions of an implementing agent or of the
-  checking agent in the form an agent host reads, such as a file in `.claude/agents/`: its role, what
-  it may read and write, how it reads a context pack and what it
-  reports.
+- Definition: The instructions of an implementing agent, the checking
+  agent or the mutating agent in the form an agent host reads, such as
+  a file in `.claude/agents/`: its role, what it may read and write,
+  how it reads a context pack or the spec tree, and what it reports.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: agent definitions
 
 ## <a id="install.skill"></a> skill
 
-- Definition: The instructions an agent host follows for one step of an
-  amendment, such as a `SKILL.md` in a folder of `.claude/skills/`: when
+- Definition: The instructions an agent host follows for one task with
+  a spec tree, such as a step of an amendment, such as a `SKILL.md` in a folder of `.claude/skills/`: when
   it applies, which commands of Proviso it runs and which agents it
   starts, and what it leaves to the engineer.
 - Contact: Bruno Baketarić

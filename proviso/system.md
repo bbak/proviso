@@ -24,6 +24,8 @@ line. Proviso is those mechanics.
 - Impact sets for an amendment.
 - Context packs for the implementing agents and the checking agent.
 - Acceptance checks.
+- Measuring, with mutants of the system's code, how many slips its
+  tests catch and where they miss, through a skill.
 - Upkeep of a spec tree: giving elements that moved the identifiers
   of their place.
 - A command line that names its commands and refuses what it does not
@@ -36,7 +38,8 @@ line. Proviso is those mechanics.
 
 ## Out of scope
 
-- Reading, building or running the specified system's code.
+- The command line reading, building or running the specified
+  system's code: only the skills' agents do.
 - Deciding what a rule means: the business decides, Proviso only checks.
 - Driving the agents: the agents call Proviso, not the other way round.
 - Adapters for native contract formats, such as OpenAPI (deferred).
