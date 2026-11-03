@@ -197,6 +197,19 @@ means the tree and the code disagree; the fix goes into the tree, never
 the code. This needs your notes to say how acceptance tests are built
 and run. The tests stay, and pin what the system does today.
 
+## Rehome: `proviso-rehome`
+
+Amendments move elements, such as a term lifted to the system, and keep
+their identifiers, so a move stays cheap. Once the amendment is
+accepted, ask Claude Code to **rehome the tree**: `proviso rehome`
+plans the renames of every identifier that names another place than the
+one its element stands in, and the skill searches the code, tests and
+documents for the old identifiers. You see every rename, and every
+mention it leaves, before anything is written; then the tree, the
+manifest and the code are renamed together, the checks run, and one
+`refactor:` commit holds it all. Nothing changes what anything means,
+so no check is needed.
+
 ## Edits outside the skills
 
 The tree can be edited by hand, and an amendment need not be built by

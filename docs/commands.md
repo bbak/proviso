@@ -7,12 +7,12 @@ nav_order: 7
 
 Every command of `proviso`, with what it is for, its options and its
 exit statuses. Engineers run `help`, `init`, `update`, `version`, `lint`,
-`diff`, `impact` and `verify`; the skills run all of them, `pack`, `judge` and `manifest`
-included.
+`diff`, `impact` and `verify`; the skills run all of them, `pack`, `judge`, `manifest` and
+`rehome` included.
 
 Every command but `help`, `init`, `update` and `version` runs anywhere inside the
 repository and works on the nearest spec root. The commands that compare with the baseline,
-`manifest`, `diff`, `impact`, `pack`, `judge` and `verify`, run only on
+`manifest`, `diff`, `impact`, `pack`, `judge`, `verify` and `rehome`, run only on
 a tree that `lint` finds no error in, and exit with 2 otherwise.
 
 The exact behaviour of each command is specified in Proviso's own spec
@@ -263,3 +263,38 @@ If a removal fails, the written manifest stays, and `verify` reports
 what is left over.
 
 Specified in [baseline/features/manifest.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/baseline/features/manifest.md).
+
+## rehome
+
+```sh
+proviso rehome [--write] [--json]
+```
+
+Gives the elements that moved to another capability, or to the system,
+the identifiers of their place. An identifier whose first segment names
+another place than the capability the element stands in, or `system`,
+is renamed to name it, keeping the rest: `baseline.impact.events` in the
+capability `coherence` becomes `coherence.impact.events`. Without
+`--write` it only lists the renames and the collisions that refuse
+them, and changes nothing. With `--write` it renames every anchor,
+hand-over, inline link, autolink, link reference definition and question
+tag that names an old identifier, and writes the manifest of the
+rewritten tree in the same step, so the tree is again what the manifest
+records. An identifier in plain text, an Examples cell or code is left
+as it is: it may be data.
+
+It runs only on a tree that is what the manifest records, with no
+coherence file or amendment note beside it: after an amendment is
+accepted, never during one. It renames all or nothing: one rename that
+would take an identifier refuses the run, and so does one file it
+cannot open for writing. The code, tests and documents beside the tree
+are the engineer's; the skill `proviso-rehome` carries the renames into
+them.
+
+| Exit status | Meaning |
+| --- | --- |
+| 0 | the renames were planned, any or none, and written with `--write` |
+| 1 | a rename would take an identifier; nothing was written |
+| 2 | the tree is not what the manifest records, a coherence file or note lies beside it, a file could not be opened for writing, or the command could not run; nothing was written |
+
+Specified in [upkeep/features/rehome.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/upkeep/features/rehome.md).

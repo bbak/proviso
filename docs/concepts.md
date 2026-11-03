@@ -21,12 +21,14 @@ repository beside its code. Its folder, the **spec root**, is
 groups the one below it. A capability is a folder; a feature is one
 file, and the readable unit of the tree.
 
-**Element.** A part of the tree with an **identifier**, its permanent
-name, written as an anchor at the start of its heading, such as
+**Element.** A part of the tree with an **identifier**, its name,
+written as an anchor at the start of its heading, such as
 `baseline.judge.touched`. Besides the four levels, invariants,
 constraints, glossary entries, parameters, references and contract
-elements are elements. Identifiers never change, so moving an element
-breaks no reference.
+elements are elements. Its first segment names where the element
+stands. An element that moves keeps its identifier, so a move breaks no
+reference; `proviso-rehome` later gives moved elements the identifiers
+of their place, in a step of its own.
 
 **Rule.** The lowest level: one block in **Guarded Gherkin**, Gherkin
 with a **guard**. `Provided` states the condition, `Then` what happens
@@ -138,9 +140,10 @@ installs. Proviso owns them.
 **Skill.** Instructions the agent host follows for one step of an
 amendment: `proviso-integrate`, `proviso-build`, `proviso-check`,
 `proviso-accept`, and `proviso-recover`, which writes the tree of an
-existing system one capability per amendment. A skill runs Proviso's commands for every mechanical
-step and starts the agents. The skills that edit the tree share a
-**writing guide**: how to write it for the agents that build from it.
+existing system one capability per amendment; and `proviso-rehome`,
+which renames moved elements outside any amendment. A skill runs Proviso's commands for every mechanical
+step and starts the agents. The skills that write decisions into the
+tree share a **writing guide**: how to write it for the agents that build from it.
 
 **Agent definition.** The instructions of one agent, in the form the
 agent host reads: its role, what it may read and write, how it reads a

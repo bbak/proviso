@@ -68,14 +68,17 @@ its heading:
 
 - **Readable:** people read diffs and impact sets by identifier, so it
   says something, such as `cash.withdrawal.pay`.
-- **Permanent:** set when the element is created, never changed, never
-  reused. The prefix names where the element was born, not where it
-  lives, so moving it breaks nothing. A removed element's identifier
+- **Stable:** its prefix names where the element stands, the capability
+  or `system`. An amendment that moves an element keeps its identifier,
+  so the move breaks nothing; after acceptance, `proviso-rehome` gives
+  moved elements the prefix of their place, together with every
+  reference to them and the manifest. A removed element's identifier
   stays unused, since git history, commit messages and links outside
   the tree still name the old element by it; no tool checks this, as
   the manifest forgets a removed element.
-- **`system` is reserved** for the system and the elements born at its
-  level, such as `system.read-only`.
+- **`system` is reserved** for the system and the elements at its
+  level, such as `system.read-only`. A capability's identifier is one
+  segment.
 
 A heading with an anchor is an element. A heading without one is a
 section of the element above it, one level below it, such as `## Goal`;
