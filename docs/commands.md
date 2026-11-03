@@ -291,6 +291,13 @@ cannot open for writing. The code, tests and documents beside the tree
 are the engineer's; the skill `proviso-rehome` carries the renames into
 them.
 
+{: .warning }
+Run `rehome --write` only through the skill `proviso-rehome`. The
+command renames the tree and the manifest, nothing else: run by hand,
+it leaves the code, tests and documents beside the tree naming the old
+identifiers, and the two no longer match. The skill finds those names,
+shows them to you with the plan, and renames them in the same commit.
+
 | Exit status | Meaning |
 | --- | --- |
 | 0 | the renames were planned, any or none, and written with `--write` |

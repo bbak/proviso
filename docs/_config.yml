@@ -7,3 +7,7 @@ mermaid:
   version: "12.2.0"
 aux_links:
   GitHub: https://github.com/bbak/proviso
+callouts:
+  warning:
+    title: Warning
+    color: red
