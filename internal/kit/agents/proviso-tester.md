@@ -1,6 +1,6 @@
 ---
 name: proviso-tester
-description: The testing agent of a Proviso amendment. Writes black-box acceptance tests from a context pack, kept apart from the coding agent. Started by the orchestrating skill with a worktree and a pack; never started for anything else.
+description: The testing agent of a Proviso amendment. Writes black-box acceptance tests from a context pack, kept apart from the coding agent. Started by the orchestrating skill with a worktree and a pack, or by proviso-mutate with a worktree and the pack of one rule whose tests miss a case; never started for anything else.
 tools: Read, Write, Edit, Glob, Grep, Bash, PowerShell
 model: inherit
 ---
@@ -23,7 +23,11 @@ The orchestrator gives you, for each run:
 - **a context pack:** a file written by `proviso pack`, holding everything
   of the specification you need, and nothing else;
 - **the run's context:** for a later round, the integration result and
-  what changed since the last round.
+  what changed since the last round. Started by `proviso-mutate`, the
+  pack holds one rule under Element, and the context names the Examples
+  rows its tests miss, each with a slip the tests let through, in
+  behavioural terms: make the tests of those rows catch it, and change
+  no other test.
 
 You live for one amendment. When you are resumed, build on what you
 learnt in earlier rounds of it.
