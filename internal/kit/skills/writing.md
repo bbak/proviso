@@ -105,6 +105,17 @@ text lines up, then its Examples table.
   and <type>". A decision with more than two outcomes is a chain;
   never write a decision table of rules, which would lose each guard's
   Examples.
+- **An algorithm** is specified only where it is the requirement, not
+  how it gets built; otherwise the rule states the result as a relation,
+  and invariants what holds for every result. One that is the requirement
+  goes where its kind fits: defined by a standard, a reference and a term
+  `Defined by` it; a decision, a chain; a lookup, a table-valued
+  parameter; a formula, the rule's outcome, with Examples rows in
+  concrete numbers. Never a procedure in a glossary entry, and never a
+  flowchart. A computation the business owns, with steps between, that
+  fits none of these is a gap in the notation: write the formula into
+  the rule, with its intermediate values as extra Examples columns, and
+  tell the engineer.
 
 ### Examples
 
