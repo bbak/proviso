@@ -51,9 +51,12 @@ yourself.
 
 ## 3. Unmutated, first
 
-Make a worktree from `HEAD`, detached, in the system's temporary
-folder, as `<temp>/proviso/<repository>/mutate-<n>/`, with `<n>` the
-first number not in use; never inside the repository. Build the system
+The run's folder is `<temp>/proviso/<repository>/mutate-<n>/`, in the
+system's temporary folder, with `<n>` the first number not in use;
+never inside the repository. It holds the run's files, and the
+worktrees in folders of their own, so that no file of the run lands in
+a worktree. Make a worktree from `HEAD`, detached, as
+`mutate-<n>/checkout/`. Build the system
 there and run the whole suite, and note how long it takes. It must
 pass, but for the failures and skips the notes expect: a mutant can
 only be judged against tests that pass without it. If it fails, stop
@@ -146,8 +149,8 @@ Nothing is fixed without the engineer's yes.
   the code does in the case, and that the tree does not decide it.
   Several such holes may be one amendment; the engineer decides.
 - **A hole in the tests** goes to `proviso-tester`. Make the branch
-  `proviso/mutate-<n>/tests` from `HEAD` and a worktree for it in the
-  system's temporary folder. Write `proviso pack --element <identifier>`
+  `proviso/mutate-<n>/tests` from `HEAD` and a worktree for it, as
+  `mutate-<n>/tests/`. Write `proviso pack --element <identifier>`
   of the rule to `<temp>/proviso/<repository>/mutate-<n>/pack-<identifier>.md`.
   Start the tester in that worktree, with the pack's path and, as the
   run's context: that the tests of this rule miss a case its Examples

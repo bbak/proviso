@@ -81,6 +81,10 @@ Every mutant:
   renaming a local variable or reordering independent lines, is no
   mutant;
 - **is one small edit** in one file, that still builds;
+- **stays the slip of its rule:** where the code that carries out the
+  rule is shared, such as one check several commands run, narrow the
+  slip to the rule's case, such as by a condition only that case
+  meets, so that no other rule's tests are what catch it;
 - **is written as a replacement:** the exact text of the code as it
   stands, long enough to occur exactly once in its file, and the text
   that replaces it. Copy the text from the file; never retype it;
