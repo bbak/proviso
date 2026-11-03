@@ -27,7 +27,7 @@ and records them in `coherence_file`, which only `judge` writes.
 `judge` reads `coherence_file`, if the spec root holds one, before it
 reads its input, and its input before it derives the element diff, once
 lint has found no error; one it cannot read stops it, as
-`baseline.judge.unreadable` says.
+`coherence.judge.unreadable` says.
 
 ## <a id="coherence.judge.input"></a> Rule: Judge reads a check result
 

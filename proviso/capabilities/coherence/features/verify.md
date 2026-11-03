@@ -22,7 +22,7 @@ at, and no more.
 `verify` derives the element diff and the candidates as `impact` does,
 and reads `coherence_file`, if the spec root holds one, before it
 derives anything else, once lint has found no error; one it cannot read
-stops it, as `baseline.judge.unreadable` says.
+stops it, as `coherence.judge.unreadable` says.
 Of
 `amendment_note`, it only asks whether the spec root holds one.
 
@@ -64,7 +64,7 @@ Otherwise `verify` reports "leftover", once
 | elements | provided | outcome | why |
 | --- | --- | --- | --- |
 | `lint.run.exit`, changed, with `.coherence.json` | yes | compared | |
-| `lint.run.exit`, changed, with `.amendment.md` only | yes | nothing reported for the note | the check is missing, as `baseline.verify.missing` says |
+| `lint.run.exit`, changed, with `.amendment.md` only | yes | nothing reported for the note | the check is missing, as `coherence.verify.missing` says |
 | none, with `.coherence.json` | no | "leftover" | |
 | none, with `.amendment.md` only | no | "leftover" | |
 | none, with `.coherence.json` and `.amendment.md` | no | "leftover", once | one problem, however many files |
