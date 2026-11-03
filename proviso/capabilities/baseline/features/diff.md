@@ -69,6 +69,8 @@ Otherwise the command writes to "stderr" why it cannot compare with <revision>
 | `a1b2`, whose `manifest.sum` is damaged by a merge conflict after its first line | yes | compared with the tree at `a1b2` | the same at the revision |
 | `nosuch` | no (a commit) | exit status 2 | |
 | `c3d4`, whose tree has a lint error | no (no error) | exit status 2 | a misread tree would show changes nobody made |
+| `a1b2`, whose `manifest.sum` names another model version | no (no error) | exit status 2 | lint refuses a tree of another model version, at a revision as in the spec root |
+| `a1b2`, whose tree holds `x.md` as a symbolic link | no (no error) | exit status 2 | a link is never followed, at a revision as on disk |
 
 ## <a id="baseline.diff.malformed"></a> Rule: A manifest that cannot be read stops the diff
 

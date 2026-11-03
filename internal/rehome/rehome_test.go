@@ -66,7 +66,7 @@ func load(t *testing.T, edit func(map[string]string)) (*tree.Tree, []lint.Elemen
 	for k, v := range f {
 		m[k] = []byte(v)
 	}
-	tr := tree.FromFiles("root", m)
+	tr := tree.FromFiles("root", m, nil)
 	res := lint.Check(tr)
 	if lint.HasError(res.Findings) {
 		t.Fatalf("lint: %+v", res.Findings)

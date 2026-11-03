@@ -81,8 +81,8 @@ func TestManifestRevision(t *testing.T) {
 		t.Errorf("after a merge: %s %v, want %s", rev, err, e5f6)
 	}
 
-	files, err := Files(r.root, e5f6)
-	if err != nil || string(files["system.md"]) != "b\n" || string(files["manifest.sum"]) != "model 0\nside\n" || len(files) != 2 {
+	files, links, err := Files(r.root, e5f6)
+	if err != nil || string(files["system.md"]) != "b\n" || string(files["manifest.sum"]) != "model 0\nside\n" || len(files) != 2 || len(links) != 0 {
 		t.Errorf("%q %v", files, err)
 	}
 }

@@ -241,11 +241,11 @@ func TestFromFiles(t *testing.T) {
 		"capabilities/c/capability.md":       []byte("# c"),
 		"capabilities/d/features/Run.md":     []byte("# r"),
 		"capabilities/e/features/u\u0308.md": []byte("# u"),
-	})
+	}, []string{"x.md", "parameters.md", ".hidden/link.md"})
 	if want := []string{"notes.md"}; !slices.Equal(tr.Unknown, want) {
 		t.Errorf("unknown %v, want %v", tr.Unknown, want)
 	}
-	if want := []string{"glossary.md"}; !slices.Equal(tr.Unreadable, want) {
+	if want := []string{"glossary.md", "parameters.md", "x.md"}; !slices.Equal(tr.Unreadable, want) {
 		t.Errorf("unreadable %v, want %v", tr.Unreadable, want)
 	}
 	if want := []string{"capabilities/d/features/Run.md"}; !slices.Equal(tr.Malformed, want) {

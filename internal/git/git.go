@@ -75,48 +75,53 @@ func Commit(root, name string) (string, error) {
 }
 
 // Files returns the regular files below the folder root at the revision
-// rev, by their slash-separated paths relative to root.
-func Files(root, rev string) (map[string][]byte, error) {
+// rev, by their slash-separated paths relative to root, and the paths of
+// the symbolic links there, whose targets are never read.
+func Files(root, rev string) (map[string][]byte, []string, error) {
 	out, err := run(root, nil, "ls-tree", "-r", "-z", rev, "--", ".")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	var paths, oids []string
+	var paths, oids, links []string
 	for _, rec := range strings.Split(string(out), "\x00") {
 		meta, p, ok := strings.Cut(rec, "\t")
 		f := strings.Fields(meta)
-		if !ok || len(f) != 3 || f[1] != "blob" || f[0] == "120000" {
-			continue // a symbolic link or a submodule holds no text of the tree
+		switch {
+		case !ok || len(f) != 3 || f[1] != "blob":
+			continue // a submodule holds no text of the tree
+		case f[0] == "120000":
+			links = append(links, p)
+		default:
+			paths, oids = append(paths, p), append(oids, f[2])
 		}
-		paths, oids = append(paths, p), append(oids, f[2])
 	}
 	if len(oids) == 0 {
-		return map[string][]byte{}, nil
+		return map[string][]byte{}, links, nil
 	}
 	out, err = run(root, strings.NewReader(strings.Join(oids, "\n")+"\n"), "cat-file", "--batch")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	files := map[string][]byte{}
 	r := bufio.NewReader(bytes.NewReader(out))
 	for _, p := range paths {
 		header, err := r.ReadString('\n')
 		if err != nil {
-			return nil, errors.New("git cat-file: the output ended early")
+			return nil, nil, errors.New("git cat-file: the output ended early")
 		}
 		f := strings.Fields(header)
 		if len(f) != 3 {
-			return nil, fmt.Errorf("git cat-file: %s", strings.TrimSpace(header))
+			return nil, nil, fmt.Errorf("git cat-file: %s", strings.TrimSpace(header))
 		}
 		size, err := strconv.Atoi(f[2])
 		if err != nil {
-			return nil, fmt.Errorf("git cat-file: %s", strings.TrimSpace(header))
+			return nil, nil, fmt.Errorf("git cat-file: %s", strings.TrimSpace(header))
 		}
 		data := make([]byte, size+1) // the content and its line feed
 		if _, err := io.ReadFull(r, data); err != nil {
-			return nil, errors.New("git cat-file: the output ended early")
+			return nil, nil, errors.New("git cat-file: the output ended early")
 		}
 		files[p] = data[:size]
 	}
-	return files, nil
+	return files, links, nil
 }

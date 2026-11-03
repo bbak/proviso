@@ -124,11 +124,11 @@ func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr 
 	if err != nil {
 		return fail("%v", err)
 	}
-	files, err := git.Files(t.Root, rev)
+	files, links, err := git.Files(t.Root, rev)
 	if err != nil {
 		return fail("%v", err)
 	}
-	formerTree := tree.FromFiles(t.Root, files)
+	formerTree := tree.FromFiles(t.Root, files, links)
 	var formerElements []lint.Element
 	// Without system.md, there is no spec tree at the revision, and the
 	// tree compared with is empty.
@@ -409,10 +409,10 @@ func former(t *tree.Tree, entries []*baseline.Entry, base baseline.Baseline, man
 	if err != nil {
 		return "", nil, err
 	}
-	files, err := git.Files(t.Root, rev)
+	files, links, err := git.Files(t.Root, rev)
 	if err != nil {
 		return "", nil, err
 	}
-	formerTree := lint.Check(tree.FromFiles(t.Root, files))
+	formerTree := lint.Check(tree.FromFiles(t.Root, files, links))
 	return rev, formerTree.Elements, baseline.Former(entries, base, formerTree.Elements, rev)
 }
