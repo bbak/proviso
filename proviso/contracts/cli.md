@@ -413,13 +413,13 @@ Changed `lint.run.exit`: `step Then` changed.
 Now `step Then`:
 
 ```text
-Then      lint exits with `lint.exit-status` 1
+lint exits with `lint.exit-status` 1
 ```
 
 Former `step Then`:
 
 ```text
-Then      lint exits with `lint.exit-status` 0
+lint exits with `lint.exit-status` 0
 ```
 
 # Frames
