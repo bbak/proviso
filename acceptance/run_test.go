@@ -94,7 +94,7 @@ func TestLintRunRoot(t *testing.T) {
 		}
 	})
 
-	// lint.cli.report: every name in root is in NFC, also when the folder
+	// system.cli.report: every name in root is in NFC, also when the folder
 	// above the spec root is stored as u followed by a mark.
 	t.Run("derived: root in NFC", func(t *testing.T) {
 		t.Parallel()
@@ -106,7 +106,7 @@ func TestLintRunRoot(t *testing.T) {
 		o := lintIn(t, dir, filepath.Join(dir, decomposed), nil)
 		o.has(t, "file-unknown", "proviso/notes.md")
 		if strings.Contains(o.report.Root, decomposed) || !strings.HasSuffix(o.report.Root, "/"+composed+"/proviso") {
-			t.Errorf("lint.cli.report: root %q, want it to end in /%s/proviso, in NFC", o.report.Root, composed)
+			t.Errorf("system.cli.report: root %q, want it to end in /%s/proviso, in NFC", o.report.Root, composed)
 		}
 	})
 
@@ -606,7 +606,7 @@ func TestLintRunExit(t *testing.T) {
 
 	// The rule covers only runs that checked the spec tree. A run that
 	// could not check it reported no error, yet does not exit with 0:
-	// lint.cli.lint.exit-status gives it 2, and the rules that stop the
+	// system.cli.lint.exit-status gives it 2, and the rules that stop the
 	// run (lint.run.root, lint.run.unreadable, lint.run.model-other) own
 	// it. checkRun applies the rule to every run that did not exit with 2.
 	notChecked := []struct {

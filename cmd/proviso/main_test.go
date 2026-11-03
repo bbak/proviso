@@ -211,7 +211,7 @@ func TestImpactDamagedManifest(t *testing.T) {
 	}
 }
 
-// baseline.diff.malformed and baseline.judge.input: judge and verify stop
+// baseline.diff.malformed and coherence.judge.input: judge and verify stop
 // on a damaged manifest as diff does, but judge reads its input first.
 func TestJudgeVerifyDamagedManifest(t *testing.T) {
 	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": "model 0\n<<<<<<< HEAD\n"})

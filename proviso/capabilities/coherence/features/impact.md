@@ -1,4 +1,4 @@
-# <a id="baseline.impact"></a> Impact candidates
+# <a id="coherence.impact"></a> Impact candidates
 
 - Contact: Bruno Baketarić
 
@@ -37,7 +37,7 @@ touched elements. "Formerly" always means the baseline: a touched
 element is compared with what it was at the last acceptance, never with
 a state in between.
 
-## <a id="baseline.impact.listed"></a> Rule: Only an element the diff does not list is a candidate
+## <a id="coherence.impact.listed"></a> Rule: Only an element the diff does not list is a candidate
 
 ### Rationale
 
@@ -59,7 +59,7 @@ Otherwise <element> is no [candidate]
 | `lint.run.root`, changed itself | no | no candidate | it is in the element diff |
 | `lint.run.exit`, changed through a dependency | no | no candidate | it is in the element diff |
 
-## <a id="baseline.impact.events"></a> Rule: A touched rule reaches the rules with its event head
+## <a id="coherence.impact.events"></a> Rule: A touched rule reaches the rules with its event head
 
 ### Rationale
 
@@ -82,7 +82,7 @@ Otherwise nothing is found through "events" from <element>
 | `lint.examples.row-repeated`, added, with the event head "lint reads row" | yes | `lint.examples.cells` found | its `When` reads `lint reads the row <row> of an [Examples table] with the columns <columns>` |
 | `lint.run.exit`, its Rationale reworded | no | nothing found | |
 
-## <a id="baseline.impact.event-head"></a> Rule: The event head is the When up to its first placeholder
+## <a id="coherence.impact.event-head"></a> Rule: The event head is the When up to its first placeholder
 
 ```guarded
 When      `impact` takes the [event head] of the [rule] <rule>
@@ -98,7 +98,7 @@ Then      it is the words of the "When" [step] of <rule> up to its first [placeh
 | a rule whose `When` holds no placeholder | the words of the whole step |
 | a `When` reading `lint reads the [hand-over] to <target>` | "lint reads hand over to", the hyphen separating words |
 
-## <a id="baseline.impact.ranges"></a> Rule: A touched rule reaches the invariants above it
+## <a id="coherence.impact.ranges"></a> Rule: A touched rule reaches the invariants above it
 
 ### Rationale
 
@@ -122,7 +122,7 @@ Otherwise nothing is found through "ranges" from <element>
 | `baseline.diff.exit`, added | yes | `baseline.run.writes` found | the invariant of its capability |
 | `lint.run.exit`, its Rationale reworded | no | nothing found | |
 
-## <a id="baseline.impact.scope"></a> Rule: A touched frame reaches everything below it
+## <a id="coherence.impact.scope"></a> Rule: A touched frame reaches everything below it
 
 ### Rationale
 
@@ -151,7 +151,7 @@ Otherwise nothing is found through "scope" from <element>
 | `system`, its Scope changed | yes | every rule and invariant of the tree found | |
 | `lint.run`, its Rationale reworded | no | nothing found | |
 
-## <a id="baseline.impact.order"></a> Rule: The candidates are ordered
+## <a id="coherence.impact.order"></a> Rule: The candidates are ordered
 
 ```guarded
 When      `impact` writes the [candidates] <candidates>
@@ -164,7 +164,7 @@ Then      they appear ordered by [identifier], compared byte by byte
 | `lint.run.root`, `lint.run.exit`, `baseline.run.writes` | `baseline.run.writes`, `lint.run.exit`, `lint.run.root` |
 | `lint.run.exit`, found through "scope" and through "events" | its "events" reason first, then its "scope" reason |
 
-## <a id="baseline.impact.output"></a> Rule: The candidates are written as text or as JSON
+## <a id="coherence.impact.output"></a> Rule: The candidates are written as text or as JSON
 
 ```guarded
 Given     `impact` has found the [candidates] <candidates>

@@ -365,17 +365,17 @@ func checkText(t *testing.T, tr tree) outcome {
 func checkRoot(t *testing.T, o outcome, want string) {
 	t.Helper()
 	if strings.Contains(o.report.Root, `\`) {
-		t.Errorf("lint.cli.report: root %q does not use / as its separator", o.report.Root)
+		t.Errorf("system.cli.report: root %q does not use / as its separator", o.report.Root)
 	}
 	if runtime.GOOS == "windows" && len(filepath.VolumeName(want)) == 2 && !hasDrive(o.report.Root) {
-		t.Errorf("lint.cli.report: root %q does not start with its drive, as an uppercase letter, as in C:/repo/proviso", o.report.Root)
+		t.Errorf("system.cli.report: root %q does not start with its drive, as an uppercase letter, as in C:/repo/proviso", o.report.Root)
 	}
 	if !norm.NFC.IsNormalString(o.report.Root) {
-		t.Errorf("lint.cli.report: root %q has a name not in NFC", o.report.Root)
+		t.Errorf("system.cli.report: root %q has a name not in NFC", o.report.Root)
 	}
 	got := filepath.FromSlash(o.report.Root)
 	if !filepath.IsAbs(got) {
-		t.Errorf("lint.cli.report: root %q is not an absolute path", o.report.Root)
+		t.Errorf("system.cli.report: root %q is not an absolute path", o.report.Root)
 		return
 	}
 	canon := func(p string) string {
@@ -389,7 +389,7 @@ func checkRoot(t *testing.T, o outcome, want string) {
 		return p
 	}
 	if canon(got) != canon(want) {
-		t.Errorf("lint.cli.report: root %q, want the spec root %q", o.report.Root, want)
+		t.Errorf("system.cli.report: root %q, want the spec root %q", o.report.Root, want)
 	}
 }
 
@@ -470,7 +470,7 @@ func checkRun(t *testing.T, o *outcome) {
 	}
 	for _, r := range o.runs() {
 		if r.exit < 0 || r.exit > 2 {
-			t.Fatalf("lint.cli.lint.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
+			t.Fatalf("system.cli.lint.exit-status: %d is not 0, 1 or 2\nstderr: %s", r.exit, r.stderr)
 		}
 		if r.exit == 2 && strings.TrimSpace(r.stderr) == "" {
 			t.Errorf("exit status 2 with nothing on stderr")
@@ -494,10 +494,10 @@ func checkRun(t *testing.T, o *outcome) {
 		}
 		for _, p := range paths {
 			if strings.Contains(p, `\`) {
-				t.Errorf("lint.cli.report: path %q does not use / as its separator", p)
+				t.Errorf("system.cli.report: path %q does not use / as its separator", p)
 			}
 			if strings.HasSuffix(p, "/") {
-				t.Errorf("lint.cli.report: path %q of a folder has a trailing /", p)
+				t.Errorf("system.cli.report: path %q of a folder has a trailing /", p)
 			}
 		}
 	}
@@ -506,7 +506,7 @@ func checkRun(t *testing.T, o *outcome) {
 	for _, f := range o.report.Findings {
 		sev, known := severities[f.Kind]
 		if !known {
-			t.Errorf("lint.cli.report: kind %q is no member of findings", f.Kind)
+			t.Errorf("system.cli.report: kind %q is no member of findings", f.Kind)
 		} else if f.Severity != sev {
 			t.Errorf("finding %s at %s:%d has severity %q, the rules report it as %q", f.Kind, f.File, f.Line, f.Severity, sev)
 		}
@@ -545,59 +545,59 @@ func parseReport(t *testing.T, stdout string) report {
 	t.Helper()
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal([]byte(stdout), &raw); err != nil {
-		t.Fatalf("lint.cli.report: stdout is not one JSON object: %v\n%s", err, stdout)
+		t.Fatalf("system.cli.report: stdout is not one JSON object: %v\n%s", err, stdout)
 	}
 	var root string
 	if err := json.Unmarshal(raw["root"], &root); err != nil || raw["root"] == nil {
-		t.Errorf("lint.cli.report: root missing or not a string: %s", raw["root"])
+		t.Errorf("system.cli.report: root missing or not a string: %s", raw["root"])
 	}
 	var items []map[string]json.RawMessage
 	if r := bytes.TrimSpace(raw["findings"]); len(r) == 0 || r[0] != '[' {
-		t.Fatalf("lint.cli.report: findings missing or not an array: %s", raw["findings"])
+		t.Fatalf("system.cli.report: findings missing or not an array: %s", raw["findings"])
 	}
 	if err := json.Unmarshal(raw["findings"], &items); err != nil {
-		t.Fatalf("lint.cli.report: findings are not objects: %v", err)
+		t.Fatalf("system.cli.report: findings are not objects: %v", err)
 	}
 	for i, it := range items {
 		for _, k := range []string{"kind", "severity", "file", "line", "message"} {
 			if _, ok := it[k]; !ok {
-				t.Errorf("lint.cli.report: finding %d has no %s: %v", i, k, it)
+				t.Errorf("system.cli.report: finding %d has no %s: %v", i, k, it)
 			}
 		}
 		var s string
 		for _, k := range []string{"kind", "file", "message"} {
 			if json.Unmarshal(it[k], &s) != nil {
-				t.Errorf("lint.cli.report: finding %d: %s is not a string", i, k)
+				t.Errorf("system.cli.report: finding %d: %s is not a string", i, k)
 			}
 		}
 		if json.Unmarshal(it["severity"], &s) != nil || (s != "error" && s != "ask") {
-			t.Errorf("lint.cli.report: finding %d: severity %s is not error or ask", i, it["severity"])
+			t.Errorf("system.cli.report: finding %d: severity %s is not error or ask", i, it["severity"])
 		}
 		var line int
 		if json.Unmarshal(it["line"], &line) != nil || line < 1 {
-			t.Errorf("lint.cli.report: finding %d: line %s is not an integer of at least 1", i, it["line"])
+			t.Errorf("system.cli.report: finding %d: line %s is not an integer of at least 1", i, it["line"])
 		}
 		if rel, ok := it["related"]; ok {
 			var places []map[string]json.RawMessage
 			if json.Unmarshal(rel, &places) != nil {
-				t.Errorf("lint.cli.report: finding %d: related is not an array of objects", i)
+				t.Errorf("system.cli.report: finding %d: related is not an array of objects", i)
 			}
 			for _, p := range places {
 				if json.Unmarshal(p["file"], &s) != nil {
-					t.Errorf("lint.cli.report: finding %d: related file is not a string", i)
+					t.Errorf("system.cli.report: finding %d: related file is not a string", i)
 				}
 				if json.Unmarshal(p["line"], &line) != nil || line < 1 {
-					t.Errorf("lint.cli.report: finding %d: related line is not an integer of at least 1", i)
+					t.Errorf("system.cli.report: finding %d: related line is not an integer of at least 1", i)
 				}
 			}
 		}
 	}
 	var rep report
 	if err := json.Unmarshal([]byte(stdout), &rep); err != nil {
-		t.Fatalf("lint.cli.report: %v", err)
+		t.Fatalf("system.cli.report: %v", err)
 	}
 	if rep.Root == "" {
-		t.Errorf("lint.cli.report: root is empty")
+		t.Errorf("system.cli.report: root is empty")
 	}
 	return rep
 }

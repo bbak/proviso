@@ -1,7 +1,7 @@
 package acceptance
 
 // The driver of `proviso impact`: runs with what holds for every run (the
-// impact_set's shape, its orders, the exit status, baseline.impact.listed
+// impact_set's shape, its orders, the exit status, coherence.impact.listed
 // against the element diff, and the invariant coherence.run.writes).
 
 import (
@@ -53,14 +53,14 @@ func (o impactOutcome) runs() []run {
 	return []run{o.json, *o.text}
 }
 
-// sourceRank is the order of the sources baseline.impact.order gives.
+// sourceRank is the order of the sources coherence.impact.order gives.
 var sourceRank = map[string]int{"events": 0, "ranges": 1, "scope": 2}
 
 // impactIn runs `proviso impact --json` in cwd and checks what holds for
 // every run. base is the directory the test tree was
 // written to; nothing below it may change. root, if not empty, is the spec
 // root expected. Where impact runs, `diff` is run as well, so that no
-// candidate can be an element the diff lists (baseline.impact.listed).
+// candidate can be an element the diff lists (coherence.impact.listed).
 func impactIn(t *testing.T, base, cwd, root string) impactOutcome {
 	t.Helper()
 	return runImpact(t, false, base, cwd, root)
@@ -100,14 +100,14 @@ func runImpact(t *testing.T, text bool, base, cwd, root string) impactOutcome {
 	if root != "" {
 		checkRoot(t, outcome{report: report{Root: o.is.Root}}, root)
 	}
-	// baseline.impact.output: nothing written as text for no candidates.
+	// coherence.impact.output: nothing written as text for no candidates.
 	if o.text != nil && len(o.is.Candidates) == 0 && o.text.stdout != "" {
-		t.Errorf("baseline.impact.output: no candidates, but text output %q", o.text.stdout)
+		t.Errorf("coherence.impact.output: no candidates, but text output %q", o.text.stdout)
 	}
 	if o.text != nil && len(o.is.Candidates) > 0 && strings.TrimSpace(o.text.stdout) == "" {
-		t.Errorf("baseline.impact.output: %d candidates, but no text output", len(o.is.Candidates))
+		t.Errorf("coherence.impact.output: %d candidates, but no text output", len(o.is.Candidates))
 	}
-	// baseline.impact.listed: no element the diff lists is a candidate.
+	// coherence.impact.listed: no element the diff lists is a candidate.
 	o.diff = diffIn(t, base, cwd, root)
 	if o.diff.json.exit == 2 {
 		t.Errorf("impact ran, but diff could not:\n%s", o.diff.json.stderr)
@@ -119,7 +119,7 @@ func runImpact(t *testing.T, text bool, base, cwd, root string) impactOutcome {
 	}
 	for _, c := range o.is.Candidates {
 		if listed[c.ID] {
-			t.Errorf("baseline.impact.listed: %s is a candidate, but the element diff lists it", c.ID)
+			t.Errorf("coherence.impact.listed: %s is a candidate, but the element diff lists it", c.ID)
 		}
 		for _, r := range c.Reasons {
 			for _, f := range r.From {
@@ -202,16 +202,16 @@ func parseImpactSet(t *testing.T, stdout string) impactSet {
 			t.Errorf("system.cli.impact-set: path %q does not use / as its separator", c.File)
 		}
 		if i > 0 && is.Candidates[i-1].ID >= c.ID {
-			t.Errorf("baseline.impact.order: %s before %s", is.Candidates[i-1].ID, c.ID)
+			t.Errorf("coherence.impact.order: %s before %s", is.Candidates[i-1].ID, c.ID)
 		}
 		if len(c.Reasons) == 0 {
-			t.Errorf("baseline.candidate: %s is found through no source", c.ID)
+			t.Errorf("coherence.candidate: %s is found through no source", c.ID)
 		}
 		for j, r := range c.Reasons {
 			if j > 0 {
 				p := c.Reasons[j-1]
 				if sourceRank[p.Source] > sourceRank[r.Source] || (p.Source == r.Source && p.Via >= r.Via) {
-					t.Errorf("baseline.impact.order: in %s, reason %s %q before %s %q", c.ID, p.Source, p.Via, r.Source, r.Via)
+					t.Errorf("coherence.impact.order: in %s, reason %s %q before %s %q", c.ID, p.Source, p.Via, r.Source, r.Via)
 				}
 			}
 			if len(r.From) == 0 || !sort.StringsAreSorted(r.From) {
@@ -225,7 +225,7 @@ func parseImpactSet(t *testing.T, stdout string) impactSet {
 			}
 		}
 	}
-	// baseline.impact.scope: the candidates found through scope are listed
+	// coherence.impact.scope: the candidates found through scope are listed
 	// together under each framing element as well.
 	grouped := map[string]bool{}
 	for _, g := range is.Scopes {

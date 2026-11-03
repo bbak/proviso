@@ -6,7 +6,7 @@ import (
 	"slices"
 )
 
-// helpPage is cli.cli.help.page: what Proviso is, every command with its
+// helpPage is system.cli.help.page: what Proviso is, every command with its
 // options, first those engineers run and then those the skills run, in
 // the order the page names them, the exit statuses the commands share,
 // and where the documentation is. Its wording is for people and not part

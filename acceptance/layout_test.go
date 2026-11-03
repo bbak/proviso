@@ -98,7 +98,7 @@ func TestLintLayoutName(t *testing.T) {
 		o.has(t, "field-missing", features+composed, 1)
 		for _, f := range o.report.Findings {
 			if strings.Contains(f.File, decomposed) {
-				t.Errorf("lint.cli.report: path %q is not in the composed form", f.File)
+				t.Errorf("system.cli.report: path %q is not in the composed form", f.File)
 			}
 		}
 	})
@@ -268,7 +268,7 @@ func TestLintLayoutLineEnding(t *testing.T) {
 	})
 	t.Run("derived: a lone carriage return does not end a line", func(t *testing.T) {
 		t.Parallel()
-		// lint.cli.report counts lines by line feeds only, so a finding
+		// system.cli.report counts lines by line feeds only, so a finding
 		// after the carriage return stands on the line a line feed count
 		// gives.
 		b := "proviso/capabilities/cart/features/b.md"

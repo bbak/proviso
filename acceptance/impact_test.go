@@ -1,6 +1,6 @@
 package acceptance
 
-// Feature baseline.impact: proviso/capabilities/baseline/features/impact.md,
+// Feature coherence.impact: proviso/capabilities/coherence/features/impact.md,
 // and the contracts system.cli.impact and system.cli.impact-set
 // (proviso/contracts/cli.md). Every case accepts the impact tree (see
 // impact_trees_test.go), amends it and runs `proviso impact`.
@@ -85,7 +85,7 @@ func without(ids []string, drop ...string) []string {
 	return out
 }
 
-func TestBaselineImpactListed(t *testing.T) {
+func TestCoherenceImpactListed(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 unchanged, on the event of a changed rule", func(t *testing.T) {
 		t.Parallel()
@@ -117,7 +117,7 @@ func TestBaselineImpactListed(t *testing.T) {
 		o.hasReason(t, "cart.add.full", "events", "buyer adds quantity", "cart.add.limit")
 		o.hasReason(t, "cart.bounded", "ranges", "capability", "cart.add.limit", "cart.pay.cap")
 	})
-	// baseline.impact Rationale: sharing a term or a reference with a
+	// coherence.impact Rationale: sharing a term or a reference with a
 	// changed rule is no link while it keeps its meaning.
 	t.Run("derived: sharing a term or a reference is no link", func(t *testing.T) {
 		t.Parallel()
@@ -133,7 +133,7 @@ func TestBaselineImpactListed(t *testing.T) {
 	})
 }
 
-func TestBaselineImpactEvents(t *testing.T) {
+func TestCoherenceImpactEvents(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 an added rule with an event head others have", func(t *testing.T) {
 		t.Parallel()
@@ -150,7 +150,7 @@ func TestBaselineImpactEvents(t *testing.T) {
 	})
 }
 
-func TestBaselineImpactEventHead(t *testing.T) {
+func TestCoherenceImpactEventHead(t *testing.T) {
 	t.Parallel()
 	t.Run("rows1-2 the When up to its first placeholder", func(t *testing.T) {
 		t.Parallel()
@@ -211,7 +211,7 @@ func TestBaselineImpactEventHead(t *testing.T) {
 	})
 }
 
-func TestBaselineImpactRanges(t *testing.T) {
+func TestCoherenceImpactRanges(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 a rule's Then step changed", func(t *testing.T) {
 		t.Parallel()
@@ -247,7 +247,7 @@ func TestBaselineImpactRanges(t *testing.T) {
 	})
 }
 
-func TestBaselineImpactScope(t *testing.T) {
+func TestCoherenceImpactScope(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
 		name  string
@@ -307,7 +307,7 @@ func sorted(s []string) []string {
 	return c
 }
 
-func TestBaselineImpactOrder(t *testing.T) {
+func TestCoherenceImpactOrder(t *testing.T) {
 	t.Parallel()
 	// That candidates and reasons are ordered is checked for every run
 	// (see parseImpactSet); here each row's outcome is checked as well.
@@ -335,7 +335,7 @@ func TestBaselineImpactOrder(t *testing.T) {
 	})
 }
 
-func TestBaselineImpactOutput(t *testing.T) {
+func TestCoherenceImpactOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written for candidates, and nothing for none,
 	// is checked for every run as text (see runImpact).

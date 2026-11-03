@@ -20,13 +20,13 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// The exit statuses of the contracts lint.cli.lint.exit-status,
-// system.cli.init.exit-status, install.cli.update.exit-status,
+// The exit statuses of the contracts system.cli.lint.exit-status,
+// system.cli.init.exit-status, system.cli.update.exit-status,
 // system.cli.manifest.exit-status, system.cli.diff.exit-status,
 // system.cli.impact.exit-status, system.cli.pack.exit-status,
 // system.cli.judge.exit-status, system.cli.verify.exit-status,
 // system.cli.rehome.exit-status, system.cli.version.exit-status and
-// cli.cli.help.exit-status.
+// system.cli.help.exit-status.
 const (
 	exitClean   = 0
 	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem; a rename would take an identifier

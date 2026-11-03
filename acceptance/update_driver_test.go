@@ -1,7 +1,7 @@
 package acceptance
 
 // The driver of `proviso update`: runs of update of a given Proviso version,
-// with what holds for every run (the contract install.cli.update of its
+// with what holds for every run (the contract system.cli.update of its
 // standard output, the exit status, the invariant install.update.keeps, and
 // what each line on standard output says about the file it names), and the
 // content `init` of a Proviso version writes, which update writes too.
@@ -92,10 +92,10 @@ func updateIn(t *testing.T, v, base, cwd string, args ...string) updateOutcome {
 		}
 	}
 	if r.exit != 0 && r.exit != 2 {
-		t.Fatalf("install.cli.update.exit-status: %d is not 0 or 2\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
+		t.Fatalf("system.cli.update.exit-status: %d is not 0 or 2\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
 	}
 	if r.exit == 2 && len(o.stderrLines) == 0 {
-		t.Errorf("install.cli.update.exit-status: exit status 2 with nothing on stderr")
+		t.Errorf("system.cli.update.exit-status: exit status 2 with nothing on stderr")
 	}
 	o.parse(t)
 	o.checkKeeps(t)
@@ -110,7 +110,7 @@ func (r *repo) update(v string) updateOutcome {
 	return updateIn(r.t, v, r.dir, r.dir)
 }
 
-// parse checks install.cli.update: one line per skill or agent definition,
+// parse checks system.cli.update: one line per skill or agent definition,
 // `written`, `updated` or `skipped`, a space and the path as installed_files
 // gives it, in the byte order of the paths.
 func (o *updateOutcome) parse(t *testing.T) {
@@ -122,11 +122,11 @@ func (o *updateOutcome) parse(t *testing.T) {
 	for _, l := range strings.Split(text, "\n") {
 		m := updateLinePattern.FindStringSubmatch(l)
 		if m == nil || !isStamped(m[2]) {
-			t.Errorf("install.cli.update: %q is not `written`, `updated` or `skipped`, a space and the path of a skill or agent definition installed_files names\nstdout:\n%s", l, o.stdout)
+			t.Errorf("system.cli.update: %q is not `written`, `updated` or `skipped`, a space and the path of a skill or agent definition installed_files names\nstdout:\n%s", l, o.stdout)
 			continue
 		}
 		if n := len(o.lines); n > 0 && o.lines[n-1].path >= m[2] {
-			t.Errorf("install.cli.update: %s named after %s, not once each in the byte order of the paths", m[2], o.lines[n-1].path)
+			t.Errorf("system.cli.update: %s named after %s, not once each in the byte order of the paths", m[2], o.lines[n-1].path)
 		}
 		o.lines = append(o.lines, updateLine{m[1], m[2]})
 	}
@@ -198,7 +198,7 @@ func (o updateOutcome) checkLines(t *testing.T) {
 				t.Errorf("install.update.stamp: %s named as updated, but no entry existed there", l.path)
 			}
 			if !strings.HasPrefix(after, "file: ") {
-				t.Errorf("install.cli.update: %s named as %s, but no file is there", l.path, l.status)
+				t.Errorf("system.cli.update: %s named as %s, but no file is there", l.path, l.status)
 				continue
 			}
 			content := strings.TrimPrefix(after, "file: ")

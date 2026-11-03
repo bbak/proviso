@@ -1,4 +1,4 @@
-# <a id="baseline.verify"></a> Verifying the coherence check
+# <a id="coherence.verify"></a> Verifying the coherence check
 
 - Contact: Bruno Baketarić
 
@@ -26,7 +26,7 @@ stops it, as `baseline.judge.unreadable` says.
 Of
 `amendment_note`, it only asks whether the spec root holds one.
 
-## <a id="baseline.verify.missing"></a> Rule: Without a coherence file, only an unchanged tree passes
+## <a id="coherence.verify.missing"></a> Rule: Without a coherence file, only an unchanged tree passes
 
 ```guarded
 When      `verify` runs on a [spec root] without `coherence_file`, whose [element diff] lists the [elements] <elements>
@@ -42,7 +42,7 @@ Otherwise `verify` reports "missing"
 | none: the tree is as the manifest records it | yes | nothing reported as "missing" | the mainline after an acceptance |
 | `lint.run.exit`, changed | no | "missing" | a hand edit whose check is missing |
 
-## <a id="baseline.verify.leftover"></a> Rule: A coherence file or an amendment note beside an unchanged tree is left over
+## <a id="coherence.verify.leftover"></a> Rule: A coherence file or an amendment note beside an unchanged tree is left over
 
 ### Rationale
 
@@ -69,7 +69,7 @@ Otherwise `verify` reports "leftover", once
 | none, with `.amendment.md` only | no | "leftover" | |
 | none, with `.coherence.json` and `.amendment.md` | no | "leftover", once | one problem, however many files |
 
-## <a id="baseline.verify.undecided"></a> Rule: No element of the tree is left undecided
+## <a id="coherence.verify.undecided"></a> Rule: No element of the tree is left undecided
 
 ### Rationale
 
@@ -98,7 +98,7 @@ Otherwise `verify` reports "undecided" for <element>
 | a feature with `- Contact: ?`, unchanged since the manifest | no (an undecided place) | "undecided" for the feature | the whole tree, not only what the amendment touched |
 | a glossary entry whose Status is `open`, with Definition `?` and a Question, marked by no rule | no (an undecided place) | "undecided" for the glossary entry | an open term is undecided itself, whether a rule marks it or not |
 
-## <a id="baseline.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
+## <a id="coherence.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
 
 ```guarded
 When      `verify` compares what `coherence_file` records for the [candidate] <candidate>
@@ -114,7 +114,7 @@ Otherwise `verify` reports "unjudged" for <candidate>
 | `lint.examples.cells`, judged | yes | compared | |
 | `lint.examples.cells`, found through an event added after the check | no | "unjudged" | |
 
-## <a id="baseline.verify.stale"></a> Rule: An element changed since the check is stale
+## <a id="coherence.verify.stale"></a> Rule: An element changed since the check is stale
 
 ### Rationale
 
@@ -140,7 +140,7 @@ Otherwise `verify` reports "stale" for <element>
 | `lint.run.root`, touched only after the check | no | "stale" | the check never read it |
 | `lint.examples.cells`, judged, its Examples row edited by a merge of the mainline | no | "stale" | |
 
-## <a id="baseline.verify.open"></a> Rule: A finding neither resolved nor dismissed is open
+## <a id="coherence.verify.open"></a> Rule: A finding neither resolved nor dismissed is open
 
 ```guarded
 When      `verify` takes the [finding] <finding> that `coherence_file` holds
@@ -157,7 +157,7 @@ Otherwise `verify` reports "open" for <finding>, with its text
 | `f2`, dismissed with a reason | yes | nothing reported | |
 | `f3`, as `judge` recorded it | no | "open" for `f3` | |
 
-## <a id="baseline.verify.output"></a> Rule: The problems are written as text or as JSON
+## <a id="coherence.verify.output"></a> Rule: The problems are written as text or as JSON
 
 ```guarded
 Given     `verify` has found the problems <problems>
@@ -176,7 +176,7 @@ Otherwise `verify` writes <problems> to "stdout" as text
 | one "unjudged" | none | no | that problem as text | |
 | none | none | no | nothing written | silence when there is nothing to say |
 
-## <a id="baseline.verify.order"></a> Rule: The problems are ordered
+## <a id="coherence.verify.order"></a> Rule: The problems are ordered
 
 ```guarded
 When      `verify` writes the problems <problems>
@@ -191,7 +191,7 @@ Then      they appear ordered by kind, as `verification` lists the kinds
 | "unjudged" for `lint.run.root`, "undecided" for `lint.run.exit` | "undecided" first, then "unjudged" |
 | "undecided" for `lint.run.exit`, "missing" | "missing" first, then "undecided" |
 
-## <a id="baseline.verify.exit"></a> Rule: The exit status tells whether the check covers the tree
+## <a id="coherence.verify.exit"></a> Rule: The exit status tells whether the check covers the tree
 
 ```guarded
 When      `verify` exits, having found the problems <problems>

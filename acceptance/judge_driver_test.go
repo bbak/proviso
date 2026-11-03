@@ -105,7 +105,7 @@ func judgeIn(t *testing.T, base, cwd, root, input string) run {
 	if r.exit == 0 && root != "" {
 		b, err := os.ReadFile(filepath.Join(root, coherenceName))
 		if err != nil {
-			t.Fatalf("baseline.judge.write: exit status 0, but no %s in the spec root: %v", coherenceName, err)
+			t.Fatalf("coherence.judge.write: exit status 0, but no %s in the spec root: %v", coherenceName, err)
 		}
 		if !utf8.Valid(b) || !json.Valid(b) {
 			t.Errorf("system.coherence-file: %s is not JSON in UTF-8:\n%s", coherenceName, b)
@@ -271,25 +271,25 @@ func runVerify(t *testing.T, text bool, base, cwd, root string) verifyOutcome {
 		checkRoot(t, outcome{report: report{Root: o.v.Root}}, root)
 	}
 	checkVerifyOrder(t, o.v.Problems)
-	// baseline.verify.exit
+	// coherence.verify.exit
 	want := 0
 	if len(o.v.Problems) > 0 {
 		want = 1
 	}
 	if o.json.exit != want {
-		t.Errorf("baseline.verify.exit: exit status %d, want %d for the problems:\n%s", o.json.exit, want, o.dump())
+		t.Errorf("coherence.verify.exit: exit status %d, want %d for the problems:\n%s", o.json.exit, want, o.dump())
 	}
-	// baseline.verify.output: nothing written as text when there is
+	// coherence.verify.output: nothing written as text when there is
 	// nothing to say, the problems otherwise.
 	if o.text != nil && len(o.v.Problems) == 0 && o.text.stdout != "" {
-		t.Errorf("baseline.verify.output: no problems, but text output %q", o.text.stdout)
+		t.Errorf("coherence.verify.output: no problems, but text output %q", o.text.stdout)
 	}
 	if o.text != nil && len(o.v.Problems) > 0 && strings.TrimSpace(o.text.stdout) == "" {
-		t.Errorf("baseline.verify.output: %d problems, but no text output", len(o.v.Problems))
+		t.Errorf("coherence.verify.output: %d problems, but no text output", len(o.v.Problems))
 	}
-	// baseline.verify.missing, baseline.verify.leftover: either comes
+	// coherence.verify.missing, coherence.verify.leftover: either comes
 	// once, and with either, verify compares nothing that coherence_file
-	// records, so that only "undecided" (baseline.verify.undecided) comes
+	// records, so that only "undecided" (coherence.verify.undecided) comes
 	// beside it.
 	stops := 0
 	for _, p := range o.v.Problems {
@@ -299,7 +299,7 @@ func runVerify(t *testing.T, text bool, base, cwd, root string) verifyOutcome {
 	}
 	for _, p := range o.v.Problems {
 		if stops > 1 || (stops == 1 && p.Kind != "missing" && p.Kind != "leftover" && p.Kind != "undecided") {
-			t.Errorf("baseline.verify.missing, baseline.verify.leftover: one of them once, with nothing compared, but reported:\n%s", o.dump())
+			t.Errorf("coherence.verify.missing, coherence.verify.leftover: one of them once, with nothing compared, but reported:\n%s", o.dump())
 			break
 		}
 	}
@@ -367,7 +367,7 @@ func findingNumber(id string) int {
 	return n
 }
 
-// checkVerifyOrder checks baseline.verify.order: by kind as `verification`
+// checkVerifyOrder checks coherence.verify.order: by kind as `verification`
 // lists them, then by identifier, byte by byte, or by the number of the
 // finding.
 func checkVerifyOrder(t *testing.T, list []problem) {
@@ -384,7 +384,7 @@ func checkVerifyOrder(t *testing.T, list []problem) {
 		case a.Kind != "open" && a.Element < b.Element:
 			continue
 		}
-		t.Errorf("baseline.verify.order: %s %s%s before %s %s%s", a.Kind, a.Element, a.Finding, b.Kind, b.Element, b.Finding)
+		t.Errorf("coherence.verify.order: %s %s%s before %s %s%s", a.Kind, a.Element, a.Finding, b.Kind, b.Element, b.Finding)
 	}
 }
 

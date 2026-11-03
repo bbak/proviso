@@ -1,6 +1,6 @@
 # Glossary
 
-## <a id="baseline.touched-element"></a> touched element
+## <a id="coherence.touched-element"></a> touched element
 
 - Definition: An element the element diff lists: added, changed, removed
   or changed through a dependency.
@@ -8,7 +8,7 @@
 - Status: defined
 - Aliases: touched elements
 
-## <a id="baseline.candidate"></a> candidate
+## <a id="coherence.candidate"></a> candidate
 
 - Definition: A rule or invariant the element diff does not list, but
   which an amendment may affect, found through at least one of the
@@ -19,7 +19,7 @@
 - Status: defined
 - Aliases: candidates
 
-## <a id="baseline.finding"></a> finding
+## <a id="coherence.finding"></a> finding
 
 - Definition: What the coherence check reports about an amendment
   besides its judgements: a contradiction, a term, invariant or
@@ -30,7 +30,7 @@
 - Status: defined
 - Aliases: findings
 
-## <a id="baseline.event-head"></a> event head
+## <a id="coherence.event-head"></a> event head
 
 - Definition: The text of a rule's `When` step up to its first
   placeholder, or the whole step if it has none, read as words: every

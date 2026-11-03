@@ -1,7 +1,7 @@
 package acceptance
 
 // The feature install.update: the command `proviso update` of
-// install.cli.update. What holds for every run of update (its output, exit
+// system.cli.update. What holds for every run of update (its output, exit
 // status, install.update.keeps, and that a file named as written or updated
 // is as init of the binary's version writes it) is checked by updateIn.
 
@@ -39,10 +39,10 @@ func initialised(t *testing.T) *repo {
 	return r
 }
 
-// TestInstallCliUpdate checks the contract install.cli.update and its
+// TestSystemCliUpdate checks the contract system.cli.update and its
 // example: one line per skill or agent definition, in the byte order of
 // their paths.
-func TestInstallCliUpdate(t *testing.T) {
+func TestSystemCliUpdate(t *testing.T) {
 	t.Parallel()
 	t.Run("example: updated .claude/agents/proviso-coder.md, skipped .claude/skills/proviso-accept/SKILL.md", func(t *testing.T) {
 		t.Parallel()
@@ -59,7 +59,7 @@ func TestInstallCliUpdate(t *testing.T) {
 			"skipped .claude/skills/proviso-recover/SKILL.md\n" +
 			"skipped .claude/skills/proviso-rehome/SKILL.md\n"
 		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
-			t.Errorf("install.cli.update: want stdout\n%s\ngot\n%s", want, got)
+			t.Errorf("system.cli.update: want stdout\n%s\ngot\n%s", want, got)
 		}
 	})
 	t.Run("derived: written, updated and skipped in one run, in the byte order of the paths", func(t *testing.T) {
@@ -71,7 +71,7 @@ func TestInstallCliUpdate(t *testing.T) {
 		o.says(t, "updated", buildSkill)
 		o.says(t, "skipped", ".claude/skills/proviso-check/SKILL.md")
 		if len(o.lines) != len(stampedFiles) {
-			t.Errorf("install.cli.update: want one line per skill and agent definition, got:\n%s", o.stdout)
+			t.Errorf("system.cli.update: want one line per skill and agent definition, got:\n%s", o.stdout)
 		}
 	})
 	t.Run("derived: a file it could not write is named on standard error only", func(t *testing.T) {
@@ -94,7 +94,7 @@ func TestInstallCliUpdate(t *testing.T) {
 			want += "updated " + f + "\n"
 		}
 		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
-			t.Errorf("install.cli.update: want stdout\n%s\ngot\n%s", want, got)
+			t.Errorf("system.cli.update: want stdout\n%s\ngot\n%s", want, got)
 		}
 	})
 	t.Run("derived: it takes no argument", func(t *testing.T) {
@@ -106,7 +106,7 @@ func TestInstallCliUpdate(t *testing.T) {
 	})
 }
 
-func TestInstallCliUpdateExitStatus(t *testing.T) {
+func TestSystemCliUpdateExitStatus(t *testing.T) {
 	t.Parallel()
 	t.Run("0: every skill and agent definition in place, written, updated or skipped", func(t *testing.T) {
 		t.Parallel()

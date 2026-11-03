@@ -1,6 +1,6 @@
 package acceptance
 
-// Feature baseline.verify: proviso/capabilities/baseline/features/verify.md,
+// Feature coherence.verify: proviso/capabilities/coherence/features/verify.md,
 // and the contracts system.cli.verify and system.cli.verification. Every case
 // accepts the impact tree (see impact_trees_test.go), amends it, records a
 // check with `proviso judge` and runs `proviso verify`. The identifiers of
@@ -70,7 +70,7 @@ func mergedMainline(t *testing.T, cs []change, mainline []change) *repo {
 	return r
 }
 
-func TestBaselineVerifyExit(t *testing.T) {
+func TestCoherenceVerifyExit(t *testing.T) {
 	t.Parallel()
 	// The exit status is checked against the problems found for every run
 	// (see verifyIn); here each row's outcome is checked as well.
@@ -96,7 +96,7 @@ func TestBaselineVerifyExit(t *testing.T) {
 		o.only(t, "open f1")
 		o.exits(t, 1)
 	})
-	// baseline.verify Goal: once accepted, the tree passes again.
+	// coherence.verify Goal: once accepted, the tree passes again.
 	t.Run("derived: covered, then accepted", func(t *testing.T) {
 		t.Parallel()
 		r := covered(t, iLimitThen)
@@ -108,7 +108,7 @@ func TestBaselineVerifyExit(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyLeftover(t *testing.T) {
+func TestCoherenceVerifyLeftover(t *testing.T) {
 	t.Parallel()
 	// That "leftover" comes alone, so once, and with exit status 1, is
 	// checked for every run (see verifyIn).
@@ -169,7 +169,7 @@ func TestBaselineVerifyLeftover(t *testing.T) {
 	t.Run("derived: none, with .coherence.json, an element left undecided", func(t *testing.T) {
 		t.Parallel()
 		// verify compares nothing the check records, but still takes every
-		// element of the tree (baseline.verify.undecided).
+		// element of the tree (coherence.verify.undecided).
 		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
 		r.set(amended(impactTree(), iAddContactAsk, iLimitThen))
 		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})
@@ -187,7 +187,7 @@ func TestBaselineVerifyLeftover(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyMissing(t *testing.T) {
+func TestCoherenceVerifyMissing(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 none: the tree is as the manifest records it", func(t *testing.T) {
 		t.Parallel()
@@ -205,7 +205,7 @@ func TestBaselineVerifyMissing(t *testing.T) {
 	t.Run("derived: none, with .amendment.md only", func(t *testing.T) {
 		t.Parallel()
 		// Nothing is reported as "missing"; the note is left over (see
-		// baseline.verify.leftover).
+		// coherence.verify.leftover).
 		r, _ := accepted(t, impactTree())
 		r.writeNote("- refunds\n")
 		o := r.verify()
@@ -215,14 +215,14 @@ func TestBaselineVerifyMissing(t *testing.T) {
 	t.Run("derived: changed, an element left undecided", func(t *testing.T) {
 		t.Parallel()
 		// verify reads no judgement, but still takes every element of the
-		// tree (baseline.verify.undecided).
+		// tree (coherence.verify.undecided).
 		o := amendedRepo(t, iLimitAsk).verify()
 		o.only(t, "missing", "undecided cart.add.limit")
 		o.exits(t, 1)
 	})
 }
 
-func TestBaselineVerifyOpen(t *testing.T) {
+func TestCoherenceVerifyOpen(t *testing.T) {
 	t.Parallel()
 	// recordThree records f1, f2 and f3 and then resolves f1 and dismisses
 	// f2.
@@ -251,7 +251,7 @@ func TestBaselineVerifyOpen(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyOrder(t *testing.T) {
+func TestCoherenceVerifyOrder(t *testing.T) {
 	t.Parallel()
 	// That the problems are ordered is checked for every run (see
 	// verifyIn); here each row's outcome is checked as well.
@@ -310,7 +310,7 @@ func TestBaselineVerifyOrder(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyOutput(t *testing.T) {
+func TestCoherenceVerifyOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written for problems, and nothing for none, is
 	// checked for every run as text (see runVerify).
@@ -365,7 +365,7 @@ func TestBaselineVerifyOutput(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyStale(t *testing.T) {
+func TestCoherenceVerifyStale(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 touched, unchanged since the check", func(t *testing.T) {
 		t.Parallel()
@@ -399,7 +399,7 @@ func TestBaselineVerifyStale(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyUnjudged(t *testing.T) {
+func TestCoherenceVerifyUnjudged(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 judged", func(t *testing.T) {
 		t.Parallel()
@@ -417,7 +417,7 @@ func TestBaselineVerifyUnjudged(t *testing.T) {
 	})
 }
 
-func TestBaselineVerifyUndecided(t *testing.T) {
+func TestCoherenceVerifyUndecided(t *testing.T) {
 	t.Parallel()
 	// That "undecided" comes with exit status 1, and that the run changes
 	// nothing, is checked for every run (see verifyIn).

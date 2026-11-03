@@ -1,16 +1,16 @@
 # Command line
 
-## <a id="lint.cli.lint"></a> lint
+## <a id="system.cli.lint"></a> lint
 
 The command `proviso lint`, run anywhere inside the system's repository.
 It writes findings as text by default, or a `report` with `--json`.
 
-### <a id="lint.cli.lint.json"></a> json
+### <a id="system.cli.lint.json"></a> json
 
 The option `--json`: write the `report` to standard output instead of
 text. The text form is for people and not part of the contract.
 
-### <a id="lint.cli.lint.exit-status"></a> exit-status
+### <a id="system.cli.lint.exit-status"></a> exit-status
 
 The process exit status.
 
@@ -23,7 +23,7 @@ enum: [0, 1, 2]
 - `1`: lint ran and reported at least one error.
 - `2`: lint could not run.
 
-## <a id="lint.cli.report"></a> report
+## <a id="system.cli.report"></a> report
 
 What `lint --json` writes: the spec root that was linted, and every
 finding. The paths of findings are relative to the directory holding
@@ -731,7 +731,7 @@ enum: [0, 2]
 - `2`: the command could not run, or an installed file could not be
   written.
 
-## <a id="install.cli.update"></a> update
+## <a id="system.cli.update"></a> update
 
 The command `proviso update`, run in the root of a git repository; it
 takes no argument. It brings the skills and agent definitions that
@@ -746,7 +746,7 @@ updated .claude/agents/proviso-coder.md
 skipped .claude/skills/proviso-accept/SKILL.md
 ```
 
-### <a id="install.cli.update.exit-status"></a> exit-status
+### <a id="system.cli.update.exit-status"></a> exit-status
 
 The process exit status.
 
@@ -795,12 +795,12 @@ enum: [0, 2]
 - `0`: the version was written, whatever went to standard error.
 - `2`: an argument was given.
 
-## <a id="cli.cli.help"></a> help
+## <a id="system.cli.help"></a> help
 
 The command `proviso help`, also `proviso --help` and `proviso -h`, run
 anywhere; it takes no argument. It writes `page` to standard output.
 
-### <a id="cli.cli.help.page"></a> page
+### <a id="system.cli.help.page"></a> page
 
 The help page: what Proviso is, in one line; every command with its
 options and one sentence on what it does, first those engineers run,
@@ -810,7 +810,7 @@ exit statuses the commands share;
 and where the documentation is. It names every command and every
 option. Its wording is for people and not part of the contract.
 
-### <a id="cli.cli.help.exit-status"></a> exit-status
+### <a id="system.cli.help.exit-status"></a> exit-status
 
 The process exit status of `help`, and of `proviso` run without a
 command or with one it does not know.

@@ -331,14 +331,14 @@ func TestSystemAmendmentNote_Entry(t *testing.T) {
 	t.Parallel()
 	t.Run("derived: a folder named .amendment.md beside an unchanged tree is left over", func(t *testing.T) {
 		t.Parallel()
-		// baseline.verify.leftover
+		// coherence.verify.leftover
 		r, _ := accepted(t, impactTree())
 		r.writeNoteFolder()
 		r.verify().only(t, "leftover")
 	})
 	t.Run("derived: a folder named .amendment.md beside a changed tree, without a check", func(t *testing.T) {
 		t.Parallel()
-		// baseline.verify.leftover, then baseline.verify.missing
+		// coherence.verify.leftover, then coherence.verify.missing
 		r := amendedRepo(t, iLimitThen)
 		r.writeNoteFolder()
 		r.verify().only(t, "missing")

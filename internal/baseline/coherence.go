@@ -364,10 +364,10 @@ func fingerprints(e *lint.Element) map[string]string {
 // Judge takes the judgements and findings of a check result one by one
 // into what coherence_file recorded before, nil if there is none, and
 // records every touched element of the element diff now and in the
-// baseline, following baseline.judge.write. A check result that closes a
+// baseline, following coherence.judge.write. A check result that closes a
 // finding is no check: every touched element keeps what was recorded for
 // it before, and one recorded for none stays so, following
-// baseline.judge.touched. It returns why it refuses the check result, if
+// coherence.judge.touched. It returns why it refuses the check result, if
 // it does; the caller then records nothing.
 func Judge(before *Coherence, in *CheckResult, entries []*Entry, candidates []Candidate, now []lint.Element, base Baseline) (*Coherence, error) {
 	if before == nil {

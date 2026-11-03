@@ -1,4 +1,4 @@
-# <a id="baseline.judge"></a> Recording the coherence check
+# <a id="coherence.judge"></a> Recording the coherence check
 
 - Contact: Bruno Baketarić
 
@@ -29,7 +29,7 @@ reads its input, and its input before it derives the element diff, once
 lint has found no error; one it cannot read stops it, as
 `baseline.judge.unreadable` says.
 
-## <a id="baseline.judge.input"></a> Rule: Judge reads a check result
+## <a id="coherence.judge.input"></a> Rule: Judge reads a check result
 
 ```guarded
 When      someone runs `judge`, with arguments it takes, giving it the input <input> on "stdin"
@@ -51,7 +51,7 @@ Otherwise `judge` writes to "stderr" why <input> is no `check_result`
 | one element in two judgements | no | exit status 1 | which reason holds would be a guess |
 | a judgement and a finding with an `id` | no | exit status 1 | a check and a decision are recorded apart |
 
-## <a id="baseline.judge.amendment"></a> Rule: Judge needs an amendment to judge
+## <a id="coherence.judge.amendment"></a> Rule: Judge needs an amendment to judge
 
 ### Rationale
 
@@ -73,7 +73,7 @@ Otherwise `judge` writes to "stderr" that there is no [amendment] to judge
 | `lint.run.exit`, changed | yes | taken one by one | |
 | none: the tree is as the manifest records it | no | exit status 1 | |
 
-## <a id="baseline.judge.candidate"></a> Rule: A judgement is recorded for a candidate
+## <a id="coherence.judge.candidate"></a> Rule: A judgement is recorded for a candidate
 
 ```guarded
 When      `judge` takes a [judgement] with the reason <reason> for the [element] <element>
@@ -92,7 +92,7 @@ Otherwise `judge` writes to "stderr" that <element> is no [candidate], naming it
 | "untouched" | `lint.run.exit`, changed itself | no | exit status 1 | the element diff lists it |
 | "untouched" | `lint.run.nosuch`, an identifier the tree does not hold | no | exit status 1 | |
 
-## <a id="baseline.judge.new-finding"></a> Rule: A new finding gets the next number
+## <a id="coherence.judge.new-finding"></a> Rule: A new finding gets the next number
 
 ```guarded
 When      `judge` takes a [finding] without an id, naming the [elements] <elements>
@@ -111,7 +111,7 @@ Otherwise `judge` writes to "stderr" that the [finding] names an [element] neith
 | `lint.run.root`, removed by the amendment | yes | recorded | the baseline holds it |
 | `lint.run.nosuch` | no | exit status 1 | |
 
-## <a id="baseline.judge.close-finding"></a> Rule: A finding is resolved or dismissed by its number
+## <a id="coherence.judge.close-finding"></a> Rule: A finding is resolved or dismissed by its number
 
 ```guarded
 When      `judge` takes a [finding] with the id <id> and the status <status>
@@ -130,7 +130,7 @@ Otherwise `judge` writes to "stderr" that no [finding] has the id <id>
 | `f2`, dismissed before | "resolved" | yes | `f2` resolved | the latest status holds |
 | `f9`, with `f1` and `f2` recorded | "resolved" | no | exit status 1 | |
 
-## <a id="baseline.judge.write"></a> Rule: Judge records what the check covered
+## <a id="coherence.judge.write"></a> Rule: Judge records what the check covered
 
 ### Rationale
 
@@ -159,7 +159,7 @@ Otherwise `judge` writes to "stderr" why it could not write `coherence_file`
 | `repo/proviso/`, with a judgement recorded for `lint.examples.cells`, edited since | yes | written, that judgement dropped | it is a touched element now |
 | `repo/proviso/`, without write permission | no | exit status 2 | |
 
-## <a id="baseline.judge.touched"></a> Rule: Closing a finding records no check
+## <a id="coherence.judge.touched"></a> Rule: Closing a finding records no check
 
 ### Rationale
 
@@ -184,7 +184,7 @@ Otherwise every [touched element] keeps what `coherence_file` recorded for it be
 | `f1` resolved, `lint.run.exit` edited since the last run | no | `lint.run.exit` keeps what was recorded before | the edit was read by no agent |
 | `f2` dismissed | no | every touched element keeps what was recorded before | |
 
-## <a id="baseline.judge.unreadable"></a> Rule: A coherence file that cannot be read stops the command
+## <a id="coherence.judge.unreadable"></a> Rule: A coherence file that cannot be read stops the command
 
 ### Rationale
 

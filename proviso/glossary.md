@@ -94,7 +94,7 @@
 - Status: defined
 - Aliases: rule blocks, guarded block
 
-## <a id="lint.keyword"></a> keyword
+## <a id="system.keyword"></a> keyword
 
 - Definition: One of the words that start the lines of a rule block:
   `Given`, `When`, `Provided`, `Then`, `Otherwise` and `And`, matched
@@ -103,7 +103,7 @@
 - Status: defined
 - Aliases: keywords
 
-## <a id="lint.step"></a> step
+## <a id="system.step"></a> step
 
 - Definition: A line of a rule block that starts with a keyword other
   than `And`, together with the `And` lines that follow it. An outcome
@@ -346,7 +346,7 @@
 - Status: defined
 - Aliases: symbolic links
 
-## <a id="baseline.part"></a> element part
+## <a id="system.part"></a> element part
 
 - Definition: A piece of an element with a fingerprint of its own: its
   heading, a field, a section, a step, an Examples row, or everything
@@ -355,7 +355,7 @@
 - Status: defined
 - Aliases: element parts
 
-## <a id="baseline.fingerprint"></a> fingerprint
+## <a id="system.fingerprint"></a> fingerprint
 
 - Definition: The hash of a part's text, with only its whitespace
   normalised, by which the baseline recognises a part as unchanged.

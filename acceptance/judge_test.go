@@ -1,6 +1,6 @@
 package acceptance
 
-// Feature baseline.judge: proviso/capabilities/baseline/features/judge.md,
+// Feature coherence.judge: proviso/capabilities/coherence/features/judge.md,
 // and the contracts system.cli.judge, system.cli.check-result and
 // system.coherence-file. Every case accepts the impact tree (see
 // impact_trees_test.go), amends it and runs `proviso judge`; what judge
@@ -29,7 +29,7 @@ func removeOpen() change {
 	return change{payPath, text, ""}
 }
 
-func TestBaselineJudgeInput(t *testing.T) {
+func TestCoherenceJudgeInput(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 one judgement naming two elements, and one new finding", func(t *testing.T) {
 		t.Parallel()
@@ -188,7 +188,7 @@ func TestBaselineJudgeInput(t *testing.T) {
 	})
 }
 
-func TestBaselineJudgeAmendment(t *testing.T) {
+func TestCoherenceJudgeAmendment(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 changed", func(t *testing.T) {
 		t.Parallel()
@@ -217,7 +217,7 @@ func TestBaselineJudgeAmendment(t *testing.T) {
 	})
 }
 
-func TestBaselineJudgeCandidate(t *testing.T) {
+func TestCoherenceJudgeCandidate(t *testing.T) {
 	t.Parallel()
 	t.Run(`row1 "untouched: it reads no manifest", found through events`, func(t *testing.T) {
 		t.Parallel()
@@ -231,7 +231,7 @@ func TestBaselineJudgeCandidate(t *testing.T) {
 		r.judgeOK(judging("untouched", "billing.refund.add", "cart.add.full"))
 		r.judgeOK(judging("untouched: nothing here builds code", "billing.refund.add"))
 		// The former judgement of billing.refund.add is replaced; that of
-		// cart.add.full, a candidate still, is kept (baseline.judge.write).
+		// cart.add.full, a candidate still, is kept (coherence.judge.write).
 		r.verify().only(t, unjudgedKeys("cart.add.never", "cart.bounded", "system.honest")...)
 	})
 	t.Run("row3 changed itself", func(t *testing.T) {
@@ -280,7 +280,7 @@ func recordTwo(t *testing.T) *repo {
 	return r
 }
 
-func TestBaselineJudgeCloseFinding(t *testing.T) {
+func TestCoherenceJudgeCloseFinding(t *testing.T) {
 	t.Parallel()
 	t.Run(`row1 f2 "resolved"`, func(t *testing.T) {
 		t.Parallel()
@@ -328,7 +328,7 @@ func TestBaselineJudgeCloseFinding(t *testing.T) {
 	})
 }
 
-func TestBaselineJudgeNewFinding(t *testing.T) {
+func TestCoherenceJudgeNewFinding(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 an element, with f1 and f2 recorded before", func(t *testing.T) {
 		t.Parallel()
@@ -401,11 +401,11 @@ func checkedThenEdited(t *testing.T, fs ...findingIn) *repo {
 	return r
 }
 
-// TestBaselineJudgeTouched checks baseline.judge.touched. lint.run.exit of
+// TestCoherenceJudgeTouched checks coherence.judge.touched. lint.run.exit of
 // the spec's examples stands for cart.add.limit, as above. What a run
 // records for a touched element shows through verify: "stale" where the
 // record does not match the element as it stands now.
-func TestBaselineJudgeTouched(t *testing.T) {
+func TestCoherenceJudgeTouched(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 one judgement and one new finding", func(t *testing.T) {
 		t.Parallel()
@@ -466,7 +466,7 @@ func TestBaselineJudgeTouched(t *testing.T) {
 	})
 }
 
-func TestBaselineJudgeUnreadable(t *testing.T) {
+func TestCoherenceJudgeUnreadable(t *testing.T) {
 	t.Parallel()
 	damaged := map[string]func(written string) string{
 		"row2 <<<<<<< HEAD in it": func(w string) string {
@@ -553,7 +553,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 				})
 				t.Run("derived: <<<<<<< HEAD in it, beside a tree the manifest records", func(t *testing.T) {
 					t.Parallel()
-					// Before baseline.judge.amendment's exit status 1.
+					// Before coherence.judge.amendment's exit status 1.
 					r := amendedRepo(t, iLimitThen)
 					r.judgeAll(nil)
 					w := r.coherence()
@@ -670,7 +670,7 @@ func TestBaselineJudgeUnreadable(t *testing.T) {
 	}
 }
 
-func TestBaselineJudgeWrite(t *testing.T) {
+func TestCoherenceJudgeWrite(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 without .coherence.json", func(t *testing.T) {
 		t.Parallel()

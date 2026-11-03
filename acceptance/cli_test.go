@@ -1,7 +1,7 @@
 package acceptance
 
 // The capability cli: proviso/capabilities/cli/, the feature cli.help and the
-// contract cli.cli.help. The help page's wording is for people, so the tests
+// contract system.cli.help. The help page's wording is for people, so the tests
 // check where it goes, what it names and the exit status; a refusal is one
 // line on standard error, and only what it names is checked: the command,
 // the argument and "proviso help".
@@ -72,7 +72,7 @@ func helpPage(t *testing.T) string {
 func isPage(t *testing.T, r run, page string) {
 	t.Helper()
 	if r.exit != 0 {
-		t.Errorf("cli.cli.help.exit-status: want 0, got %d\nstderr: %s", r.exit, r.stderr)
+		t.Errorf("system.cli.help.exit-status: want 0, got %d\nstderr: %s", r.exit, r.stderr)
 	}
 	if r.stderr != "" {
 		t.Errorf("cli.help.page: nothing goes to stderr, got %q", r.stderr)
@@ -112,7 +112,7 @@ func misused(t *testing.T, r run, command, argument string) {
 func unknown(t *testing.T, r run, command string) {
 	t.Helper()
 	if r.exit != 2 {
-		t.Errorf("cli.cli.help.exit-status: want 2 for an unknown command, got %d\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
+		t.Errorf("system.cli.help.exit-status: want 2 for an unknown command, got %d\nstdout: %s\nstderr: %s", r.exit, r.stdout, r.stderr)
 	}
 	if r.stdout != "" {
 		t.Errorf("cli.help.command: nothing goes to stdout, got %q", r.stdout)
@@ -140,7 +140,7 @@ func sinceAccepted(t *testing.T) *repo {
 	return r
 }
 
-func TestCliCliHelp(t *testing.T) {
+func TestSystemCliHelp(t *testing.T) {
 	t.Parallel()
 	page := helpPage(t)
 	for _, arg := range []string{"help", "--help", "-h"} {
@@ -157,7 +157,7 @@ func TestCliCliHelp(t *testing.T) {
 	})
 }
 
-func TestCliCliHelpPage(t *testing.T) {
+func TestSystemCliHelpPage(t *testing.T) {
 	t.Parallel()
 	page := helpPage(t)
 	// The page names every command and every option; help is a command
@@ -165,7 +165,7 @@ func TestCliCliHelpPage(t *testing.T) {
 	for _, name := range append(append([]string(nil), commands...), options...) {
 		re := regexp.MustCompile(`(^|[^A-Za-z0-9-])` + regexp.QuoteMeta(name) + `($|[^A-Za-z0-9-])`)
 		if !re.MatchString(page) {
-			t.Errorf("cli.cli.help.page: the page does not name %s:\n%s", name, page)
+			t.Errorf("system.cli.help.page: the page does not name %s:\n%s", name, page)
 		}
 	}
 	// The commands in the page's order: first those engineers run, then
@@ -184,17 +184,17 @@ func TestCliCliHelpPage(t *testing.T) {
 			}
 		}
 		if at < 0 {
-			t.Errorf("cli.cli.help.page: no line of the page lists %s:\n%s", name, page)
+			t.Errorf("system.cli.help.page: no line of the page lists %s:\n%s", name, page)
 			continue
 		}
 		if at <= last {
-			t.Errorf("cli.cli.help.page: %s is listed on line %d, not after %s on line %d:\n%s", name, at+1, lastName, last+1, page)
+			t.Errorf("system.cli.help.page: %s is listed on line %d, not after %s on line %d:\n%s", name, at+1, lastName, last+1, page)
 		}
 		last, lastName = at, name
 	}
 }
 
-func TestCliCliHelpExitStatus(t *testing.T) {
+func TestSystemCliHelpExitStatus(t *testing.T) {
 	t.Parallel()
 	for _, c := range []struct {
 		name string
@@ -210,7 +210,7 @@ func TestCliCliHelpExitStatus(t *testing.T) {
 			t.Parallel()
 			dir := anywhere(t)
 			if r := provisoIn(t, dir, dir, "", c.args...); r.exit != c.want {
-				t.Errorf("cli.cli.help.exit-status: want %d, got %d\nstderr: %s", c.want, r.exit, r.stderr)
+				t.Errorf("system.cli.help.exit-status: want %d, got %d\nstderr: %s", c.want, r.exit, r.stderr)
 			}
 		})
 	}

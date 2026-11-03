@@ -292,7 +292,7 @@ func coherence(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]
 }
 
 // readCoherence reads coherence_file, if the spec root holds one,
-// following baseline.judge.unreadable. It writes to stderr why it could
+// following coherence.judge.unreadable. It writes to stderr why it could
 // not.
 func readCoherence(cmd string, t *tree.Tree, stderr io.Writer) (*baseline.Coherence, bool) {
 	data, exists, err := readRegular(t, tree.CoherenceName)

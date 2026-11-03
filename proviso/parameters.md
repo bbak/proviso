@@ -28,7 +28,7 @@ release versions, without a leading `v`.
 | --- | --- |
 | 0 | 0.1.0 |
 
-## <a id="baseline.change-effects"></a> change_effects
+## <a id="system.change-effects"></a> change_effects
 
 - Configurable: no
 - Rationale: only a change that can alter behaviour, or the frame in

@@ -50,7 +50,7 @@ func TestSystemRegularFile(t *testing.T) {
 	for _, cmd := range []string{"judge", "verify"} {
 		t.Run("derived: "+cmd+" stops at a coherence file that is a socket", func(t *testing.T) {
 			t.Parallel()
-			// baseline.judge.unreadable
+			// coherence.judge.unreadable
 			r := amendedRepo(t, iLimitThen)
 			r.judgeAll(nil)
 			p := filepath.Join(r.root(), coherenceName)

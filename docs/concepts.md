@@ -23,7 +23,7 @@ file, and the readable unit of the tree.
 
 **Element.** A part of the tree with an **identifier**, its name,
 written as an anchor at the start of its heading, such as
-`baseline.judge.touched`. Besides the four levels, invariants,
+`coherence.judge.touched`. Besides the four levels, invariants,
 constraints, glossary entries, parameters, references and contract
 elements are elements. Its first segment names where the element
 stands. An element that moves keeps its identifier, so a move breaks no
