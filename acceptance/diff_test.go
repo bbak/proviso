@@ -123,6 +123,21 @@ func checkFormer(t *testing.T, p partChange, text string) {
 	}
 }
 
+// checkNow checks the text of a part as it stands now against text, up to
+// whitespace; for a step, with or without its keyword.
+func checkNow(t *testing.T, p partChange, text string) {
+	t.Helper()
+	if p.Text == nil {
+		t.Errorf("want the text of %s as it stands now, got none", p.Part)
+		return
+	}
+	got, want := normWS(*p.Text), normWS(md(text))
+	_, rest, _ := strings.Cut(want, " ")
+	if got != want && !(strings.HasPrefix(p.Part, "step ") && got == rest) {
+		t.Errorf("want the text of %s as it stands now to be %q, got %q", p.Part, want, got)
+	}
+}
+
 func TestBaselineDiffBaseline(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 with manifest.sum, compared with the manifest", func(t *testing.T) {
@@ -415,6 +430,7 @@ func TestBaselineDiffChanged(t *testing.T) {
 		o.only(t, "cart.add.limit:changed")
 		e := o.elem(t, "cart.add.limit")
 		onlyParts(t, e, "step Then:changed")
+		checkNow(t, part(t, e, "step Then"), "Then      the cart holds <quantity> more pieces of <product>\n  And     nothing else changes")
 		checkFormer(t, part(t, e, "step Then"), "Then      the cart holds <quantity> more of <product>\n  And     nothing else changes")
 		checkFull(t, e, tr, featurePath)
 		checkRevision(t, o, base)
@@ -432,7 +448,10 @@ func TestBaselineDiffChanged(t *testing.T) {
 		t.Parallel()
 		o, _, _ := amended(t, limitNewRow)
 		o.only(t, "cart.add.limit:changed")
-		onlyParts(t, o.elem(t, "cart.add.limit"), "row "+rowKey("quantity", "5", "product", "pear")+":added")
+		e := o.elem(t, "cart.add.limit")
+		key := "row " + rowKey("quantity", "5", "product", "pear")
+		onlyParts(t, e, key+":added")
+		checkNow(t, part(t, e, key), "| 5 | pear | yes | added | |")
 	})
 	t.Run("row4 an Examples row with a new outcome", func(t *testing.T) {
 		t.Parallel()
@@ -441,6 +460,7 @@ func TestBaselineDiffChanged(t *testing.T) {
 		e := o.elem(t, "cart.add.limit")
 		key := "row " + rowKey("quantity", "1", "product", "apple")
 		onlyParts(t, e, key+":changed")
+		checkNow(t, part(t, e, key), "| 1 | apple | yes | put in the cart | |")
 		checkFormer(t, part(t, e, key), "| 1 | apple | yes | added | |")
 	})
 	t.Run("row5 moved into another feature's file", func(t *testing.T) {
@@ -469,9 +489,14 @@ func TestBaselineDiffChanged(t *testing.T) {
 			change{xPath, "Rule: Under test", "Rule: Under a new test"},
 		)
 		o.only(t, "cart.add.limit:changed", "cart.x.r:changed")
-		onlyParts(t, o.elem(t, "cart.add.limit"), "step Then:changed", "step Provided:changed", "row "+rowKey("quantity", "1", "product", "apple")+":changed")
+		limit := o.elem(t, "cart.add.limit")
+		key := "row " + rowKey("quantity", "1", "product", "apple")
+		onlyParts(t, limit, "step Then:changed", "step Provided:changed", key+":changed")
+		checkNow(t, part(t, limit, "step Provided"), "Provided  <quantity> is below ´max_quantity´")
+		checkNow(t, part(t, limit, key), "| 1 | apple | yes | put in the cart | |")
 		e := o.elem(t, "cart.x.r")
 		onlyParts(t, e, "heading:changed")
+		checkNow(t, part(t, e, "heading"), "Rule: Under a new test")
 		checkFormer(t, part(t, e, "heading"), "Rule: Under test")
 	})
 	t.Run("derived: a field added", func(t *testing.T) {

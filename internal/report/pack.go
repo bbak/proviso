@@ -29,10 +29,10 @@ var packHeadings = []struct{ title, heading string }{
 
 // PackText writes pack_text: under each heading its elements, each with a
 // blank line before and after, and under Amendment, before each element,
-// what happened to it, and after it the former text of its parts, the
-// revision the former text came from first, if any was needed. Under Not
-// in this amendment, it writes the note, "" if there is none. A heading
-// under which nothing appears is left out.
+// what happened to it, and after it the text now and the former text of
+// its parts, the revision the former text came from first, if any was
+// needed. Under Not in this amendment, it writes the note, "" if there is
+// none. A heading under which nothing appears is left out.
 func PackText(w io.Writer, revision string, entries []*baseline.Entry, note string, packed []baseline.Packed) error {
 	var blocks []string // separated by a blank line
 	for _, h := range packHeadings {
@@ -71,8 +71,9 @@ func PackText(w io.Writer, revision string, entries []*baseline.Entry, note stri
 
 // amendment returns the blocks of a listed element: the line saying what
 // happened to it, and the second line if it is not to be built; its text,
-// or its former text if it was removed; and the former text of each of its
-// changed or removed parts.
+// or its former text if it was removed; and for each part named, in the
+// order of that line, its text now if it was added or changed, then its
+// former text if it was changed or removed.
 func amendment(e *baseline.Entry) []string {
 	var head string
 	switch e.Change {
@@ -111,6 +112,9 @@ func amendment(e *baseline.Entry) []string {
 		out = append(out, fenced(e.Former))
 	}
 	for _, p := range e.Parts {
+		if p.Change != baseline.Removed {
+			out = append(out, fmt.Sprintf("Now `%s`:\n", p.Part), fenced(p.Text))
+		}
 		if p.Change != baseline.Added {
 			out = append(out, fmt.Sprintf("Former `%s`:\n", p.Part), fenced(p.Former))
 		}
@@ -118,8 +122,8 @@ func amendment(e *baseline.Entry) []string {
 	return out
 }
 
-// fenced puts former text in a fenced block labelled text, its fence
-// longer than any run of backticks in it.
+// fenced puts former text, or a part's text now, in a fenced block
+// labelled text, its fence longer than any run of backticks in it.
 func fenced(text string) string {
 	longest, run := 0, 0
 	for _, r := range text {

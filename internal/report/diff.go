@@ -13,6 +13,7 @@ import (
 type jsonPart struct {
 	Part   string  `json:"part"`
 	Change string  `json:"change"`
+	Text   *string `json:"text,omitempty"`
 	Former *string `json:"former,omitempty"`
 }
 
@@ -60,6 +61,9 @@ func diffElements(entries []*baseline.Entry) []jsonElement {
 		}
 		for _, p := range e.Parts {
 			jp := jsonPart{Part: p.Part, Change: p.Change}
+			if p.Change != baseline.Removed {
+				jp.Text = &p.Text
+			}
 			if p.Change != baseline.Added {
 				jp.Former = &p.Former
 			}
@@ -72,9 +76,9 @@ func diffElements(entries []*baseline.Entry) []jsonElement {
 
 // DiffText writes the element diff for people: the revision the former
 // text came from, then each element with where it stands, the parts that
-// changed, the terms it changed through and whether it is to be built,
-// followed by its text, or its former text if it was removed. Nothing is
-// written when nothing is listed.
+// changed with their text now and their former text, the terms it changed
+// through and whether it is to be built, followed by its text, or its
+// former text if it was removed. Nothing is written when nothing is listed.
 func DiffText(w io.Writer, revision string, entries []*baseline.Entry) error {
 	var sb strings.Builder
 	if revision != "" && len(entries) > 0 {
@@ -89,6 +93,9 @@ func DiffText(w io.Writer, revision string, entries []*baseline.Entry) error {
 		sb.WriteString("\n")
 		for _, p := range e.Parts {
 			fmt.Fprintf(&sb, "  %s %s\n", p.Change, p.Part)
+			if p.Change != baseline.Removed {
+				indent(&sb, "    + ", p.Text)
+			}
 			if p.Change != baseline.Added {
 				indent(&sb, "    - ", p.Former)
 			}

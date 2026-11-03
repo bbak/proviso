@@ -44,10 +44,11 @@ type contextPack struct {
 	Elements []packElement `json:"elements"`
 }
 
-// formerBlock is a line Former `<part>`: of pack_text with the fenced block
-// after it.
+// formerBlock is a line Former `<part>`: or Now `<part>`: of pack_text with
+// the fenced block after it.
 type formerBlock struct {
 	part, fence, content string
+	now                  bool // after a line Now: the part's text as it stands now
 }
 
 // packItem is one element as pack_text writes it.
@@ -59,6 +60,7 @@ type packItem struct {
 	headIDs  []string      // the identifiers of the anchored headings in its text
 	body     []string      // its text, or a removed element's former text
 	formers  []formerBlock // under Amendment: the former text of its parts
+	blocks   []formerBlock // under Amendment: the text now and the former text of its parts, in their order
 }
 
 func (it packItem) text() string { return strings.Join(it.body, "\n") }
@@ -301,6 +303,7 @@ var (
 	statusLine   = regexp.MustCompile("^(Added|Removed) `([^`]+)`\\.$|^(Changed through|Changed) `([^`]+)`: (.+)\\.$")
 	notBuiltLine = regexp.MustCompile(`^Not to be built: (.+)\.$`)
 	formerLine   = regexp.MustCompile("^Former `([^`]+)`:$")
+	nowLine      = regexp.MustCompile("^Now `([^`]+)`:$")
 	revisionLine = regexp.MustCompile("^Former text from `([^`]+)`\\.$")
 	backtickRun  = regexp.MustCompile("`+")
 )
@@ -310,10 +313,10 @@ var (
 // element, or the note; the line Former text from, if any, first under
 // Amendment; the note under Not in this amendment, read as it stands,
 // between a blank line after the heading and one before the next; a
-// blank line before every heading, status line, element and line Former;
-// the line Not to be built right after a status line; the former
-// text of a part in a block fenced with backticks, labelled text, its fence
-// longer than any run of backticks in it. Line endings are read as line
+// blank line before every heading, status line, element and line Former or
+// Now; the line Not to be built right after a status line; the former
+// text of a part, and its text now, in a block fenced with backticks,
+// labelled text, its fence longer than any run of backticks in it. Line endings are read as line
 // feeds, or carriage returns and line feeds (see the report).
 func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []packItem) {
 	t.Helper()
@@ -339,7 +342,7 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 		}
 	}
 	fence := ""       // the fence open, if any
-	inFormer := false // the open fence holds the former text of a part
+	inFormer := false // the open fence holds the former text of a part, or its text now
 	for i := 0; i < len(lines); i++ {
 		l := lines[i]
 		// The note is not read as Markdown: it stands as the file holds it
@@ -353,16 +356,16 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 				fence = ""
 				if inFormer {
 					inFormer = false
-					f := cur.formers[len(cur.formers)-1]
+					f := cur.blocks[len(cur.blocks)-1]
 					for _, run := range backtickRun.FindAllString(f.content, -1) {
 						if len(run) >= len(f.fence) {
-							t.Errorf("system.cli.pack-text: the fence %s of the former text of %s in %s is not longer than the run %s in it", f.fence, f.part, cur.id, run)
+							t.Errorf("system.cli.pack-text: the fence %s of the text of %s in %s is not longer than the run %s in it", f.fence, f.part, cur.id, run)
 						}
 					}
 					continue
 				}
 			} else if inFormer {
-				f := &cur.formers[len(cur.formers)-1]
+				f := &cur.blocks[len(cur.blocks)-1]
 				f.content += l + "\n"
 				continue
 			}
@@ -403,13 +406,17 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 				cur.notBuilt = l
 			}
 			continue
-		case heading == "Amendment" && formerLine.MatchString(l):
-			blankBefore(i, "line Former")
+		case heading == "Amendment" && (formerLine.MatchString(l) || nowLine.MatchString(l)):
+			blankBefore(i, "line Former or Now")
 			if cur == nil {
 				t.Errorf("system.cli.pack-text: line %d %q follows no element", i+1, l)
 				continue
 			}
-			cur.formers = append(cur.formers, formerBlock{part: formerLine.FindStringSubmatch(l)[1]})
+			if m := nowLine.FindStringSubmatch(l); m != nil {
+				cur.blocks = append(cur.blocks, formerBlock{part: m[1], now: true})
+			} else {
+				cur.blocks = append(cur.blocks, formerBlock{part: formerLine.FindStringSubmatch(l)[1]})
+			}
 			// A blank line, then the fenced block.
 			j := i + 1
 			for j < len(lines) && lines[j] == "" {
@@ -421,7 +428,7 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 				continue
 			}
 			fence, inFormer, i = m[1], true, j
-			cur.formers[len(cur.formers)-1].fence = fence
+			cur.blocks[len(cur.blocks)-1].fence = fence
 			continue
 		case anchorHead.MatchString(l):
 			id := anchorHead.FindStringSubmatch(l)[1]
@@ -429,7 +436,7 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 				blankBefore(i, "element")
 				items = append(items, packItem{heading: heading, id: id})
 				cur = &items[len(items)-1]
-			} else if cur != nil && len(cur.formers) == 0 {
+			} else if cur != nil && len(cur.blocks) == 0 {
 				if len(cur.headIDs) == 0 {
 					blankBefore(i, "element")
 				}
@@ -448,9 +455,9 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 			if l != "" {
 				t.Errorf("system.cli.pack-text: line %d %q under %q belongs to no element", i+1, l, heading)
 			}
-		case len(cur.formers) > 0:
+		case len(cur.blocks) > 0:
 			if l != "" {
-				t.Errorf("system.cli.pack-text: line %d %q follows the former text of %s", i+1, l, cur.id)
+				t.Errorf("system.cli.pack-text: line %d %q follows the text of a part of %s", i+1, l, cur.id)
 			}
 		default:
 			cur.body = append(cur.body, l)
@@ -464,6 +471,13 @@ func parsePackText(t *testing.T, stdout string) ([]string, string, *string, []pa
 			t.Errorf("system.cli.pack-text: no blank line after the heading %q", notInAmendment)
 		}
 		*note = strings.Trim(strings.Join(noteLines, "\n"), "\n")
+	}
+	for i := range items {
+		for _, b := range items[i].blocks {
+			if !b.now {
+				items[i].formers = append(items[i].formers, b)
+			}
+		}
 	}
 	return headings, revision, note, items
 }
@@ -679,25 +693,34 @@ func checkAmendment(t *testing.T, it packItem, e diffElement) {
 			t.Errorf("system.cli.pack-text: the text under the status line of %s starts with no heading of it", e.ID)
 		}
 	}
-	// The former text of each changed or removed part, in the order diff
-	// gives the parts.
+	// Each part named, in the order diff gives the parts: the text of an
+	// added or changed part as it stands now, then the former text of a
+	// changed or removed part.
 	var want []string
-	formers := map[string]string{}
+	texts := map[string]string{}
 	for _, p := range e.Parts {
+		if p.Change != "removed" {
+			want = append(want, "Now "+p.Part)
+			texts["Now "+p.Part] = deref(p.Text)
+		}
 		if p.Change != "added" {
-			want = append(want, p.Part)
-			formers[p.Part] = deref(p.Former)
+			want = append(want, "Former "+p.Part)
+			texts["Former "+p.Part] = deref(p.Former)
 		}
 	}
 	var got []string
-	for _, f := range it.formers {
-		got = append(got, f.part)
-		if w, ok := formers[f.part]; ok && !sameText(f.content, w) {
-			t.Errorf("system.cli.pack-text: want the former text of %s in %s\n%s\ngot\n%s", f.part, e.ID, w, f.content)
+	for _, f := range it.blocks {
+		k := "Former " + f.part
+		if f.now {
+			k = "Now " + f.part
+		}
+		got = append(got, k)
+		if w, ok := texts[k]; ok && !sameText(f.content, w) {
+			t.Errorf("system.cli.pack-text: want after the line %s of %s\n%s\ngot\n%s", k, e.ID, w, f.content)
 		}
 	}
 	if strings.Join(got, "|") != strings.Join(want, "|") {
-		t.Errorf("system.cli.pack-text: want the lines Former of %s for %q, got %q", e.ID, want, got)
+		t.Errorf("system.cli.pack-text: want the lines Now and Former of %s for %q, got %q", e.ID, want, got)
 	}
 }
 
