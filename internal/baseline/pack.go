@@ -12,6 +12,7 @@ import (
 // names them, in the order pack_text gives them.
 const (
 	HeadingSystem  = "system"
+	HeadingElement = "element"
 	HeadingFrames  = "frames"
 	HeadingContext = "context"
 )
@@ -31,11 +32,37 @@ type Packed struct {
 // holds them (baseline.pack.order); PackOrder orders those under
 // Amendment.
 func Pack(entries []*Entry, elements []lint.Element) []Packed {
-	byID := ByID(elements)
 	listed := map[string]bool{}
+	var read []*lint.Element
 	for _, e := range entries {
 		listed[e.ID] = true
+		if e.Element != nil {
+			read = append(read, e.Element)
+		}
 	}
+	return pack(listed, read, elements)
+}
+
+// PackElement assembles the context pack of the element with the
+// identifier id, as the tree holds it (baseline.pack.element): that
+// element under Element, read as an added one, and every other element of
+// the pack under its heading, as Pack takes them. It reports false if the
+// tree holds no such element.
+func PackElement(id string, elements []lint.Element) ([]Packed, bool) {
+	e := ByID(elements)[id]
+	if e == nil {
+		return nil, false
+	}
+	out := append(pack(map[string]bool{id: true}, []*lint.Element{e}, elements), Packed{Heading: HeadingElement, Element: e})
+	sortPacked(out)
+	return out, true
+}
+
+// pack takes, from the elements read, which are not removed, every element
+// of the pack but those listed, which appear under Amendment or Element
+// only (baseline.pack.once).
+func pack(listed map[string]bool, read []*lint.Element, elements []lint.Element) []Packed {
+	byID := ByID(elements)
 	taken := map[string]string{} // identifier, the first heading it was taken for
 	take := func(heading string, e *lint.Element) {
 		if e == nil || listed[e.ID] {
@@ -53,29 +80,23 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 		}
 	}
 
-	// baseline.pack.frames: the frames of every listed element that is not
-	// removed.
-	for _, e := range entries {
-		if e.Element == nil {
-			continue
-		}
+	// baseline.pack.frames: the frames of every element read.
+	for _, e := range read {
 		for i := range elements {
-			if frames(e.Element, &elements[i]) {
+			if frames(e, &elements[i]) {
 				take(HeadingFrames, &elements[i])
 			}
 		}
 	}
 
-	// baseline.pack.chain: from every listed element that is not removed,
-	// and from every element taken so, each once.
+	// baseline.pack.chain: from every element read, and from every
+	// element taken so, each once.
 	deps := dependsOn(elements, nil)
 	seen := map[string]bool{}
 	var queue []string
-	for _, e := range entries {
-		if e.Element != nil {
-			seen[e.ID] = true
-			queue = append(queue, e.ID)
-		}
+	for _, e := range read {
+		seen[e.ID] = true
+		queue = append(queue, e.ID)
 	}
 	for len(queue) > 0 {
 		id := queue[0]
@@ -98,10 +119,16 @@ func Pack(entries []*Entry, elements []lint.Element) []Packed {
 	for id, h := range taken {
 		out = append(out, Packed{Heading: h, Element: byID[id]})
 	}
+	sortPacked(out)
+	return out
+}
+
+// sortPacked orders the elements of a pack by heading, as pack_text gives
+// them, and under each heading as the tree holds them.
+func sortPacked(out []Packed) {
 	slices.SortFunc(out, func(a, b Packed) int {
 		return cmp.Or(cmp.Compare(rank(a.Heading), rank(b.Heading)), treeOrder(a.Element, b.Element))
 	})
-	return out
 }
 
 // PackOrder returns the entries of an element diff in the order the pack
@@ -130,9 +157,9 @@ func treeOrder(a, b *lint.Element) int {
 }
 
 // rank is the place of a heading in pack_text, Amendment standing between
-// System and Frames.
+// Element and Frames.
 func rank(heading string) int {
-	return slices.Index([]string{HeadingSystem, HeadingFrames, HeadingContext}, heading)
+	return slices.Index([]string{HeadingSystem, HeadingElement, HeadingFrames, HeadingContext}, heading)
 }
 
 // frames reports whether the element f frames the listed element e: the

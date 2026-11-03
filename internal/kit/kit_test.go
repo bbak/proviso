@@ -15,8 +15,8 @@ var proviso = regexp.MustCompile("\\.proviso/[^\\s`'\")]*")
 
 func TestFiles(t *testing.T) {
 	got := Files("shop", "0.1.1-dev")
-	if len(got) != 15 {
-		t.Fatalf("%d files, want 15", len(got))
+	if len(got) != 17 {
+		t.Fatalf("%d files, want 17", len(got))
 	}
 	reading := read("agents/reading.md")
 	for i, f := range got {
@@ -49,7 +49,8 @@ func TestFiles(t *testing.T) {
 			if !bytes.Contains(f.Data, []byte("\nname: "+name+"\n")) {
 				t.Errorf("%s not named %s", f.Path, name)
 			}
-			// Below .proviso/ only the notes to that agent; the checker has none.
+			// Below .proviso/ only the notes to that agent; the checker and
+			// the mutator have none.
 			notes := map[string]string{"proviso-coder": ".proviso/coder.md", "proviso-tester": ".proviso/tester.md"}[name]
 			for _, ref := range proviso.FindAllString(string(f.Data), -1) {
 				if ref != notes {
@@ -67,12 +68,12 @@ func TestFiles(t *testing.T) {
 		skills++
 		name := strings.TrimSuffix(strings.TrimPrefix(f.Path, ".claude/skills/"), "/SKILL.md")
 		// The skills that write decisions into the spec tree carry the
-		// writing guide where they mark it; proviso-accept never edits the
-		// tree and proviso-rehome edits it only through rehome, so they
-		// carry none.
+		// writing guide where they mark it; proviso-accept and
+		// proviso-mutate never edit the tree and proviso-rehome edits it
+		// only through rehome, so they carry none.
 		kit := read("skills/" + name + "/SKILL.md")
 		want := stamp.Add(kit, "0.1.1-dev")
-		if name != "proviso-accept" && name != "proviso-rehome" {
+		if name != "proviso-accept" && name != "proviso-mutate" && name != "proviso-rehome" {
 			if !strings.Contains(kit, writingMark) {
 				t.Errorf("%s: the kit's skill marks no writing guide", f.Path)
 			}
@@ -85,8 +86,8 @@ func TestFiles(t *testing.T) {
 			t.Errorf("%s not named %s", f.Path, name)
 		}
 	}
-	if skills != 6 {
-		t.Errorf("%d skills, want 6", skills)
+	if skills != 7 {
+		t.Errorf("%d skills, want 7", skills)
 	}
 	if sys := got[len(got)-1]; sys.Path != "proviso/system.md" || !bytes.HasPrefix(sys.Data, []byte("# <a id=\"system\"></a> shop\n")) {
 		t.Errorf("skeleton %s: %q", sys.Path, sys.Data)

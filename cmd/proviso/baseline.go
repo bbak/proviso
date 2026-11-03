@@ -211,6 +211,27 @@ func packRun(t *tree.Tree, res *lint.Result, asJSON bool, since string, stdout, 
 	return exitClean
 }
 
+// packElementRun writes the context pack of the element with the
+// identifier id (baseline.pack.element): it derives no element diff and
+// reads no amendment note, so that neither manifest.sum, .amendment.md
+// nor git history is read.
+func packElementRun(t *tree.Tree, res *lint.Result, asJSON bool, id string, stdout, stderr io.Writer) int {
+	packed, ok := baseline.PackElement(id, res.Elements)
+	if !ok {
+		fmt.Fprintf(stderr, "proviso pack: the spec tree holds no element %q\n", id)
+		return exitCantRun
+	}
+	if !emit("pack", stdout, stderr, func(w io.Writer) error {
+		if asJSON {
+			return report.PackJSON(w, reportRoot(t.Root), "", nil, "", packed)
+		}
+		return report.PackText(w, "", nil, "", packed)
+	}) {
+		return exitCantRun
+	}
+	return exitClean
+}
+
 // emit writes what write writes to stdout, but only once it has written it
 // completely, so that a report that fails is never written in part. It
 // writes to stderr why it could not.

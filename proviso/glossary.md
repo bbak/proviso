@@ -292,7 +292,8 @@
 ## <a id="system.context-pack"></a> context pack
 
 - Definition: What an implementing agent or the checking agent receives
-  for an amendment: the element diff and everything needed to read it, such as the glossary
+  for an amendment, or for one element outside any amendment: the
+  element diff, or that element, and everything needed to read it, such as the glossary
   entries, invariants, constraints and parameters it uses and
   `system.md`, and nothing else of the spec tree.
 - Contact: Bruno Baketarić
@@ -312,6 +313,16 @@
 - Definition: The agent that runs the coherence check from a context
   pack, kept apart from the implementing agents and from what they
   built.
+- Contact: Bruno Baketarić
+- Status: defined
+
+## <a id="system.mutating-agent"></a> mutating agent
+
+- Definition: The agent that writes mutants of the system's code from
+  the spec tree, each a slip a rule's Examples should catch or a change
+  of behaviour no rule covers, without seeing the tests its mutants
+  are run against, kept apart from the agents that built the code and
+  its tests.
 - Contact: Bruno Baketarić
 - Status: defined
 

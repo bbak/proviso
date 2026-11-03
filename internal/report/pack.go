@@ -16,10 +16,11 @@ const (
 )
 
 // packHeadings are the headings of pack_text, in its order, with the
-// heading context_pack names; Amendment holds the element diff, Not in
-// this amendment the amendment note.
+// heading context_pack names; Element holds the element --element names,
+// Amendment the element diff, Not in this amendment the amendment note.
 var packHeadings = []struct{ title, heading string }{
 	{"System", baseline.HeadingSystem},
+	{"Element", baseline.HeadingElement},
 	{"Amendment", headingAmendment},
 	{"Not in this amendment", headingNote},
 	{"Frames", baseline.HeadingFrames},

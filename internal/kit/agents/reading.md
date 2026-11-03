@@ -1,9 +1,12 @@
 ## How to read the pack
 
-The pack is Markdown with up to five headings:
+The pack is Markdown with up to six headings:
 
 - **System:** the system's Goal, Rationale, Scope, Out of scope and
   Design boundary.
+- **Element:** in place of Amendment, the one element a skill named,
+  as the tree holds it, with no line saying what happened to it. This
+  is your work.
 - **Amendment:** every element the amendment touched, each after a line
   saying what happened to it: `Added`, `Changed` (with the parts that
   changed and their former text), `Removed` (with its former text) or

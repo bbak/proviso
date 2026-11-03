@@ -52,11 +52,13 @@ func Files(system, version string) []File {
 	out := []File{
 		{".claude/agents/proviso-checker.md", agent("proviso-checker.md"), true},
 		{".claude/agents/proviso-coder.md", agent("proviso-coder.md"), true},
+		{".claude/agents/proviso-mutator.md", agent("proviso-mutator.md"), true},
 		{".claude/agents/proviso-tester.md", agent("proviso-tester.md"), true},
 		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept"), true},
 		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build"), true},
 		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check"), true},
 		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate"), true},
+		{".claude/skills/proviso-mutate/SKILL.md", skill("proviso-mutate"), true},
 		{".claude/skills/proviso-recover/SKILL.md", skill("proviso-recover"), true},
 		{".claude/skills/proviso-rehome/SKILL.md", skill("proviso-rehome"), true},
 		{".proviso/build.md", []byte(read("notes/build.md")), false},

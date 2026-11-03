@@ -4,7 +4,8 @@ package acceptance
 // layout of pack_text, the shape of context_pack, the two agreeing with each
 // other and with the element diff, baseline.pack.contents, baseline.pack.once,
 // baseline.pack.order, the exit status and the invariant
-// baseline.run.writes).
+// baseline.run.writes), and runs with `--element`, with what holds for every
+// such run (baseline.pack.element where the element is found).
 
 import (
 	"bytes"
@@ -20,12 +21,12 @@ import (
 
 // The headings of pack_text, in their order, and how context_pack names
 // each but Amendment and Not in this amendment.
-var packHeadings = []string{"System", "Amendment", notInAmendment, "Frames", "Context"}
+var packHeadings = []string{"System", "Element", "Amendment", notInAmendment, "Frames", "Context"}
 
 // notInAmendment is the heading of pack_text that holds the amendment note.
 const notInAmendment = "Not in this amendment"
 
-var packHeadingJSON = map[string]string{"System": "system", "Frames": "frames", "Context": "context"}
+var packHeadingJSON = map[string]string{"System": "system", "Element": "element", "Frames": "frames", "Context": "context"}
 
 type packElement struct {
 	ID      string `json:"id"`
@@ -83,6 +84,26 @@ type packOutcome struct {
 // to every run, `diff` included.
 func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 	t.Helper()
+	o, ok := runPack(t, base, cwd, root, args...)
+	if !ok {
+		return o
+	}
+	o.diff = diffIn(t, base, cwd, root, args...)
+	if o.diff.json.exit == 2 {
+		t.Errorf("pack ran, but diff could not:\n%s", o.diff.json.stderr)
+		return o
+	}
+	checkPackDiff(t, o)
+	checkPackOrder(t, o)
+	return o
+}
+
+// runPack runs `proviso pack --json` and `proviso pack` with args in cwd,
+// checks the exit status and baseline.run.writes, and, where both ran, reads
+// and checks what they wrote as packIn says, but for the element diff. It
+// tells whether both ran.
+func runPack(t *testing.T, base, cwd, root string, args ...string) (packOutcome, bool) {
+	t.Helper()
 	before := snapshotAll(t, base)
 	o := packOutcome{
 		json: execProviso(t, cwd, append([]string{"pack", "--json"}, args...)...),
@@ -96,7 +117,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 	for _, r := range []run{o.json, o.text} {
 		if r.exit != 0 && r.exit != 2 {
 			t.Errorf("system.cli.pack.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
-			return o
+			return o, false
 		}
 		if r.exit == 2 && strings.TrimSpace(r.stderr) == "" {
 			t.Errorf("exit status 2 with nothing on stderr")
@@ -108,7 +129,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 				t.Errorf("exit status 2, but stdout holds: %q", r.stdout)
 			}
 		}
-		return o
+		return o, false
 	}
 	// Each check reports what it finds and the others go on, so that one
 	// cause does not hide another.
@@ -121,14 +142,76 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 	if o.cpOK {
 		checkPackAgrees(t, o)
 	}
-	o.diff = diffIn(t, base, cwd, root, args...)
-	if o.diff.json.exit == 2 {
-		t.Errorf("pack ran, but diff could not:\n%s", o.diff.json.stderr)
+	return o, true
+}
+
+// packElementIn runs `proviso pack --json --element id` and
+// `proviso pack --element id` in cwd and checks what holds for every run, as
+// runPack does; where both ran, what baseline.pack.element, baseline.pack.once
+// and system.cli.pack-text say of the pack of a named element (see
+// checkPackElement), and baseline.pack.order. No element diff is derived, so
+// `diff` is not run.
+func packElementIn(t *testing.T, base, cwd, root, id string) packOutcome {
+	t.Helper()
+	o, ok := runPack(t, base, cwd, root, "--element", id)
+	if !ok {
 		return o
 	}
-	checkPackDiff(t, o)
+	checkPackElement(t, o, id)
 	checkPackOrder(t, o)
 	return o
+}
+
+// packElement runs `proviso pack --element id` in the repository.
+func (r *repo) packElement(id string) packOutcome {
+	r.t.Helper()
+	return packElementIn(r.t, r.dir, r.dir, r.root(), id)
+}
+
+// checkPackElement checks the pack of the element id named by --element: the
+// system under System, unless it is the named element, and the named element
+// alone under Element, with no line before it; nothing under Amendment or Not
+// in this amendment, an empty diff and a null note in context_pack; and, as
+// no former text was needed, no revision named.
+func checkPackElement(t *testing.T, o packOutcome, id string) {
+	t.Helper()
+	if got := strings.Join(o.under("Element"), " "); got != id {
+		t.Errorf("baseline.pack.element: want %s alone under Element, got:\n%s", id, o.dump())
+	}
+	wantSystem := "system"
+	if id == "system" {
+		wantSystem = ""
+	}
+	if got := strings.Join(o.under("System"), " "); got != wantSystem {
+		t.Errorf("baseline.pack.element, baseline.pack.once: want under System %q, got:\n%s", wantSystem, o.dump())
+	}
+	for _, h := range o.headings {
+		if h == "Amendment" || h == notInAmendment {
+			t.Errorf("baseline.pack.element: want nothing taken for %q, got the heading:\n%s", h, o.dump())
+		}
+	}
+	for _, it := range o.items {
+		if it.heading == "Element" && it.status != "" {
+			t.Errorf("system.cli.pack-text: want no line before the element under Element, got %q", it.status)
+		}
+	}
+	if o.revision != "" {
+		t.Errorf("system.cli.pack-text: no former text was needed, but the pack names the revision %s", o.revision)
+	}
+	if !o.cpOK {
+		return
+	}
+	var raw map[string]json.RawMessage
+	json.Unmarshal([]byte(o.json.stdout), &raw)
+	if d := string(bytes.TrimSpace(raw["diff"])); d != "[]" {
+		t.Errorf("system.cli.context-pack: want diff empty in the pack of a named element, got %s", d)
+	}
+	if o.cp.Note != nil {
+		t.Errorf("baseline.pack.element: want note null, got %q", *o.cp.Note)
+	}
+	if o.cp.Revision != nil {
+		t.Errorf("system.cli.context-pack: no former text was needed, but revision is %q", *o.cp.Revision)
+	}
 }
 
 func (r *repo) pack() packOutcome {
@@ -197,10 +280,10 @@ func parseContextPack(t *testing.T, stdout string) (contextPack, bool) {
 		t.Errorf("system.cli.context-pack: %v", err)
 		return contextPack{}, false
 	}
-	enum := map[string]bool{"system": true, "frames": true, "context": true}
+	enum := map[string]bool{"system": true, "element": true, "frames": true, "context": true}
 	for _, e := range cp.Elements {
 		if !enum[e.Heading] {
-			t.Errorf("system.cli.context-pack: %s: heading %q is none of system, frames, context", e.ID, e.Heading)
+			t.Errorf("system.cli.context-pack: %s: heading %q is none of system, element, frames, context", e.ID, e.Heading)
 		}
 		if strings.Contains(e.File, `\`) {
 			t.Errorf("system.cli.context-pack: path %q does not use / as its separator", e.File)
@@ -223,7 +306,7 @@ var (
 )
 
 // parsePackText reads stdout as pack_text and checks its layout: UTF-8, the
-// headings of level 1 among the five and in their order, each holding an
+// headings of level 1 among the six and in their order, each holding an
 // element, or the note; the line Former text from, if any, first under
 // Amendment; the note under Not in this amendment, read as it stands,
 // between a blank line after the heading and one before the next; a

@@ -51,11 +51,13 @@ func TestSystemCliUpdate(t *testing.T) {
 		o.exits(t, 0)
 		want := "skipped .claude/agents/proviso-checker.md\n" +
 			"updated .claude/agents/proviso-coder.md\n" +
+			"skipped .claude/agents/proviso-mutator.md\n" +
 			"skipped .claude/agents/proviso-tester.md\n" +
 			"skipped .claude/skills/proviso-accept/SKILL.md\n" +
 			"skipped .claude/skills/proviso-build/SKILL.md\n" +
 			"skipped .claude/skills/proviso-check/SKILL.md\n" +
 			"skipped .claude/skills/proviso-integrate/SKILL.md\n" +
+			"skipped .claude/skills/proviso-mutate/SKILL.md\n" +
 			"skipped .claude/skills/proviso-recover/SKILL.md\n" +
 			"skipped .claude/skills/proviso-rehome/SKILL.md\n"
 		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
@@ -180,15 +182,15 @@ func TestInstallUpdateExit(t *testing.T) {
 	})
 	t.Run("derived: a later run writes what an earlier one failed to write", func(t *testing.T) {
 		t.Parallel()
-		tr := installedAs("0.2.0").without(stampedFiles[:3]...)
+		tr := installedAs("0.2.0").without(stampedFiles[:agentDefinitions]...)
 		tr[".claude/agents"] = "not a folder\n"
 		r := versionRepo(t, tr)
-		r.update("0.2.0").failed(t, stampedFiles[:3]...)
+		r.update("0.2.0").failed(t, stampedFiles[:agentDefinitions]...)
 		remove(t, r.dir, ".claude/agents")
 		o := r.update("0.2.0")
 		o.exits(t, 0)
 		for i, f := range stampedFiles {
-			if i < 3 {
+			if i < agentDefinitions {
 				o.says(t, "written", f)
 			} else {
 				o.says(t, "skipped", f)

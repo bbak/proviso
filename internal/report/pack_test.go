@@ -66,3 +66,35 @@ func TestPackText(t *testing.T) {
 		t.Errorf("%s", buf.String())
 	}
 }
+
+func TestPackTextElement(t *testing.T) {
+	sys := &lint.Element{ID: "system", File: "proviso/system.md", Line: 1, Text: "# <a id=\"system\"></a> S\n"}
+	rule := &lint.Element{ID: "c.f.r", File: "proviso/capabilities/c/features/f.md", Line: 9, Text: "## <a id=\"c.f.r\"></a> Rule: R\n\nnow\n"}
+	packed := []baseline.Packed{{Heading: baseline.HeadingSystem, Element: sys}, {Heading: baseline.HeadingElement, Element: rule}}
+	var buf bytes.Buffer
+	if err := PackText(&buf, "", nil, "", packed); err != nil {
+		t.Fatal(err)
+	}
+	want := "# System\n\n" +
+		"# <a id=\"system\"></a> S\n\n" +
+		"# Element\n\n" +
+		"## <a id=\"c.f.r\"></a> Rule: R\n\nnow\n"
+	if buf.String() != want {
+		t.Errorf("got\n%s\nwant\n%s", buf.String(), want)
+	}
+
+	buf.Reset()
+	if err := PackJSON(&buf, "C:/repo/proviso", "", nil, "", packed); err != nil {
+		t.Fatal(err)
+	}
+	var p map[string]any
+	if err := json.Unmarshal(buf.Bytes(), &p); err != nil {
+		t.Fatal(err)
+	}
+	if d, ok := p["diff"].([]any); !ok || len(d) != 0 || p["note"] != nil || p["revision"] != nil {
+		t.Errorf("%s", buf.String())
+	}
+	if els := p["elements"].([]any); len(els) != 2 || els[1].(map[string]any)["heading"] != "element" {
+		t.Errorf("%s", buf.String())
+	}
+}

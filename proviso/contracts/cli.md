@@ -313,8 +313,9 @@ properties:
 ## <a id="system.cli.pack"></a> pack
 
 The command `proviso pack`, run anywhere inside the system's repository.
-It writes the context pack of the amendment as `pack_text` by default,
-or a `context_pack` with `--json`.
+It writes the context pack of the amendment, or of one element with
+`--element`, as `pack_text` by default, or a `context_pack` with
+`--json`.
 
 ### <a id="system.cli.pack.json"></a> json
 
@@ -327,6 +328,12 @@ The option `--since <revision>`: assemble the pack of what changed since
 that git revision, as `diff.since` compares, instead of since the
 baseline. A resumed implementing agent receives it for a later round.
 
+### <a id="system.cli.pack.element"></a> element
+
+The option `--element <identifier>`: assemble the pack of the element
+with that identifier, as the spec tree holds it, instead of the pack of
+the amendment. It names one element, and is not given with `--since`.
+
 ### <a id="system.cli.pack.exit-status"></a> exit-status
 
 The process exit status.
@@ -338,7 +345,8 @@ enum: [0, 2]
 
 - `0`: the pack was written, whether the element diff lists any element
   or none.
-- `2`: the command could not run.
+- `2`: the command could not run, or `--element` names no element of
+  the spec tree.
 
 ## <a id="system.cli.pack-text"></a> pack_text
 
@@ -346,12 +354,15 @@ What `pack` writes by default: Markdown in UTF-8, read by the
 implementing agents and the checking agent. Unlike the text of the other commands, it is part
 of the contract.
 
-- **Five headings** of level 1 divide it, in this order: `# System`,
-  `# Amendment`, `# Not in this amendment`, `# Frames` and `# Context`.
+- **Six headings** of level 1 divide it, in this order: `# System`,
+  `# Element`, `# Amendment`, `# Not in this amendment`, `# Frames` and
+  `# Context`.
   A heading under which nothing appears is left out.
 - **An element** appears as its own text as it stands now, from its
   heading to the next element's heading, as `text` in `element_diff`
   holds it, with a blank line before and after.
+- **Under Element,** the element `--element` names stands, with no line
+  before it.
 - **The revision** the former text came from is named in the first
   line under Amendment, ``Former text from `<revision>`.``, with its
   full name. A pack that needed no former text has no such line.
@@ -432,7 +443,7 @@ properties:
         id:
           type: string
         heading:
-          enum: [system, frames, context]
+          enum: [system, element, frames, context]
         file:
           type: string
         line:
@@ -443,7 +454,8 @@ properties:
 ```
 
 - `diff` holds the elements under Amendment, each exactly as an item of
-  `elements` in `element_diff`, in the order of `pack_text`.
+  `elements` in `element_diff`, in the order of `pack_text`; it is empty
+  in the pack of a named element.
 - `note` is the text `pack_text` holds under Not in this amendment, or
   null where it has no such heading.
 - `elements` holds every other element of the pack, under the heading
