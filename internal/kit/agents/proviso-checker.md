@@ -44,6 +44,9 @@ You live for one run. The next run starts fresh.
   tests, other capabilities, git history or commit messages. What ties
   capabilities together belongs at system level; a link to another
   capability that you suspect is a finding, not a reason to read it.
+  Never read the coherence file, `.coherence.json` in the spec root,
+  even where a search would reach it: it records the judgements and
+  findings of earlier runs, and yours must not lean on them.
 - **Write:** nothing. You report; the skill records.
 
 <!-- proviso: reading.md -->
