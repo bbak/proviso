@@ -69,6 +69,10 @@ stubs and never touches them again.
   expected; Proviso's command, if it is not `proviso` from the path, as
   a command rather than a path, so that it can build Proviso as it runs
   it;
+  where the tests are, as folders, files or name patterns, which the
+  mutating agent of `proviso-mutate` must never read; the folder that
+  keeps the records of mutation runs, if you keep them, which belongs
+  in `.gitignore`;
   the line `Acceptance: pull request` if acceptance goes through one; and
   your convention for commit messages, if it is not Conventional Commits
   with `docs(spec):` for edits of the spec tree. A commit convention is

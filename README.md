@@ -67,6 +67,11 @@ notes in `.proviso/`. Name your project's build and test commands in
 4. **Accept:** ask it to accept the amendment. It is merged, and the tree
    becomes the new baseline.
 
+To see whether the tests have teeth, ask Claude Code to measure them
+with mutants: `proviso-mutate` has an agent that never sees the tests
+write one small slip per rule into the code, and reports every slip
+the tests let through, as a hole in the tests or in the tree.
+
 For a system that exists already, ask Claude Code to recover its spec
 tree: `proviso-recover` writes what the system does, one capability per
 amendment, with the questions that let the business confirm it.

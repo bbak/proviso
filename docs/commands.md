@@ -151,7 +151,9 @@ proviso diff [--json] [--since <revision>]
 
 Writes the element diff: what the amendment added, changed, removed, or
 changed through a dependency, compared with the baseline, with the
-former text of what changed. It lists the elements not to be built yet,
+text of each added or changed part as it stands now and the former text
+of what changed, so that an added Examples row can be told from the
+others. It lists the elements not to be built yet,
 because they hold an undecided place. `--since <revision>` compares with
 the tree at that git revision instead.
 
