@@ -28,10 +28,28 @@ func TestLintExamplesPresent(t *testing.T) {
 	t.Parallel()
 	noTable := withX(ruleMD("cart.x.r", "Under test", findingsBlock, ""))
 	before := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n| findings | outcome |\n| --- | --- |\n| apples | shown |\n\n´´´guarded\n" + findingsBlock + "\n´´´\n")
+	// A second table after the Examples table, which as an Examples table
+	// would have an unknown column, no outcome and no provided column.
+	const prose = "| notes |\n| --- |\n| apples are fruit |\n"
+	twoTables := withRule(idBlock, idTable+"\n\n"+prose)
+	// The first table lacks its outcome column; the second is well formed.
+	firstBroken := withRule(idBlock, "| id | provided | why |\n| --- | --- | --- |\n| apple | yes | |\n| pear | no | |\n\n"+idTable)
 	rows(t, "examples-missing", []row{
 		{name: "row1 a table after the block", tree: baseline(), holds: true},
 		{name: "row2 a block and no table", tree: noTable, file: xPath, lines: lines(noTable.line(xPath, ruleHeading))},
 		{name: "row3 a table only before its block", tree: before, file: xPath, lines: lines(before.line(xPath, ruleHeading))},
+		{name: "row4 two tables after its block", tree: twoTables, holds: true},
+	})
+	t.Run("row4 the second table is prose", func(t *testing.T) {
+		t.Parallel()
+		check(t, twoTables).clean(t)
+	})
+	t.Run("row4 the first table is read", func(t *testing.T) {
+		t.Parallel()
+		_, close := firstBroken.fence(xPath, 1)
+		first, last := firstBroken.table(xPath, close)
+		o := checkGoesOn(t, firstBroken)
+		o.has(t, "examples-column-missing", xPath, first, last)
 	})
 }
 
@@ -129,8 +147,13 @@ func TestLintExamplesCells(t *testing.T) {
 	rows(t, "examples-row-incomplete", []row{
 		{name: "row1 why may stay empty", tree: withRow("| system | yes | nothing reported | |"), holds: true},
 		{name: "row2 an undecided outcome", tree: withRow("| system | yes | ? | |"), holds: true},
-		{name: "row3 a cell short", tree: short, file: xPath, lines: at(short)},
-		{name: "row4 an outcome left empty", tree: empty, file: xPath, lines: at(empty)},
+		{name: "row3 an escaped pipe is a pipe within a cell", tree: withRow(`| a \| b | yes | nothing reported | |`), holds: true},
+		{name: "row4 a cell short", tree: short, file: xPath, lines: at(short)},
+		{name: "row5 an outcome left empty", tree: empty, file: xPath, lines: at(empty)},
+	})
+	t.Run("row3 is a well-formed row", func(t *testing.T) {
+		t.Parallel()
+		check(t, withRow(`| a \| b | yes | nothing reported | |`)).clean(t)
 	})
 }
 

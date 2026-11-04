@@ -868,7 +868,19 @@ func TestBaselineDiffUndecided(t *testing.T) {
 		t.Parallel()
 		undecided(t, "cart.x.basket", place{xPath, tr.line(xPath, "[basket]")})
 	})
-	t.Run("row4 a rule with ? in two cells of one Examples row", func(t *testing.T) {
+	t.Run("row4 a contract element whose Represents field marks an open term", func(t *testing.T) {
+		t.Parallel()
+		// Only a rule block's marks count. The tree is the undecided tree
+		// with a contract element representing the open term basket.
+		rt := undecidedTree().with("proviso/capabilities/cart/contracts/order.md",
+			"# Order\n\n## <a id=\"cart.order\"></a> order\n\n- Represents: [basket]\n\nWhat a buyer orders.\n")
+		dir := rt.write(t)
+		e := diffIn(t, dir, dir, filepath.Join(dir, "proviso")).elem(t, "cart.order")
+		if len(e.Undecided) != 0 {
+			t.Errorf("want cart.order to be built, naming no undecided place, got %v", e.Undecided)
+		}
+	})
+	t.Run("row5 a rule with ? in two cells of one Examples row", func(t *testing.T) {
 		t.Parallel()
 		undecided(t, "cart.x.bag", place{xPath, tr.line(xPath, "| apple | ? | ? |")})
 	})

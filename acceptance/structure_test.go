@@ -35,6 +35,7 @@ func TestLintStructureType(t *testing.T) {
 	invariantPrefix := baseline().with("proviso/invariants.md", strings.Replace(invariantsMD, "</a> The shop", "</a> Invariant: The shop", 1))
 	rulePrefix := baseline().with("proviso/constraints.md", strings.Replace(constraintsMD, "</a> The shop", "</a> Rule: The shop", 1))
 	deeper := baseline().appendTo(glossaryPath, "\n### <a id=\"cart.item.kind\"></a> kind\n\nA paragraph.\n")
+	withParts := appendFeature("\n## <a id=\"cart.add.y\"></a> Something\n\n- Owner: Search team\n\n### Goal\n\nSome text.\n")
 	rows(t, "element-unplaced", []row{
 		{name: "row1 a rule", tree: baseline(), holds: true},
 		{name: "row2 an invariant in a feature", tree: appendFeature(invariantMD), holds: true},
@@ -42,9 +43,11 @@ func TestLintStructureType(t *testing.T) {
 		{name: "row4 a member of a contract", tree: baseline().with("proviso/capabilities/cart/contracts/findings.md", findingsContractMD), holds: true},
 		{name: "row5 neither Rule: nor Invariant:", tree: something,
 			file: featurePath, lines: lines(something.line(featurePath, `id="cart.add.x"`))},
-		{name: "row6 a rule at level 3", tree: nested,
+		{name: "row6 an element of no type, with a section and a field", tree: withParts,
+			file: featurePath, lines: lines(withParts.line(featurePath, `id="cart.add.y"`))},
+		{name: "row7 a rule at level 3", tree: nested,
 			file: featurePath, lines: lines(nested.line(featurePath, `id="cart.add.y"`))},
-		{name: "row7 no rules in a glossary", tree: inGlossary,
+		{name: "row8 no rules in a glossary", tree: inGlossary,
 			file: glossaryPath, lines: lines(inGlossary.line(glossaryPath, `id="cart.rule-like"`))},
 		{name: "derived: a prefix outside a feature file, in invariants.md", tree: invariantPrefix,
 			file: "proviso/invariants.md", lines: lines(invariantPrefix.line("proviso/invariants.md", `id="system.read-only"`))},
@@ -54,6 +57,18 @@ func TestLintStructureType(t *testing.T) {
 			file: capPath, lines: lines(inCapability.line(capPath, `id="cart.extra"`))},
 		{name: "derived: level 3 in glossary.md", tree: deeper,
 			file: glossaryPath, lines: lines(deeper.line(glossaryPath, `id="cart.item.kind"`))},
+	})
+	t.Run("row6 nothing about its section or field", func(t *testing.T) {
+		t.Parallel()
+		// The error at the heading is all lint reports about add.md.
+		o := checkGoesOn(t, withParts)
+		heading := withParts.line(featurePath, `id="cart.add.y"`)
+		for _, f := range o.report.Findings {
+			if f.File == featurePath && !(f.Kind == "element-unplaced" && f.Line == heading) {
+				t.Errorf("want only element-unplaced at %s:%d in add.md, got:\n%s", featurePath, heading, dump(o.report.Findings))
+				break
+			}
+		}
 	})
 	t.Run("row2 the invariant is read as one", func(t *testing.T) {
 		t.Parallel()
@@ -155,9 +170,13 @@ func TestLintStructureFieldRequired(t *testing.T) {
 			file: featurePath, lines: lines(1)},
 		{name: "row4 an empty value", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact:"),
 			file: featurePath, lines: lines(1)},
-		{name: "row5 a table-valued parameter needs no Value", tree: baseline().appendTo(paramsPath,
+		{name: "row5 a list marked with * is prose, not fields", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "* Contact: Dana Reyes"),
+			file: featurePath, lines: lines(1)},
+		{name: "row6 a numbered list is prose, not fields", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "1. Contact: Dana Reyes"),
+			file: featurePath, lines: lines(1)},
+		{name: "row7 a table-valued parameter needs no Value", tree: baseline().appendTo(paramsPath,
 			"\n## <a id=\"cart.sizes\"></a> sizes\n\n- Configurable: no\n- Rationale: the shelves come in these sizes.\n\n| size | pieces |\n| --- | --- |\n| small | 5 |\n"), holds: true},
-		{name: "row6 a glossary entry without Status", tree: noStatus,
+		{name: "row8 a glossary entry without Status", tree: noStatus,
 			file: glossaryPath, lines: lines(noStatus.line(glossaryPath, `id="cart.basket"`))},
 	})
 }
@@ -174,14 +193,20 @@ func TestLintStructureFieldOnce(t *testing.T) {
 
 func TestLintStructureElement(t *testing.T) {
 	t.Parallel()
+	withBOM := baseline().with(systemPath, "\ufeff"+systemMD)
 	rows(t, "element-missing", []row{
 		{name: "row1 system.md opening with its element", tree: baseline(), holds: true},
-		{name: "row2 system.md with no heading at all", tree: baseline().with(systemPath, "The shop sells goods.\n"),
+		{name: "row2 a byte order mark at the start is ignored", tree: withBOM, holds: true},
+		{name: "row3 system.md with no heading at all", tree: baseline().with(systemPath, "The shop sells goods.\n"),
 			file: systemPath, lines: lines(1)},
-		{name: "row3 capability.md opening at level 2", tree: baseline().edit(capPath, `# <a id="cart"></a> Cart`, `## <a id="cart"></a> Cart`),
+		{name: "row4 capability.md opening at level 2", tree: baseline().edit(capPath, `# <a id="cart"></a> Cart`, `## <a id="cart"></a> Cart`),
 			file: capPath, lines: lines(1)},
-		{name: "row4 a feature with a forgotten anchor", tree: baseline().edit(featurePath, `# <a id="cart.add"></a> Adding`, `# Adding`),
+		{name: "row5 a feature with a forgotten anchor", tree: baseline().edit(featurePath, `# <a id="cart.add"></a> Adding`, `# Adding`),
 			file: featurePath, lines: lines(1)},
+	})
+	t.Run("row2 the system is read", func(t *testing.T) {
+		t.Parallel()
+		check(t, withBOM).clean(t)
 	})
 }
 

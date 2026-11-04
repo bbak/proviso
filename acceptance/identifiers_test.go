@@ -11,14 +11,16 @@ func TestLintIdentifiersPlacement(t *testing.T) {
 	before := baseline().edit(featurePath, limitHeading, `<a id="cart.add.limit"></a>`+"\n"+`## Rule: The cart takes a limited quantity`)
 	inside := baseline().edit(featurePath, limitHeading, `## Rule: The cart takes a limited quantity <a id="cart.add.limit"></a>`)
 	paragraph := baseline().edit(featurePath, "A cart that takes anything would", `A cart that takes anything <a id="cart.add.why"></a> would`)
+	upperID := baseline().edit(featurePath, `<a id="cart.add.limit"></a>`, `<a ID="cart.add.limit"></a>`)
 	rows(t, "anchor-misplaced", []row{
 		{name: "row1 the prescribed form", tree: baseline(), holds: true},
 		{name: "row2 no space after the anchor", tree: baseline().edit(featurePath, `</a> Rule: The cart takes`, `</a>Rule: The cart takes`), holds: true},
-		{name: "row3 on the line before the heading", tree: before,
+		{name: "row3 HTML attribute names ignore case", tree: upperID, holds: true},
+		{name: "row4 on the line before the heading", tree: before,
 			file: featurePath, lines: lines(before.line(featurePath, `<a id="cart.add.limit"></a>`))},
-		{name: "row4 inside the heading, not at its start", tree: inside,
+		{name: "row5 inside the heading, not at its start", tree: inside,
 			file: featurePath, lines: lines(inside.line(featurePath, `<a id="cart.add.limit"></a>`))},
-		{name: "row5 within a paragraph", tree: paragraph,
+		{name: "row6 within a paragraph", tree: paragraph,
 			file: featurePath, lines: lines(paragraph.line(featurePath, `<a id="cart.add.why"></a>`))},
 		{name: "derived: in a code span it is text", tree: baseline().edit(featurePath, "A cart that takes anything would",
 			"A cart that takes ´<a id=\"cart.add.why\"></a>´ would"), holds: true},
@@ -28,6 +30,10 @@ func TestLintIdentifiersPlacement(t *testing.T) {
 	t.Run("row2 opens the element", func(t *testing.T) {
 		t.Parallel()
 		check(t, baseline().edit(featurePath, `</a> Rule: The cart takes`, `</a>Rule: The cart takes`)).clean(t)
+	})
+	t.Run("row3 opens the element", func(t *testing.T) {
+		t.Parallel()
+		check(t, upperID).clean(t)
 	})
 }
 
