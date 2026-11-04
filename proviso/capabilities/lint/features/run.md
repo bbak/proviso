@@ -185,7 +185,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 | `b.md:3`, `a.md:9`, `a.md:2` | `a.md:2`, `a.md:9`, `b.md:3` |
 | `a.md:4 identifier-duplicate`, `a.md:4 anchor-misplaced` | `a.md:4 anchor-misplaced`, then `a.md:4 identifier-duplicate` |
 | `a.md:1`, `a-b.md:1` | `a-b.md:1`, then `a.md:1` |
-| `a.md:4 term-unmarked` at "guard", `a.md:4 term-unmarked` at "spec tree", which stands before "guard" in the line | at "spec tree", then at "guard" |
+| two `term-foreign` asks on `a.md:4`, one at "part", naming baseline's entry, and one at "date heading", naming bundle's entry, which stands before "part" in the line | the ask naming bundle's entry, then the one naming baseline's entry |
 
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 
