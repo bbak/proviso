@@ -31,9 +31,10 @@ another.
 - `proviso lint` exits with 0.
 - Read `.proviso/build.md`: whether acceptance goes through a pull
   request (a line such as `Acceptance: pull request`; without one, it
-  merges directly), the commands of the project's checks, and a
-  convention for commit messages, if it names one; then the commit
-  below follows that convention instead of `feat: accept <amendment>`.
+  merges directly), the commands of the project's checks, which of
+  them runs the acceptance tests, and a convention for commit messages,
+  if it names one; then the commit below follows that convention
+  instead of `feat: accept <amendment>`.
 
 Stop and say why if any of this fails.
 
@@ -68,8 +69,8 @@ with 0. If it exits with 2, stop and say why.
    records, and no check is left over;
 5. stage `proviso/manifest.sum` and the removal of
    `proviso/.coherence.json` and of the amendment note, if there was
-   one, and run every command of the project's
-   checks. If one fails, `git merge --abort`, switch back to the
+   one, and run the project's checks, as "The acceptance tests"
+   says. If one fails, `git merge --abort`, switch back to the
    amendment's branch, and report the failure;
 6. commit as `feat: accept <amendment>`, with a body that says what the
    amendment does, how many elements it touched, how many candidates
@@ -82,16 +83,32 @@ with 0. If it exits with 2, stop and say why.
    removes `proviso/.coherence.json` and the amendment note
    `proviso/.amendment.md`;
 2. `proviso verify` exits with 0;
-3. stage the manifest and the removals, run every command of the project's checks, and commit as
+3. stage the manifest and the removals, run the project's checks, as
+   "The acceptance tests" says, and commit as
    `feat: accept <amendment>`, with the body as above, as the branch's
    last commit;
 4. tell the engineer to push the branch and merge the pull request into
    the target before anything else reaches the target; if something
    does, accept again from step 3.
 
+### The acceptance tests
+
+Run every command of the project's checks, the acceptance tests
+included, unless a full run of them already passed on this state.
+That holds when `proviso-build` reported the commit its full run of
+the acceptance tests passed on, in this session or as the engineer
+names it, and every file `git diff --cached --name-only <commit>`
+lists is in the spec tree: the acceptance tests are written from the
+tree but never read it, so a change of the tree alone cannot change
+their result. Then skip only the command that runs the acceptance
+tests, and run every other check. Without such a commit, or with any
+other file changed, such as code the target brought in, run them all.
+
 ## 6. Report
 
 The target, the commit, how many elements and candidates, the findings
-and how they were closed, and the checks that ran.
+and how they were closed, and the checks that ran, naming the
+acceptance tests as run, or as standing from the build's full run on
+the commit it reported.
 
 Never push, never open a pull request, never edit the spec tree.

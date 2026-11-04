@@ -139,7 +139,8 @@ When the integration is green and no gap is open:
 - remove the three worktrees and the three `proviso/<amendment>/…`
   branches;
 - report to the engineer: the rounds, the test counts of the last
-  integration, every gap and how it was decided, the defaults noted,
-  and that the amendment is ready for `proviso-accept`.
+  integration, the commit the full run of the acceptance tests passed
+  on, every gap and how it was decided, the defaults noted, and that
+  the amendment is ready for `proviso-accept`.
 
 Never accept, never merge into the default branch, never push.

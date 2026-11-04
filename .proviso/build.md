@@ -11,6 +11,10 @@ worktree:
 3. `task test`
 4. `task acceptance`, about five minutes.
 
+The checks, which acceptance runs: `task spec`, `task vet`, `task test`,
+`task request` and, for the acceptance tests, `task acceptance`. The
+acceptance tests never read `proviso/`: they build trees of their own.
+
 The acceptance tests of a list of identifiers, with the fixture tests
 every such run needs:
 
