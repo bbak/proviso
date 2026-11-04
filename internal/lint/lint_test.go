@@ -341,13 +341,14 @@ func TestOrder(t *testing.T) {
 		{Kind: "x", File: "b.md", Line: 3}, {Kind: "x", File: "a.md", Line: 9}, {Kind: "x", File: "a.md", Line: 2},
 		{Kind: "identifier-duplicate", File: "a.md", Line: 4}, {Kind: "anchor-misplaced", File: "a.md", Line: 4},
 		{Kind: "x", File: "a.md", Line: 1}, {Kind: "x", File: "a-b.md", Line: 1},
+		{Kind: "identifier-malformed", File: "a.md", Line: 5}, {Kind: "identifier-duplicate", File: "a.md", Line: 5},
 	}
 	Sort(fs)
 	var got []string
 	for _, f := range fs {
 		got = append(got, f.File+":"+strconv.Itoa(f.Line)+" "+f.Kind)
 	}
-	want := []string{"a-b.md:1 x", "a.md:1 x", "a.md:2 x", "a.md:4 anchor-misplaced", "a.md:4 identifier-duplicate", "a.md:9 x", "b.md:3 x"}
+	want := []string{"a-b.md:1 x", "a.md:1 x", "a.md:2 x", "a.md:4 anchor-misplaced", "a.md:4 identifier-duplicate", "a.md:5 identifier-duplicate", "a.md:5 identifier-malformed", "a.md:9 x", "b.md:3 x"}
 	if !slices.Equal(got, want) {
 		t.Errorf("got %v, want %v", got, want)
 	}

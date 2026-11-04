@@ -36,8 +36,8 @@ type Finding struct {
 }
 
 // Sort orders findings by file path, compared byte by byte, then line, then
-// kind, then position in the line, and, beyond what the tree requires, by
-// message.
+// kind, compared byte by byte, then position in the line, and, beyond what
+// the tree requires, by message.
 func Sort(fs []Finding) {
 	slices.SortStableFunc(fs, func(a, b Finding) int {
 		return cmp.Or(
