@@ -185,11 +185,13 @@ Otherwise nothing is listed because of <element>
 | `lint.cli.lint.exit-status`, a new value | yes | every rule referring to `lint.exit-status` listed | |
 | `lint.findings.anchor-misplaced`, a new description | yes | every rule referring to `findings.anchor-misplaced` or to `findings` listed | a rule referring to the element holding it depends on it too |
 | `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
+| `lint.run.exit`, an Examples row changed | yes | every rule handing over to it listed | a row decides as much as a step |
 | `lint.run.exit`, its Rationale reworded, marking a term whose Definition changed | yes | every rule handing over to it listed, through that term, then `lint.run.exit` | its meaning changed through the term, though it is listed as changed for its Rationale |
 | `system.ref.commonmark`, a new `Version`, while `lint.step`, which it defines, has its Definition reworded too | yes | every rule marking `lint.step` listed once, through `lint.step` and through `system.ref.commonmark`, `lint.step` | every chain that reaches it is named |
 | `lint.findings.anchor-misplaced`, removed, while `lint.findings` stays | yes | every rule referring to `findings` listed, through `lint.findings.anchor-misplaced` | a rule relied on every member of `findings` |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
+| `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
 ## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
 
