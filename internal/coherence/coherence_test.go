@@ -175,6 +175,12 @@ func TestParseCoherence(t *testing.T) {
 			t.Errorf("%q: read", bad)
 		}
 	}
+	// judge never writes two findings with the same id.
+	f := Finding{ID: "f1", Kind: "gap", Elements: []string{}, Text: "t", Status: Open}
+	twice := (&Coherence{Touched: []Covered{}, Judgements: []Judged{}, Findings: []Finding{f, f}}).Encode()
+	if _, err := ParseCoherence(twice); err == nil {
+		t.Error("two findings with the same id: read")
+	}
 }
 
 func TestProblemOrder(t *testing.T) {
