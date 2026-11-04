@@ -110,7 +110,6 @@ Otherwise → install.update.stamp
 | --- | --- | --- | --- |
 | `.claude/agents/proviso-coder.md`, deleted after `init` | yes | written | |
 | `.claude/agents/proviso-coder.md`, `.claude/agents` being a file, the skills in place | yes | not written, exit status 2 | a folder cannot be made below a file |
-| `.claude/skills/proviso-build/SKILL.md`, its folder a symbolic link to nothing | yes | not written, exit status 2 | `update` creates no link's target |
 | `.claude/agents/proviso-coder.md`, in place | no | handed over | |
 | `.claude/agents/proviso-coder.md`, a folder of that name | no | handed over | any entry counts |
 
@@ -121,9 +120,7 @@ Otherwise → install.update.stamp
 A stamp is read through a symbolic link, since reading changes nothing.
 A file is never written through a link at its own path: the file the
 link stands for lies outside the installed paths, perhaps outside the
-repository. A link above that path, such as a skill's folder linked to
-a folder the engineers share, is their deliberate setup, and `update`
-writes through it as through any folder.
+repository.
 
 ```guarded
 When      `update`, of the [Proviso version] <version>, takes the [agent definition] or [skill] <file>, an entry existing at its path, its [version stamp] naming <stamp>
@@ -151,7 +148,6 @@ Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] wr
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | none | `0.2.0` | no (exactly one stamp) | updated | installed before stamps existed, or edited by hand |
 | `.claude/skills/proviso-build/SKILL.md`, a folder of that name | none | `0.2.0` | no (exactly one stamp) | not written, exit status 2 | `update` removes no entry |
 | `.claude/skills/proviso-build/SKILL.md`, a symbolic link to a file stamped `0.1.0` | `0.1.0` | `0.2.0` | no (the version or newer) | not written, exit status 2 | never written through a link at its path |
-| `.claude/skills/proviso-build/SKILL.md`, its folder a symbolic link to a shared folder, stamped `0.1.0` | `0.1.0` | `0.2.0` | no (the version or newer) | updated, in the shared folder | a link above its path is followed |
 
 ## <a id="install.update.exit"></a> Rule: The exit status tells whether every skill and agent is in place
 

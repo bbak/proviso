@@ -39,32 +39,6 @@ definitions at the paths `installed_files` names is byte for byte as it
 was, and no entry is removed or renamed. The only entries added are
 those paths and the folders above them.
 
-## <a id="install.links"></a> Init, update and version treat symbolic links alike
-
-### Rationale
-
-A skill or agent may be installed through a link, such as a folder the
-engineers share. The three commands must agree on such a file, or
-`version` names as stale what `update` leaves alone. Writing never
-reaches through a link at an installed path, since what it stands for
-lies outside the installed paths, and never makes a link's target, which
-may lie outside the repository.
-
-### Ranges over
-
-Every run of `init`, `update` and `version`.
-
-### Property
-
-Every entry is judged by its own path below the directory, never by
-another path it can be reached by: a file by the path it was written at,
-and a symbolic link, wherever it stands, as the link itself, not as what
-it stands for. A symbolic link above an installed path is a folder like any other, followed as the operating
-system resolves it; one that resolves to nothing gets no target, and the
-file below it is not written. A symbolic link at an installed path is an
-entry that exists, read through as the file it stands for, and never
-written through or replaced.
-
 ## <a id="install.version.reads-only"></a> Version changes nothing
 
 ### Rationale
