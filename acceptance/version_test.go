@@ -254,6 +254,10 @@ func TestInstallVersionManifestMissing(t *testing.T) {
 
 func TestInstallVersionManifestUnreadable(t *testing.T) {
 	t.Parallel()
+	// The line saying that the manifest cannot be read is not the line
+	// install.version.manifest-other writes for a manifest that names no
+	// model version, here one whose first line is empty.
+	noModel := noModelLine(t)
 	t.Run("row1 manifest.sum, without read permission", func(t *testing.T) {
 		t.Parallel()
 		r := versionRepo(t, installedAs("dev"))
@@ -271,9 +275,7 @@ func TestInstallVersionManifestUnreadable(t *testing.T) {
 			return undo
 		})
 		o.reports(t, expect{manifest: true})
-		if l := o.manifestLine(); !strings.Contains(l, "manifest.sum") {
-			t.Errorf("install.version.manifest-unreadable: want the line to name proviso/manifest.sum: %q", l)
-		}
+		unreadableLine(t, o.manifestLine(), r.dir, noModel)
 	})
 	t.Run("row2 manifest.sum, a folder", func(t *testing.T) {
 		t.Parallel()
@@ -283,15 +285,38 @@ func TestInstallVersionManifestUnreadable(t *testing.T) {
 		}
 		o := r.version("dev")
 		o.reports(t, expect{manifest: true})
-		if l := o.manifestLine(); !strings.Contains(l, "manifest.sum") {
-			t.Errorf("install.version.manifest-unreadable: want the line to name proviso/manifest.sum: %q", l)
-		}
+		unreadableLine(t, o.manifestLine(), r.dir, noModel)
 	})
 	t.Run("row3 manifest.sum, a readable file", func(t *testing.T) {
 		t.Parallel()
 		r := versionRepo(t, installedAs("dev"))
 		r.version("dev").reports(t, expect{})
 	})
+}
+
+// noModelLine gives the line install.version.manifest-other writes for a
+// manifest whose first line is empty, with the repository's directory as
+// "\x01".
+func noModelLine(t *testing.T) string {
+	t.Helper()
+	r := versionRepo(t, installedAs("dev").with("proviso/manifest.sum", "\n"))
+	o := r.version("dev")
+	o.reports(t, expect{manifest: true})
+	return withoutDir(o.manifestLine(), r.dir)
+}
+
+// unreadableLine checks install.version.manifest-unreadable: the line l, in
+// the repository dir, says that proviso/manifest.sum cannot be read, so it
+// names the manifest and is not noModel, the line saying that it names no
+// model version.
+func unreadableLine(t *testing.T, l, dir, noModel string) {
+	t.Helper()
+	if !strings.Contains(l, "manifest.sum") {
+		t.Errorf("install.version.manifest-unreadable: want the line to name proviso/manifest.sum: %q", l)
+	}
+	if withoutDir(l, dir) == noModel {
+		t.Errorf("install.version.manifest-unreadable: want the line to say that proviso/manifest.sum cannot be read, got the line saying that it names no model version: %q", l)
+	}
 }
 
 func TestInstallVersionManifestModel(t *testing.T) {
