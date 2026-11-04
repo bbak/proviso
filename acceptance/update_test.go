@@ -7,6 +7,7 @@ package acceptance
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -27,6 +28,31 @@ func remove(t *testing.T, dir, p string) {
 	t.Helper()
 	if err := os.Remove(filepath.Join(dir, filepath.FromSlash(p))); err != nil {
 		t.Fatal(err)
+	}
+}
+
+// linkedOutside makes the entry at the slash-separated path p below dir a
+// symbolic link to a file holding content, in a folder outside dir, and
+// gives a check that this file is byte for byte as it was. It skips the test
+// where no symbolic link can be made.
+func linkedOutside(t *testing.T, dir, p, content string) func(*testing.T) {
+	t.Helper()
+	shared := filepath.Join(t.TempDir(), "shared")
+	name := path.Base(p)
+	tree{name: content}.writeTo(t, shared, false)
+	target := filepath.Join(shared, name)
+	mkdir(t, dir, path.Dir(p))
+	if err := os.Symlink(target, filepath.Join(dir, filepath.FromSlash(p))); err != nil {
+		t.Skipf("cannot create a symbolic link here: %v", err)
+	}
+	return func(t *testing.T) {
+		t.Helper()
+		if b, err := os.ReadFile(target); err != nil || string(b) != content {
+			t.Errorf("want %s, which the link at %s stands for, byte for byte as it was, got %q (%v)", target, p, b, err)
+		}
+		if fi, err := os.Lstat(target); err != nil || !fi.Mode().IsRegular() {
+			t.Errorf("want %s, which the link at %s stands for, still a file: %v", target, p, err)
+		}
 	}
 }
 
@@ -344,6 +370,23 @@ func TestInstallUpdateKeeps(t *testing.T) {
 		mkdir(t, r.dir, coderAgent)
 		r.update("0.2.0").exits(t, 2)
 	})
+	t.Run("derived: a link at the path of a stale skill to a file of the engineers' in the repository", func(t *testing.T) {
+		t.Parallel()
+		// The file the link stands for is not at a path installed_files
+		// names, so it is kept byte for byte, as is the link, which
+		// updateIn checks.
+		tr := installedAs("0.2.0").without(buildSkill)
+		for p, c := range own {
+			tr[p] = c
+		}
+		tr["shared/SKILL.md"] = stampedAs(buildSkill, "0.1.0")
+		r := versionRepo(t, tr)
+		mkdir(t, r.dir, path.Dir(buildSkill))
+		if err := os.Symlink(filepath.Join(r.dir, "shared", "SKILL.md"), filepath.Join(r.dir, filepath.FromSlash(buildSkill))); err != nil {
+			t.Skipf("cannot create a symbolic link here: %v", err)
+		}
+		r.update("0.2.0").failed(t, buildSkill)
+	})
 	t.Run("derived: a run that is refused", func(t *testing.T) {
 		t.Parallel()
 		tr := installedAs("0.1.0")
@@ -524,13 +567,13 @@ func TestInstallUpdateStamp(t *testing.T) {
 		{"row1 stamped 0.2.0, by 0.2.0", stampedAs(buildSkill, "0.2.0"), "skipped", ""},
 		{"row2 stamped 0.3.0, by 0.2.0", stampedAs(buildSkill, "0.3.0"), "skipped", "0.3.0"},
 		{"row3 stamped 0.2.1-dev, by 0.2.0", stampedAs(buildSkill, "0.2.1-dev"), "skipped", "0.2.1-dev"},
-		{"row4 stamped 0.1.0, by 0.2.0", stampedAs(buildSkill, "0.1.0"), "updated", ""},
-		{"row5 stamped 0.2.0-dev, by 0.2.0", stampedAs(buildSkill, "0.2.0-dev"), "updated", ""},
-		{"row6 stamped 0.2.0+build.5, by 0.2.0", stampedAs(buildSkill, "0.2.0+build.5"), "updated", ""},
-		{"row7 stamped dev, by 0.2.0", stampedAs(buildSkill, "dev"), "updated", ""},
-		{"row8 stamped v0.2.0, by 0.2.0", stampedAs(buildSkill, "v0.2.0"), "updated", ""},
-		{"row9 stamped twice 0.2.0, by 0.2.0", skillAs("metadata:", "  proviso-version: 0.2.0", "  proviso-version: 0.2.0"), "updated", ""},
-		{"row10 with no frontmatter, by 0.2.0", "# Build\n\nInstructions edited by hand.\n", "updated", ""},
+		{"row5 stamped 0.1.0, by 0.2.0", stampedAs(buildSkill, "0.1.0"), "updated", ""},
+		{"row6 stamped 0.2.0-dev, by 0.2.0", stampedAs(buildSkill, "0.2.0-dev"), "updated", ""},
+		{"row7 stamped 0.2.0+build.5, by 0.2.0", stampedAs(buildSkill, "0.2.0+build.5"), "updated", ""},
+		{"row8 stamped dev, by 0.2.0", stampedAs(buildSkill, "dev"), "updated", ""},
+		{"row9 stamped v0.2.0, by 0.2.0", stampedAs(buildSkill, "v0.2.0"), "updated", ""},
+		{"row10 stamped twice 0.2.0, by 0.2.0", skillAs("metadata:", "  proviso-version: 0.2.0", "  proviso-version: 0.2.0"), "updated", ""},
+		{"row11 with no frontmatter, by 0.2.0", "# Build\n\nInstructions edited by hand.\n", "updated", ""},
 		{"derived: stamped 0.2.0, with carriage returns and line feeds", strings.ReplaceAll(stampedAs(buildSkill, "0.2.0"), "\n", "\r\n"), "skipped", ""},
 		{"derived: stamped 0.2.0 with a tab as indentation and spaces at the end", skillAs("metadata:", "\tproviso-version:0.2.0   "), "skipped", ""},
 		{"derived: stamped 0.10.0, newer by precedence, not as text", stampedAs(buildSkill, "0.10.0"), "skipped", "0.10.0"},
@@ -557,13 +600,40 @@ func TestInstallUpdateStamp(t *testing.T) {
 			}
 		})
 	}
-	t.Run("row11 a folder of that name", func(t *testing.T) {
+	t.Run("row12 a folder of that name", func(t *testing.T) {
 		t.Parallel()
 		r := versionRepo(t, installedAs("0.2.0").without(buildSkill))
 		mkdir(t, r.dir, buildSkill)
 		tree{"keep.md": "inside the folder\n"}.writeTo(t, filepath.Join(r.dir, filepath.FromSlash(buildSkill)), false)
 		// That the folder and what it holds stay, updateIn checks.
 		r.update("0.2.0").failed(t, buildSkill)
+	})
+	// A link at the path of the skill, to a file outside the repository: a
+	// stamp is read through it, and nothing is written through it or in its
+	// place. That the link stays as it was, updateIn checks; that the file it
+	// stands for does, the check linkedOutside gives.
+	t.Run("row4 a symbolic link to a file stamped 0.2.0, by 0.2.0", func(t *testing.T) {
+		t.Parallel()
+		r := versionRepo(t, installedAs("0.2.0").without(buildSkill))
+		kept := linkedOutside(t, r.dir, buildSkill, stampedAs(buildSkill, "0.2.0"))
+		o := r.update("0.2.0")
+		o.exits(t, 0)
+		o.all(t, "skipped")
+		o.quietAbout(t, buildSkill)
+		kept(t)
+	})
+	t.Run("row13 a symbolic link to a file stamped 0.1.0, by 0.2.0", func(t *testing.T) {
+		t.Parallel()
+		r := versionRepo(t, installedAs("0.2.0").without(buildSkill))
+		kept := linkedOutside(t, r.dir, buildSkill, stampedAs(buildSkill, "0.1.0"))
+		o := r.update("0.2.0")
+		o.failed(t, buildSkill)
+		for _, f := range stampedFiles {
+			if f != buildSkill {
+				o.says(t, "skipped", f)
+			}
+		}
+		kept(t)
 	})
 	t.Run("derived: a file updated holds one stamp, which version reads as the binary's", func(t *testing.T) {
 		t.Parallel()
