@@ -131,7 +131,7 @@ Provided  <file> can be read as a file whose frontmatter holds exactly one [vers
 Then      `update` leaves <file> as it is
   And     `update` writes to "stdout" the line naming <file> as skipped
   And     `update` writes to "stderr" one line naming <file> and <stamp> as newer than <version>, where <stamp> is not <version>
-Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it, where it can and never through a [symbolic link] at the path of <file>
+Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it, where it can; a [symbolic link] at the path of <file> it neither writes through nor replaces
   And     `update` writes to "stdout" the line naming <file> as updated, where it could write it
 ```
 
