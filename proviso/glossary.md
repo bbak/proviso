@@ -141,8 +141,8 @@
 ## <a id="system.examples-table"></a> Examples table
 
 - Definition: The first table after a rule block, with one column per
-  placeholder, a `provided` column, an `outcome` column, and one row per
-  case.
+  placeholder, a `provided` column where the rule has a guard, an
+  `outcome` column, and one row per case.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: Examples, Examples row, Examples rows
@@ -150,7 +150,9 @@
 ## <a id="system.term"></a> term
 
 - Definition: A word or phrase defined by a glossary entry, marked as
-  `[term]` in a rule block.
+  `[term]` in a rule block or a "Represents" field: a name in brackets,
+  unless the `]` is directly followed by `(`, so `[text](…)` marks
+  nothing and `[text][label]` marks two terms.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term
