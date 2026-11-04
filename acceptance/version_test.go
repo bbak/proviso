@@ -470,11 +470,15 @@ func TestInstallVersionUnstamped(t *testing.T) {
 	t.Parallel()
 	// Checked by 0.1.0 among files stamped 0.1.0. A row handed over with
 	// the stamp 0.1.0 gives no line; with another stamp, the line of
-	// install.version.stale.
+	// install.version.stale. A row that holds gives a line naming the file
+	// as naming no Proviso version, never the line install.version.stale
+	// writes for the file stamped with the text the row holds, or with an
+	// empty stamp.
+	stale := staleShape(t)
 	rows := []struct {
 		name, content string
 		holds         bool
-		stamp         string // the stamp handed over, where it is not 0.1.0
+		stamp         string // the stamp handed over, where it is not 0.1.0; where the row holds, the text a stamp holds
 	}{
 		{"row1 installed before stamps existed", "---\nname: proviso-build\ndescription: Builds an amendment.\n---\n\nInstructions.\n", true, ""},
 		{"row3 metadata: {proviso-version: 0.1.0} on one line", skillAs("metadata: {proviso-version: 0.1.0}"), true, ""},
@@ -483,9 +487,9 @@ func TestInstallVersionUnstamped(t *testing.T) {
 		{"row6 its stamp below an indented metadata:, nested under another key", skillAs("config:", "  metadata:", "    proviso-version: 0.1.0"), true, ""},
 		{"row7 a blank line between metadata: and its stamp", skillAs("metadata:", "", "  proviso-version: 0.1.0"), true, ""},
 		{"row8 a first line --- and no later line ---", "---\nname: proviso-build\nmetadata:\n  proviso-version: 0.1.0\n\nInstructions.\n", true, ""},
-		{"row9 stamped [1]", stampedAs(buildSkill, "[1]"), true, ""},
-		{"row10 stamped v0.1.0", stampedAs(buildSkill, "v0.1.0"), true, ""},
-		{"row11 stamped 0.1", stampedAs(buildSkill, "0.1"), true, ""},
+		{"row9 stamped [1]", stampedAs(buildSkill, "[1]"), true, "[1]"},
+		{"row10 stamped v0.1.0", stampedAs(buildSkill, "v0.1.0"), true, "v0.1.0"},
+		{"row11 stamped 0.1", stampedAs(buildSkill, "0.1"), true, "0.1"},
 		{"row12 with no frontmatter", "metadata:\n  proviso-version: 0.1.0\n\n# Build\n\nInstructions.\n", true, ""},
 		{"row13 metadata without proviso-version", skillAs("metadata:", "  author: the engineers"), true, ""},
 		{"row14 stamped 0.1.0", stampedAs(buildSkill, "0.1.0"), false, ""},
@@ -508,7 +512,9 @@ func TestInstallVersionUnstamped(t *testing.T) {
 			o := r.version("0.1.0")
 			switch {
 			case row.holds:
-				o.reports(t, expect{files: []string{buildSkill}})
+				if l, ok := o.reports(t, expect{files: []string{buildSkill}})[buildSkill]; ok {
+					notStale(t, l, r.dir, stale, row.stamp)
+				}
 			case row.stamp == "":
 				o.reports(t, expect{})
 			default:
@@ -524,8 +530,44 @@ func TestInstallVersionUnstamped(t *testing.T) {
 		if err := os.MkdirAll(filepath.Join(r.dir, filepath.FromSlash(buildSkill)), 0o755); err != nil {
 			t.Fatal(err)
 		}
-		r.version("0.1.0").reports(t, expect{files: []string{buildSkill}})
+		if l, ok := r.version("0.1.0").reports(t, expect{files: []string{buildSkill}})[buildSkill]; ok {
+			notStale(t, l, r.dir, stale, "")
+		}
 	})
+}
+
+// staleShape gives the line install.version.stale writes, checked by 0.1.0,
+// for the build skill stamped 0.0.9, a version of no model, with the
+// repository's directory as "\x01" and the stamp as "\x00", so that the line
+// for another stamp is that line with the stamp in its place.
+func staleShape(t *testing.T) string {
+	t.Helper()
+	r := versionRepo(t, installedAs("0.1.0").with(buildSkill, stampedAs(buildSkill, "0.0.9")))
+	l, ok := r.version("0.1.0").reports(t, expect{files: []string{buildSkill}})[buildSkill]
+	if !ok || !strings.Contains(l, "0.0.9") {
+		t.Fatalf("install.version.stale: want a line naming %s as installed by 0.0.9, the line a stamp no version is told from; got %q", buildSkill, l)
+	}
+	return strings.ReplaceAll(withoutDir(l, r.dir), "0.0.9", "\x00")
+}
+
+// withoutDir gives line with the directory dir, in either separator, as "\x01".
+func withoutDir(line, dir string) string {
+	line = strings.ReplaceAll(line, dir, "\x01")
+	return strings.ReplaceAll(line, filepath.ToSlash(dir), "\x01")
+}
+
+// notStale checks install.version.unstamped: the line l about the build skill
+// in the repository dir names it as naming no Proviso version, so it is not
+// the line install.version.stale writes for the stamp held, nor for an empty
+// stamp.
+func notStale(t *testing.T, l, dir, shape, held string) {
+	t.Helper()
+	got := withoutDir(l, dir)
+	for _, s := range []string{held, ""} {
+		if got == strings.ReplaceAll(shape, "\x00", s) {
+			t.Errorf("install.version.unstamped: want %s named as naming no Proviso version, got the line of install.version.stale, naming %q as the version that installed it: %q", buildSkill, s, l)
+		}
+	}
 }
 
 func TestInstallVersionStale(t *testing.T) {
