@@ -1,0 +1,41 @@
+{
+  "touched": [
+    {
+      "id": "lint.run.order",
+      "now": {
+        "heading": "h1:1909356ce00f4404a55466e304fdd6f40dc5f1ccc8c6ddcda45d621e7181469d",
+        "row h1:4ba83cee629a6d75523f38523e7e00323c456c52f26b6691a7a1a43f41d717cb": "h1:3e1963c78d308d3457826f3b46ec8736c7054b2af0545b511c6b3b312feddbdf",
+        "row h1:80283c5a52c7620c74a271b8a35e5e7f1ecd91f63322c79ef8d5fcc5077cc912": "h1:9084cc307ed88691d6c4a95f9c185c78104570ecb838bdecc4179279995ceeb0",
+        "row h1:aa649df89cd263c95dca4b714c1a2d438bfe87a1e8583a230bd649e2af7eb75e": "h1:367271cdf92af5d606c5e169735cfc9e0d73b595b2edbfb268f13c16f9e6084c",
+        "row h1:e6baf8321e0afe0cbc2bbcf8ee902e2498b1746ff652a9324d936a56955a6751": "h1:8f26804e06dc1ad3243bc5d2c9668d8670bb363102d54fdcac0f6986cca3fb24",
+        "row h1:f6d2993b2c9c56c12d58e85581ab7caae9dcc449e21436930daefe4c904329eb": "h1:9442cd5d67b5d7640440fe09e70ef84b8357827cbe49ab1c9719ae2a59b302ce",
+        "section Rationale": "h1:96be25c4050d2ac2f23962fe1a1c10db7589cd7d00c131f06b74cf5706dda54e",
+        "step Then": "h1:37029a88dec35367755a95a2405b94b938f9ec9c6225dc3ca97047f5021d6bd3",
+        "step When": "h1:3e5d98829631e673ae28102ee183534f1362a1d726a58a0b53112fb7e98d67bc"
+      },
+      "baseline": {
+        "heading": "h1:1909356ce00f4404a55466e304fdd6f40dc5f1ccc8c6ddcda45d621e7181469d",
+        "row h1:4ba83cee629a6d75523f38523e7e00323c456c52f26b6691a7a1a43f41d717cb": "h1:3e1963c78d308d3457826f3b46ec8736c7054b2af0545b511c6b3b312feddbdf",
+        "row h1:80283c5a52c7620c74a271b8a35e5e7f1ecd91f63322c79ef8d5fcc5077cc912": "h1:9084cc307ed88691d6c4a95f9c185c78104570ecb838bdecc4179279995ceeb0",
+        "row h1:aa649df89cd263c95dca4b714c1a2d438bfe87a1e8583a230bd649e2af7eb75e": "h1:367271cdf92af5d606c5e169735cfc9e0d73b595b2edbfb268f13c16f9e6084c",
+        "row h1:e6baf8321e0afe0cbc2bbcf8ee902e2498b1746ff652a9324d936a56955a6751": "h1:8f26804e06dc1ad3243bc5d2c9668d8670bb363102d54fdcac0f6986cca3fb24",
+        "section Rationale": "h1:96be25c4050d2ac2f23962fe1a1c10db7589cd7d00c131f06b74cf5706dda54e",
+        "step Then": "h1:3b4aa9734b79829bb5005907ab024bb900be9e994c62ad39f7f6f7ff02801f27",
+        "step When": "h1:3e5d98829631e673ae28102ee183534f1362a1d726a58a0b53112fb7e98d67bc"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "lint.run.read-only",
+      "reason": "untouched: the order in which findings are reported writes nothing under the spec root",
+      "parts": {
+        "heading": "h1:722ad079f04817c22066ec2463efb103fc27cca172e514a8d362b2bead5f5675",
+        "section Property": "h1:0b098c1360b044c1e70ee67af1208af355c2094b467b65f15af594c33fea0224",
+        "section Ranges over": "h1:036d30bf759f64b1505db0ffef36f670d09744fe7d634512d9b2aebf4c5c3974",
+        "section Rationale": "h1:e20aac9fb9be134f2786c964c4994d53d634d5464bafc9a265fe64feffaa8be9"
+      }
+    }
+  ],
+  "findings": []
+}
