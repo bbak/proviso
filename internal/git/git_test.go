@@ -51,21 +51,21 @@ func (r *repo) commit(msg string) string {
 	return r.git("rev-parse", "HEAD")
 }
 
-func TestManifestRevision(t *testing.T) {
+func TestFormer(t *testing.T) {
 	r := newRepo(t)
 	r.write("system.md", "a\n")
 	r.commit("tree")
 	r.write("manifest.sum", "model 0\n")
-	if _, err := ManifestRevision(r.root, "manifest.sum", []byte("model 0\n")); err == nil {
+	if _, _, _, err := Former(r.root, "manifest.sum", []byte("model 0\n")); err == nil {
 		t.Error("a manifest never committed has a revision")
 	}
 	a1 := r.commit("manifest")
 	r.write("system.md", "b\n")
 	r.commit("edit")
-	if rev, err := ManifestRevision(r.root, "manifest.sum", []byte("model 0\n")); err != nil || rev != a1 {
+	if rev, _, _, err := Former(r.root, "manifest.sum", []byte("model 0\n")); err != nil || rev != a1 {
 		t.Errorf("%s %v, want %s", rev, err, a1)
 	}
-	if _, err := ManifestRevision(r.root, "manifest.sum", []byte("model 0\nx\n")); err == nil {
+	if _, _, _, err := Former(r.root, "manifest.sum", []byte("model 0\nx\n")); err == nil {
 		t.Error("a manifest written again since was taken for the committed one")
 	}
 
@@ -77,29 +77,28 @@ func TestManifestRevision(t *testing.T) {
 	r.write("other.md", "x\n")
 	r.commit("main edit")
 	r.git("merge", "-q", "--no-ff", "-m", "merge", "side")
-	if rev, err := ManifestRevision(r.root, "manifest.sum", []byte("model 0\nside\n")); err != nil || rev != e5f6 {
+	rev, files, links, err := Former(r.root, "manifest.sum", []byte("model 0\nside\n"))
+	if err != nil || rev != e5f6 {
 		t.Errorf("after a merge: %s %v, want %s", rev, err, e5f6)
 	}
-
-	files, links, err := Files(r.root, e5f6)
 	if err != nil || string(files["system.md"]) != "b\n" || string(files["manifest.sum"]) != "model 0\nside\n" || len(files) != 2 || len(links) != 0 {
 		t.Errorf("%q %v", files, err)
 	}
 }
 
-func TestCommit(t *testing.T) {
+func TestSince(t *testing.T) {
 	r := newRepo(t)
 	r.write("system.md", "a\n")
 	a1 := r.commit("first")
 	r.write("system.md", "b\n")
 	b2 := r.commit("second")
 	for name, want := range map[string]string{"HEAD": b2, "HEAD~1": a1, a1[:7]: a1} {
-		if rev, err := Commit(r.root, name); err != nil || rev != want {
+		if rev, _, _, err := Since(r.root, name); err != nil || rev != want {
 			t.Errorf("%s: %s %v, want %s", name, rev, err, want)
 		}
 	}
 	for _, name := range []string{"nosuch", "HEAD:proviso/system.md", "--all", ""} {
-		if rev, err := Commit(r.root, name); err == nil {
+		if rev, _, _, err := Since(r.root, name); err == nil {
 			t.Errorf("%q names the commit %s", name, rev)
 		}
 	}
@@ -110,7 +109,7 @@ func TestNoRepository(t *testing.T) {
 		t.Skip("git is not installed")
 	}
 	dir := t.TempDir()
-	if _, err := ManifestRevision(dir, "manifest.sum", nil); err == nil {
+	if _, _, _, err := Former(dir, "manifest.sum", nil); err == nil {
 		t.Error("a folder in no repository has a revision")
 	}
 }

@@ -120,11 +120,7 @@ func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr 
 		fmt.Fprintf(stderr, "proviso %s: cannot compare with %s: %s\n", cmd, since, fmt.Sprintf(format, args...))
 		return nil, "", nil, false
 	}
-	rev, err := git.Commit(t.Root, since)
-	if err != nil {
-		return fail("%v", err)
-	}
-	files, links, err := git.Files(t.Root, rev)
+	rev, files, links, err := git.Since(t.Root, since)
 	if err != nil {
 		return fail("%v", err)
 	}
@@ -405,11 +401,7 @@ func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 // former fills in the former texts from the revision that wrote the
 // manifest, and returns that revision and the elements of the tree there.
 func former(t *tree.Tree, entries []*baseline.Entry, base baseline.Baseline, manifest []byte) (string, []lint.Element, error) {
-	rev, err := git.ManifestRevision(t.Root, tree.ManifestName, manifest)
-	if err != nil {
-		return "", nil, err
-	}
-	files, links, err := git.Files(t.Root, rev)
+	rev, files, links, err := git.Former(t.Root, tree.ManifestName, manifest)
 	if err != nil {
 		return "", nil, err
 	}
