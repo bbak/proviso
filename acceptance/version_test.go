@@ -519,10 +519,10 @@ func TestInstallVersionUnstamped(t *testing.T) {
 		{"row13 metadata without proviso-version", skillAs("metadata:", "  author: the engineers"), true, ""},
 		{"row14 stamped 0.1.0", stampedAs(buildSkill, "0.1.0"), false, ""},
 		{"row15 stamped 0.1.0, with carriage returns and line feeds", strings.ReplaceAll(stampedAs(buildSkill, "0.1.0"), "\n", "\r\n"), false, ""},
-		{"row16 stamped 0.1.1-dev", stampedAs(buildSkill, "0.1.1-dev"), false, "0.1.1-dev"},
-		{"row17 stamped dev", stampedAs(buildSkill, "dev"), false, "dev"},
-		{"row18 an indented comment line between metadata: and its stamp 0.1.0", skillAs("metadata:", "  # installed by proviso", "  proviso-version: 0.1.0"), false, ""},
-		{"row19 stamped 0.1.0 with a tab as indentation, no space after the colon and spaces at the end", skillAs("metadata:", "\tproviso-version:0.1.0   "), false, ""},
+		{"row17 stamped 0.1.1-dev", stampedAs(buildSkill, "0.1.1-dev"), false, "0.1.1-dev"},
+		{"row18 stamped dev", stampedAs(buildSkill, "dev"), false, "dev"},
+		{"row19 an indented comment line between metadata: and its stamp 0.1.0", skillAs("metadata:", "  # installed by proviso", "  proviso-version: 0.1.0"), false, ""},
+		{"row20 stamped 0.1.0 with a tab as indentation, no space after the colon and spaces at the end", skillAs("metadata:", "\tproviso-version:0.1.0   "), false, ""},
 		// install.version-stamp: a line is read without its line ending
 		// only; a carriage return before it belongs to the line, and is no
 		// space or tab, so the version is 0.1.0 and a carriage return.
@@ -558,6 +558,23 @@ func TestInstallVersionUnstamped(t *testing.T) {
 		if l, ok := r.version("0.1.0").reports(t, expect{files: []string{buildSkill}})[buildSkill]; ok {
 			notStale(t, l, r.dir, stale, "")
 		}
+	})
+	t.Run("row16 a symbolic link to a file stamped 0.1.0", func(t *testing.T) {
+		t.Parallel()
+		// Read through the link: checked by 0.1.0, no line; checked by
+		// 0.2.0, the line of install.version.stale naming 0.1.0. That the
+		// link stays as it was, versionIn checks; that the file it stands
+		// for does, the check linkedOutside gives.
+		r := versionRepo(t, installedAs("0.1.0").without(buildSkill))
+		kept := linkedOutside(t, r.dir, buildSkill, stampedAs(buildSkill, "0.1.0"))
+		r.version("0.1.0").reports(t, expect{})
+		kept(t)
+		r = versionRepo(t, installedAs("0.2.0").without(buildSkill))
+		kept = linkedOutside(t, r.dir, buildSkill, stampedAs(buildSkill, "0.1.0"))
+		if l, ok := r.version("0.2.0").reports(t, expect{files: []string{buildSkill}})[buildSkill]; ok {
+			staleLine(t, l, buildSkill, "0.1.0", "0.2.0", "0")
+		}
+		kept(t)
 	})
 }
 
