@@ -131,3 +131,39 @@ func TestUpdateRefused(t *testing.T) {
 		t.Errorf("argument: status %d, stdout %q", status, out.String())
 	}
 }
+
+// A stamp is read through a symbolic link at the path of a skill, and the
+// link is neither written through nor replaced.
+func TestUpdateLink(t *testing.T) {
+	defer func(v string) { version = v }(version)
+	version = "0.2.0"
+	const build = ".claude/skills/proviso-build/SKILL.md"
+	for _, c := range []struct {
+		stamp  string
+		status int
+		line   string
+	}{
+		{"0.2.0", 0, "skipped " + build + "\n"},
+		{"0.1.0", 2, ""},
+	} {
+		inRepo(t, map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/x": "", "shared.md": "---\nmetadata:\n  proviso-version: " + c.stamp + "\n---\n"})
+		if err := os.Symlink(filepath.Join("..", "..", "..", "shared.md"), filepath.FromSlash(build)); err != nil {
+			t.Skipf("no link: %v", err)
+		}
+		before, _ := os.ReadFile("shared.md")
+		var out, errOut bytes.Buffer
+		status := run([]string{"update"}, &out, &errOut)
+		if status != c.status {
+			t.Errorf("%s: status %d, stderr %q", c.stamp, status, errOut.String())
+		}
+		if c.line != "" && !strings.Contains(out.String(), c.line) || c.line == "" && (strings.Contains(out.String(), build) || !strings.Contains(errOut.String(), "cannot write "+build)) {
+			t.Errorf("%s: stdout %q, stderr %q", c.stamp, out.String(), errOut.String())
+		}
+		if after, _ := os.ReadFile("shared.md"); !bytes.Equal(before, after) {
+			t.Errorf("%s: written through the link: %q", c.stamp, after)
+		}
+		if info, err := os.Lstat(filepath.FromSlash(build)); err != nil || info.Mode()&os.ModeSymlink == 0 {
+			t.Errorf("%s: the link was replaced", c.stamp)
+		}
+	}
+}

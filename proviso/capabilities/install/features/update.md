@@ -115,6 +115,13 @@ Otherwise → install.update.stamp
 
 ## <a id="install.update.stamp"></a> Rule: A skill or agent is replaced unless its stamp is the binary's version or newer
 
+### Rationale
+
+A stamp is read through a symbolic link, since reading changes nothing.
+A file is never written through a link at its own path: the file the
+link stands for lies outside the installed paths, perhaps outside the
+repository.
+
 ```guarded
 When      `update`, of the [Proviso version] <version>, takes the [agent definition] or [skill] <file>, an entry existing at its path, its [version stamp] naming <stamp>
 Provided  <file> can be read as a file whose frontmatter holds exactly one [version stamp]
@@ -122,7 +129,7 @@ Provided  <file> can be read as a file whose frontmatter holds exactly one [vers
 Then      `update` leaves <file> as it is
   And     `update` writes to "stdout" the line naming <file> as skipped
   And     `update` writes to "stderr" one line naming <file> and <stamp> as newer than <version>, where <stamp> is not <version>
-Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it, where it can
+Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] writes it, where it can; a [symbolic link] at the path of <file> it neither writes through nor replaces
   And     `update` writes to "stdout" the line naming <file> as updated, where it could write it
 ```
 
@@ -131,6 +138,7 @@ Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] wr
 | `.claude/skills/proviso-build/SKILL.md` | `0.2.0` | `0.2.0` | yes | skipped | |
 | `.claude/skills/proviso-build/SKILL.md` | `0.3.0` | `0.2.0` | yes | skipped, named as newer on stderr | no downgrade |
 | `.claude/skills/proviso-build/SKILL.md` | `0.2.1-dev` | `0.2.0` | yes | skipped, named as newer on stderr | a pre-release of a later version is newer |
+| `.claude/skills/proviso-build/SKILL.md`, a symbolic link to a file stamped `0.2.0` | `0.2.0` | `0.2.0` | yes | skipped | a stamp is read through a link |
 | `.claude/skills/proviso-build/SKILL.md` | `0.1.0` | `0.2.0` | no (the version or newer) | updated | |
 | `.claude/skills/proviso-build/SKILL.md` | `0.2.0-dev` | `0.2.0` | no (the version or newer) | updated | a pre-release is older than its release |
 | `.claude/skills/proviso-build/SKILL.md` | `0.2.0+build.5` | `0.2.0` | no (the version or newer) | updated | another build, as `version` reads it |
@@ -139,6 +147,7 @@ Otherwise `update` writes <file> anew, as `init` of its own [Proviso version] wr
 | `.claude/skills/proviso-build/SKILL.md`, stamped twice | `0.2.0` | `0.2.0` | no (exactly one stamp) | updated | two stamps are damage |
 | `.claude/skills/proviso-build/SKILL.md`, with no frontmatter | none | `0.2.0` | no (exactly one stamp) | updated | installed before stamps existed, or edited by hand |
 | `.claude/skills/proviso-build/SKILL.md`, a folder of that name | none | `0.2.0` | no (exactly one stamp) | not written, exit status 2 | `update` removes no entry |
+| `.claude/skills/proviso-build/SKILL.md`, a symbolic link to a file stamped `0.1.0` | `0.1.0` | `0.2.0` | no (the version or newer) | not written, exit status 2 | never written through a link at its path |
 
 ## <a id="install.update.exit"></a> Rule: The exit status tells whether every skill and agent is in place
 
