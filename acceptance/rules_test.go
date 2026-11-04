@@ -31,10 +31,23 @@ func TestLintRulesBlock(t *testing.T) {
 	block, table := kwBlock("When", "Then", "And")
 	gherkin := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n´´´gherkin\n" + block + "\n´´´\n\n" + table)
 	two := withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n´´´guarded\n" + block + "\n´´´\n\n´´´guarded\n" + block + "\n´´´\n\n" + table)
+	// strict is a rule whose one block is fenced as ´guarded strict´, with
+	// extra lines added after its first.
+	strict := func(extra string) tree {
+		return withX("## <a id=\"cart.x.r\"></a> Rule: Under test\n\n´´´guarded strict\n" +
+			strings.Replace(block, "\n", "\n"+extra, 1) + "\n´´´\n\n" + table)
+	}
+	but := strict("But       the cart stays as it was\n")
 	rows(t, "rule-block-count", []row{
 		{name: "row1 one block", tree: baseline(), holds: true},
-		{name: "row2 only a gherkin block", tree: gherkin, file: xPath, lines: lines(gherkin.line(xPath, ruleHeading))},
-		{name: "row3 two guarded blocks", tree: two, file: xPath, lines: lines(two.line(xPath, ruleHeading))},
+		{name: "row2 the label is the first word of the info string", tree: strict(""), holds: true},
+		{name: "row3 only a gherkin block", tree: gherkin, file: xPath, lines: lines(gherkin.line(xPath, ruleHeading))},
+		{name: "row4 two guarded blocks", tree: two, file: xPath, lines: lines(two.line(xPath, ruleHeading))},
+	})
+	t.Run("row2 the block is checked", func(t *testing.T) {
+		t.Parallel()
+		check(t, strict("")).clean(t)
+		checkGoesOn(t, but).has(t, "keyword-unknown", xPath, but.line(xPath, "But       the cart"))
 	})
 }
 
@@ -286,6 +299,9 @@ func TestLintRulesBound(t *testing.T) {
 	unbound := withRule(`When      a buyer reads the heading <heading>
 Then      the shop shows <file>
   And     nothing else changes`, "| heading | file | outcome |\n| --- | --- | --- |\n| Fruit | apples.md | shown |\n")
+	upper := withRule(`When      a buyer reads the file <file>
+Then      the shop shows <File>
+  And     nothing else changes`, "| file | File | outcome |\n| --- | --- | --- |\n| apples.md | Apples.md | shown |\n")
 	inGuard := withRule(`When      a buyer adds <product>
 Provided  <amount> is at most ´max_quantity´
 Then      the cart holds <product>
@@ -299,6 +315,7 @@ When      a buyer looks up the product <id>
 Then      the shop shows <id>
   And     nothing else changes`, givenTable), holds: true},
 		{name: "row3 used in an outcome, introduced nowhere", tree: unbound, file: xPath, lines: lines(unbound.line(xPath, "<file>"))},
+		{name: "row4 letters of either case make a placeholder, and names are compared exactly", tree: upper, file: xPath, lines: lines(upper.line(xPath, "<File>"))},
 		{name: "derived: used in the guard, introduced nowhere", tree: inGuard, file: xPath, lines: lines(inGuard.line(xPath, "<amount>"))},
 	})
 }

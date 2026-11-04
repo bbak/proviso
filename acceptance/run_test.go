@@ -521,6 +521,26 @@ func TestLintRunOrder(t *testing.T) {
 		}
 	})
 
+	t.Run("row4 then by position in the line", func(t *testing.T) {
+		t.Parallel()
+		// The row's two term-unmarked findings differ in nothing the report
+		// fixes, so the position shows through term-foreign instead, whose
+		// related place names the entry of each match. "voucher" stands
+		// before "invoice" in the line, while billing's glossary defines
+		// invoice first, and invoice comes first by byte order too.
+		tr := withThenAnd(withTerms(baseline(), "billing",
+			entryMD("billing.invoice", "invoice"), entryMD("billing.voucher", "voucher")),
+			"the cart keeps the voucher and the invoice")
+		line := thenAndLine(tr)
+		o := check(t, tr)
+		found := o.find("term-foreign", featurePath, lines(line))
+		if len(found) != 2 {
+			t.Fatalf("want two term-foreign at %s:%d, got:\n%s", featurePath, line, dump(o.report.Findings))
+		}
+		relates(t, found[0], glossaryOf("billing"), tr.line(glossaryOf("billing"), `id="billing.voucher"`))
+		relates(t, found[1], glossaryOf("billing"), tr.line(glossaryOf("billing"), `id="billing.invoice"`))
+	})
+
 	// Without a Contact, each feature has a finding on its first line.
 	byteOrder := []struct {
 		name  string
