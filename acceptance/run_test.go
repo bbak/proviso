@@ -751,7 +751,7 @@ func TestLintRunModelOther(t *testing.T) {
 		{"row3 empty", "", "", ""},
 		{"row4 model", "model", "", ""},
 		{"row5 model one", "model one", "", ""},
-		{"row6 model 00", "model 00", "", ""},
+		{"row6 model 00", "model 00", "", "00"},
 		{"row7 model 1, followed by two carriage returns and a line feed", "model 1\r\r", "", "1"},
 		{"row8 model 0, a carriage return and foo", "model 0\rfoo", "", ""},
 		{"row9 <<<<<<< HEAD", "<<<<<<< HEAD", "", ""},
