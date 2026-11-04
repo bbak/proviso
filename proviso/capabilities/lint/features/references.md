@@ -72,15 +72,17 @@ Otherwise lint reports the [error] `findings.term-unmarked` at each such match
 
 Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
-taken out. Matches are found from its start onwards: at each place, the
-longest name or alias of a glossary entry that starts there as a whole
-word is a match, and matching goes on after it. For matching, a word is
-a run of letters, combining marks, digits, hyphens and underscores, so
-that a letter written with a combining mark stays in its word; any
-other character ends it, and so does each piece taken out, which no
-match spans. Every glossary counts at once, its own capability's, the
-system's and the other capabilities', so the match that starts first
-wins, and a word within a match is no use of its own.
+taken out. A link, written `[text](destination)`, is no term mark, so
+its text and destination stay unmarked text. Matches are found from its
+start onwards: at each place, the longest name or alias of a glossary
+entry that starts there as a whole word is a match, and matching goes
+on after it. For matching, a word is a run of letters, combining marks,
+digits, hyphens and underscores, so that a letter written with a
+combining mark stays in its word; any other character ends it, and so
+does each piece taken out, which no match spans. Every glossary counts
+at once, its own capability's, the system's and the other
+capabilities', so the match that starts first wins, and a word within a
+match is no use of its own.
 
 | text | capability | provided | outcome | why |
 | --- | --- | --- | --- | --- |
@@ -92,6 +94,8 @@ wins, and a word within a match is no use of its own.
 | lint reads the line  ending | lint | no | error at "line  ending" | any run of spaces and tabs joins the words of a name |
 | lint reads the übersicht, its "ü" written as "u" and a combining diaeresis | lint, while lint defines Übersicht, its "Ü" composed | no | error at "übersicht" | the combining mark stays in its word, and names are compared in NFC |
 | lint reports nothing about | lint | yes | nothing reported | |
+| lint reads the [spec tree](notes.md) of | lint | no | error at "spec tree" | a link is no term mark, so its text is unmarked text |
+| lint reads the [rest of it](notes.md) | lint | yes | nothing reported | a link is no term mark, so its text resolves to nothing |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
 
@@ -169,6 +173,7 @@ Otherwise lint reports the [error] `findings.hand-over-unresolved` at the [hand-
 | `lint.layout.file` | yes | leads to that rule | |
 | `lint.layout` | no | error | a feature, not a rule |
 | `lint.layout.files` | no | error | no such identifier |
+| `lint.layout.file.` | no | error | the target is taken as written, a trailing dot included |
 
 ## <a id="lint.references.chain"></a> Rule: A chain of hand-overs ends
 
@@ -182,7 +187,7 @@ When      lint follows the [hand-overs] from a [rule] through the [rules] <chain
 Provided  no [rule] appears twice in <chain>
 Then      lint reports nothing about the chain
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.hand-over-cycle` at the heading of the first [rule] that appears twice, naming the other [rules] of the cycle
+Otherwise lint reports the [error] `findings.hand-over-cycle` at the [heading] of the first [rule] that appears twice, naming the other [rules] of the cycle
   And     lint goes on with the rest of the [spec tree]
 ```
 

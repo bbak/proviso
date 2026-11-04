@@ -25,9 +25,9 @@ and a tree without its system would pass as clean.
 
 ```guarded
 When      lint reads the file <file> that holds the system, a capability or a feature
-Provided  the first heading of <file> has the [heading level] 1
+Provided  the first [heading] of <file> has the [heading level] 1
   And     it starts with an [anchor]
-Then      lint reads the [element] from that heading
+Then      lint reads the [element] from that [heading]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.element-missing` at <file>
   And     lint goes on with the rest of the [spec tree]
@@ -36,6 +36,7 @@ Otherwise lint reports the [error] `findings.element-missing` at <file>
 | file | provided | outcome | why |
 | --- | --- | --- | --- |
 | `system.md`, opening with `# <a id="system"></a> Proviso` | yes | read | |
+| `system.md`, opening with a byte order mark, then `# <a id="system"></a> Proviso` | yes | read | a byte order mark at the start is ignored |
 | `system.md`, with no heading at all | no (heading level 1) | error | a tree without its system |
 | `capabilities/lint/capability.md`, opening with `## <a id="lint"></a> Lint` | no (heading level 1) | error | |
 | `capabilities/lint/features/run.md`, opening with `# Running lint` | no (an anchor) | error | a forgotten anchor |
@@ -43,11 +44,12 @@ Otherwise lint reports the [error] `findings.element-missing` at <file>
 ## <a id="lint.structure.type"></a> Rule: An element's type follows from where it stands
 
 ```guarded
-When      lint reads the heading <heading> of an [element] in the file <file>
+When      lint reads the [heading] <heading> of an [element] in the file <file>
 Provided  `tree_layout` gives an [element type] for <heading> in <file>
 Then      the [element] is of that [element type]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.element-unplaced` at <heading>
+  And     lint reads no [section] or [field] of that [element]
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -58,13 +60,14 @@ Otherwise lint reports the [error] `findings.element-unplaced` at <heading>
 | `## <a id="system.read-only"></a> The bundle is never written` | `invariants.md` | yes | invariant | the file gives the type |
 | `### <a id="lint.findings.anchor-misplaced"></a> anchor-misplaced` | `capabilities/lint/contracts/findings.md` | yes | contract element | a member |
 | `## <a id="lint.run.x"></a> Something` | `capabilities/lint/features/run.md` | no | error | neither `Rule:` nor `Invariant:` |
+| `## <a id="lint.run.y"></a> Something`, with the section `### Goal` and the field `- Owner: Search team` under it | `capabilities/lint/features/run.md` | no | error, and nothing about its section or field | an element of no type has no sections or fields to check |
 | `### <a id="lint.run.x"></a> Rule: …` | `capabilities/lint/features/run.md` | no | error | a rule at level 3 |
 | `## <a id="lint.x"></a> Rule: …` | `capabilities/lint/glossary.md` | no | error | no rules in a glossary |
 
 ## <a id="lint.structure.section"></a> Rule: A heading without an anchor is a known section
 
 ```guarded
-When      lint reads a heading <heading> without an [anchor], other than a file's title, within an [element] of the [element type] <type>
+When      lint reads a [heading] <heading> without an [anchor], other than a file's title, within an [element] of the [element type] <type>
 Provided  `section_names` lists <heading> for <type>
 Then      <heading> opens a [section] of that [element]
   And     lint goes on with the rest of the [spec tree]
@@ -91,7 +94,7 @@ level is checked instead: a feature's Rationale placed after one of its
 rules would otherwise silently become that rule's rationale.
 
 ```guarded
-When      lint reads the heading <heading> of a [section] of an [element] whose heading has the [heading level] <level>
+When      lint reads the [heading] <heading> of a [section] of an [element] whose [heading] has the [heading level] <level>
 Provided  the [heading level] of <heading> is one more than <level>
 Then      lint reports nothing about the [heading level] of <heading>
   And     lint goes on with the rest of the [spec tree]
@@ -178,6 +181,8 @@ Otherwise lint reports the [error] `findings.field-missing` at <element>, naming
 | `lint.run` | feature | `- Contact: ?` | yes | nothing reported | undecided, reported as an ask elsewhere |
 | `lint.run` | feature | none | no | error, naming Contact | |
 | `lint.run` | feature | `- Contact:` | no | error, naming Contact | an empty value |
+| `lint.run` | feature | `* Contact: Bruno Baketarić` | no | error, naming Contact | a list marked with `*` is prose, not fields |
+| `lint.run` | feature | `1. Contact: Bruno Baketarić` | no | error, naming Contact | a numbered list is prose, not fields |
 | `lint.tree-layout` | parameter | Configurable, Rationale | yes | nothing reported | a table-valued parameter needs no Value |
 | `lint.finding` | glossary entry | Definition, Contact | no | error, naming Status | |
 

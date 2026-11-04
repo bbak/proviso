@@ -69,7 +69,7 @@ is stored in.
 
 ```guarded
 When      `init` writes `system_skeleton` in the directory <directory>, which holds no other [spec tree] file
-Then      the heading of the system names it with the last name of the path of <directory>, in NFC
+Then      the [heading] of the system names it with the last name of the path of <directory>, in NFC
   And     `lint`, run in <directory>, exits with `lint.exit-status` 0, reporting each of the six [sections] of the system as [undecided]
   And     `diff`, run in <directory>, lists the system as added and not to be built
 ```

@@ -31,8 +31,8 @@ would part the anchor from its element.
 
 ```guarded
 When      lint reads an [anchor] <anchor>
-Provided  <anchor> starts the text of a heading
-Then      that heading opens an [element], with the [anchor]'s id as its [identifier]
+Provided  <anchor> starts the text of a [heading]
+Then      that [heading] opens an [element], with the [anchor]'s id as its [identifier]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.anchor-misplaced` at <anchor>
   And     lint goes on with the rest of the [spec tree]
@@ -42,6 +42,7 @@ Otherwise lint reports the [error] `findings.anchor-misplaced` at <anchor>
 | --- | --- | --- | --- |
 | `## <a id="a.b"></a> Rule: B` | yes | element `a.b` | the prescribed form |
 | `## <a id="a.b"></a>Rule: B` | yes | element `a.b` | the space after the anchor is optional |
+| `## <a ID="a.b"></a> Rule: B` | yes | element `a.b` | HTML attribute names ignore case |
 | `<a id="a.b"></a>` on the line before `## Rule: B` | no | error | the rejected older form |
 | `## Rule: B <a id="a.b"></a>` | no | error | inside the heading, but not at its start |
 | `<a id="a.b"></a>` within a paragraph | no | error | not in a heading at all |

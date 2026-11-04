@@ -60,7 +60,7 @@ only an undecided row can share its values with another.
 
 ```guarded
 When      `manifest` or `diff` keys the row <row> of an [Examples table] as an [element part]
-Provided  no row above <row> in the same table has the same [placeholder] values
+Provided  no row above <row> in the same [table] has the same [placeholder] values
 Then      the key of <row> is the [fingerprint] of its [placeholder] values, each with its column's name
   And     the order of the columns does not change the key
 Otherwise the key of <row> is that [fingerprint], numbered by how many rows above <row> share it

@@ -176,7 +176,7 @@ so tests can compare it and a person can diff it.
 
 ```guarded
 When      lint reports the [findings] <findings>
-Then      they appear ordered by file path, compared byte by byte, then line, then kind
+Then      they appear ordered by file path, compared byte by byte, then line, then kind, then position in the line
   And     the order does not depend on the order in which files were read
 ```
 
@@ -185,6 +185,7 @@ Then      they appear ordered by file path, compared byte by byte, then line, th
 | `b.md:3`, `a.md:9`, `a.md:2` | `a.md:2`, `a.md:9`, `b.md:3` |
 | `a.md:4 identifier-duplicate`, `a.md:4 anchor-misplaced` | `a.md:4 anchor-misplaced`, then `a.md:4 identifier-duplicate` |
 | `a.md:1`, `a-b.md:1` | `a-b.md:1`, then `a.md:1` |
+| `a.md:4 term-unmarked` at "guard", `a.md:4 term-unmarked` at "spec tree", which stands before "guard" in the line | at "spec tree", then at "guard" |
 
 ## <a id="lint.run.exit"></a> Rule: The exit status tells whether errors were found
 

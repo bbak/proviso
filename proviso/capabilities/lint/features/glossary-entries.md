@@ -103,8 +103,8 @@ takes a `\` for one, so a link that only works on Windows works nowhere.
 
 ```guarded
 When      lint reads the "Defined by" [field] <field> of a [glossary entry] at the [level] <level>
-Provided  <field> holds a link whose path leads from the glossary to a "references.md" at <level> or at the system's [level]
-  And     the link's fragment is the [identifier] of a [reference] in that file
+Provided  <field> holds a [link] whose path leads from the glossary to a "references.md" at <level> or at the system's [level]
+  And     the [link]'s fragment is the [identifier] of a [reference] in that file
 Then      the [glossary entry] is defined by that [reference]
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.defined-by-unresolved` at <field>
