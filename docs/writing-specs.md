@@ -240,8 +240,8 @@ event. A later pass is an event of its own, with the earlier pass as its
 
 ## Examples tables
 
-Every rule has one, after its block. The testing agent derives its
-cases from the rows.
+Every rule has one, the first table after its block; a later table is
+prose. The testing agent derives its cases from the rows.
 
 - **One column per placeholder,** then `provided`, `outcome` and an
   optional `why`.

@@ -131,11 +131,15 @@ are now killed.
   uppercase letter, a hand-over target ending in a dot, a rule followed
   by two tables, the order of several findings on one line, and two
   cases of findings reported twice under a heading without an element
-  type. **Decided, waiting for one amendment.** Most are settled by
-  naming CommonMark, with GitHub's table extension, as the system's
-  reference for reading Markdown; the rest by one row or one sentence
-  each, such as the first table after a rule block being its Examples
-  table.
+  type. **Fixed** by one amendment. It names CommonMark, with GitHub's
+  table extension, as the system's reference for reading Markdown,
+  through the terms heading, table and link, each with the places
+  Proviso departs from it; the rest is one row or one sentence each,
+  such as the first table after a rule block being its Examples table.
+  The coding agent found two of the cases half built: findings on one
+  line were ordered by different measures, and the fields of an element
+  without a type were still read. Eleven mutants are now killed; the
+  twelfth changes nothing once such fields are no longer read.
 - **`install`, 1:** updating a skill or agent installed as a symbolic
   link wrote through the link. **Fixed** by an amendment: `update` reads
   a stamp through a link at the file's own path, but never writes
@@ -158,11 +162,12 @@ are now killed.
 | Holes in the tests | 3 | fixed in the tests |
 | The tree decides, no row shows it | 3 | fixed by an amendment |
 | A link at an installed skill's path | 1 | fixed by an amendment |
-| How lint reads Markdown | 12 | decided, one amendment to come |
+| How lint reads Markdown | 12 | fixed by an amendment |
 | Let go | 4 | decided not to fix |
 
 Every fix ends the same way: the mutant it answers is applied again,
-and must now be killed. All seven were.
+and must now be killed. Eighteen of the nineteen were; the last no
+longer changes what lint does.
 
 The amendment about the symbolic link shows what a coherence check
 does with a decision made at the wrong level. Its first edit decided
