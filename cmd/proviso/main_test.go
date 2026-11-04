@@ -712,3 +712,20 @@ func TestInitStamps(t *testing.T) {
 		t.Errorf("stderr %q", errOut.String())
 	}
 }
+
+// A stamp is read through a symbolic link at the path of a skill, as update
+// reads it.
+func TestVersionLink(t *testing.T) {
+	defer func(v string) { version = v }(version)
+	version = "0.2.0"
+	const build = ".claude/skills/proviso-build/SKILL.md"
+	inRepo(t, map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/x": "", "shared.md": "---\nmetadata:\n  proviso-version: 0.1.0\n---\n"})
+	if err := os.Symlink(filepath.Join("..", "..", "..", "shared.md"), filepath.FromSlash(build)); err != nil {
+		t.Skipf("no link: %v", err)
+	}
+	var out, errOut bytes.Buffer
+	run([]string{"version"}, &out, &errOut)
+	if !strings.Contains(errOut.String(), build+" was installed by Proviso 0.1.0") {
+		t.Errorf("stderr %q", errOut.String())
+	}
+}
