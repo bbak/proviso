@@ -36,11 +36,32 @@ Every run of `update`, however it ends.
 
 Every file below the directory other than the skills and agent
 definitions at the paths `installed_files` names is byte for byte as it
-was, and no entry is removed or renamed. A file is judged by its path: a
-symbolic link above such a path is a folder like any other, which
-`update` follows as the operating system resolves it, and the file
-written through it is the one at that path. The only entries added are
+was, and no entry is removed or renamed. The only entries added are
 those paths and the folders above them.
+
+## <a id="install.links"></a> Init, update and version treat symbolic links alike
+
+### Rationale
+
+A skill or agent may be installed through a link, such as a folder the
+engineers share. The three commands must agree on such a file, or
+`version` names as stale what `update` leaves alone. Writing never
+reaches through a link at an installed path, since what it stands for
+lies outside the installed paths, and never makes a link's target, which
+may lie outside the repository.
+
+### Ranges over
+
+Every run of `init`, `update` and `version`.
+
+### Property
+
+A file is judged by its path below the directory. A symbolic link above
+an installed path is a folder like any other, followed as the operating
+system resolves it; one that resolves to nothing gets no target, and the
+file below it is not written. A symbolic link at an installed path is an
+entry that exists, read through as the file it stands for, and never
+written through or replaced.
 
 ## <a id="install.version.reads-only"></a> Version changes nothing
 
