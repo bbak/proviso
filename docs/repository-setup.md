@@ -65,7 +65,10 @@ stubs and never touches them again.
   its unit tests and run its acceptance tests, in that order; how to run
   the acceptance tests of a list of element identifiers, if your tests
   are named so that they can be selected, which lets a build run only
-  the tests an amendment concerns until its last round; skips that are
+  the tests an amendment concerns until its last round; the commands
+  of your checks, which acceptance runs, naming the one that runs the
+  acceptance tests, so that acceptance can let the build's full run
+  stand when the merge changed only the spec tree; skips that are
   expected; Proviso's command, if it is not `proviso` from the path, as
   a command rather than a path, so that it can build Proviso as it runs
   it;
