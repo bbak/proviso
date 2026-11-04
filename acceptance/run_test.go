@@ -523,22 +523,21 @@ func TestLintRunOrder(t *testing.T) {
 
 	t.Run("row4 then by position in the line", func(t *testing.T) {
 		t.Parallel()
-		// The row's two term-unmarked findings differ in nothing the report
-		// fixes, so the position shows through term-foreign instead, whose
-		// related place names the entry of each match. "voucher" stands
-		// before "invoice" in the line, while billing's glossary defines
-		// invoice first, and invoice comes first by byte order too.
-		tr := withThenAnd(withTerms(baseline(), "billing",
-			entryMD("billing.invoice", "invoice"), entryMD("billing.voucher", "voucher")),
-			"the cart keeps the voucher and the invoice")
+		// Two term-foreign asks on one line: one at "part", naming
+		// baseline's entry, and one at "date heading", naming bundle's entry,
+		// which stands before "part" in the line. By the path of the entry
+		// named, baseline's would come first.
+		tr := withThenAnd(withTerms(withTerms(baseline(), "baseline", entryMD("baseline.part", "part")),
+			"bundle", entryMD("bundle.date-heading", "date heading")),
+			"the cart reads the date heading of the part")
 		line := thenAndLine(tr)
 		o := check(t, tr)
 		found := o.find("term-foreign", featurePath, lines(line))
 		if len(found) != 2 {
 			t.Fatalf("want two term-foreign at %s:%d, got:\n%s", featurePath, line, dump(o.report.Findings))
 		}
-		relates(t, found[0], glossaryOf("billing"), tr.line(glossaryOf("billing"), `id="billing.voucher"`))
-		relates(t, found[1], glossaryOf("billing"), tr.line(glossaryOf("billing"), `id="billing.invoice"`))
+		relates(t, found[0], glossaryOf("bundle"), tr.line(glossaryOf("bundle"), `id="bundle.date-heading"`))
+		relates(t, found[1], glossaryOf("baseline"), tr.line(glossaryOf("baseline"), `id="baseline.part"`))
 	})
 
 	// Without a Contact, each feature has a finding on its first line.
