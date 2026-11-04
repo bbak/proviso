@@ -78,6 +78,8 @@ What Proviso is built to give in return:
 - **Tests with teeth:** written by a testing agent that never sees the
   code, from rules with examples on both sides of every condition, and
   measured with mutants written by an agent that never sees the tests.
+  [Tests with teeth](mutation-report.md) reports that measurement on
+  Proviso itself.
 - **No silent defaults:** every gap is meant to end either decided by
   someone or marked as an open question, never filled in by a tool.
 - **One current truth:** new engineers and fresh agents read one tree,
@@ -150,6 +152,8 @@ they work with other agent hosts or models is untested as well.
 - [Repository setup](repository-setup.md): CI, the engineers' notes and
   what to commit.
 - [Commands](commands.md): every command, its exit statuses and output.
+- [Tests with teeth](mutation-report.md): how many slips Proviso's own
+  tests catch, measured with mutants.
 
 Proviso specifies itself: its own spec tree is
 [`proviso/`](https://github.com/bbak/proviso/tree/main/proviso) in its
