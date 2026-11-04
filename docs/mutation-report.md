@@ -76,9 +76,9 @@ Each survivor says one of three things. A **hole in the tests**: an
 Examples row covers the case, but its test does not check it. A **hole
 in the tree**: no rule or row decides the case, so no test could be
 derived from it. Or **equivalent**: nothing anyone could observe
-changes. The readings below are proposals; each is decided by an
-engineer, one at a time, and then fixed in the tests or brought into
-the tree as an amendment.
+changes. Each reading was proposed, then decided by the engineer, one
+survivor at a time; below, each carries its verdict and what came of it,
+as of 4 November 2026.
 
 ### Holes in the tests: 3
 
@@ -98,6 +98,12 @@ test for that row that checks too little:
   read. The test checks only that the line names `manifest.sum`, which
   both messages do.
 
+**Fixed.** The testing agent got the pack of each rule, `proviso pack
+--element`, and only the row and the slip in plain words, never the code
+or the mutant. It strengthened the three tests; applied again, each
+mutant is now killed by exactly the rows it breaks, and the unmutated
+suite still passes.
+
 ### The tree decides, but no row shows it: 3
 
 - **`baseline`, 2:** a parameter whose only change is a reworded
@@ -110,7 +116,12 @@ test for that row that checks too little:
   same id must stop `judge` and `verify`, since `judge` never writes
   one. The rule decides it, but no row shows that case.
 
-### Holes in the tree: 15
+**Fixed** by one amendment that adds the three rows. The coherence check
+found nothing to object to, the coding agent found nothing to change,
+and the testing agent derived a test from each row. All three mutants
+are now killed.
+
+### Holes in the tree: 13
 
 - **`lint`, 12:** how the Markdown of a spec tree is read in corner
   cases no rule decides: a byte order mark at the start of a file, an
@@ -120,18 +131,50 @@ test for that row that checks too little:
   uppercase letter, a hand-over target ending in a dot, a rule followed
   by two tables, the order of several findings on one line, and two
   cases of findings reported twice under a heading without an element
-  type.
-- **`install`, 3:** updating a skill or agent installed as a symbolic
-  link, which writes through the link, and the permissions of the files
-  and folders `init` writes, which the system's design boundary treats
-  as states of the repository.
+  type. **Decided, waiting for one amendment.** Most are settled by
+  naming CommonMark, with GitHub's table extension, as the system's
+  reference for reading Markdown; the rest by one row or one sentence
+  each, such as the first table after a rule block being its Examples
+  table.
+- **`install`, 1:** updating a skill or agent installed as a symbolic
+  link wrote through the link. **Fixed** by an amendment: `update` reads
+  a stamp through a link at the file's own path, but never writes
+  through it or replaces it. The mutant is now killed by two tests.
 
-### Left untested on purpose: 2
+### Let go: 4
 
+- **`install`, 2:** the permissions of the files and folders `init`
+  writes. Git does not record them and Windows barely knows them; a
+  rule for them would decide what nobody is likely to get wrong.
 - **`install`, 2:** `init` writing the wrong kit file as
   `.markdownlint.jsonc` or as the coding agent's notes stub. The
   capability's rationale leaves the wording of installed files to
   Proviso's developers, since checking it would mean keeping it twice.
+
+## Closing the survivors
+
+| Survivors | Count | Status |
+| --- | --- | --- |
+| Holes in the tests | 3 | fixed in the tests |
+| The tree decides, no row shows it | 3 | fixed by an amendment |
+| A link at an installed skill's path | 1 | fixed by an amendment |
+| How lint reads Markdown | 12 | decided, one amendment to come |
+| Let go | 4 | decided not to fix |
+
+Every fix ends the same way: the mutant it answers is applied again,
+and must now be killed. All seven were.
+
+The amendment about the symbolic link shows what a coherence check
+does with a decision made at the wrong level. Its first edit decided
+one case, a link at the skill's own path; the checking agent then found
+the next case beside it, a link to the skill's folder, then one
+pointing nowhere, then one pointing into the repository, nine runs and
+sixteen findings in all. It converged only once the border was drawn
+once, in the system's design boundary: links on the way to an
+installed skill are the engineers' setup, and a link at the skill's
+own path, or inside the spec tree, is the rules' to decide. The
+amendment that stayed is three rows and one line of that boundary, and
+the code did not change.
 
 ## What it shows
 
@@ -139,10 +182,10 @@ test for that row that checks too little:
   coding agent could make in specified behaviour, in five capabilities,
   made some acceptance test fail.
 - **The misses point somewhere.** The three slips in rules that survived
-  are tests that check less than their row says, each fixable from the
+  were tests that checked less than their row says, each fixed from the
   pack of its one rule. The rest are places the tree does not decide,
-  which is what Proviso exists to bring to light: each becomes a
-  decision, or a question to whoever owns it.
+  which is what Proviso exists to bring to light: each became a
+  decision, to fix or to let go.
 - **The test writer and the mutant writer never met.** The tests were
   written without the code, the mutants without the tests. A high kill
   share is therefore not the result of one agent writing slips that its
