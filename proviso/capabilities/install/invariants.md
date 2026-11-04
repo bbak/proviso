@@ -35,9 +35,12 @@ Every run of `update`, however it ends.
 ### Property
 
 Every file below the directory other than the skills and agent
-definitions `installed_files` names is byte for byte as it was, and no
-entry is removed or renamed. The only entries added are those paths and
-the folders above them.
+definitions at the paths `installed_files` names is byte for byte as it
+was, and no entry is removed or renamed. A file is judged by its path: a
+symbolic link above such a path is a folder like any other, which
+`update` follows as the operating system resolves it, and the file
+written through it is the one at that path. The only entries added are
+those paths and the folders above them.
 
 ## <a id="install.version.reads-only"></a> Version changes nothing
 
