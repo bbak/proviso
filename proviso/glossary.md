@@ -140,7 +140,7 @@
 
 ## <a id="system.examples-table"></a> Examples table
 
-- Definition: The table after a rule block, with one column per
+- Definition: The first table after a rule block, with one column per
   placeholder, a `provided` column, an `outcome` column, and one row per
   case.
 - Contact: Bruno Baketarić

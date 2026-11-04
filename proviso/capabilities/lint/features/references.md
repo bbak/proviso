@@ -72,8 +72,10 @@ Otherwise lint reports the [error] `findings.term-unmarked` at each such match
 
 Unmarked text is what remains of a line once its keyword, term marks,
 placeholders, references, literals and the target of a hand-over are
-taken out. A link, written `[text](destination)`, is no term mark, so
-its text and destination stay unmarked text. Matches are found from its
+taken out. A `[` whose `]` is directly followed by `(` opens a link, not a
+term mark: the text between the brackets is unmarked text, and what
+follows is read as the rest of the line is. Any other brackets are a
+term mark, so `[text][label]` is two. Matches are found from its
 start onwards: at each place, the longest name or alias of a glossary
 entry that starts there as a whole word is a match, and matching goes
 on after it. For matching, a word is a run of letters, combining marks,
@@ -96,6 +98,7 @@ match is no use of its own.
 | lint reports nothing about | lint | yes | nothing reported | |
 | lint reads the [spec tree](notes.md) of | lint | no | error at "spec tree" | a link is no term mark, so its text is unmarked text |
 | lint reads the [rest of it](notes.md) | lint | yes | nothing reported | a link is no term mark, so its text resolves to nothing |
+| lint reads the [spec tree][tree] | lint | yes | nothing reported | two term marks, not a link |
 | lint reads the date heading | check, which defines heading, while bundle defines date heading | yes | nothing reported | "date heading" is the match that starts first |
 | lint reads the line ending date | lint, while diff defines ending date | no | error at "line ending" | the match that starts first wins |
 
