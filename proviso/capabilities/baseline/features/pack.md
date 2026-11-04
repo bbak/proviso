@@ -188,7 +188,7 @@ When      `pack` has taken the [element] <element> for "System", "Frames" or "Co
 Provided  the [element diff] lists <element>, or `pack.element` names it
 Then      <element> appears under "Amendment" or "Element" only, whichever it was taken for
   And     everything else stays as it was
-Otherwise <element> appears once under the heading it was taken for, however often it was taken
+Otherwise <element> appears once under the [heading] it was taken for, however often it was taken
   And     everything else stays as it was
 ```
 
@@ -212,7 +212,7 @@ order by identifier would lose it. Paths are compared byte by byte, so
 that the order is the same on every platform.
 
 ```guarded
-When      `pack` writes the [elements] <elements> under the heading <heading> of `pack_text`
+When      `pack` writes the [elements] <elements> under the [heading] <heading> of `pack_text`
 Then      they appear in the order the [spec tree] holds them: by the path of their file below the [spec root], written as `report` writes paths, compared byte by byte, then by where they stand in that file
   And     removed [elements] follow them, ordered by [identifier], compared byte by byte, since they no longer stand in the [spec tree]
   And     the [element parts] named for each appear in the order `diff` gives them

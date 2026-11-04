@@ -33,6 +33,7 @@ Otherwise lint reports the [error] `findings.rule-block-count` at <rule>
 | rule | count | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | `lint.run.root` | 1 | yes | checked | |
+| a rule with one block fenced as `guarded strict`, more words after the label | 1 | yes | checked | the label is the first word of the info string |
 | a rule with only a `gherkin` block | 0 | no | error | a block counts only when fenced as `guarded` |
 | a rule with two `guarded` blocks | 2 | no | error | variation belongs in Examples rows, not in blocks |
 
@@ -216,3 +217,4 @@ Otherwise lint reports the [error] `findings.placeholder-unbound` at <placeholde
 | `<id>` | `<id>` | yes | nothing reported | |
 | `<others>` | `<others>`, `<id>` | yes | nothing reported | introduced by a Given |
 | `<file>` | `<heading>` | no | error | used in an outcome, introduced nowhere |
+| `<File>` | `<file>` | no | error | letters of either case make a placeholder, and names are compared exactly |

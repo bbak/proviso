@@ -89,7 +89,7 @@
 ## <a id="system.rule-block"></a> rule block
 
 - Definition: A fenced block labelled `guarded`, written in Guarded
-  Gherkin.
+  Gherkin. Its label is the first word of its info string.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: rule blocks, guarded block
@@ -132,16 +132,17 @@
 ## <a id="system.placeholder"></a> placeholder
 
 - Definition: A value in a rule block written as `<name>`, which the
-  Examples table varies.
+  Examples table varies. Its name holds the letters `A` to `Z` of either
+  case, digits, `_` and `-`, and nothing else.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: placeholders
 
 ## <a id="system.examples-table"></a> Examples table
 
-- Definition: The table after a rule block, with one column per
-  placeholder, a `provided` column, an `outcome` column, and one row per
-  case.
+- Definition: The first table after a rule block, with one column per
+  placeholder, a `provided` column where the rule has a guard, an
+  `outcome` column, and one row per case.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: Examples, Examples row, Examples rows
@@ -149,7 +150,9 @@
 ## <a id="system.term"></a> term
 
 - Definition: A word or phrase defined by a glossary entry, marked as
-  `[term]` in a rule block.
+  `[term]` in a rule block or a "Represents" field: a name in brackets,
+  unless the `]` is directly followed by `(`, so `[text](…)` marks
+  nothing and `[text][label]` marks two terms.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term
@@ -215,6 +218,33 @@
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: anchors
+
+## <a id="system.heading"></a> heading
+
+- Defined by: [CommonMark, ATX and setext headings](references.md#system.ref.commonmark)
+- Deviations: Only a heading at the top level of a file counts: one
+  within a list item or a block quote is text. A byte order mark at the
+  start of a file is ignored, so a heading on its first line still
+  counts.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: headings
+
+## <a id="system.table"></a> table
+
+- Defined by: [GitHub Flavored Markdown, tables](references.md#system.ref.gfm)
+- Deviations: Only a table at the top level of a file counts: one within
+  a list item or a block quote is text.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: tables
+
+## <a id="system.link"></a> link
+
+- Defined by: [CommonMark, links](references.md#system.ref.commonmark)
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: links
 
 ## <a id="system.request"></a> request
 

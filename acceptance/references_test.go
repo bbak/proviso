@@ -48,6 +48,7 @@ Then      the shop sends a bill for <product>
 	jCaron := withTerms(baseline(), "cart", entryMD("cart.j-caron", "\u01f0"))
 	zeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\u200b]")
 	noBreakZeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\ufeff]")
+	secondMark := withThenAnd(sys, "the cart stays in the [spec tree][basket]")
 	rows(t, "term-unresolved", []row{
 		{name: "row1 the system's entry", tree: withThenAnd(sys, "the cart stays in the [spec tree]"), holds: true},
 		{name: "row2 by an alias", tree: baseline(), holds: true},
@@ -79,6 +80,8 @@ Then      the shop sends a bill for <product>
 		{name: "derived: simple lower case of the capital I with dot above", tree: withThenAnd(
 			withTerms(baseline(), "cart", entryMD("cart.istanbul", "istanbul")), "the cart ships to [\u0130stanbul]"), holds: true},
 		{name: "derived: no other character joins the words of a name", tree: underscore, file: featurePath, lines: lines(thenAndLine(underscore))},
+		{name: "derived: the label of [text][label] is a term mark of its own", tree: secondMark, file: featurePath, lines: lines(thenAndLine(secondMark))},
+		{name: "derived: [text](…) marks nothing", tree: withThenAnd(sys, "the cart stays in the [basket](notes.md)"), holds: true},
 		{name: "derived: a Represents field that resolves", tree: api(baseline(), "[item]"), holds: true},
 		{name: "derived: a Represents field that does not resolve", tree: represents,
 			file: apiPath, lines: lines(represents.line(apiPath, "- Represents:"))},
@@ -114,7 +117,12 @@ func TestLintReferencesMarked(t *testing.T) {
 	r6 := unmarked(shelfLabel, "the cart keeps the shelf  label")
 	r6.name = "row6 any run of spaces and tabs joins the words of a name"
 	r9 := unmarked(withTerms(shelfLabel, "billing", entryMD("billing.label-date", "label date")), "the cart reads the shelf label date")
-	r9.name = "row10 the match that starts first wins"
+	r9.name = "row13 the match that starts first wins"
+	// Rows 9 to 11: brackets followed by ( make no term mark.
+	linked := unmarked(sys, "the cart reads the [spec tree](notes.md) of")
+	linked.name = "row9 brackets followed by ( make no term mark, so their text is unmarked text"
+	restOfIt := withThenAnd(baseline(), "the cart reads the [rest of it](notes.md)")
+	twoMarks := withThenAnd(sys, "the cart reads the [spec tree][tree]")
 	tab := unmarked(shelfLabel, "the cart keeps the shelf\tlabel")
 	tab.name = "derived: a tab joins the words of a name"
 	run := unmarked(shelfLabel, "the cart keeps the shelf \t label")
@@ -146,8 +154,11 @@ func TestLintReferencesMarked(t *testing.T) {
 		r6,
 		r7,
 		{name: "row8 no term at all", tree: baseline(), holds: true},
-		{name: "row9 the foreign match that starts first wins", tree: withThenAnd(dateHeading, "the cart reads the date heading"), holds: true},
-		{name: "row9 over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price label"), holds: true},
+		linked,
+		{name: "row10 brackets followed by ( make no term mark, so their text resolves to nothing", tree: restOfIt, holds: true},
+		{name: "row11 two term marks", tree: twoMarks, holds: true},
+		{name: "row12 the foreign match that starts first wins", tree: withThenAnd(dateHeading, "the cart reads the date heading"), holds: true},
+		{name: "row12 over the capability's own term", tree: withThenAnd(priceLabel, "the cart shows the price label"), holds: true},
 		r9,
 		tab,
 		run,
@@ -167,6 +178,18 @@ func TestLintReferencesMarked(t *testing.T) {
 		{name: "derived: no match spans a literal taken out", tree: withThenAnd(shelfLabel, `the cart keeps the shelf "x" label`), holds: true},
 		{name: "derived: the keyword is taken out", tree: baseline().appendTo(glossaryPath,
 			"\n## <a id=\"cart.then\"></a> then\n\n- Definition: The time after paying.\n- Contact: Dana Reyes\n- Status: defined\n"), holds: true},
+	})
+	t.Run("row9 the text in brackets is no term mark that resolves", func(t *testing.T) {
+		t.Parallel()
+		checkGoesOn(t, linked.tree).lacks(t, "term-unresolved", featurePath, linked.lines...)
+	})
+	t.Run("row10 nothing reported", func(t *testing.T) {
+		t.Parallel()
+		check(t, restOfIt).clean(t)
+	})
+	t.Run("row11 nothing reported", func(t *testing.T) {
+		t.Parallel()
+		check(t, twoMarks).clean(t)
 	})
 	t.Run("derived: a word within a match is no use of its own", func(t *testing.T) {
 		t.Parallel()
@@ -455,11 +478,13 @@ func TestLintReferencesHandOver(t *testing.T) {
 	t.Parallel()
 	feature := handOver("Otherwise → cart.add")
 	missing := handOver("Otherwise → cart.add.emptyx")
+	trailingDot := handOver("Otherwise → cart.add.empty.")
 	at := func(tr tree) []int { return lines(tr.line(xPath, "Otherwise →")) }
 	rows(t, "hand-over-unresolved", []row{
 		{name: "row1 a rule", tree: handOver("Otherwise → cart.add.empty"), holds: true},
 		{name: "row2 a feature, not a rule", tree: feature, file: xPath, lines: at(feature)},
 		{name: "row3 no such identifier", tree: missing, file: xPath, lines: at(missing)},
+		{name: "row4 the target is taken as written, a trailing dot included", tree: trailingDot, file: xPath, lines: at(trailingDot)},
 	})
 }
 

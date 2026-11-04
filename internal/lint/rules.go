@@ -7,6 +7,7 @@ import (
 	"slices"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/bbak/proviso/internal/guarded"
 	"github.com/bbak/proviso/internal/markdown"
@@ -168,8 +169,13 @@ func (l *linter) checkBlock(r *rule) {
 			}
 		}
 		l.checkUnmarked(r, ln)
-		for i, w := range strings.Fields(ln.Without(false, guarded.Literal, guarded.Code)) {
-			if w == "?" {
+		text := ln.Without(false, guarded.Literal, guarded.Code)
+		for i, c := range text {
+			// A "?" standing as a word of its own: white space, or the
+			// line's start or end, on either side.
+			before, _ := utf8.DecodeLastRuneInString(text[:i])
+			after, _ := utf8.DecodeRuneInString(text[i+1:])
+			if c == '?' && (i == 0 || unicode.IsSpace(before)) && (i+1 == len(text) || unicode.IsSpace(after)) {
 				l.report(Ask, "undecided", l.at(r, ln.N), "the line holds an undecided \"?\"").col = i
 			}
 		}
@@ -234,7 +240,7 @@ func (l *linter) checkUnmarked(r *rule, ln *guarded.Line) {
 	text := ln.Without(true, guarded.Literal, guarded.Code, guarded.Mark, guarded.Placeholder)
 	if ln.Keyword != "" {
 		i := strings.Index(text, ln.Keyword) // the first word, after leading white space
-		text = text[:i] + string(rune(0)) + text[i+len(ln.Keyword):]
+		text = text[:i] + strings.Repeat("\x00", len(ln.Keyword)) + text[i+len(ln.Keyword):]
 	}
 	words := splitWords(text)
 	byKey := map[string][]*element{} // the entries each key of a name or alias belongs to

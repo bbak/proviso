@@ -1,6 +1,7 @@
 package guarded
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -31,7 +32,7 @@ func TestHandOver(t *testing.T) {
 	if !l.IsHandOver() || l.Target != "lint.layout.file" {
 		t.Fatalf("%+v", l)
 	}
-	if got := l.Without(true); got != "Otherwise → \x00" {
+	if got := l.Without(true); got != "Otherwise → "+strings.Repeat("\x00", len("lint.layout.file")) {
 		t.Errorf("without target: %q", got)
 	}
 }

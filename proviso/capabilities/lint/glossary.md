@@ -35,8 +35,9 @@
 
 ## <a id="lint.heading-level"></a> heading level
 
-- Definition: The number of `#` signs that open a Markdown heading: 1
-  for `#`, 2 for `##`, and so on.
+- Definition: The level of a heading: the number of `#` signs that open
+  it, 1 for `#`, 2 for `##`, and so on, or 1 for a heading underlined
+  with `=`, and 2 for one underlined with `-`.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: heading levels

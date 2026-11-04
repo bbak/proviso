@@ -167,7 +167,7 @@ Otherwise lint reports the [error] `findings.capability-file-missing` at <folder
 ## <a id="lint.layout.title"></a> Rule: A sibling file opens with a title
 
 ```guarded
-When      lint reads the first heading <heading> of a file of a [sibling]
+When      lint reads the first [heading] <heading> of a file of a [sibling]
 Provided  the [heading level] of <heading> is 1
   And     <heading> has no [anchor]
 Then      <heading> is the file's title, neither [element] nor [section]

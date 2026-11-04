@@ -106,7 +106,7 @@ var fieldItem = regexp.MustCompile(`^([A-Za-z][A-Za-z0-9 -]*?)\s*:(.*)$`)
 func (l *linter) build(f *file) {
 	doc := f.doc
 	for _, a := range doc.StrayAnchors {
-		l.report(Error, "anchor-misplaced", Pos{f.path, a.Line}, "the anchor %q does not start the text of a heading", a.ID)
+		l.report(Error, "anchor-misplaced", Pos{f.path, a.Line}, "the anchor %q does not start the text of a heading", a.ID).col = a.Col
 	}
 	sibling := f.Kind.IsSibling()
 	first := -1
@@ -153,7 +153,9 @@ func (l *linter) build(f *file) {
 				}
 				stack = append(stack, e)
 			}
-			if i+1 < len(doc.Blocks) {
+			// lint.structure.type: an element of no type has no fields
+			// to read, as it has no sections.
+			if e.typ != "" && i+1 < len(doc.Blocks) {
 				if lst := doc.Blocks[i+1].List; lst != nil && lst.Bullet {
 					e.fields = readFields(lst)
 					e.fieldsLine = doc.Blocks[i+1].Line

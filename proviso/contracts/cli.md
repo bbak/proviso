@@ -217,8 +217,8 @@ properties:
   added, changed or removed whose changed part passes its meaning on, to
   the one the element depends on directly, as `dependencies` gives them.
 - `undecided` lists each line of the element that holds an undecided
-  place or a mark of an open term, once; an element with any is not to
-  be built.
+  place, or a mark of an open term in its rule block, once; an element
+  with any is not to be built.
 
 ## <a id="system.cli.impact"></a> impact
 
@@ -381,8 +381,8 @@ of the contract.
     identifiers in backticks joined by ` → `, separated by `; `, and a
     full stop.
   - An element not to be built gets a second line: `Not to be built:`,
-    then each line that holds an undecided place or a mark of an open
-    term, once, as its path and line joined by `:`, separated by a comma
+    then each line that holds an undecided place, or a mark of an open
+    term in its rule block, once, as its path and line joined by `:`, separated by a comma
     and a space, and a full stop.
 - **Each part named** follows its element, in the order of the line
   naming them: the text of an added or changed part as it stands now,
@@ -642,7 +642,8 @@ properties:
 - `kind` says what is wrong: the element diff lists elements but no
   coherence check is recorded (`missing`); a check or an amendment note
   is left beside a tree the manifest records (`leftover`); an element
-  holds an undecided place or marks an open term (`undecided`); a
+  holds an undecided place, or marks an open term in its rule block
+  (`undecided`); a
   candidate has no judgement (`unjudged`); an element changed since the
   check covered it (`stale`); a finding is neither resolved nor
   dismissed (`open`).

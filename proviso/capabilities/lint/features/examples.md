@@ -21,8 +21,9 @@ a person to weigh, and is left to review.
 
 ```guarded
 When      lint has read the [rule] <rule>
-Provided  <rule> holds a table after its [rule block]
-Then      lint reads that table as the [rule]'s [Examples table]
+Provided  <rule> holds a [table] after its [rule block]
+Then      lint reads the first [table] after its [rule block] as the [rule]'s [Examples table]
+  And     lint reads every later [table] of <rule> as prose
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.examples-missing` at <rule>
   And     lint goes on with the rest of the [spec tree]
@@ -33,6 +34,7 @@ Otherwise lint reports the [error] `findings.examples-missing` at <rule>
 | `lint.run.root` | yes | read | |
 | a rule with a block and no table | no | error | also for a rule without a guard |
 | a rule with a table only before its block | no | error | the table follows the block |
+| a rule with two tables after its block | yes | the first read, the second prose | |
 
 ## <a id="lint.examples.reserved"></a> Rule: A placeholder does not take a reserved column's name
 
@@ -59,7 +61,7 @@ Provided  <columns> hold a column named after each of <placeholders>
   And     <columns> hold "outcome"
 Then      lint reports nothing about missing columns
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.examples-column-missing` at the table, naming each missing column
+Otherwise lint reports the [error] `findings.examples-column-missing` at the [table], naming each missing column
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -78,7 +80,7 @@ When      lint reads the columns <columns> of the [Examples table] of a [rule]; 
 Provided  <columns> hold "provided" exactly when <guarded> is "yes"
 Then      lint reports nothing about the "provided" column
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.provided-column` at the table
+Otherwise lint reports the [error] `findings.provided-column` at the [table]
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -120,7 +122,7 @@ When      lint reads the [Examples table] of a [rule], with <count> rows
 Provided  <count> is at least 1
 Then      lint checks each row
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.examples-empty` at the table
+Otherwise lint reports the [error] `findings.examples-empty` at the [table]
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -145,6 +147,7 @@ Otherwise lint reports the [error] `findings.examples-row-incomplete` at <row>
 | --- | --- | --- | --- | --- |
 | `system`, yes, nothing reported, (empty) | `id`, `provided`, `outcome`, `why` | yes | nothing reported | `why` may stay empty |
 | `system`, yes, `?`, (empty) | `id`, `provided`, `outcome`, `why` | yes | nothing reported | undecided, reported as an ask elsewhere |
+| `a \| b`, yes, nothing reported, (empty) | `id`, `provided`, `outcome`, `why` | yes | nothing reported | `\|` is a pipe within a cell |
 | `system`, yes, nothing reported | `id`, `provided`, `outcome`, `why` | no (one cell per column) | error | a cell short |
 | `system`, yes, (empty), (empty) | `id`, `provided`, `outcome`, `why` | no (a value in every cell) | error | an outcome left empty: write `?` |
 
@@ -205,7 +208,7 @@ Provided  <values> hold at least one "yes"
   And     <values> hold at least one "no" or "no (<part>)"
 Then      lint reports nothing about the sides of the [guard]
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.examples-side-missing` at the table, naming the missing side
+Otherwise lint reports the [error] `findings.examples-side-missing` at the [table], naming the missing side
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -230,7 +233,7 @@ When      lint reads the "provided" column <values> of the [Examples table] of a
 Provided  <values> hold at least <parts> rows that are "no" or "no (<part>)"
 Then      lint reports nothing about the lines of the [guard]
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.examples-part-missing` at the table
+Otherwise lint reports the [error] `findings.examples-part-missing` at the [table]
   And     lint goes on with the rest of the [spec tree]
 ```
 
