@@ -521,7 +521,30 @@ func TestLintRunOrder(t *testing.T) {
 		}
 	})
 
-	t.Run("row4 then by position in the line", func(t *testing.T) {
+	t.Run("row4 kind byte by byte, not the order findings lists", func(t *testing.T) {
+		t.Parallel()
+		// Two rules share the identifier cart.add.Limit, which is malformed:
+		// the first rule's heading gets identifier-malformed and
+		// identifier-duplicate. The contract findings lists
+		// identifier-malformed first; byte by byte, identifier-duplicate
+		// comes first.
+		tr := baseline().
+			edit(featurePath, `id="cart.add.limit"`, `id="cart.add.Limit"`).
+			edit(featurePath, `id="cart.add.empty"`, `id="cart.add.Limit"`)
+		line := tr.line(featurePath, "Rule: The cart takes")
+		o := check(t, tr)
+		var kinds []string
+		for _, f := range o.report.Findings {
+			if f.File == featurePath && f.Line == line && (f.Kind == "identifier-malformed" || f.Kind == "identifier-duplicate") {
+				kinds = append(kinds, f.Kind)
+			}
+		}
+		if got := strings.Join(kinds, ","); got != "identifier-duplicate,identifier-malformed" {
+			t.Errorf("want identifier-duplicate, then identifier-malformed at %s:%d, got:\n%s", featurePath, line, dump(o.report.Findings))
+		}
+	})
+
+	t.Run("row5 then by position in the line", func(t *testing.T) {
 		t.Parallel()
 		// Two term-foreign asks on one line: one at "part", naming
 		// baseline's entry, and one at "date heading", naming bundle's entry,
