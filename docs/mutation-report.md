@@ -209,6 +209,16 @@ the code did not change.
   slips; it does not count every slip they would miss.
 - **Small unanchored sample.** Thirty unanchored mutants show the
   pattern, not a precise rate.
+- **No comparison with other mutation scores.** Tools that mutate code
+  mechanically change every operator they find, count every test of a
+  project, and report one score for the whole code. This run asks two
+  narrower questions. On the rules, it is the stricter measure: each
+  rule is probed with a slip an agent could plausibly make, and only
+  the acceptance tests count, not the coding agent's unit tests. On the
+  code no rule covers, it only samples, and the share there is low by
+  design, since Proviso tests what the tree decides. A mechanical tool
+  would spend most of its mutants on that code, and would most likely
+  give Proviso a lower score than this run's overall share.
 
 To measure your own system's tests the same way, see
 [Mutate](workflow.md#mutate-proviso-mutate) in the workflow.
