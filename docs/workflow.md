@@ -196,6 +196,13 @@ amendment states at system level what crosses the capabilities.
 - **You decide** how the system falls into capabilities and features,
   and whom to ask about each.
 
+Expect the recovery to review the system as well. Stating what it does,
+case by case, brings out what nobody noticed: on its first trial, the
+checks of a recovered tree found faults the system's own tests had
+missed, such as a value one part accepted and another refused. Some
+of its questions are therefore faults to fix before anything new is
+built on the tree.
+
 Once a capability is accepted and solid, ask Claude Code to **check it
 against the code**: the testing agent writes acceptance tests from the
 tree alone, and they run against the unchanged code. A failing test
