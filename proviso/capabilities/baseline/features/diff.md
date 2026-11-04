@@ -198,7 +198,7 @@ Otherwise nothing is listed because of <element>
 ```guarded
 When      `diff` lists the [element] <element> as added, changed or changed through a dependency
 Provided  <element> holds no [undecided] place
-  And     <element> marks no [term] whose [field] "Status" is "open"
+  And     <element> marks no [term] whose [field] "Status" is "open" in its [rule block]
 Then      <element> is to be built
   And     everything else stays as it was
 Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place or a mark of an open [term], once
@@ -210,6 +210,7 @@ Otherwise <element> is listed as not to be built, naming each line that holds an
 | a rule with every step decided | yes | to be built | |
 | a rule with `Then      ?` | no (an undecided place) | not to be built, naming the `Then` step | |
 | a rule marking a term whose Status is `open` | no (an open term) | not to be built, naming the mark | its meaning is not decided |
+| a contract element whose "Represents" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
 | a rule with `?` in two cells of one Examples row | no (an undecided place) | not to be built, naming that row's line once | a place is named by its line |
 
 ## <a id="baseline.diff.former"></a> Rule: Former text comes from the revision that wrote the manifest
