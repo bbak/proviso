@@ -237,8 +237,9 @@ func closingTicks(s string, from, n int) (int, bool) {
 }
 
 // Without returns the line with the spans of the given kinds, and the
-// hand-over target if withTarget, replaced by a NUL byte each, which is
-// neither a word character nor white space.
+// hand-over target if withTarget, replaced by NUL bytes, which are neither
+// word characters nor white space, one for each byte they replace, so that
+// every byte stands where it stands in the line.
 func (l *Line) Without(withTarget bool, kinds ...SpanKind) string {
 	drop := map[SpanKind]bool{}
 	for _, k := range kinds {
@@ -247,12 +248,13 @@ func (l *Line) Without(withTarget bool, kinds ...SpanKind) string {
 	var sb strings.Builder
 	for _, sp := range l.Spans {
 		if drop[sp.Kind] {
-			sb.WriteByte(0)
+			sb.WriteString(strings.Repeat("\x00", sp.End-sp.Start))
 			continue
 		}
 		v := l.Text[sp.Start:sp.End]
 		if withTarget && l.IsHandOver() && sp.Kind == Text && sp.Start <= l.TargetStart && l.TargetStart < sp.End {
-			v = l.Text[sp.Start:l.TargetStart] + "\x00" + l.Text[min(l.TargetStart+len(l.Target), sp.End):sp.End]
+			end := min(l.TargetStart+len(l.Target), sp.End)
+			v = l.Text[sp.Start:l.TargetStart] + strings.Repeat("\x00", end-l.TargetStart) + l.Text[end:sp.End]
 		}
 		sb.WriteString(v)
 	}

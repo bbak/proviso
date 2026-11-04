@@ -29,13 +29,14 @@ type Finding struct {
 	Line     int      `json:"line"`
 	Message  string   `json:"message"`
 	Related  []Pos    `json:"related,omitempty"`
-	// col breaks ties between findings of one kind on one line, so that
-	// the order stays fixed.
+	// col is where the finding stands in its line: a byte offset, or, in a
+	// table row or header, the index of the cell. It orders findings of
+	// one kind on one line.
 	col int
 }
 
 // Sort orders findings by file path, compared byte by byte, then line, then
-// kind, and, beyond what the tree requires, by position in the line and
+// kind, then position in the line, and, beyond what the tree requires, by
 // message.
 func Sort(fs []Finding) {
 	slices.SortStableFunc(fs, func(a, b Finding) int {

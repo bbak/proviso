@@ -85,9 +85,11 @@ type Table struct {
 	Rows   []Line
 }
 
-// Anchor is an anchor, at a line.
+// Anchor is an anchor, at a line and the byte offset of its start within
+// that line.
 type Anchor struct {
 	Line int
+	Col  int
 	ID   string
 }
 
@@ -181,6 +183,12 @@ func (d *Doc) line(offset int) int {
 	return lo + 1
 }
 
+// anchor returns the anchor with the id that starts at the offset.
+func (d *Doc) anchor(offset int, id string) Anchor {
+	n := d.line(offset)
+	return Anchor{n, max(offset-d.lines[n-1], 0), id}
+}
+
 func firstWord(b []byte) string {
 	f := bytes.Fields(b)
 	if len(f) == 0 {
@@ -213,7 +221,7 @@ func (d *Doc) heading(h *ast.Heading, src []byte) *Heading {
 	var sb strings.Builder
 	for c := first; c != nil; c = c.NextSibling() {
 		if id, ok := anchorAt(c, src); ok {
-			d.StrayAnchors = append(d.StrayAnchors, Anchor{d.line(c.Pos()), id})
+			d.StrayAnchors = append(d.StrayAnchors, d.anchor(c.Pos(), id))
 			c = c.NextSibling()
 			continue
 		}
@@ -296,7 +304,7 @@ func (d *Doc) strayIn(n ast.Node, src []byte) {
 			return ast.WalkSkipChildren, nil
 		}
 		if id, ok := anchorAt(c, src); ok {
-			d.StrayAnchors = append(d.StrayAnchors, Anchor{d.line(c.Pos()), id})
+			d.StrayAnchors = append(d.StrayAnchors, d.anchor(c.Pos(), id))
 		}
 		return ast.WalkContinue, nil
 	})
@@ -332,7 +340,7 @@ func (d *Doc) strayInHTML(h *ast.HTMLBlock, src []byte) {
 		} else {
 			seg = h.ClosureLine
 		}
-		d.StrayAnchors = append(d.StrayAnchors, Anchor{d.line(seg.Start), id})
+		d.StrayAnchors = append(d.StrayAnchors, d.anchor(seg.Start+m[0]-starts[i], id))
 	}
 }
 
