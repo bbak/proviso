@@ -208,6 +208,7 @@ Otherwise the command writes to "stderr" that `coherence_file` cannot be read
 | written by `judge` | yes | read | |
 | `<<<<<<< HEAD` in it | no | exit status 2 | a merge conflict left in the file |
 | empty | no | exit status 2 | |
+| two findings with the same id | no | exit status 2 | `judge` never writes one |
 | a folder, beside a tree the manifest records | no | exit status 2 | `verify` reads the file before it asks whether it is left over |
 | `<<<<<<< HEAD` in it, with input that is not JSON | no | exit status 2 | the damaged file is reported before the input |
 | a symbolic link to a file written by `judge` | no | exit status 2 | a link is not followed |

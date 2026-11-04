@@ -634,20 +634,26 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o.only(t, "cart.add.limit:changed", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.add.limit")
 	})
-	t.Run("row6 a rule changed in its Rationale only, marking a term whose Definition changed", func(t *testing.T) {
+	t.Run("row6 a rule's Examples row changed, reaching the rules handing over to it", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, handTree(), limitOutcome)
+		o.only(t, "cart.add.limit:changed", "cart.x.hand:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.add.limit")
+	})
+	t.Run("row7 a rule changed in its Rationale only, marking a term whose Definition changed", func(t *testing.T) {
 		t.Parallel()
 		o := diffOf(t, handTree(), itemDefinition, limitNoRatio)
 		o.only(t, "cart.item:changed", "cart.add.limit:changed", "cart.add.empty:changed-through", "cart.x.hand:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.hand"), "cart.item > cart.add.limit")
 	})
-	t.Run("row7 a reference with a new Version, while the term it defines has its Defined by changed too", func(t *testing.T) {
+	t.Run("row8 a reference with a new Version, while the term it defines has its Defined by changed too", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.thematic-break, marked by cart.x.line.
 		o := diffOf(t, diffTree(), commonmarkNew, breakDefinedBy)
 		o.only(t, "system.ref.commonmark:changed", "cart.thematic-break:changed", "cart.x.line:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.line"), "cart.thematic-break", "system.ref.commonmark > cart.thematic-break")
 	})
-	t.Run("row8 a member removed, while the element holding it stays", func(t *testing.T) {
+	t.Run("row9 a member removed, while the element holding it stays", func(t *testing.T) {
 		t.Parallel()
 		// lint.findings.anchor-misplaced: cart.api.line.count, of
 		// cart.api.line; cart.pay.lines, which referred to it, now refers to
@@ -656,13 +662,18 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o.only(t, "cart.api.line.count:removed", "cart.pay.lines:changed", "cart.pay.order:changed-through")
 		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line.count")
 	})
-	t.Run("row9 a new alias only", func(t *testing.T) {
+	t.Run("row10 a new alias only", func(t *testing.T) {
 		t.Parallel()
 		diffOf(t, diffTree(), itemAlias).only(t, "cart.item:changed")
 	})
-	t.Run("row10 a reference with a new Contact only", func(t *testing.T) {
+	t.Run("row11 a reference with a new Contact only", func(t *testing.T) {
 		t.Parallel()
 		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
+	})
+	t.Run("row12 a parameter's Rationale reworded only", func(t *testing.T) {
+		t.Parallel()
+		// system.change-effects: cart.max-quantity, referred to by cart.add.limit.
+		diffOf(t, diffTree(), change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}).only(t, "cart.max-quantity:changed")
 	})
 	t.Run("derived: a reference with a new Link", func(t *testing.T) {
 		t.Parallel()

@@ -56,6 +56,13 @@ func TestDependencies(t *testing.T) {
 	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"c.f.r": Changed, "c.g.d": "[[c.f.r]]"}) {
 		t.Errorf("a hand-over: %v", got)
 	}
+	// An Examples row decides as much as a step.
+	got = through(t, func(m map[string]string) {
+		baselinetest.Replace(m, "capabilities/c/features/f.md", "| b | no | not read | |", "| b | no | not read at all | |")
+	})
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"c.f.r": Changed, "c.g.d": "[[c.f.r]]"}) {
+		t.Errorf("a row: %v", got)
+	}
 	// A listed element passes on the meaning that changed through what it
 	// depends on.
 	got = through(t, func(m map[string]string) {
