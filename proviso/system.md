@@ -68,8 +68,10 @@ line. Proviso is those mechanics.
   no rule or invariant decides what the command does or leaves behind.
   What a file holds, its permissions and an entry in the way are
   states of the repository, not such failures.
-- Symbolic links in the folders above the paths a command reads or
-  writes, such as a skill's folder linked to a shared one, which are
-  the engineers' setup. No rule or invariant decides whether a command
-  follows such a link, nor what a write through it does to the other
-  paths it connects.
+- Symbolic links that stand for a folder on the way to a skill or agent
+  definition that `init`, `update` or `version` installs or reads, such
+  as a skill's folder linked to a shared one, which are the engineers'
+  setup. No rule or invariant decides whether a command follows such a
+  link, nor what a write through it does to the other paths it
+  connects. A link at such a path itself, and every link within the
+  spec tree, is an entry the rules decide.
