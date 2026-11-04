@@ -160,6 +160,12 @@ says:
   squashing: each commit of the tree says why that change was made, and
   a squash would leave only the pull request's description.
 
+Your acceptance tests run only where something they test changed: when
+the build's full run passed on a commit and the merge has changed only
+the spec tree since, such as the manifest, that run stands, and the
+skill runs your other checks. Code the target brought in meanwhile
+makes it run them all.
+
 It never pushes and never opens a pull request.
 
 **A conflict in `proviso/manifest.sum`** means two amendments met. Never
