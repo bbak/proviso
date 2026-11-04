@@ -56,10 +56,10 @@ Every run of `init`, `update` and `version`.
 
 ### Property
 
-A file is judged by its path below the directory. A file reached
-through a symbolic link above an installed path is judged by that
-installed path only, wherever the link's target lies. A symbolic link above
-an installed path is a folder like any other, followed as the operating
+Every entry is judged by its own path below the directory, never by
+another path it can be reached by: a file by the path it was written at,
+and a symbolic link, wherever it stands, as the link itself, not as what
+it stands for. A symbolic link above an installed path is a folder like any other, followed as the operating
 system resolves it; one that resolves to nothing gets no target, and the
 file below it is not written. A symbolic link at an installed path is an
 entry that exists, read through as the file it stands for, and never
