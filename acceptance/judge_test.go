@@ -509,6 +509,28 @@ func TestCoherenceJudgeUnreadable(t *testing.T) {
 					r.verify().stoppedNaming(t, coherenceName)
 				})
 			}
+			t.Run("row4 two findings with the same id", func(t *testing.T) {
+				t.Parallel()
+				// What the file holds is no contract; the file judge wrote
+				// with the findings f1 and f2 is given the id f1 twice by
+				// replacing the JSON string "f2", which ids are taken to be
+				// written as.
+				r := amendedRepo(t, iLimitThen)
+				r.judgeAll(nil, gap("A gap."), gap("Another gap."))
+				r.verify().has(t, "open f2")
+				w := r.coherence()
+				if !strings.Contains(w, `"f2"`) || !strings.Contains(w, `"f1"`) {
+					t.Fatalf("want the ids f1 and f2 written as JSON strings in %s, got: %s", coherenceName, w)
+				}
+				if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte(strings.ReplaceAll(w, `"f2"`, `"f1"`)), 0o644); err != nil {
+					t.Fatal(err)
+				}
+				if cmd == "judge" {
+					refused(t, r.judge(checkResult{}), 2, coherenceName)
+					return
+				}
+				r.verify().stoppedNaming(t, coherenceName)
+			})
 			// lint stops the command first, before the coherence file is
 			// read.
 			t.Run("derived: <<<<<<< HEAD in it, in a tree with an error", func(t *testing.T) {
@@ -542,7 +564,7 @@ func TestCoherenceJudgeUnreadable(t *testing.T) {
 			if cmd == "judge" {
 				// judge reads the coherence file before its input and
 				// before it derives the element diff.
-				t.Run("row5 <<<<<<< HEAD in it, with input that is not JSON", func(t *testing.T) {
+				t.Run("row6 <<<<<<< HEAD in it, with input that is not JSON", func(t *testing.T) {
 					t.Parallel()
 					r := amendedRepo(t, iLimitThen)
 					r.judgeAll(nil)
@@ -567,7 +589,7 @@ func TestCoherenceJudgeUnreadable(t *testing.T) {
 			if cmd == "verify" {
 				// verify reads the coherence file before anything else,
 				// before it asks whether the file is left over.
-				t.Run("row4 a folder, beside a tree the manifest records", func(t *testing.T) {
+				t.Run("row5 a folder, beside a tree the manifest records", func(t *testing.T) {
 					t.Parallel()
 					r, _ := accepted(t, impactTree())
 					if err := os.MkdirAll(filepath.Join(r.root(), coherenceName, "sub"), 0o755); err != nil {
@@ -634,7 +656,7 @@ func TestCoherenceJudgeUnreadable(t *testing.T) {
 				}
 				r.verify().stoppedNaming(t, coherenceName)
 			}
-			t.Run("row6 a symbolic link to a file written by judge", func(t *testing.T) {
+			t.Run("row7 a symbolic link to a file written by judge", func(t *testing.T) {
 				t.Parallel()
 				outside := t.TempDir()
 				linked(t, func(*repo) string { return filepath.Join(outside, "coherence.json") })
