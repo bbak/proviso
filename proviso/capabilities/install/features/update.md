@@ -110,6 +110,7 @@ Otherwise → install.update.stamp
 | --- | --- | --- | --- |
 | `.claude/agents/proviso-coder.md`, deleted after `init` | yes | written | |
 | `.claude/agents/proviso-coder.md`, `.claude/agents` being a file, the skills in place | yes | not written, exit status 2 | a folder cannot be made below a file |
+| `.claude/skills/proviso-build/SKILL.md`, its folder a symbolic link to nothing | yes | not written, exit status 2 | `update` creates no link's target |
 | `.claude/agents/proviso-coder.md`, in place | no | handed over | |
 | `.claude/agents/proviso-coder.md`, a folder of that name | no | handed over | any entry counts |
 
