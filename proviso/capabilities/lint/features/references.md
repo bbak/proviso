@@ -26,7 +26,7 @@ would then break references that resolved before.
 ## <a id="lint.references.term"></a> Rule: A term mark resolves
 
 ```guarded
-When      lint reads a [term] mark naming <name>, in a [rule block], a "Represents" [field], or a "Definition" or "Deviations" [field] of a [glossary entry], of the capability <capability>
+When      lint reads a [term] mark naming <name>, in a [rule block], a "Represents" [field], or a "Definition" or "Deviations" [field] of a [glossary entry], of <capability>, a capability or the system
 Provided  <name> is the name or an alias of a [glossary entry] in the glossary of <capability> or of the system, compared as `name_comparison` says
 Then      the mark refers to that entry
   And     lint goes on with the rest of the [spec tree]

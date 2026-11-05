@@ -192,12 +192,21 @@ Otherwise nothing is listed because of <element>
 | `lint.findings.anchor-misplaced`, removed, while `lint.findings` stays | yes | every rule referring to `findings` listed, through `lint.findings.anchor-misplaced` | a rule relied on every member of `findings` |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
+| `system.heading`, its Deviations reworded | yes | every rule marking it listed, through `system.heading` | a deviation is part of the term's meaning |
 | `system.line-ending`, its Definition reworded, while `install.version-stamp` marks it in its Definition | yes | `install.version-stamp` listed, through `system.line-ending`, and every rule marking it, through `system.line-ending`, `install.version-stamp` | a definition that marks a term relies on its meaning |
 | `lint.step`, its Definition reworded, while `lint.guard` marks it in its Definition and `lint.step` marks `lint.guard` in its own | yes | `lint.guard` listed, through `lint.step`, and every rule marking either, each chain passing no element twice | a circle adds no chain of its own |
 | `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
 ## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
+
+### Rationale
+
+Only the element's own places and the marks in its own rule block
+count, not an open term reached through a definition that marks it:
+such a term is undecided itself, `verify` reports it across the whole
+tree, and no amendment is accepted while it stays open, so nothing
+built around it is accepted unnoticed.
 
 ```guarded
 When      `diff` lists the [element] <element> as added, changed or changed through a dependency
