@@ -40,7 +40,7 @@ Then      the shop sends a bill for <product>
 	}
 	represents := api(baseline(), "[basket]")
 	broken := api(sys, "[spec\n  tree]")
-	// Rows 5, 16, 18 and 19 need terms of the cart's own, defined as the row
+	// Rows 5, 17, 19 and 20 need terms of the cart's own, defined as the row
 	// says.
 	usLaw := withTerms(baseline(), "cart", entryMD("cart.us-law", "U.S. law"))
 	ubersicht := withTerms(baseline(), "cart", entryMD("cart.ubersicht", "\u00dcbersicht"))
@@ -49,7 +49,7 @@ Then      the shop sends a bill for <product>
 	zeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\u200b]")
 	noBreakZeroWidth := withThenAnd(sys, "the cart stays in the [spec tree\ufeff]")
 	secondMark := withThenAnd(sys, "the cart stays in the [spec tree][basket]")
-	// Rows 7 to 12: marks in a glossary entry's Definition or Deviations,
+	// Rows 7 to 13: marks in a glossary entry's Definition or Deviations,
 	// and code spans in a field.
 	itemDefinitionIs := func(tr tree, definition string) tree {
 		return tr.edit(glossaryPath, "- Definition: A product placed in the cart.", "- Definition: "+definition)
@@ -63,6 +63,7 @@ Then      the shop sends a bill for <product>
 - Contact: Dana Reyes
 - Status: defined
 `)
+	hyphenDeviations := inDeviations.edit(glossaryPath, "the whole [spec tree].", "the whole [spec-tree].")
 	hyphenDefinition := itemDefinitionIs(sys, "A product placed in the cart of the [spec-tree].")
 	systemDefinition := sys.edit(sysGlossaryPath, "- Definition: The files that specify the shop.", "- Definition: The files that specify the shop and each [item].")
 	spanDefinition := itemDefinitionIs(sys, "A product placed in the cart, written ´[spec-tree]´ nowhere in the [spec tree].")
@@ -79,20 +80,22 @@ Then      the shop sends a bill for <product>
 		{name: "row8 so may deviations", tree: inDeviations, holds: true},
 		{name: "row9 a mark in a definition resolves as any other", tree: hyphenDefinition,
 			file: glossaryPath, lines: lines(hyphenDefinition.line(glossaryPath, "[spec-tree]"))},
-		{name: "row10 a capability's terms are not visible at the system level", tree: systemDefinition,
+		{name: "row10 so does a mark in deviations", tree: hyphenDeviations,
+			file: glossaryPath, lines: lines(hyphenDeviations.line(glossaryPath, "[spec-tree]"))},
+		{name: "row11 a capability's terms are not visible at the system level", tree: systemDefinition,
 			file: sysGlossaryPath, lines: lines(systemDefinition.line(sysGlossaryPath, "[item]"))},
-		{name: "row11 brackets within a code span mark nothing", tree: spanDefinition, holds: true},
-		{name: "row12 in every field alike", tree: spanRepresents, holds: true},
-		{name: "row13 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
-		{name: "row14 any white space at either end does not count", tree: withThenAnd(sys, "the cart stays in the [spec tree\u00a0]"), holds: true},
-		{name: "row15 a zero-width space is no white space", tree: zeroWidth, file: featurePath, lines: lines(thenAndLine(zeroWidth))},
-		{name: "row16 names are compared in NFC", tree: withThenAnd(ubersicht, "the cart shows the [u\u0308bersicht]"), holds: true},
-		{name: "row17 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
-		{name: "row18 simple lower case, not full case folding", tree: strasse, file: featurePath, lines: lines(thenAndLine(strasse))},
-		{name: "row19 lower case comes before NFC", tree: withThenAnd(jCaron, "the cart shows the [J\u030c]"), holds: true},
-		{name: "row20 not visible in another capability", tree: other,
+		{name: "row12 brackets within a code span mark nothing", tree: spanDefinition, holds: true},
+		{name: "row13 in every field alike", tree: spanRepresents, holds: true},
+		{name: "row14 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
+		{name: "row15 any white space at either end does not count", tree: withThenAnd(sys, "the cart stays in the [spec tree\u00a0]"), holds: true},
+		{name: "row16 a zero-width space is no white space", tree: zeroWidth, file: featurePath, lines: lines(thenAndLine(zeroWidth))},
+		{name: "row17 names are compared in NFC", tree: withThenAnd(ubersicht, "the cart shows the [u\u0308bersicht]"), holds: true},
+		{name: "row18 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
+		{name: "row19 simple lower case, not full case folding", tree: strasse, file: featurePath, lines: lines(thenAndLine(strasse))},
+		{name: "row20 lower case comes before NFC", tree: withThenAnd(jCaron, "the cart shows the [J\u030c]"), holds: true},
+		{name: "row21 not visible in another capability", tree: other,
 			file: "proviso/capabilities/billing/features/pay.md", lines: lines(other.line("proviso/capabilities/billing/features/pay.md", "[item]"))},
-		{name: "row21 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
+		{name: "row22 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
 		{name: "derived: a tab joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec\ttree]"), holds: true},
 		{name: "derived: a run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec \t \ttree]"), holds: true},
 		{name: "derived: tabs at either end do not count", tree: withThenAnd(sys, "the cart stays in the [\tspec tree\t]"), holds: true},
@@ -124,11 +127,11 @@ Then      the shop sends a bill for <product>
 		t.Parallel()
 		check(t, broken).clean(t)
 	})
-	t.Run("row11 nothing reported for the code span", func(t *testing.T) {
+	t.Run("row12 nothing reported for the code span", func(t *testing.T) {
 		t.Parallel()
 		check(t, spanDefinition).clean(t)
 	})
-	t.Run("row12 nothing reported for the code span", func(t *testing.T) {
+	t.Run("row13 nothing reported for the code span", func(t *testing.T) {
 		t.Parallel()
 		check(t, spanRepresents).clean(t)
 	})
