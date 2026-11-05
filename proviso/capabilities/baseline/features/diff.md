@@ -161,8 +161,9 @@ a standard means what that version of the standard says. When what an
 element depends on changes its meaning, the element's text stays the
 same while its meaning does not, and its tests may no longer hold. The
 meaning passes on along every dependency, however long the chain, and
-stops where nothing depends on a changed meaning: in practice a
-reference, a glossary entry, a contract element and a rule at most.
+stops where nothing depends on a changed meaning. Glossary entries may
+mark each other's terms in a circle, so a chain never passes an element
+twice: the circle adds no chain of its own.
 Which elements depend on what is read from the tree as it stands: one
 that stopped depending on something was edited, and is listed anyway. A
 removed member of a contract element is the exception: a rule that
@@ -191,6 +192,9 @@ Otherwise nothing is listed because of <element>
 | `lint.findings.anchor-misplaced`, removed, while `lint.findings` stays | yes | every rule referring to `findings` listed, through `lint.findings.anchor-misplaced` | a rule relied on every member of `findings` |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
+| `system.line-ending`, its Definition reworded, while `install.version-stamp` marks it in its Definition | yes | `install.version-stamp` listed, through `system.line-ending`, and every rule marking it, through `system.line-ending`, `install.version-stamp` | a definition that marks a term relies on its meaning |
+| `lint.step`, its Definition reworded, while `lint.guard` marks it in its Definition and `lint.step` marks `lint.guard` in its own | yes | `lint.guard` listed, through `lint.step`, and every rule marking either, each chain passing no element twice | a circle adds no chain of its own |
+| `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
 ## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
@@ -211,6 +215,7 @@ Otherwise <element> is listed as not to be built, naming each line that holds an
 | a rule with `Then      ?` | no (an undecided place) | not to be built, naming the `Then` step | |
 | a rule marking a term whose Status is `open` | no (an open term) | not to be built, naming the mark | its meaning is not decided |
 | a contract element whose "Represents" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
+| a glossary entry whose "Definition" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
 | a rule with `?` in two cells of one Examples row | no (an undecided place) | not to be built, naming that row's line once | a place is named by its line |
 
 ## <a id="baseline.diff.former"></a> Rule: Former text comes from the revision that wrote the manifest

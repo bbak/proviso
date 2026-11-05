@@ -170,6 +170,7 @@ Otherwise nothing is taken for "Context" because of <element>
 | `baseline.diff.added`, its `Then` step changed | yes | `baseline.diff.changed` taken, and every term both rules mark | the hand-over, followed to its end |
 | a changed rule referring to `findings.anchor-misplaced` | yes | `lint.findings.anchor-misplaced`, `lint.findings` and `lint.finding` taken | the member's holder, and the term the holder represents |
 | a changed rule marking a term defined by `system.ref.commonmark` | yes | the term and `system.ref.commonmark` taken | an unchanged standard still needs its version read |
+| a changed rule marking a term whose Definition marks [line ending] | yes | the term and `system.line-ending` taken | a definition is read with the terms it marks |
 | a changed rule marking [spec root] | yes | `system.spec-root` taken, and none of the other rules marking it | sharing a term is no link |
 | `lint.run.root`, removed | no | nothing taken because of it | |
 | `baseline.diff.added`, named by `--element` | yes | `baseline.diff.changed` taken, and every term both rules mark | followed as for a listed element |

@@ -94,6 +94,7 @@ Otherwise `verify` reports "undecided" for <element>
 | --- | --- | --- | --- |
 | a rule with every step decided | yes | nothing reported | |
 | a contract element whose "Represents" field marks a term whose Status is `open` | yes | nothing reported for it | only a rule block's marks count; the term itself is reported |
+| a glossary entry whose "Definition" field marks a term whose Status is `open` | yes | nothing reported for it | only a rule block's marks count; the term itself is reported |
 | a rule with `Then      ?` | no (an undecided place) | "undecided" for the rule | |
 | a rule marking a term whose Status is `open` | no (an open term) | "undecided" for the rule | its meaning is not decided |
 | a feature with `- Contact: ?`, unchanged since the manifest | no (an undecided place) | "undecided" for the feature | the whole tree, not only what the amendment touched |

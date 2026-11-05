@@ -26,7 +26,7 @@ would then break references that resolved before.
 ## <a id="lint.references.term"></a> Rule: A term mark resolves
 
 ```guarded
-When      lint reads a [term] mark naming <name>, in a [rule block] or a "Represents" [field] of the capability <capability>
+When      lint reads a [term] mark naming <name>, in a [rule block], a "Represents" [field], or a "Definition" or "Deviations" [field] of a [glossary entry], of the capability <capability>
 Provided  <name> is the name or an alias of a [glossary entry] in the glossary of <capability> or of the system, compared as `name_comparison` says
 Then      the mark refers to that entry
   And     lint goes on with the rest of the [spec tree]
@@ -42,6 +42,12 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | spec  tree | lint | yes | the system's entry | any run of spaces and tabs joins the words of a name |
 | U.S.  law, with two spaces | lint, while lint defines U.S. law | yes | that entry | every run of spaces and tabs within a name counts as one, next to punctuation too |
 | spec tree, broken after "spec" onto the next line of a "Represents" field | lint | yes | the system's entry | a line break within a field joins words too |
+| spec tree, in the "Definition" field of a glossary entry | lint | yes | the system's entry | a definition may mark the terms it relies on |
+| spec tree, in the "Deviations" field of a glossary entry | lint | yes | the system's entry | so may deviations |
+| spec-tree, in the "Definition" field of a glossary entry | lint | no | error | a mark in a definition resolves as any other |
+| finding, in the "Definition" field of a glossary entry of the system | the system, while lint defines finding | no | error | a capability's terms are not visible at the system level |
+| spec tree, in a "Definition" field that holds `` `[spec-tree]` `` before it | lint | yes | the system's entry, and nothing reported for the code span | brackets within a code span mark nothing |
+| finding, in a "Represents" field that holds `` `[spec-tree]` `` before it | lint | yes | lint's entry, and nothing reported for the code span | in every field alike |
 | " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
 | spec tree, followed by a non-breaking space | lint | yes | the system's entry | any white space at either end does not count |
 | spec tree, followed by a zero-width space | lint | no | error | a zero-width space is no white space |
