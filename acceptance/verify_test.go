@@ -33,6 +33,9 @@ var (
 	// iOrderBasket adds the contract element cart.api.order, whose
 	// Represents field marks the term basket.
 	iOrderBasket = change{apiPath, "", "\n## <a id=\"cart.api.order\"></a> order\n\n- Represents: [basket]\n\nWhat a buyer orders.\n"}
+	// iTrolleyBasket adds the glossary entry cart.trolley, whose Definition
+	// field marks the term basket.
+	iTrolleyBasket = change{glossaryPath, "", trolleyEntry}
 	// iFullAsk leaves the outcome of cart.add.full's Examples row undecided.
 	iFullAsk = change{featurePath, "| 1 | the first cart | refused |", "| 1 | the first cart | ? |"}
 	// iLimitQuestion asks a question in the prose of cart.add.limit.
@@ -433,30 +436,37 @@ func TestCoherenceVerifyUndecided(t *testing.T) {
 	t.Run("row2 a contract element whose Represents field marks a term whose Status is open", func(t *testing.T) {
 		t.Parallel()
 		// Only a rule block's marks count; the open entry is undecided
-		// itself (row6).
+		// itself (row7).
 		r, _ := accepted(t, amended(impactTree(), iBasketOpen, iOrderBasket))
 		r.verify().only(t, "undecided cart.basket")
 	})
-	t.Run("row3 a rule with Then ?", func(t *testing.T) {
+	t.Run("row3 a glossary entry whose Definition field marks a term whose Status is open", func(t *testing.T) {
+		t.Parallel()
+		// Only a rule block's marks count; the open entry is undecided
+		// itself (row7).
+		r, _ := accepted(t, amended(impactTree(), iBasketOpen, iTrolleyBasket))
+		r.verify().only(t, "undecided cart.basket")
+	})
+	t.Run("row4 a rule with Then ?", func(t *testing.T) {
 		t.Parallel()
 		o := covered(t, iLimitAsk).verify()
 		o.only(t, "undecided cart.add.limit")
 		o.exits(t, 1)
 	})
-	t.Run("row4 a rule marking a term whose Status is open", func(t *testing.T) {
+	t.Run("row5 a rule marking a term whose Status is open", func(t *testing.T) {
 		t.Parallel()
-		// The open entry is undecided itself (row6).
+		// The open entry is undecided itself (row7).
 		r, _ := accepted(t, amended(impactTree(), iBasketOpen, iOpenBasket))
 		r.verify().only(t, "undecided cart.pay.open", "undecided cart.basket")
 	})
-	t.Run("row5 a feature with Contact: ?, unchanged since the manifest", func(t *testing.T) {
+	t.Run("row6 a feature with Contact: ?, unchanged since the manifest", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, amended(impactTree(), iAddContactAsk))
 		o := r.verify()
 		o.only(t, "undecided cart.add")
 		o.exits(t, 1)
 	})
-	t.Run("row6 an open glossary entry, marked by no rule", func(t *testing.T) {
+	t.Run("row7 an open glossary entry, marked by no rule", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, amended(impactTree(), iBasketOpen))
 		r.verify().only(t, "undecided cart.basket")
