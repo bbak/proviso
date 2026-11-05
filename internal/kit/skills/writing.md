@@ -137,7 +137,11 @@ text lines up, then its Examples table.
 - **A term** is a word that decides an outcome and that two careful
   readers could understand differently. Its entry has `Definition`,
   `Contact`, `Status` (`defined`, or `open` with a `Question`) and
-  `Aliases` for other names and forms.
+  `Aliases` for other names and forms. A definition, or a deviation,
+  marks another term where its meaning rests on that term, so that a
+  change of it reaches this one; never every word that happens to be a
+  term, since each mark puts that term into every pack that takes
+  this one.
 - **A term's name** is the business's word, in the form that sets it
   apart from everyday use where the business has one: *daily limit*
   rather than *limit*, or a word with no everyday sense, such as
