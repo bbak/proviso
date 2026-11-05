@@ -54,6 +54,7 @@ type Element struct {
 	Marks      []string // the identifiers of the glossary entries its rule block marks
 	Refs       []Ref    // the backtick references of its rule block
 	Represents []string // the identifiers of the glossary entries its Represents marks
+	LeansOn    []string // the identifiers of the glossary entries its Definition and Deviations mark
 	DefinedBy  string   // the identifier of the reference its Defined by links to
 	Undecided  []Pos    // the lines holding a place lint asks about as undecided, each once, in order
 }
@@ -100,7 +101,7 @@ func (l *linter) export() []Element {
 			ID: e.id, Type: e.typ, File: e.file.path, Line: e.line, End: end,
 			Text:    e.file.doc.Source(e.line, end),
 			Heading: e.raw, Marks: e.marks, DefinedBy: e.definedBy,
-			Cap: e.cap, Refs: e.refs, Represents: e.represents,
+			Cap: e.cap, Refs: e.refs, Represents: e.represents, LeansOn: e.leansOn,
 		}
 		if e.parent != nil {
 			x.Parent = e.parent.id

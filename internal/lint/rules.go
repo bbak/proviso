@@ -365,23 +365,24 @@ func (l *linter) checkCycles(rules []*rule) {
 	}
 }
 
-func (l *linter) checkRepresents(e *element) {
+// fieldMarks resolves the term marks in the fields of e with the given
+// keys, reporting each that names no visible glossary entry, and returns
+// the identifiers of the entries they mark, each once, in the order of
+// their marks.
+func (l *linter) fieldMarks(e *element, keys ...string) []string {
+	var out []string
 	for _, f := range e.fields {
-		if f.key != "Represents" {
+		if !slices.Contains(keys, f.key) {
 			continue
 		}
-		ln := guarded.Parse([]guarded.SourceLine{{N: f.line, Text: f.value}})
-		for _, gl := range ln.Lines {
-			for _, sp := range gl.Spans {
-				if sp.Kind != guarded.Mark {
-					continue
-				}
-				if t := l.resolveTerm(e.cap, sp.Value); t != nil {
-					e.represents = append(e.represents, t.id)
-				} else {
-					l.report(Error, "term-unresolved", Pos{e.file.path, f.line}, "the term [%s] names no visible glossary entry", sp.Value).col = sp.Start
-				}
+		for _, sp := range guarded.FieldMarks(f.value) {
+			t := l.resolveTerm(e.cap, sp.Value)
+			if t == nil {
+				l.report(Error, "term-unresolved", Pos{e.file.path, f.line}, "the term [%s] names no visible glossary entry", sp.Value).col = sp.Start
+			} else if !slices.Contains(out, t.id) {
+				out = append(out, t.id)
 			}
 		}
 	}
+	return out
 }
