@@ -161,4 +161,14 @@ func TestDefinitionMarks(t *testing.T) {
 	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.cm": Changed, "system.user": "[[system.cm]]"}) {
 		t.Errorf("deviations: %v", got)
 	}
+	// A deviation relies on the terms it marks.
+	got = throughGlossary(t, entry("step", "step", "A line.")+dev("a [step]"), entry("step", "step", "A new line.")+dev("a [step]"))
+	want = map[string]string{
+		"system.cm":   "[[system.step]]",
+		"system.step": Changed,
+		"system.user": "[[system.step system.cm]]",
+	}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("a deviation marking a term:\n%v\nwant\n%v", got, want)
+	}
 }
