@@ -578,6 +578,76 @@ var (
 	amountAdded  = change{apiPath, "How many pieces the line holds.\n", "How many pieces the line holds.\n\n### <a id=\"cart.api.line.amount\"></a> amount\n\nWhat the line costs.\n"}
 )
 
+// The trees of the rows of baseline.diff.dependency in which glossary
+// entries mark each other's terms in their Definition or Deviations.
+
+// deviationsTree is diffTree with the term thematic break, marked by the
+// rule cart.x.line, departing from its reference in its Deviations.
+func deviationsTree() tree {
+	return diffTree().edit(glossaryPath, "#system.ref.commonmark)\n- Contact: Dana Reyes",
+		"#system.ref.commonmark)\n- Deviations: only a break of three hyphens.\n- Contact: Dana Reyes")
+}
+
+var breakDeviations = change{glossaryPath, "- Deviations: only a break of three hyphens.", "- Deviations: only a break of three asterisks."}
+
+// lineEndingTree is diffTree with the system's term line ending, the cart's
+// term receipt line, whose Definition marks [line ending], and the rule
+// cart.x.print, which marks [receipt line].
+func lineEndingTree() tree {
+	return diffTree().with(sysGlossaryPath, `# Glossary
+
+## <a id="system.line-ending"></a> line ending
+
+- Definition: What ends a line of text.
+- Contact: Dana Reyes
+- Status: defined
+`).appendTo(glossaryPath, `
+## <a id="cart.receipt-line"></a> receipt line
+
+- Definition: One line of a receipt, closed by a [line ending].
+- Contact: Dana Reyes
+- Status: defined
+`).appendTo(xPath, "\n"+ruleMD("cart.x.print", "A receipt line is printed",
+		"When      the shop prints the [receipt line] <line>\nThen      <line> is on paper\n  And     nothing else changes",
+		"| line | outcome |\n| --- | --- |\n| the first line | on paper |"))
+}
+
+var lineEndingDefinition = change{sysGlossaryPath, "- Definition: What ends a line of text.", "- Definition: What ends a line of text, a line feed."}
+
+// shelfEntry is the cart's glossary entry shelf, with its Definition.
+func shelfEntry(definition string) string {
+	return "\n## <a id=\"cart.shelf\"></a> shelf\n\n- Definition: " + definition + "\n- Contact: Dana Reyes\n- Status: defined\n- Aliases: shelves\n"
+}
+
+// circleTree is diffTree with the term item marking [shelf] in its
+// Definition, the term shelf marking [item] in its own, and the rule
+// cart.x.stock, which marks [shelf].
+func circleTree() tree {
+	return diffTree().
+		edit(glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product placed in the cart from a [shelf].").
+		appendTo(glossaryPath, shelfEntry("Where an [item] waits for a buyer.")).
+		appendTo(xPath, "\n"+ruleMD("cart.x.stock", "A shelf shows its goods",
+			"When      a buyer looks at the [shelf] <shelf>\nThen      <shelf> shows its goods\n  And     nothing else changes",
+			"| shelf | outcome |\n| --- | --- |\n| the first shelf | goods shown |"))
+}
+
+var itemFromShelf = change{glossaryPath, "- Definition: A product placed in the cart from a [shelf].", "- Definition: A product a buyer placed in the cart from a [shelf]."}
+
+// aisleTree is diffTree with the term shelf marking [item] and [aisle] in
+// its Definition, and the term aisle marking [shelves] in its own.
+func aisleTree() tree {
+	return diffTree().
+		appendTo(glossaryPath, shelfEntry("Where an [item] waits in an [aisle].")).
+		appendTo(glossaryPath, "\n## <a id=\"cart.aisle\"></a> aisle\n\n- Definition: A row of [shelves].\n- Contact: Dana Reyes\n- Status: defined\n")
+}
+
+// selfTree is diffTree with the term item marking itself in its Definition.
+func selfTree() tree {
+	return diffTree().edit(glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product placed in the cart, which holds many [items].")
+}
+
+var itemSelfDefinition = change{glossaryPath, "- Definition: A product placed in the cart, which holds many [items].", "- Definition: A product a buyer placed in the cart, which holds many [items]."}
+
 // checkThrough asserts that e is changed through a dependency, along exactly
 // the chains given, each written as identifiers joined by " > ", in any
 // order.
@@ -670,7 +740,53 @@ func TestBaselineDiffDependency(t *testing.T) {
 		t.Parallel()
 		diffOf(t, diffTree(), change{referencesPath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}).only(t, "system.ref.commonmark:changed")
 	})
-	t.Run("row12 a parameter's Rationale reworded only", func(t *testing.T) {
+	t.Run("row12 a glossary entry's Deviations reworded", func(t *testing.T) {
+		t.Parallel()
+		// system.heading: cart.thematic-break, marked by cart.x.line.
+		o := diffOf(t, deviationsTree(), breakDeviations)
+		o.only(t, "cart.thematic-break:changed", "cart.x.line:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.line"), "cart.thematic-break")
+	})
+	t.Run("row13 a Definition reworded, while another entry marks it in its Definition", func(t *testing.T) {
+		t.Parallel()
+		// system.line-ending: system.line-ending; install.version-stamp:
+		// cart.receipt-line, marked by cart.x.print.
+		o := diffOf(t, lineEndingTree(), lineEndingDefinition)
+		o.only(t, "system.line-ending:changed", "cart.receipt-line:changed-through", "cart.x.print:changed-through")
+		checkThrough(t, o.elem(t, "cart.receipt-line"), "system.line-ending")
+		checkThrough(t, o.elem(t, "cart.x.print"), "system.line-ending > cart.receipt-line")
+	})
+	t.Run("row14 a Definition reworded, while two entries mark each other", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty;
+		// lint.guard: cart.shelf, marked by cart.x.stock.
+		o := diffOf(t, circleTree(), itemFromShelf)
+		o.only(t, "cart.item:changed", "cart.shelf:changed-through", "cart.add.limit:changed-through",
+			"cart.add.empty:changed-through", "cart.x.stock:changed-through")
+		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.x.stock"), "cart.item > cart.shelf")
+	})
+	t.Run("row15 a Definition reworded, while the entry marking it and a third mark each other", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.item; lint.guard: cart.shelf; lint.keyword:
+		// cart.aisle.
+		o := diffOf(t, aisleTree(), itemDefinition)
+		o.only(t, "cart.item:changed", "cart.shelf:changed-through", "cart.aisle:changed-through",
+			"cart.add.limit:changed-through", "cart.add.empty:changed-through")
+		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.aisle"), "cart.item > cart.shelf")
+	})
+	t.Run("row16 a Definition reworded, while it marks its own term", func(t *testing.T) {
+		t.Parallel()
+		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty.
+		o := diffOf(t, selfTree(), itemSelfDefinition)
+		o.only(t, "cart.item:changed", "cart.add.limit:changed-through", "cart.add.empty:changed-through")
+		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
+		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
+	})
+	t.Run("row17 a parameter's Rationale reworded only", func(t *testing.T) {
 		t.Parallel()
 		// system.change-effects: cart.max-quantity, referred to by cart.add.limit.
 		diffOf(t, diffTree(), change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}).only(t, "cart.max-quantity:changed")
@@ -838,6 +954,16 @@ Then      <basket> is given back
 `)
 }
 
+// trolleyEntry is the glossary entry trolley, whose Definition marks the
+// term basket.
+const trolleyEntry = `
+## <a id="cart.trolley"></a> trolley
+
+- Definition: A [basket] on wheels.
+- Contact: Dana Reyes
+- Status: defined
+`
+
 func TestBaselineDiffUndecided(t *testing.T) {
 	t.Parallel()
 	tr := undecidedTree()
@@ -880,7 +1006,18 @@ func TestBaselineDiffUndecided(t *testing.T) {
 			t.Errorf("want cart.order to be built, naming no undecided place, got %v", e.Undecided)
 		}
 	})
-	t.Run("row5 a rule with ? in two cells of one Examples row", func(t *testing.T) {
+	t.Run("row5 a glossary entry whose Definition field marks an open term", func(t *testing.T) {
+		t.Parallel()
+		// Only a rule block's marks count. The tree is the undecided tree
+		// with a glossary entry whose Definition marks the open term basket.
+		gt := undecidedTree().appendTo(glossaryPath, trolleyEntry)
+		dir := gt.write(t)
+		e := diffIn(t, dir, dir, filepath.Join(dir, "proviso")).elem(t, "cart.trolley")
+		if len(e.Undecided) != 0 {
+			t.Errorf("want cart.trolley to be built, naming no undecided place, got %v", e.Undecided)
+		}
+	})
+	t.Run("row6 a rule with ? in two cells of one Examples row", func(t *testing.T) {
 		t.Parallel()
 		undecided(t, "cart.x.bag", place{xPath, tr.line(xPath, "| apple | ? | ? |")})
 	})
