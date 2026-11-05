@@ -280,7 +280,16 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.pay.receipt")
 		o.exactly(t, "Context", "cart.thematic-break", "system.ref.commonmark")
 	})
-	t.Run("row4 a rule marking a term other rules mark", func(t *testing.T) {
+	t.Run("row4 a rule marking a term whose Definition marks another term", func(t *testing.T) {
+		t.Parallel()
+		// [line ending]: [price], which the Definition of shelf marks;
+		// cart.pay.open, which depended on nothing, now marks [shelf].
+		shelfPrice := packTree().edit(glossaryPath, "- Definition: Where the shop keeps goods.", "- Definition: Where the shop keeps goods at a [price].")
+		o, _, _ := packFrom(t, shelfPrice, change{payPath, "Then      the shop greets every buyer", "Then      the shop greets every buyer at the [shelf]"})
+		o.exactly(t, "Amendment", "cart.pay.open")
+		o.exactly(t, "Context", "cart.shelf", "system.price")
+	})
+	t.Run("row5 a rule marking a term other rules mark", func(t *testing.T) {
 		t.Parallel()
 		// [spec root]: [price], which cart.pay.total and cart.add.spoken
 		// mark as well.
@@ -288,7 +297,7 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "billing.refund.full")
 		o.exactly(t, "Context", "system.price")
 	})
-	t.Run("row5 a rule removed", func(t *testing.T) {
+	t.Run("row6 a rule removed", func(t *testing.T) {
 		t.Parallel()
 		// lint.run.root: cart.add.spoken, which marks a term and hands over.
 		o, _, _ := packOf(t, removedFrom(packTree(), featurePath, "cart.add.spoken"))
@@ -316,7 +325,7 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line", "cart.item")
 	})
-	t.Run("row6 a rule handing over, named by --element", func(t *testing.T) {
+	t.Run("row7 a rule handing over, named by --element", func(t *testing.T) {
 		t.Parallel()
 		// baseline.diff.added: cart.add.spoken, as in row1.
 		r, _ := accepted(t, packTree())

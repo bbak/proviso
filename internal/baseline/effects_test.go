@@ -104,3 +104,61 @@ func TestDependencies(t *testing.T) {
 		}
 	}
 }
+
+// entry is a glossary entry of the system whose Definition reads def.
+func entry(id, name, def string) string {
+	return "\n## <a id=\"system." + id + "\"></a> " + name + "\n\n- Definition: " + def + "\n- Contact: Ann\n- Status: defined\n"
+}
+
+// throughGlossary compares the impact tree with the entries added to its
+// glossary against the baseline of the same tree with the entries as
+// former holds them.
+func throughGlossary(t *testing.T, former, now string) map[string]string {
+	t.Helper()
+	tree := func(entries string) func(map[string]string) {
+		return baselinetest.EditTree(func(m map[string]string) { m["glossary.md"] += entries })
+	}
+	before := baselinetest.Files(tree(former))
+	base, _ := Parse(Write(before))
+	nowEls := baselinetest.Files(tree(now))
+	out := map[string]string{}
+	for _, e := range Through(Compare(nowEls, base), nowEls, before) {
+		out[e.ID] = e.Change
+		if e.Change == ChangedThrough {
+			out[e.ID] = fmt.Sprint(e.Through)
+		}
+	}
+	return out
+}
+
+func TestDefinitionMarks(t *testing.T) {
+	// A definition that marks a term relies on its meaning; a rule
+	// marking that entry is reached through both.
+	got := throughGlossary(t,
+		entry("step", "step", "A line.")+entry("guard", "guard", "The [step] that guards; [guard] itself."),
+		entry("step", "step", "A new line.")+entry("guard", "guard", "The [step] that guards; [guard] itself."))
+	if got["system.step"] != Changed || got["system.guard"] != "[[system.step]]" || len(got) != 2 {
+		t.Errorf("a definition marking a term: %v", got)
+	}
+	// Two entries marking each other: a circle adds no chain of its own.
+	got = throughGlossary(t,
+		entry("step", "step", "A [guard] line.")+entry("guard", "guard", "The [step] that guards; [keyword] too.")+entry("keyword", "keyword", "Of a [guard]."),
+		entry("step", "step", "A new [guard] line.")+entry("guard", "guard", "The [step] that guards; [keyword] too.")+entry("keyword", "keyword", "Of a [guard]."))
+	want := map[string]string{
+		"system.step":    Changed,
+		"system.guard":   "[[system.step]]",
+		"system.keyword": "[[system.step system.guard]]",
+	}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("a circle:\n%v\nwant\n%v", got, want)
+	}
+	// Deviations pass the changed meaning on as a Definition does.
+	dev := func(d string) string {
+		return "\n## <a id=\"system.cm\"></a> cm\n\n- Defined by: [Std](references.md#system.ref.std)\n- Deviations: " + d + "\n- Contact: Ann\n- Status: defined\n" +
+			entry("user", "user", "Reads [cm].")
+	}
+	got = throughGlossary(t, dev("none"), dev("some"))
+	if fmt.Sprint(got) != fmt.Sprint(map[string]string{"system.cm": Changed, "system.user": "[[system.cm]]"}) {
+		t.Errorf("deviations: %v", got)
+	}
+}

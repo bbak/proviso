@@ -298,6 +298,18 @@ func TestFindings(t *testing.T) {
 			"field-unknown@glossary.md:34", "open-entry-incomplete@glossary.md:3", "status-unknown@glossary.md:27",
 			"term-ambiguous@glossary.md:3", "term-ambiguous@glossary.md:29", "undecided@glossary.md:5",
 		}},
+		{"definition marks", func() map[string]string {
+			f := base()
+			f["capabilities/c/glossary.md"] += "\n## <a id=\"c.x\"></a> x\n\n- Definition: Of the [spec tree], a [finding], [x] itself, not `` `[nope]` ``\n  and \"[spec-tree]\".\n- Contact: x\n- Status: defined\n"
+			f["glossary.md"] += "\n## <a id=\"system.y\"></a> y\n\n- Definition: Of a [finding].\n- Contact: x\n- Status: defined\n" +
+				"\n## <a id=\"system.cm\"></a> cm\n\n- Defined by: [CM](references.md#system.ref.cm)\n- Deviations: a [guard] and [nope].\n- Contact: x\n- Status: defined\n"
+			f["references.md"] = "# References\n\n## <a id=\"system.ref.cm\"></a> CommonMark\n\n- Version: 0.31\n- Link: https://spec.commonmark.org\n- Contact: Ann\n"
+			return f
+		}(), []string{
+			// A quoted mark in a field is a mark; a capability's term is
+			// not visible at the system level.
+			"term-unresolved@capabilities/c/glossary.md:12", "term-unresolved@glossary.md:19", "term-unresolved@glossary.md:26",
+		}},
 		{"duplicates and ambiguity", func() map[string]string {
 			f := base()
 			f["capabilities/c/glossary.md"] += "\n## <a id=\"c.f\"></a> tree\n\n- Definition: x\n- Contact: x\n- Status: defined\n"

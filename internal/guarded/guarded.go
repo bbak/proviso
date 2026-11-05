@@ -165,7 +165,24 @@ var placeholder = regexp.MustCompile(`^<([A-Za-z0-9_-]+)>`)
 // next run of the same length, a term mark from `[` to the next `]` (not a
 // Markdown link), and a placeholder is `<name>`. An opening delimiter
 // without its closing one is text.
-func lex(s string) []Span {
+func lex(s string) []Span { return lexIn(s, false) }
+
+// FieldMarks returns the term marks in the value of a field, left to right.
+// In a field, only code spans and term marks are read, as lex reads them:
+// brackets within a code span mark nothing, while quotes and angle
+// brackets are text.
+func FieldMarks(s string) []Span {
+	var out []Span
+	for _, sp := range lexIn(s, true) {
+		if sp.Kind == Mark {
+			out = append(out, sp)
+		}
+	}
+	return out
+}
+
+// lexIn is lex; in a field, it reads no literals and no placeholders.
+func lexIn(s string, field bool) []Span {
 	var spans []Span
 	textStart := 0
 	flush := func(end int) {
@@ -178,6 +195,9 @@ func lex(s string) []Span {
 		var sp *Span
 		switch s[i] {
 		case '"':
+			if field {
+				break
+			}
 			if j := strings.IndexByte(s[i+1:], '"'); j >= 0 {
 				end := i + 1 + j + 1
 				sp = &Span{Literal, i, end, s[i+1 : end-1]}
@@ -201,6 +221,9 @@ func lex(s string) []Span {
 				}
 			}
 		case '<':
+			if field {
+				break
+			}
 			if m := placeholder.FindStringSubmatch(s[i:]); m != nil {
 				sp = &Span{Placeholder, i, i + len(m[0]), m[1]}
 			}

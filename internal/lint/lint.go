@@ -72,9 +72,10 @@ func Check(t *tree.Tree) *Result {
 		l.checkFields(e)
 		if e.typ == tGlossary {
 			l.checkEntry(e)
+			e.leansOn = l.fieldMarks(e, "Definition", "Deviations")
 		}
 		if e.typ == tContract {
-			l.checkRepresents(e)
+			e.represents = l.fieldMarks(e, "Represents")
 		}
 	}
 	l.checkAmbiguity()

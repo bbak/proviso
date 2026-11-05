@@ -37,7 +37,7 @@ func Effects(typ, part string) (dependents bool, sources []string) {
 	switch {
 	case typ == tRule && (kind == "step" || kind == "row"):
 		return true, []string{Events, Ranges}
-	case typ == tGlossary && (part == "field Definition" || part == "field Defined by"):
+	case typ == tGlossary && (part == "field Definition" || part == "field Defined by" || part == "field Deviations"):
 		return true, nil
 	case typ == tReference && (part == "field Version" || part == "field Link"):
 		return true, nil
@@ -113,6 +113,13 @@ func dependsOn(elements []lint.Element, removed map[string][]string) map[string]
 		case tGlossary:
 			if e.DefinedBy != "" {
 				d = append(d, e.DefinedBy)
+			}
+			// An entry that marks its own term depends on nothing through
+			// that mark.
+			for _, m := range e.LeansOn {
+				if m != e.ID {
+					d = append(d, m)
+				}
 			}
 		}
 		slices.Sort(d)
@@ -192,13 +199,12 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 	}
 	// chains returns every chain of identifiers from a listed element
 	// whose changed part passes its meaning on to one the element id
-	// depends on directly.
-	memo := map[string][][]string{}
+	// depends on directly, passing none of the elements in visiting, nor
+	// id, twice. Glossary entries may depend on each other in a circle,
+	// so what reaches an element depends on the path taken to it, and
+	// nothing is kept between calls.
 	var chains func(id string, visiting map[string]bool) [][]string
 	chains = func(id string, visiting map[string]bool) [][]string {
-		if c, ok := memo[id]; ok {
-			return c
-		}
 		visiting[id] = true
 		var out [][]string
 		for _, d := range deps[id] {
@@ -214,7 +220,6 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 		}
 		delete(visiting, id)
 		slices.SortFunc(out, slices.Compare[[]string])
-		memo[id] = out
 		return out
 	}
 	for id := range through {

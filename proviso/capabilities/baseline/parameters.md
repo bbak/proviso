@@ -34,7 +34,10 @@ rule or a contract element's member, has parts of its own.
   element it refers to, a member added later included, and one removed
   by an amendment, since a changed member can affect any such rule:
   coarse on purpose, at the cost of rules listed that only the added or
-  removed member touches.
+  removed member touches. A glossary entry depends on the terms its
+  definition or deviations mark, and two entries may each mark the
+  other, as a glossary's definitions often lean on each other; an entry
+  that marks its own term depends on nothing through that mark.
 
 Which element depends on which: when the meaning of the second changes,
 so does the meaning of the first.
@@ -46,3 +49,4 @@ so does the meaning of the first.
 | a rule | the rule its hand-over names |
 | a contract element | the glossary entry its field `Represents` marks |
 | a glossary entry | the reference its field `Defined by` links to |
+| a glossary entry | every other glossary entry whose term its field `Definition` or `Deviations` marks |

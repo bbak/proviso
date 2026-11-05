@@ -150,9 +150,11 @@
 ## <a id="system.term"></a> term
 
 - Definition: A word or phrase defined by a glossary entry, marked as
-  `[term]` in a rule block or a "Represents" field: a name in brackets,
+  `[term]` in a rule block, a "Represents" field, or the "Definition"
+  or "Deviations" field of a glossary entry: a name in brackets,
   unless the `]` is directly followed by `(`, so `[text](…)` marks
-  nothing and `[text][label]` marks two terms.
+  nothing and `[text][label]` marks two terms. In a field, brackets
+  within a code span mark nothing.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term

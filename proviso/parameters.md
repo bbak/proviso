@@ -45,7 +45,7 @@ a dependency, whose meaning changed while its text did not.
 | changed part | dependents | candidate sources |
 | --- | --- | --- |
 | a step or Examples row of a rule | yes | events, ranges |
-| the field `Definition` or `Defined by` of a glossary entry | yes | none |
+| the field `Definition`, `Defined by` or `Deviations` of a glossary entry | yes | none |
 | the field `Version` or `Link` of a reference | yes | none |
 | any part of a contract element, and any part of a parameter but its field `Rationale` | yes | none |
 | the section `Property` or `Ranges over` of an invariant or a constraint | no | scope |

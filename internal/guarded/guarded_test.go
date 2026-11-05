@@ -27,6 +27,16 @@ func TestLex(t *testing.T) {
 	}
 }
 
+func TestFieldMarks(t *testing.T) {
+	var got []string
+	for _, sp := range FieldMarks("A [spec tree], not `` `[nope]` ``, \"[quoted]\" <[angled]> [a][b] [x](y)") {
+		got = append(got, sp.Value)
+	}
+	if strings.Join(got, "|") != "spec tree|quoted|angled|a|b" {
+		t.Errorf("got %v", got)
+	}
+}
+
 func TestHandOver(t *testing.T) {
 	l := parseLine(SourceLine{1, "Otherwise → lint.layout.file"})
 	if !l.IsHandOver() || l.Target != "lint.layout.file" {
