@@ -45,6 +45,7 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | spec tree, in the "Definition" field of a glossary entry | lint | yes | the system's entry | a definition may mark the terms it relies on |
 | spec tree, in the "Deviations" field of a glossary entry | lint | yes | the system's entry | so may deviations |
 | spec-tree, in the "Definition" field of a glossary entry | lint | no | error | a mark in a definition resolves as any other |
+| spec-tree, in the "Deviations" field of a glossary entry | lint | no | error | so does a mark in deviations |
 | finding, in the "Definition" field of a glossary entry of the system | the system, while lint defines finding | no | error | a capability's terms are not visible at the system level |
 | spec tree, in a "Definition" field that holds `` `[spec-tree]` `` before it | lint | yes | the system's entry, and nothing reported for the code span | brackets within a code span mark nothing |
 | finding, in a "Represents" field that holds `` `[spec-tree]` `` before it | lint | yes | lint's entry, and nothing reported for the code span | in every field alike |
