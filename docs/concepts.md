@@ -36,7 +36,8 @@ when it holds and `Otherwise` what happens when it does not. Below the
 block, an **Examples table** gives concrete cases on both sides of the
 guard.
 
-**Glossary entry.** Defines a **term**, which rules mark as `[term]`.
+**Glossary entry.** Defines a **term**, which rules mark as `[term]`;
+a definition may mark the terms it rests on, too.
 Glossaries exist per level; a term means the same wherever it is
 marked.
 

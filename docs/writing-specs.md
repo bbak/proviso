@@ -113,6 +113,7 @@ flowchart TD
   end
   F -- holds --> I
   R -- marks a term --> G
+  G -- marks a term --> G
   R -- refers to --> K
   R -- refers to --> P
   R -- hands over to --> R
@@ -280,6 +281,14 @@ Its entry defines it once:
   level and is marked, or the rule says it in other words.
   Prose needs no marks: it does not decide behaviour, so the search need
   not follow it.
+- **A definition may mark the terms its meaning rests on,** in its
+  `Definition:` or `Deviations:`, such as `[line ending]`. Such marks
+  are optional. When the marked term changes, the entry is changed
+  through it, and so is every rule that marks the entry; the context
+  pack brings the marked term along. Mark only what the meaning rests
+  on, not every word that happens to be a term: each mark brings that
+  term into every pack that takes this one. Brackets in a code span
+  mark nothing.
 - **Name a term distinctly,** in the business's own words: *daily
   limit* rather than *limit*, or a word with no everyday sense, such as
   *composable*. A bare everyday word as a term claims that word in every
