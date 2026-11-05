@@ -173,7 +173,7 @@ to that contract element.
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [element part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it, each from an [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for, to the one it depends on directly
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it and passes no [element] twice, the one it reaches included, each from an [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for, to the one it depends on directly
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
@@ -195,6 +195,7 @@ Otherwise nothing is listed because of <element>
 | `system.heading`, its Deviations reworded | yes | every rule marking it listed, through `system.heading` | a deviation is part of the term's meaning |
 | `system.line-ending`, its Definition reworded, while `install.version-stamp` marks it in its Definition | yes | `install.version-stamp` listed, through `system.line-ending`, and every rule marking it, through `system.line-ending`, `install.version-stamp` | a definition that marks a term relies on its meaning |
 | `lint.step`, its Definition reworded, while `lint.guard` marks it in its Definition and `lint.step` marks `lint.guard` in its own | yes | `lint.guard` listed, through `lint.step`, and every rule marking either, each chain passing no element twice | a circle adds no chain of its own |
+| `lint.step`, its Definition reworded, while `lint.guard` marks it, and `lint.guard` and `lint.keyword` mark each other, each in its Definition | yes | `lint.guard` listed, through `lint.step` only, and `lint.keyword`, through `lint.step`, `lint.guard` | a chain never comes back to the element it reaches |
 | `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
