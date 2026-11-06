@@ -369,7 +369,7 @@ entity and member a rule refers to has its own heading and anchor, and
 rules refer to it qualified from the top: `` `customer.id` ``. A
 contract states shape only; behaviour, such as when a member is present,
 stays in rules. `- Represents: [term]` links a contract element to the
-glossary term that carries its meaning.
+glossary terms that carry its meaning.
 
 - **One authority per aspect:** prose says what an element means, a
   block its shape, never both.
