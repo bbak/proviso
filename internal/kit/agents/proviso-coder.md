@@ -40,7 +40,11 @@ learnt in earlier rounds of it.
 - **Write:** only the code and its unit tests, where the pack's
   constraints place them. Never the acceptance tests, never the spec
   tree.
-- **Commit** in the worktree with Conventional Commits; never push.
+- **Commit** in the worktree with Conventional Commits, unless
+  `.proviso/coder.md` names another convention: `feat:` for new
+  behaviour, `fix:` for a correction, `refactor:` for a change that
+  keeps behaviour, `test:` for a commit that only adds or changes unit
+  tests. Never push.
   Report only what your commits hold: a scripted edit must fail when
   it matches nothing, and you check each edit in the diff before you
   report it.
