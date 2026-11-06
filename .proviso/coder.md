@@ -15,6 +15,3 @@ the coding agent; the context pack decides what is built.
 - **The files `init` installs** live as real files in `internal/kit/`,
   embedded with `//go:embed`, never as string literals in Go code.
 - **Line endings** are LF in every file you write.
-- **Commit messages** use `feat:` for new behaviour, `fix:` for a
-  correction, `refactor:` for a change that keeps behaviour, and `test:`
-  for a commit that only adds or changes tests.

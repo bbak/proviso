@@ -23,7 +23,6 @@ tested.
   - **Never share a folder** between parallel subtests: each writes only
     to its own `t.TempDir()`.
 - **Names:** a test is named after the element it checks, as
-  `system.test-names` says. While you work, run only the tests of the
-  pack's elements and those you changed, such as
+  `system.test-names` says. The tests of some elements, with the
+  fixture tests every such run needs:
   `go test ./acceptance/... -run '^(TestFixture.*|TestLintRunModel(_.*)?)$'`.
-- **Commit messages** use the prefix `test:`.
