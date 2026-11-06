@@ -3,10 +3,10 @@
 Working practice for Proviso's own code. They add to the definition of
 the coding agent; the context pack decides what is built.
 
-- **Build and check:** `task build`, `task test` and `task vet` must
-  pass. Build a binary for your own runs into a temporary folder, never
-  into `bin/` or the repository root: a virus scanner may quarantine
-  binaries in `bin/`.
+- **Build and check:** `go build ./...`, `task test` and `task vet`
+  must pass. Build a binary for your own runs into a temporary folder,
+  never into `bin/` or the repository root: a virus scanner may
+  quarantine binaries in `bin/`.
 - **Run Proviso on its own tree:** `lint`, and the command the amendment
   is about, on the worktree's `proviso/`, unless the command would write
   into it; then run it in a scratch repository. Report the results.
