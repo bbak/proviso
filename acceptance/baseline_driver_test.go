@@ -457,7 +457,8 @@ func parseElementDiff(t *testing.T, stdout string) elementDiff {
 // byte; the parts of each in the order of their lines in manifest_file, that
 // is by the part as written, byte by byte, since every line of one element
 // starts with the same identifier and a tab; the chains of each by their
-// identifiers in turn, a chain that starts another first; the lines not
+// first identifier, byte by byte, which no two of them share (see
+// checkChains); the lines not
 // decided of each in the order of their lines, which, as every line of one
 // element stands in one file, also says that each is named once.
 func checkDiffOrder(t *testing.T, list []diffElement) {
@@ -474,7 +475,8 @@ func checkDiffOrder(t *testing.T, list []diffElement) {
 			}
 		}
 		for i := 1; i < len(e.Through); i++ {
-			if !chainBefore(e.Through[i-1], e.Through[i]) {
+			// An empty chain is reported by checkChains.
+			if a, b := e.Through[i-1], e.Through[i]; len(a) > 0 && len(b) > 0 && a[0] >= b[0] {
 				t.Errorf("baseline.diff.order: in %s, the chain %q before %q", e.ID, e.Through[i-1], e.Through[i])
 			}
 		}
@@ -487,23 +489,13 @@ func checkDiffOrder(t *testing.T, list []diffElement) {
 	}
 }
 
-// chainBefore tells whether the chain a comes before the chain b: by their
-// first identifier, then by their second, and so on, each compared byte by
-// byte, a chain that is the start of the other coming first.
-func chainBefore(a, b []string) bool {
-	for i := 0; i < len(a) && i < len(b); i++ {
-		if a[i] != b[i] {
-			return a[i] < b[i]
-		}
-	}
-	return len(a) < len(b)
-}
-
 // checkChains checks baseline.diff.dependency and system.cli.element-diff
 // for every diff: only an element changed through a dependency names
 // chains, and it names at least one; every chain starts at an element listed
 // as added, changed or removed, and passes only elements listed, whose
-// meaning changed, never the element it reaches.
+// meaning changed, never the element it reaches; and no two chains of one
+// element start at the same element, since only the shortest chain from each
+// is named.
 func checkChains(t *testing.T, list []diffElement) {
 	t.Helper()
 	change := map[string]string{}
@@ -520,11 +512,16 @@ func checkChains(t *testing.T, list []diffElement) {
 		if len(e.Through) == 0 {
 			t.Errorf("system.cli.element-diff: %s is changed through a dependency, but names no chain", e.ID)
 		}
+		from := map[string]bool{}
 		for _, c := range e.Through {
 			if len(c) == 0 {
 				t.Errorf("system.cli.element-diff: %s names an empty chain", e.ID)
 				continue
 			}
+			if from[c[0]] {
+				t.Errorf("baseline.diff.dependency: %s names more than one chain from %s: %q", e.ID, c[0], e.Through)
+			}
+			from[c[0]] = true
 			if ch := change[c[0]]; ch != "added" && ch != "changed" && ch != "removed" {
 				t.Errorf("baseline.diff.dependency: the chain %q of %s starts at %s, which is not listed as added, changed or removed", c, e.ID, c[0])
 			}

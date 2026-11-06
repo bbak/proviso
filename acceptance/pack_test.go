@@ -150,7 +150,7 @@ func TestBaselinePackContents(t *testing.T) {
 			}
 		}
 	})
-	t.Run("derived: every chain that reaches an element", func(t *testing.T) {
+	t.Run("derived: a chain from each changed element that reaches an element", func(t *testing.T) {
 		t.Parallel()
 		// That the chains stand in diff's order is checked for every run
 		// (see checkAmendment).
