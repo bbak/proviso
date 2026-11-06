@@ -40,8 +40,8 @@ Then      the shop sends a bill for <product>
 	}
 	represents := api(baseline(), "[basket]")
 	broken := api(sys, "[spec\n  tree]")
-	// Rows 5, 17, 19 and 20 need terms of the cart's own, defined as the row
-	// says.
+	// Rows 5, 16, 18, 23, 25 and 26 need terms of the cart's own, defined as
+	// the row says.
 	usLaw := withTerms(baseline(), "cart", entryMD("cart.us-law", "U.S. law"))
 	ubersicht := withTerms(baseline(), "cart", entryMD("cart.ubersicht", "\u00dcbersicht"))
 	strasse := withThenAnd(withTerms(baseline(), "cart", entryMD("cart.strasse", "Stra\u00dfe")), "the cart stays in the [STRASSE]")
@@ -68,6 +68,15 @@ Then      the shop sends a bill for <product>
 	systemDefinition := sys.edit(sysGlossaryPath, "- Definition: The files that specify the shop.", "- Definition: The files that specify the shop and each [item].")
 	spanDefinition := itemDefinitionIs(sys, "A product placed in the cart, written ´[spec-tree]´ nowhere in the [spec tree].")
 	spanRepresents := api(baseline(), "not ´[spec-tree]´ but [item]")
+	// Rows 14 to 19: backslash escapes and character references.
+	escapedDefinition := itemDefinitionIs(sys, `A product placed in the cart, written \[spec-tree] nowhere in the [spec tree].`)
+	escapedBackslash := itemDefinitionIs(sys, `A product placed in the cart of the \\[spec-tree].`)
+	escapedInMark := itemDefinitionIs(usLaw, `A product placed in the cart under [U\.S\. law].`)
+	escapedClose := itemDefinitionIs(sys, `A product placed in the cart of the [spec\] tree].`)
+	reference := itemDefinitionIs(withTerms(baseline(), "cart", entryMD("cart.r-and-d", "R&D")), "A product placed in the cart for [R&amp;D].")
+	ruleBlockBackslash := withThenAnd(sys, `the cart stays in the \[spec tree]`)
+	escapedRepresents := api(baseline(), `not \[basket] but [item]`)
+	referenceBrackets := itemDefinitionIs(sys, "A product placed in the cart, written &#91;spec-tree&#93; nowhere in the [spec tree].")
 	rows(t, "term-unresolved", []row{
 		{name: "row1 the system's entry", tree: withThenAnd(sys, "the cart stays in the [spec tree]"), holds: true},
 		{name: "row2 by an alias", tree: baseline(), holds: true},
@@ -86,16 +95,25 @@ Then      the shop sends a bill for <product>
 			file: sysGlossaryPath, lines: lines(systemDefinition.line(sysGlossaryPath, "[item]"))},
 		{name: "row12 brackets within a code span mark nothing", tree: spanDefinition, holds: true},
 		{name: "row13 in every field alike", tree: spanRepresents, holds: true},
-		{name: "row14 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
-		{name: "row15 any white space at either end does not count", tree: withThenAnd(sys, "the cart stays in the [spec tree\u00a0]"), holds: true},
-		{name: "row16 a zero-width space is no white space", tree: zeroWidth, file: featurePath, lines: lines(thenAndLine(zeroWidth))},
-		{name: "row17 names are compared in NFC", tree: withThenAnd(ubersicht, "the cart shows the [u\u0308bersicht]"), holds: true},
-		{name: "row18 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
-		{name: "row19 simple lower case, not full case folding", tree: strasse, file: featurePath, lines: lines(thenAndLine(strasse))},
-		{name: "row20 lower case comes before NFC", tree: withThenAnd(jCaron, "the cart shows the [J\u030c]"), holds: true},
-		{name: "row21 not visible in another capability", tree: other,
+		{name: "row14 a bracket escaped by a backslash marks nothing", tree: escapedDefinition, holds: true},
+		{name: "row15 an escaped backslash escapes no bracket", tree: escapedBackslash,
+			file: glossaryPath, lines: lines(escapedBackslash.line(glossaryPath, "[spec-tree]"))},
+		{name: "row16 within a mark in a field, an escape stands for the character it escapes", tree: escapedInMark, holds: true},
+		{name: "row17 an escaped ] closes no mark", tree: escapedClose,
+			file: glossaryPath, lines: lines(escapedClose.line(glossaryPath, "tree]."))},
+		{name: "row18 a character reference stays as written within a mark", tree: reference,
+			file: glossaryPath, lines: lines(reference.line(glossaryPath, "[R&amp;D]"))},
+		{name: "row19 a rule block is a fenced block, where a backslash escapes nothing", tree: ruleBlockBackslash, holds: true},
+		{name: "row20 spaces at either end do not count", tree: withThenAnd(sys, "the cart stays in the [ spec tree ]"), holds: true},
+		{name: "row21 any white space at either end does not count", tree: withThenAnd(sys, "the cart stays in the [spec tree\u00a0]"), holds: true},
+		{name: "row22 a zero-width space is no white space", tree: zeroWidth, file: featurePath, lines: lines(thenAndLine(zeroWidth))},
+		{name: "row23 names are compared in NFC", tree: withThenAnd(ubersicht, "the cart shows the [u\u0308bersicht]"), holds: true},
+		{name: "row24 only spaces and tabs join the words of a name", tree: nbsp, file: featurePath, lines: lines(thenAndLine(nbsp))},
+		{name: "row25 simple lower case, not full case folding", tree: strasse, file: featurePath, lines: lines(thenAndLine(strasse))},
+		{name: "row26 lower case comes before NFC", tree: withThenAnd(jCaron, "the cart shows the [J\u030c]"), holds: true},
+		{name: "row27 not visible in another capability", tree: other,
 			file: "proviso/capabilities/billing/features/pay.md", lines: lines(other.line("proviso/capabilities/billing/features/pay.md", "[item]"))},
-		{name: "row22 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
+		{name: "row28 neither a name nor an alias", tree: hyphen, file: featurePath, lines: lines(thenAndLine(hyphen))},
 		{name: "derived: a tab joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec\ttree]"), holds: true},
 		{name: "derived: a run of spaces and tabs joins the words of a name", tree: withThenAnd(sys, "the cart stays in the [spec \t \ttree]"), holds: true},
 		{name: "derived: tabs at either end do not count", tree: withThenAnd(sys, "the cart stays in the [\tspec tree\t]"), holds: true},
@@ -114,6 +132,8 @@ Then      the shop sends a bill for <product>
 		{name: "derived: a Represents field that resolves", tree: api(baseline(), "[item]"), holds: true},
 		{name: "derived: a Represents field that does not resolve", tree: represents,
 			file: apiPath, lines: lines(represents.line(apiPath, "- Represents:"))},
+		{name: "derived: an escaped bracket marks nothing in a Represents field", tree: escapedRepresents, holds: true},
+		{name: "derived: a character reference opens and closes no mark", tree: referenceBrackets, holds: true},
 	})
 	t.Run("row1 resolves without other findings", func(t *testing.T) {
 		t.Parallel()
@@ -134,6 +154,24 @@ Then      the shop sends a bill for <product>
 	t.Run("row13 nothing reported for the code span", func(t *testing.T) {
 		t.Parallel()
 		check(t, spanRepresents).clean(t)
+	})
+	t.Run("row14 nothing reported for the escaped brackets", func(t *testing.T) {
+		t.Parallel()
+		check(t, escapedDefinition).clean(t)
+	})
+	t.Run("row19 resolves without other findings", func(t *testing.T) {
+		t.Parallel()
+		// Read as escaped, the mark would be no mark, and "spec tree" an
+		// unmarked use.
+		check(t, ruleBlockBackslash).clean(t)
+	})
+	t.Run("derived: nothing reported for the escaped brackets in a Represents field", func(t *testing.T) {
+		t.Parallel()
+		check(t, escapedRepresents).clean(t)
+	})
+	t.Run("derived: nothing reported for the character references", func(t *testing.T) {
+		t.Parallel()
+		check(t, referenceBrackets).clean(t)
 	})
 }
 

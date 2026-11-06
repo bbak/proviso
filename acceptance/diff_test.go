@@ -616,6 +616,17 @@ func lineEndingTree() tree {
 		"| line | outcome |\n| --- | --- |\n| the first line | on paper |"))
 }
 
+// escapedEndingTree is lineEndingTree with the cart's term receipt line
+// holding \[line ending] in its Definition, an escaped bracket that marks
+// nothing, and the rule cart.x.end, which marks [line ending].
+func escapedEndingTree() tree {
+	return lineEndingTree().
+		edit(glossaryPath, "closed by a [line ending].", `closed by a \[line ending].`).
+		appendTo(xPath, "\n"+ruleMD("cart.x.end", "A receipt is cut",
+			"When      the shop cuts the receipt after the [line ending] <ending>\nThen      the receipt ends at <ending>\n  And     nothing else changes",
+			"| ending | outcome |\n| --- | --- |\n| the last ending | cut |"))
+}
+
 var lineEndingDefinition = change{sysGlossaryPath, "- Definition: What ends a line of text.", "- Definition: What ends a line of text, a line feed."}
 
 // lineEndingDeviationsTree is deviationsTree with the system's term line
@@ -798,7 +809,16 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.thematic-break"), "system.line-ending")
 		checkThrough(t, o.elem(t, "cart.x.line"), "system.line-ending > cart.thematic-break")
 	})
-	t.Run("row14 a Definition reworded, while another entry marks it in its Definition", func(t *testing.T) {
+	t.Run("row14 a Definition reworded, while another entry holds it escaped in its Definition", func(t *testing.T) {
+		t.Parallel()
+		// system.line-ending: system.line-ending, marked by cart.x.end;
+		// install.version-stamp: cart.receipt-line, holding \[line ending],
+		// marked by cart.x.print.
+		o := diffOf(t, escapedEndingTree(), lineEndingDefinition)
+		o.only(t, "system.line-ending:changed", "cart.x.end:changed-through")
+		checkThrough(t, o.elem(t, "cart.x.end"), "system.line-ending")
+	})
+	t.Run("row15 a Definition reworded, while another entry marks it in its Definition", func(t *testing.T) {
 		t.Parallel()
 		// system.line-ending: system.line-ending; install.version-stamp:
 		// cart.receipt-line, marked by cart.x.print.
@@ -807,7 +827,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.receipt-line"), "system.line-ending")
 		checkThrough(t, o.elem(t, "cart.x.print"), "system.line-ending > cart.receipt-line")
 	})
-	t.Run("row15 a Definition reworded, while two entries mark each other", func(t *testing.T) {
+	t.Run("row16 a Definition reworded, while two entries mark each other", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty;
 		// lint.guard: cart.shelf, marked by cart.x.stock.
@@ -819,7 +839,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.x.stock"), "cart.item > cart.shelf")
 	})
-	t.Run("row16 a Definition reworded, while the entry marking it and a third mark each other", func(t *testing.T) {
+	t.Run("row17 a Definition reworded, while the entry marking it and a third mark each other", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item; lint.guard: cart.shelf; lint.keyword:
 		// cart.aisle.
@@ -829,7 +849,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.aisle"), "cart.item > cart.shelf")
 	})
-	t.Run("row17 a Definition reworded, while a contract element marks another term and it in its Represents", func(t *testing.T) {
+	t.Run("row18 a Definition reworded, while a contract element marks another term and it in its Represents", func(t *testing.T) {
 		t.Parallel()
 		// system.spec-tree: system.price; lint.findings: cart.api.line, which
 		// represents [item] and [price], the changed term marked second;
@@ -842,7 +862,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.api.line"), "system.price")
 		checkThrough(t, o.elem(t, "cart.pay.order"), "system.price > cart.api.line")
 	})
-	t.Run("row18 a Definition reworded, while another entry marks it and a rule marks both", func(t *testing.T) {
+	t.Run("row19 a Definition reworded, while another entry marks it and a rule marks both", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item; lint.guard: cart.shelf; the rule:
 		// cart.x.stock, reached by cart.item directly and through cart.shelf.
@@ -852,7 +872,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.x.stock"), "cart.item")
 	})
-	t.Run("row19 a Definition reworded, while two entries mark it and a rule marks both of them but not it", func(t *testing.T) {
+	t.Run("row20 a Definition reworded, while two entries mark it and a rule marks both of them but not it", func(t *testing.T) {
 		t.Parallel()
 		// system.line-ending: system.line-ending; system.heading:
 		// cart.thematic-break, in its Deviations; install.version-stamp:
@@ -862,7 +882,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 			"cart.x.line:changed-through", "cart.x.print:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.print"), "system.line-ending > cart.receipt-line")
 	})
-	t.Run("row20 a Definition reworded, while it marks its own term", func(t *testing.T) {
+	t.Run("row21 a Definition reworded, while it marks its own term", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty.
 		o := diffOf(t, selfTree(), itemSelfDefinition)
@@ -870,7 +890,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
 	})
-	t.Run("row21 a parameter's Rationale reworded only", func(t *testing.T) {
+	t.Run("row22 a parameter's Rationale reworded only", func(t *testing.T) {
 		t.Parallel()
 		// system.change-effects: cart.max-quantity, referred to by cart.add.limit.
 		diffOf(t, diffTree(), change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}).only(t, "cart.max-quantity:changed")
