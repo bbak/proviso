@@ -311,6 +311,14 @@ func TestBaselinePackChain(t *testing.T) {
 		o, _, _ := packOf(t, iParamValue)
 		o.exactly(t, "Context", "cart.item", "system.price")
 	})
+	t.Run("derived: a member's holder brings every term it represents", func(t *testing.T) {
+		t.Parallel()
+		// As row2, with cart.api.line representing [item] and [price].
+		two := packTree().edit(apiPath, "- Represents: [item]\n", "- Represents: [item] and [price]\n")
+		o, _, _ := packFrom(t, two, pLinesThen)
+		o.exactly(t, "Amendment", "cart.pay.lines")
+		o.exactly(t, "Context", "cart.api.line", "cart.api.line.count", "cart.item", "system.price")
+	})
 	t.Run("derived: a changed member brings its holder and the term it represents", func(t *testing.T) {
 		t.Parallel()
 		o, _, _ := packOf(t, iCountBody)

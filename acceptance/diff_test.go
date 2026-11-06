@@ -659,6 +659,8 @@ func selfTree() tree {
 	return diffTree().edit(glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product placed in the cart, which holds many [items].")
 }
 
+var priceDefinition = change{sysGlossaryPath, "- Definition: What a product costs.", "- Definition: What a buyer pays for a product."}
+
 var itemSelfDefinition = change{glossaryPath, "- Definition: A product placed in the cart, which holds many [items].", "- Definition: A product a buyer placed in the cart, which holds many [items]."}
 
 // checkThrough asserts that e is changed through a dependency, along exactly
@@ -800,7 +802,20 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.aisle"), "cart.item > cart.shelf")
 	})
-	t.Run("row17 a Definition reworded, while it marks its own term", func(t *testing.T) {
+	t.Run("row17 a Definition reworded, while a contract element marks another term and it in its Represents", func(t *testing.T) {
+		t.Parallel()
+		// system.spec-tree: system.price; lint.findings: cart.api.line, which
+		// represents [item] and [price], the changed term marked second;
+		// cart.pay.order refers to cart.api.line. cart.pay.total and
+		// billing.refund.full mark [price] themselves.
+		tr := impactTree().edit(apiPath, "- Represents: [item]\n", "- Represents: [item] and [price]\n")
+		o := diffOf(t, tr, priceDefinition)
+		o.only(t, "system.price:changed", "cart.api.line:changed-through", "cart.pay.order:changed-through",
+			"cart.pay.total:changed-through", "billing.refund.full:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.line"), "system.price")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "system.price > cart.api.line")
+	})
+	t.Run("row18 a Definition reworded, while it marks its own term", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty.
 		o := diffOf(t, selfTree(), itemSelfDefinition)
@@ -808,7 +823,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
 	})
-	t.Run("row18 a parameter's Rationale reworded only", func(t *testing.T) {
+	t.Run("row19 a parameter's Rationale reworded only", func(t *testing.T) {
 		t.Parallel()
 		// system.change-effects: cart.max-quantity, referred to by cart.add.limit.
 		diffOf(t, diffTree(), change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}).only(t, "cart.max-quantity:changed")
