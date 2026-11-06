@@ -156,7 +156,9 @@
   nothing and `[text][label]` marks two terms. In a field, brackets
   within a code span, or escaped by a backslash as CommonMark reads
   backslash escapes, mark nothing, and within a mark such an escape
-  stands for the character it escapes.
+  stands for the character it escapes. Nothing else of CommonMark's
+  inline reading applies to a mark: a character reference, for one,
+  stays as written and opens or closes no mark.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term
