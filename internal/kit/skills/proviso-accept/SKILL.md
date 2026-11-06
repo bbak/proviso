@@ -27,7 +27,10 @@ another.
 ## 2. Check the start
 
 - The current branch is the amendment's branch, not the target, and its
-  working tree is clean.
+  working tree is clean, untracked files included.
+- `proviso/.coherence.json` is committed on it: `proviso manifest`
+  removes the file below, and the history keeps the check's record only
+  through that commit.
 - `proviso lint` exits with 0.
 - Read `.proviso/build.md`: whether acceptance goes through a pull
   request (a line such as `Acceptance: pull request`; without one, it
