@@ -168,9 +168,11 @@ var placeholder = regexp.MustCompile(`^<([A-Za-z0-9_-]+)>`)
 func lex(s string) []Span { return lexIn(s, false) }
 
 // FieldMarks returns the term marks in the value of a field, left to right.
-// In a field, only code spans and term marks are read, as lex reads them:
-// brackets within a code span mark nothing, while quotes and angle
-// brackets are text.
+// In a field, only code spans, backslash escapes and term marks are read:
+// brackets within a code span or escaped by a backslash mark nothing, and
+// within a mark an escape stands for the character it escapes, as
+// CommonMark reads backslash escapes. Quotes, angle brackets and character
+// references are text.
 func FieldMarks(s string) []Span {
 	var out []Span
 	for _, sp := range lexIn(s, true) {
@@ -181,7 +183,8 @@ func FieldMarks(s string) []Span {
 	return out
 }
 
-// lexIn is lex; in a field, it reads no literals and no placeholders.
+// lexIn is lex; in a field, it reads backslash escapes, and no literals and
+// no placeholders.
 func lexIn(s string, field bool) []Span {
 	var spans []Span
 	textStart := 0
@@ -194,6 +197,11 @@ func lexIn(s string, field bool) []Span {
 	for i < len(s) {
 		var sp *Span
 		switch s[i] {
+		case '\\':
+			if field && isEscapable(s, i) {
+				i += 2
+				continue
+			}
 		case '"':
 			if field {
 				break
@@ -214,10 +222,14 @@ func lexIn(s string, field bool) []Span {
 				continue
 			}
 		case '[':
-			if j := strings.IndexAny(s[i+1:], "[]"); j >= 0 && s[i+1+j] == ']' && j > 0 {
-				end := i + 1 + j + 1
+			if j := closingBracket(s, i+1, field); j > i+1 {
+				end := j + 1
 				if end >= len(s) || s[end] != '(' {
-					sp = &Span{Mark, i, end, s[i+1 : end-1]}
+					v := s[i+1 : j]
+					if field {
+						v = unescape(v)
+					}
+					sp = &Span{Mark, i, end, v}
 				}
 			}
 		case '<':
@@ -239,6 +251,46 @@ func lexIn(s string, field bool) []Span {
 	}
 	flush(len(s))
 	return spans
+}
+
+// closingBracket returns the offset of the `]` that closes a mark opened
+// before from, or -1 if a `[` comes first or none follows. In a field, a
+// bracket escaped by a backslash neither opens nor closes.
+func closingBracket(s string, from int, field bool) int {
+	for i := from; i < len(s); i++ {
+		switch s[i] {
+		case '\\':
+			if field && isEscapable(s, i) {
+				i++
+			}
+		case '[':
+			return -1
+		case ']':
+			return i
+		}
+	}
+	return -1
+}
+
+// isEscapable reports whether the backslash at i escapes the character
+// after it: CommonMark escapes every ASCII punctuation character.
+func isEscapable(s string, i int) bool {
+	return i+1 < len(s) && strings.IndexByte("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", s[i+1]) >= 0
+}
+
+// unescape replaces each backslash escape in s by the character it escapes.
+func unescape(s string) string {
+	if !strings.Contains(s, "\\") {
+		return s
+	}
+	var b strings.Builder
+	for i := 0; i < len(s); i++ {
+		if s[i] == '\\' && isEscapable(s, i) {
+			i++
+		}
+		b.WriteByte(s[i])
+	}
+	return b.String()
 }
 
 func closingTicks(s string, from, n int) (int, bool) {

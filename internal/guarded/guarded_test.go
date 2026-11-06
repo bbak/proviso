@@ -37,6 +37,35 @@ func TestFieldMarks(t *testing.T) {
 	}
 }
 
+func TestFieldMarksEscapes(t *testing.T) {
+	for in, want := range map[string]string{
+		`\[spec-tree] [spec tree]`: "spec tree",
+		`\\[spec-tree]`:            "spec-tree",
+		`[U\.S\. law]`:             "U.S. law",
+		`[spec\] tree]`:            `spec] tree`,
+		`[a \[b] c]`:               "a [b",
+		`[R&amp;D]`:                "R&amp;D",
+		`[a\b]`:                    `a\b`,
+		"\\`[x]` [y]":              "x|y",
+		"`\\[x]` [y]":              "y",
+		`[x]\(y)`:                  "x",
+		`[\]`:                      "",
+		`trailing \`:               "",
+	} {
+		var got []string
+		for _, sp := range FieldMarks(in) {
+			got = append(got, sp.Value)
+		}
+		if strings.Join(got, "|") != want {
+			t.Errorf("%s: got %q, want %q", in, got, want)
+		}
+	}
+	l := parseLine(SourceLine{1, `Then \[spec tree]`})
+	if l.Spans[1].Kind != Mark || l.Spans[1].Value != "spec tree" {
+		t.Errorf("a rule block reads no escapes: %+v", l.Spans)
+	}
+}
+
 func TestHandOver(t *testing.T) {
 	l := parseLine(SourceLine{1, "Otherwise → lint.layout.file"})
 	if !l.IsHandOver() || l.Target != "lint.layout.file" {
