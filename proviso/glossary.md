@@ -154,7 +154,8 @@
   or "Deviations" field of a glossary entry: a name in brackets,
   unless the `]` is directly followed by `(`, so `[text](…)` marks
   nothing and `[text][label]` marks two terms. In a field, brackets
-  within a code span mark nothing.
+  within a code span, or escaped by a backslash as CommonMark reads
+  backslash escapes, mark nothing.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term
