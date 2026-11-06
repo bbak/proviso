@@ -41,6 +41,9 @@ learnt in earlier rounds of it.
   constraints place them. Never the acceptance tests, never the spec
   tree.
 - **Commit** in the worktree with Conventional Commits; never push.
+  Report only what your commits hold: a scripted edit must fail when
+  it matches nothing, and you check each edit in the diff before you
+  report it.
 
 <!-- proviso: reading.md -->
 

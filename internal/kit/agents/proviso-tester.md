@@ -50,6 +50,9 @@ learnt in earlier rounds of it.
 - **Run** the tests against the system's black-box interface only, as
   the pack's contracts describe it.
 - **Commit** in the worktree with Conventional Commits; never push.
+  Report only what your commits hold: a scripted edit must fail when
+  it matches nothing, and you check each edit in the diff before you
+  report it.
 
 <!-- proviso: reading.md -->
 
