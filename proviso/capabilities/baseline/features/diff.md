@@ -161,9 +161,14 @@ a standard means what that version of the standard says. When what an
 element depends on changes its meaning, the element's text stays the
 same while its meaning does not, and its tests may no longer hold. The
 meaning passes on along every dependency, however long the chain, and
-stops where nothing depends on a changed meaning. Glossary entries may
-mark each other's terms in a circle, so a chain never passes an element
-twice: the circle adds no chain of its own.
+stops where nothing depends on a changed meaning. Every element it
+reaches is listed, but each names only the shortest chain from each
+changed element that reaches it: one chain shows how a meaning arrives,
+and naming every chain grows beyond any reader, since glossary entries
+may mark each other's terms, in circles too, and eight entries marking
+each other give over two hundred thousand chains to one element. Of
+equally short chains the first is named, so that `diff` names the same
+chain every time.
 Which elements depend on what is read from the tree as it stands: one
 that stopped depending on something was edited, and is listed anyway. A
 removed member of a contract element is the exception: a rule that
@@ -173,7 +178,7 @@ to that contract element.
 ```guarded
 When      `diff` takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [element part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
-Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming every chain of [identifiers] that reaches it and passes no [element] twice, the one it reaches included, each from an [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for, to the one it depends on directly
+Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming, for each [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for and from which a chain of [identifiers] reaches it, the shortest such chain, from that [element] to the one it depends on directly, and of equally short ones the first, compared by their first [identifier], then by their second, and so on, each byte by byte
   And     every [element] listed so is taken in turn, and every [element] once
 Otherwise nothing is listed because of <element>
   And     everything else stays as it was
@@ -188,7 +193,7 @@ Otherwise nothing is listed because of <element>
 | `lint.run.exit`, its `Then` step changed | yes | every rule handing over to it listed | |
 | `lint.run.exit`, an Examples row changed | yes | every rule handing over to it listed | a row decides as much as a step |
 | `lint.run.exit`, its Rationale reworded, marking a term whose Definition changed | yes | every rule handing over to it listed, through that term, then `lint.run.exit` | its meaning changed through the term, though it is listed as changed for its Rationale |
-| `system.ref.commonmark`, a new `Version`, while `lint.step`, which it defines, has its Definition reworded too | yes | every rule marking `lint.step` listed once, through `lint.step` and through `system.ref.commonmark`, `lint.step` | every chain that reaches it is named |
+| `system.ref.commonmark`, a new `Version`, while `lint.step`, which it defines, has its Definition reworded too | yes | every rule marking `lint.step` listed once, through `lint.step` and through `system.ref.commonmark`, `lint.step` | a chain is named from each changed element that reaches it |
 | `lint.findings.anchor-misplaced`, removed, while `lint.findings` stays | yes | every rule referring to `findings` listed, through `lint.findings.anchor-misplaced` | a rule relied on every member of `findings` |
 | `lint.step`, a new alias only | no | nothing listed because of it | the meaning is the same |
 | `system.ref.commonmark`, a new `Contact` only | no | nothing listed because of it | the standard is the same |
@@ -198,6 +203,8 @@ Otherwise nothing is listed because of <element>
 | `lint.step`, its Definition reworded, while `lint.guard` marks it in its Definition and `lint.step` marks `lint.guard` in its own | yes | `lint.guard` listed, through `lint.step`, and every rule marking either, each chain passing no element twice | a circle adds no chain of its own |
 | `lint.step`, its Definition reworded, while `lint.guard` marks it, and `lint.guard` and `lint.keyword` mark each other, each in its Definition | yes | `lint.guard` listed, through `lint.step` only, and `lint.keyword`, through `lint.step`, `lint.guard` | a chain never comes back to the element it reaches |
 | `system.spec-tree`, its Definition reworded, while `lint.findings` marks `lint.finding` and it in its field `Represents` | yes | `lint.findings` listed, through `system.spec-tree`, and every rule referring to `findings`, through `system.spec-tree`, `lint.findings` | a contract element depends on every term it represents |
+| `lint.step`, its Definition reworded, while `lint.guard` marks it in its Definition and a rule marks both | yes | the rule listed, through `lint.step` only | only the shortest chain from each changed element is named |
+| `system.line-ending`, its Definition reworded, while `system.heading` marks it in its Deviations, `install.version-stamp` marks it in its Definition, and a rule marks both of them but not it | yes | the rule listed, through `system.line-ending`, `install.version-stamp` only | of equally short chains the first is named |
 | `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
@@ -290,7 +297,7 @@ Otherwise `diff` writes <elements> to "stdout" as text
 When      `diff` writes the listed [elements] <elements>
 Then      they appear ordered by [identifier], compared byte by byte
   And     the [element parts] named for each appear in the order of their lines in `manifest_file`
-  And     the chains of [identifiers] named for each appear ordered by their first [identifier], then by their second, and so on, each compared byte by byte, a chain that is the start of another coming first
+  And     the chains of [identifiers] named for each appear ordered by their first [identifier], compared byte by byte
   And     the [undecided] places and the marks of open [terms] named for each appear in the order of their lines
 ```
 
@@ -299,7 +306,6 @@ Then      they appear ordered by [identifier], compared byte by byte
 | `lint.run.root`, `lint.run.exit`, `baseline.parts.split` | `baseline.parts.split`, `lint.run.exit`, `lint.run.root` |
 | `lint.run`, `lint.run.exit` | `lint.run`, then `lint.run.exit` |
 | a rule changed through the chains `system.ref.commonmark`, `lint.step` and `lint.step` | `lint.step` first, then `system.ref.commonmark`, `lint.step` |
-| a rule changed through the chains `lint.step`, `lint.keyword` and `lint.step` | `lint.step` first, then `lint.step`, `lint.keyword` |
 | a rule with `?` in its `Then` step and in its `When` step | the `When` step first, then the `Then` step |
 | a rule marking an open term in its `When` step, with `?` in its `Then` step | the mark first, then the `Then` step |
 
