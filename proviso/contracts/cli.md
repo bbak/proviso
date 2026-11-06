@@ -212,8 +212,8 @@ properties:
   changed or removed, written as `part_kinds` writes it, with the text
   of an added or changed part as it stands now, `text`, and the former
   text of a changed or removed part, `former`.
-- `through` lists, for an element changed through a dependency, every
-  chain of identifiers that reaches it, each from an element listed as
+- `through` lists, for an element changed through a dependency, the
+  chains of identifiers named for it, each from an element listed as
   added, changed or removed whose changed part passes its meaning on, to
   the one the element depends on directly, as `dependencies` gives them.
 - `undecided` lists each line of the element that holds an undecided
@@ -377,7 +377,7 @@ of the contract.
     `removed`, separated by a comma and a space, and a full stop.
   - ``Removed `<id>`.``; its former text, in a fenced block like all
     former text, stands in place of its text.
-  - ``Changed through `<id>`:``, then each chain that reaches it, as
+  - ``Changed through `<id>`:``, then each chain named for it, as
     identifiers in backticks joined by ` → `, separated by `; `, and a
     full stop.
   - An element not to be built gets a second line: `Not to be built:`,

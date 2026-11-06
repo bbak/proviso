@@ -24,7 +24,7 @@ type Entry struct {
 	Element *lint.Element // as it stands now; nil for a removed element
 	Former  string        // the former text of a removed element
 	Parts   []PartChange  // for a changed element
-	Through [][]string    // for an element changed through a dependency, every chain that reaches it
+	Through [][]string    // for an element changed through a dependency, the shortest chain from each source
 }
 
 // PartChange is a part of a changed element that was added, changed or

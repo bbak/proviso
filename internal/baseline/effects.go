@@ -130,7 +130,9 @@ func dependsOn(elements []lint.Element, removed map[string][]string) map[string]
 
 // throughDependencies lists every element that depends on a changed
 // meaning, and is not listed otherwise, as changed through a dependency,
-// with every chain of identifiers that reaches it. former is the tree the
+// naming, from each listed element whose changed part passes its meaning
+// on and from which a chain of identifiers reaches it, the shortest such
+// chain, and of equally short ones the first. former is the tree the
 // removed elements stood in, which tells the members among them.
 func throughDependencies(elements, former []lint.Element, byID map[string]*Entry) {
 	formerElem := map[string]*lint.Element{}
@@ -175,6 +177,7 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 		}
 	}
 	slices.Sort(queue)
+	seedList := slices.Clone(queue)
 	// changed holds every element whose meaning changed: one whose changed
 	// part passes it on, and every element depending on one, transitively,
 	// listed or not. Each is taken once.
@@ -197,32 +200,36 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 			}
 		}
 	}
-	// chains returns every chain of identifiers from a listed element
-	// whose changed part passes its meaning on to one the element id
-	// depends on directly, passing none of the elements in visiting, nor
-	// id, twice. Glossary entries may depend on each other in a circle,
-	// so what reaches an element depends on the path taken to it, and
-	// nothing is kept between calls.
-	var chains func(id string, visiting map[string]bool) [][]string
-	chains = func(id string, visiting map[string]bool) [][]string {
-		visiting[id] = true
-		var out [][]string
-		for _, d := range deps[id] {
-			if !changed[d] || visiting[d] {
-				continue
+	// From each seed, a breadth-first walk along the dependents finds the
+	// shortest chain to every element it reaches, and of equally short
+	// ones the first, compared identifier by identifier: every chain to an
+	// element one step further is a chain to the one before it with that
+	// one appended, so the first to it extends the first to the one before.
+	for _, seed := range seedList {
+		best := map[string][]string{seed: {seed}}
+		layer := []string{seed}
+		for len(layer) > 0 {
+			next := map[string][]string{}
+			for _, id := range layer {
+				for _, x := range dependents[id] {
+					if _, ok := best[x]; ok || elem[x] == nil {
+						continue
+					}
+					if c, ok := next[x]; !ok || slices.Compare(best[id], c[:len(c)-1]) < 0 {
+						next[x] = append(slices.Clone(best[id]), x)
+					}
+				}
 			}
-			if seeds[d] {
-				out = append(out, []string{d})
-			}
-			for _, c := range chains(d, visiting) {
-				out = append(out, append(slices.Clone(c), d))
+			layer = slices.Sorted(maps.Keys(next))
+			maps.Copy(best, next)
+		}
+		for x, c := range best {
+			if through[x] {
+				byID[x].Through = append(byID[x].Through, c[:len(c)-1])
 			}
 		}
-		delete(visiting, id)
-		slices.SortFunc(out, slices.Compare[[]string])
-		return out
 	}
 	for id := range through {
-		byID[id].Through = chains(id, map[string]bool{})
+		slices.SortFunc(byID[id].Through, slices.Compare[[]string])
 	}
 }
