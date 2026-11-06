@@ -54,6 +54,14 @@ func TestPack(t *testing.T) {
 			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
 			HeadingContext: {"system.api", "system.api.code", "system.thing"},
 		}},
+		{"every term a contract element represents", func(m map[string]string) {
+			baselinetest.Replace(m, "contracts/api.md", "- Represents: [thing]", "- Represents: [thing] by a [std]")
+		}, map[string][]string{
+			HeadingSystem:  {"system"},
+			"amendment":    {"c.g.c", "system.api"},
+			HeadingFrames:  {"c", "c.g", "c.g.inv", "c.inv", "system.inv"},
+			HeadingContext: {"system.api.code", "system.thing", "system.std", "system.ref.std"},
+		}},
 		{"a hand-over followed to its end, not a rule sharing a term", func(m map[string]string) {
 			baselinetest.Replace(m, "capabilities/c/features/g.md", "Then      it is written", "Then      it is written down")
 		}, map[string][]string{
