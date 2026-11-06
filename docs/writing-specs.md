@@ -287,8 +287,8 @@ Its entry defines it once:
   through it, and so is every rule that marks the entry; the context
   pack brings the marked term along. Mark only what the meaning rests
   on, not every word that happens to be a term: each mark brings that
-  term into every pack that takes this one. Brackets in a code span
-  mark nothing.
+  term into every pack that takes this one. Brackets in a code span,
+  or escaped with a backslash (`\[like this]`), mark nothing.
 - **Name a term distinctly,** in the business's own words: *daily
   limit* rather than *limit*, or a word with no everyday sense, such as
   *composable*. A bare everyday word as a term claims that word in every
