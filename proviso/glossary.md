@@ -155,7 +155,8 @@
   unless the `]` is directly followed by `(`, so `[text](…)` marks
   nothing and `[text][label]` marks two terms. In a field, brackets
   within a code span, or escaped by a backslash as CommonMark reads
-  backslash escapes, mark nothing.
+  backslash escapes, mark nothing, and within a mark such an escape
+  stands for the character it escapes.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: terms, glossary term

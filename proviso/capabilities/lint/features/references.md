@@ -51,6 +51,8 @@ Otherwise lint reports the [error] `findings.term-unresolved` at the mark
 | finding, in a "Represents" field that holds `` `[spec-tree]` `` before it | lint | yes | lint's entry, and nothing reported for the code span | in every field alike |
 | spec tree, in a "Definition" field that holds `\[spec-tree]` before it | lint | yes | the system's entry, and nothing reported for the escaped brackets | a bracket escaped by a backslash marks nothing |
 | spec-tree, in a "Definition" field, written `\\[spec-tree]` | lint | no | error | an escaped backslash escapes no bracket |
+| U.S. law, written `[U\.S\. law]` in a "Definition" field | lint, while lint defines U.S. law | yes | that entry | within a mark in a field, an escape stands for the character it escapes |
+| spec] tree, written `[spec\] tree]` in a "Definition" field | lint | no | error | an escaped `]` closes no mark |
 | spec tree, in a rule block, written `\[spec tree]` | lint | yes | the system's entry | a rule block is a fenced block, where a backslash escapes nothing |
 | " spec tree " | lint | yes | the system's entry | spaces at either end do not count |
 | spec tree, followed by a non-breaking space | lint | yes | the system's entry | any white space at either end does not count |
