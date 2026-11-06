@@ -1,7 +1,14 @@
+// markdownlint settings for the spec tree. They replace an editor's own
+// settings for these files, rather than adding to them.
 {
+	// The identifier anchor at the start of a heading.
 	"MD033": { "allowed_elements": ["a"] },
+	// The same section, such as Rationale, under different elements.
 	"MD024": { "siblings_only": true },
+	// Examples rows, rule blocks and anchored headings, which wrapping would break.
 	"MD013": { "tables": false, "code_blocks": false, "headings": false },
+	// An Examples cell sometimes shows a line exactly, leading spaces included.
 	"MD038": false,
+	// An example of a tab-separated file, such as the manifest, shows its tabs.
 	"MD010": { "code_blocks": false }
 }
