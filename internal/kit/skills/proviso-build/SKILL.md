@@ -34,6 +34,12 @@ Look nowhere else.
   is clean: the tree change is committed.
 - `proviso lint` exits with 0.
 - `proviso diff` exits with 1: the amendment lists something to build.
+- `proviso diff --json` lists more than changed parts `section
+  Rationale` and `field Rationale`: an element added, removed or
+  changed through a dependency, or another part changed. An amendment
+  that only rewords Rationales changes no behaviour, and building it
+  would only retest what passed before: say so, and that it goes to
+  `proviso-accept` once its check covers it.
 - `proviso diff` lists no element as not to be built. Building around
   an undecided place is waste: the amendment cannot be accepted until
   it is decided, and the decision may change what was built. Name each
