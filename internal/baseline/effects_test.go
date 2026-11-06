@@ -72,7 +72,7 @@ func TestDependencies(t *testing.T) {
 	if got["c.f.r"] != Changed || got["c.g.d"] != "[[system.thing c.f.r]]" {
 		t.Errorf("through a listed rule: %v", got)
 	}
-	// Every chain is named, ordered, a chain that starts another first.
+	// A chain is named from each changed element, ordered by the first.
 	got = through(t, func(m map[string]string) {
 		baselinetest.Replace(m, "glossary.md", "A thing.", "Another thing.")
 		baselinetest.Replace(m, "contracts/api.md", "The api.", "The new api.")
@@ -173,6 +173,20 @@ func TestDefinitionMarks(t *testing.T) {
 	}
 	if fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Errorf("a circle:\n%v\nwant\n%v", got, want)
+	}
+	// Only the shortest chain from each changed element is named.
+	got = throughGlossary(t,
+		entry("step", "step", "A line.")+entry("guard", "guard", "The [step] that guards.")+entry("user", "user", "A [guard] and a [step]."),
+		entry("step", "step", "A new line.")+entry("guard", "guard", "The [step] that guards.")+entry("user", "user", "A [guard] and a [step]."))
+	if got["system.user"] != "[[system.step]]" {
+		t.Errorf("the shortest chain: %v", got)
+	}
+	// Of equally short chains the first is named.
+	got = throughGlossary(t,
+		entry("a", "a", "A line.")+entry("c", "c", "Of [a].")+entry("b", "b", "Of [a].")+entry("user", "user", "A [c] and a [b]."),
+		entry("a", "a", "A new line.")+entry("c", "c", "Of [a].")+entry("b", "b", "Of [a].")+entry("user", "user", "A [c] and a [b]."))
+	if got["system.user"] != "[[system.a system.b]]" {
+		t.Errorf("the first of equally short chains: %v", got)
 	}
 	// Deviations pass the changed meaning on as a Definition does.
 	dev := func(d string) string {
