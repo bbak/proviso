@@ -112,11 +112,16 @@ func entry(id, name, def string) string {
 
 // throughGlossary compares the impact tree with the entries added to its
 // glossary against the baseline of the same tree with the entries as
-// former holds them.
-func throughGlossary(t *testing.T, former, now string) map[string]string {
+// former holds them, each tree edited further by edits.
+func throughGlossary(t *testing.T, former, now string, edits ...func(map[string]string)) map[string]string {
 	t.Helper()
 	tree := func(entries string) func(map[string]string) {
-		return baselinetest.EditTree(func(m map[string]string) { m["glossary.md"] += entries })
+		return baselinetest.EditTree(func(m map[string]string) {
+			m["glossary.md"] += entries
+			for _, edit := range edits {
+				edit(m)
+			}
+		})
 	}
 	before := baselinetest.Files(tree(former))
 	base, _ := Parse(Write(before))
@@ -129,6 +134,23 @@ func throughGlossary(t *testing.T, former, now string) map[string]string {
 		}
 	}
 	return out
+}
+
+func TestRepresentsMarks(t *testing.T) {
+	// A contract element depends on every term it represents, not only the
+	// first its field marks.
+	represents := func(m map[string]string) {
+		baselinetest.Replace(m, "contracts/api.md", "- Represents: [thing]", "- Represents: [thing] in a [tree]")
+	}
+	got := throughGlossary(t, entry("tree", "tree", "A tree."), entry("tree", "tree", "A new tree."), represents)
+	want := map[string]string{
+		"c.g.c":       "[[system.tree system.api]]",
+		"system.api":  "[[system.tree]]",
+		"system.tree": Changed,
+	}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("a second represented term:\n%v\nwant\n%v", got, want)
+	}
 }
 
 func TestDefinitionMarks(t *testing.T) {

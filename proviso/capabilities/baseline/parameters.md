@@ -28,7 +28,7 @@ rule or a contract element's member, has parts of its own.
 - Rationale: these are the links the notation makes explicit; a link
   only prose makes, such as a definition naming another term without a
   mark, is left to the coherence check. A contract element depends on
-  the term it represents, never the reverse: its shape leaves the
+  each term it represents, never the reverse: its shape leaves the
   term's meaning as it is, and a rule that relies on the shape refers to
   the element itself. A rule depends on every member of a contract
   element it refers to, a member added later included, and one removed
@@ -47,6 +47,6 @@ so does the meaning of the first.
 | a rule | every glossary entry whose term its rule block marks |
 | a rule | every contract element and parameter its rule block refers to, and every member of such a contract element, one removed from it included |
 | a rule | the rule its hand-over names |
-| a contract element | the glossary entry its field `Represents` marks |
+| a contract element | every glossary entry whose term its field `Represents` marks |
 | a glossary entry | the reference its field `Defined by` links to |
 | a glossary entry | every other glossary entry whose term its field `Definition` or `Deviations` marks |
