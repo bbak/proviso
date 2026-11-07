@@ -212,9 +212,9 @@ Something new.
 It is needed.
 `)
 		dir := nw.write(t)
-		// The parent of a feature of a capability without capability.md
-		// is not decided: see the report.
-		showIn(t, dir, dir, "new.a", "--in", "new", "--json").elementsAre(t, nw, dir, shown{"new.a", "proviso/capabilities/new/features/a.md", "feature", "*"})
+		// The tree holds no capability new, so the feature belongs to
+		// none (query.element-parent).
+		showIn(t, dir, dir, "new.a", "--in", "new", "--json").elementsAre(t, nw, dir, shown{"new.a", "proviso/capabilities/new/features/a.md", "feature", ""})
 		showIn(t, dir, dir, "spec tree", "--in", "new", "--json").elementsAre(t, nw, dir, sSpecTree)
 		showIn(t, dir, dir, "finding", "--in", "new", "--json").none(t)
 	})
@@ -451,6 +451,41 @@ func TestQueryElementParent(t *testing.T) {
 			t.Parallel()
 			o, dir := show(t, tr, c.el.id, "--json")
 			o.elementsAre(t, tr, dir, c.el)
+		})
+	}
+
+	// A capability folder without its capability.md: the tree holds no
+	// element its feature and its glossary entry would belong to, so they
+	// belong to none; a rule of the feature still belongs to the feature.
+	const (
+		newFeature  = "proviso/capabilities/new/features/a.md"
+		newGlossary = "proviso/capabilities/new/glossary.md"
+	)
+	nw := tr.with(newFeature, "# <a id=\"new.a\"></a> A new feature\n"+`
+- Contact: Dana Reyes
+
+## Goal
+
+Something new.
+
+## Rationale
+
+It is needed.
+
+`+ruleMD("new.a.r", "A new rule", idBlock, idTable),
+		newGlossary, "# Glossary\n\n"+termMD("new.word", "word"))
+	for _, c := range []struct {
+		name string
+		el   shown
+	}{
+		{"a feature in a capability folder without capability.md belongs to none", shown{"new.a", newFeature, "feature", ""}},
+		{"a glossary entry in a capability folder without capability.md belongs to none", shown{"new.word", newGlossary, "glossary entry", ""}},
+		{"a rule of a feature in a capability folder without capability.md belongs to the feature", shown{"new.a.r", newFeature, "rule", "new.a"}},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			o, dir := show(t, nw, c.el.id, "--json")
+			o.elementsAre(t, nw, dir, c.el)
 		})
 	}
 }

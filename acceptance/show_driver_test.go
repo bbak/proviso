@@ -240,8 +240,7 @@ func readRest(dec *json.Decoder) (string, error) {
 
 // shown is an element as show is expected to take it: its identifier, the
 // file it stands in, its element type ("" for none) and its element parent
-// ("" for none, "*" where the pack does not decide it). Heading, line and
-// text follow from the tree.
+// ("" for none). Heading, line and text follow from the tree.
 type shown struct {
 	id, file, typ, parent string
 }
@@ -304,7 +303,7 @@ func (o showOutcome) elementsAre(t *testing.T, tr tree, dir string, ws ...shown)
 		if strOrNull(e.Type) != strOrNull(wt) {
 			t.Errorf("query.show.match: the element type of %s is %s, got %s", w.id, strOrNull(wt), strOrNull(e.Type))
 		}
-		if w.parent != "*" && strOrNull(e.Parent) != strOrNull(wp) {
+		if strOrNull(e.Parent) != strOrNull(wp) {
 			t.Errorf("query.element-parent: the element parent of %s is %s, got %s", w.id, strOrNull(wp), strOrNull(e.Parent))
 		}
 	}
