@@ -1,0 +1,178 @@
+{
+  "touched": [
+    {
+      "id": "baseline.parts.split",
+      "now": {
+        "heading": "h1:1beb1f3720f2493ab8a3be6122bd5ed06eb8c1cc81d578c7e06de8dc495af513",
+        "row h1:2811a5f1d6eaeaeaaf1cd6e4beeb37c5c1413b63e4f0f4204a7f29695f3b4a7e": "h1:e55e4637def765d01e6a8e9b568650e0061560038503744aedbddd8de44eb880",
+        "row h1:478b7de4919aac34725395c43a06765a2d7c4a4c50c53f98d4f006cc3b0e59c9": "h1:9652751c8877831ba937f71f96cd40e4824cb72339c39acc30922ccfaebcb5ef",
+        "row h1:52984fa4dac991407911772a1b1ee6189d14df9f1004515bcf6347ba47901a38": "h1:26e3cc2c124329dc91556aecfdbf7d3c4ae96ebb03329752904d41b2ce65e33d",
+        "row h1:8523af81df6c9a4fcdfdf837a5f236d4e5591e0f244b6820260189bb1ce21cb6": "h1:f0ee6ab2bc100213879cb6c7846f961c887dad4d4ecf8ed163223cc951bb1d78",
+        "row h1:e7bebf2074d79461e40c8986a608c7d0abd128bc34780a07602ac04dbc1285eb": "h1:0a08930387189094620aa781e46bd8e968edc4734170910a4d883eb65685baf9",
+        "step Then": "h1:d0d77c4d261152216134e50cff857418cc625712a094aee90ebb4afd6bc8ad99",
+        "step When": "h1:7083bccc7322643e9d80417118087f47c209550106c44662c257505c24c092d7"
+      },
+      "baseline": {
+        "heading": "h1:1beb1f3720f2493ab8a3be6122bd5ed06eb8c1cc81d578c7e06de8dc495af513",
+        "row h1:2811a5f1d6eaeaeaaf1cd6e4beeb37c5c1413b63e4f0f4204a7f29695f3b4a7e": "h1:e55e4637def765d01e6a8e9b568650e0061560038503744aedbddd8de44eb880",
+        "row h1:478b7de4919aac34725395c43a06765a2d7c4a4c50c53f98d4f006cc3b0e59c9": "h1:9652751c8877831ba937f71f96cd40e4824cb72339c39acc30922ccfaebcb5ef",
+        "row h1:52984fa4dac991407911772a1b1ee6189d14df9f1004515bcf6347ba47901a38": "h1:26e3cc2c124329dc91556aecfdbf7d3c4ae96ebb03329752904d41b2ce65e33d",
+        "row h1:a6c8a8acd2875adca7a8e4f473ab31c0eca29421d5b7ef2bae2bbb9dfd9b61e0": "h1:e303b3603079668799be328bf4842da92c40478d1025989108c7f56026843363",
+        "row h1:e7bebf2074d79461e40c8986a608c7d0abd128bc34780a07602ac04dbc1285eb": "h1:0a08930387189094620aa781e46bd8e968edc4734170910a4d883eb65685baf9",
+        "step Then": "h1:d0d77c4d261152216134e50cff857418cc625712a094aee90ebb4afd6bc8ad99",
+        "step When": "h1:7083bccc7322643e9d80417118087f47c209550106c44662c257505c24c092d7"
+      }
+    },
+    {
+      "id": "lint.structure.field-required",
+      "now": {
+        "heading": "h1:1bf46d52fc5fffad142d502ed379931d11bb5ee77b7468e60b6d8819e63a8d19",
+        "row h1:1fac18a9e291246ff8bdba82c95b60e4f51dd1f79fd66bb60872c128ffcdb366": "h1:940aea37f36158602be598111fdd52441cbc58e3e9b4c380416ddc2605b8162a",
+        "row h1:2831a7af33e5154540e848d087360a87ffa4039fa4290b4339455d129ce7f49e": "h1:569c7206314da5710137e48c712220f54f1144be130608122130c913a675bdea",
+        "row h1:39ca8d57f0b00187b261b71c70309889ac0bf15d275f661df78987c1738154b0": "h1:8e6f4b62314661a861d2564a4d12ecd37a83dfd3c107fa1b144fdbcfca691a7b",
+        "row h1:564963b63a99851ca4ee9860dc7adc74b9b0c43c30040da4e77412b35bff1ea8": "h1:116ca1cf3aa9d6098f239114cb1d4b0f031a78b300b47f9c91bdf21c7965ce21",
+        "row h1:70a9919fe64afa9e72539f9769254c27956ff174aff34f0f82850de0a8220cf1": "h1:a8e2e77b41719c236b7981d6728ebff75f5150c05ed5589afdc3c9687a112247",
+        "row h1:a1fa3ff736ed867890422451b17875546cfc453d038fdc52bec3baafab6e8dfa": "h1:e77ad0b87b2ee7d53ed65c3655b3ef600c19fcd304af7d664cf60578794b376f",
+        "row h1:d409804c2028390c254d78d13e44d82e96ad3151476d47ba193ef69fb280ba52": "h1:6e3b9a9c297978d4365c0a97c24fa1bd99f357bce80733f4e3937e93eeb9c71b",
+        "row h1:ea5b71449726faaef0305ac33b1c658ffd95c3be5084cf2f55ef750607cc3f49": "h1:8ac5fcdb2fae1fd4c84bab3c40d6603adff3123fd33dc23c4a77de2e32489deb",
+        "step Otherwise": "h1:d6f778068bac0bcdd052fd11f40d5e3f1892845a4914b7d9bdafaf258e32a10e",
+        "step Provided": "h1:1f99cb00d3485545f1cd11ce8593de355da8e9c5bd47fe8cbca684bb2130621d",
+        "step Then": "h1:04f7023ca27db5cf12cb1ee630a66eb9d7a73ba70ed526687a00a32e0387afaa",
+        "step When": "h1:cde7a280223af9bd5ed44c713a81c2caddefa1ca339e5062bd6c56008f13f582"
+      },
+      "baseline": {
+        "heading": "h1:1bf46d52fc5fffad142d502ed379931d11bb5ee77b7468e60b6d8819e63a8d19",
+        "row h1:1fac18a9e291246ff8bdba82c95b60e4f51dd1f79fd66bb60872c128ffcdb366": "h1:940aea37f36158602be598111fdd52441cbc58e3e9b4c380416ddc2605b8162a",
+        "row h1:39ca8d57f0b00187b261b71c70309889ac0bf15d275f661df78987c1738154b0": "h1:8e6f4b62314661a861d2564a4d12ecd37a83dfd3c107fa1b144fdbcfca691a7b",
+        "row h1:564963b63a99851ca4ee9860dc7adc74b9b0c43c30040da4e77412b35bff1ea8": "h1:116ca1cf3aa9d6098f239114cb1d4b0f031a78b300b47f9c91bdf21c7965ce21",
+        "row h1:70a9919fe64afa9e72539f9769254c27956ff174aff34f0f82850de0a8220cf1": "h1:a8e2e77b41719c236b7981d6728ebff75f5150c05ed5589afdc3c9687a112247",
+        "row h1:80e5ea1a470461519160bdb62f66faeb61ce367bca3fd78ab3f851b81d22ec4d": "h1:7cee35a89dab7ba8b78cccc3429997b8917d3d0492dbeb6f5451b94b53081616",
+        "row h1:a1fa3ff736ed867890422451b17875546cfc453d038fdc52bec3baafab6e8dfa": "h1:e77ad0b87b2ee7d53ed65c3655b3ef600c19fcd304af7d664cf60578794b376f",
+        "row h1:d409804c2028390c254d78d13e44d82e96ad3151476d47ba193ef69fb280ba52": "h1:6e3b9a9c297978d4365c0a97c24fa1bd99f357bce80733f4e3937e93eeb9c71b",
+        "row h1:ea5b71449726faaef0305ac33b1c658ffd95c3be5084cf2f55ef750607cc3f49": "h1:8ac5fcdb2fae1fd4c84bab3c40d6603adff3123fd33dc23c4a77de2e32489deb",
+        "step Otherwise": "h1:d6f778068bac0bcdd052fd11f40d5e3f1892845a4914b7d9bdafaf258e32a10e",
+        "step Provided": "h1:1f99cb00d3485545f1cd11ce8593de355da8e9c5bd47fe8cbca684bb2130621d",
+        "step Then": "h1:04f7023ca27db5cf12cb1ee630a66eb9d7a73ba70ed526687a00a32e0387afaa",
+        "step When": "h1:cde7a280223af9bd5ed44c713a81c2caddefa1ca339e5062bd6c56008f13f582"
+      }
+    },
+    {
+      "id": "query.show.match",
+      "now": {
+        "heading": "h1:1e9b8d35fe318229d41467ec9472d1753596803044ecffd4bdc627eeeb5d04c8",
+        "row h1:1d3bf18c3ed85fda140419c99913f5f6da7a594bec097ff6a7b5a7326c8777af": "h1:dbfb81a13ed0835af5f8e8f03e0c23cd1c6448d4560c0a518dde14bba1dfa768",
+        "row h1:2005b3b9d7b9d0bd2b49852d7ee77559a46652d9c6474bf177aef5aa85bc454c": "h1:e5a5c617faf81dbed32036852d6b70a0d4bff0bfa36b882a6e34bb993f44974c",
+        "row h1:20076f3a1608f17835a2a6e289be156642930a16066ce2eae741f04d3578fb5b": "h1:89c335ff3e260dc790f5fe986dfd524bd062c0d26ea0b5049c86a26d2de6ff4d",
+        "row h1:268d4ebdcbce3ae6844259d79c3277ede029fbda662e837f9b6f20b0ab15f3b4": "h1:aaa3fbe334e44e2f20c59ac0435c653b31ae40102f9fb87bc779560ee008e450",
+        "row h1:31e81658c8b15956e8bdd99e5aab6e970a50843d5253375708a1740f9e34c5e2": "h1:dd142e272a379b968cef54a15a04c9fb9476d7e91fd880175734f87bb7e26e55",
+        "row h1:32c0713dd7978802c1512ddcc1dbda474ca91d316a2f34791cd623bf7f034d54": "h1:a210324276a64126a65f0743e533f320efc743e96de6650cd642b4c321bd56fe",
+        "row h1:34973b06433ac7b83c45b7fcfdce76b4d15e63f1439bbe7a23a56982a841ea0b": "h1:247e5725a3e72e5d6ca1f6373055098eda3e85965a1fbb5fd38fd1ff279d8826",
+        "row h1:4708ccc6861490394581086c15c13da57dc511ac544e1cd54b2cd0948b9fbbaa": "h1:480408b156e67a90b1ce8c1e67d69498645309a68f55a208f88d4ed642a61501",
+        "row h1:54eca428c2d9926864f776573053cfe138941f0c0d1449e2f86cabd31f505868": "h1:824e6c8f3556be7b8b5b84ad6a36967286863c6af4eed9a6f92f49bde9c22112",
+        "row h1:6525fc1cd353a241bd2c4203648bf9bbc4fc281effc151b0d22f37c1fab09628": "h1:6e37efcc4735abb1ce5d517b175f68ac4741810773c67d5d392bea92d1c98df7",
+        "row h1:6c996043caeb18fe31ab14d7c5afee99e1e30a8025a5cd59f1afccf9e2ae2c1d": "h1:0976aae4659d4887a4d2714eb2d05a86a9aecaf14ecb96a0b3ad4ffcf28495f1",
+        "row h1:73aba7a65e84c79f5592c8190a1a7c96d1fdfe7894f8b48d3e4a935c84ba1467": "h1:bf15e16e27bbb2a89b326a49ecbfc514fca1697d864434d43c893284b499462b",
+        "row h1:774a61fc6fcccacb16a3555f9a30435475e53625f95998af9759bee7f11312f2": "h1:4dcc2891838b43bc717410c7086999ef7ade0c29cb3b7cdb622f465c4f28935a",
+        "row h1:7e9b967b9fe4e8ac1d2a2af27c89471cefb90095880e4948abd0d3a5918295d6": "h1:bf2b7224df3f543d4f8c2b9e086a6b4d825b1946559ee1b099a12c07353a0f69",
+        "row h1:a03c990501cebd0c802ec81329ce4cd4a5cbd22d270425c753754bf7f455dc08": "h1:7f6367752e9c0d07b8f35faad8cb08c0e05f3d22701a12287eb6bc88d4ca877c",
+        "row h1:a37e406df7740c97db68ddd8946c8014de501ac6dca75a4c1c2341f73484cada": "h1:4f396bc9f835287fe5ad26ce7b11fa8f6e91b7f45fb7f145bf119e3d06f6422d",
+        "row h1:b8be3c078bd19cdc7d26f2782326a4ae30c9688c2183acb76710b2a9ae46adc6": "h1:60a9ad10d79fcbafa508f18966b33fc2c5eaceb6e9f007e75e74eb3de2804f0e",
+        "row h1:f4d1b518efe5fa9bbc2b07b7ad416782c56b04eb6c79c2712e965d915166d45f": "h1:f22ed923397f18f9042c8e2debb112b1241de12103cee03ac2587ab304ded698",
+        "step Otherwise": "h1:321fdf2cc389dc5fe12a73bcf2239749cb4691d0a9712d00b5a3a1fa6498c8e2",
+        "step Provided": "h1:c78ceb35701786646a68da89fcfa1876a9b7aef49aa2df48a65b36e70012b289",
+        "step Then": "h1:2cc3ba46d1a7cde6c03bb1e139a12b05098995d7430e13c4acbf5bb4d6771b1b",
+        "step When": "h1:b4d8d6a74e8f926eec449629f5ee00dae1ff4e48c77fd7d6496587ced85f516c"
+      },
+      "baseline": {
+        "heading": "h1:1e9b8d35fe318229d41467ec9472d1753596803044ecffd4bdc627eeeb5d04c8",
+        "row h1:1d3bf18c3ed85fda140419c99913f5f6da7a594bec097ff6a7b5a7326c8777af": "h1:dbfb81a13ed0835af5f8e8f03e0c23cd1c6448d4560c0a518dde14bba1dfa768",
+        "row h1:2005b3b9d7b9d0bd2b49852d7ee77559a46652d9c6474bf177aef5aa85bc454c": "h1:e5a5c617faf81dbed32036852d6b70a0d4bff0bfa36b882a6e34bb993f44974c",
+        "row h1:20076f3a1608f17835a2a6e289be156642930a16066ce2eae741f04d3578fb5b": "h1:d3fb11eba429bfc7d729349b902776e18bdf72c13907d7fd2e93f0d78717918b",
+        "row h1:268d4ebdcbce3ae6844259d79c3277ede029fbda662e837f9b6f20b0ab15f3b4": "h1:aaa3fbe334e44e2f20c59ac0435c653b31ae40102f9fb87bc779560ee008e450",
+        "row h1:31e81658c8b15956e8bdd99e5aab6e970a50843d5253375708a1740f9e34c5e2": "h1:dd142e272a379b968cef54a15a04c9fb9476d7e91fd880175734f87bb7e26e55",
+        "row h1:32c0713dd7978802c1512ddcc1dbda474ca91d316a2f34791cd623bf7f034d54": "h1:a210324276a64126a65f0743e533f320efc743e96de6650cd642b4c321bd56fe",
+        "row h1:34973b06433ac7b83c45b7fcfdce76b4d15e63f1439bbe7a23a56982a841ea0b": "h1:247e5725a3e72e5d6ca1f6373055098eda3e85965a1fbb5fd38fd1ff279d8826",
+        "row h1:4708ccc6861490394581086c15c13da57dc511ac544e1cd54b2cd0948b9fbbaa": "h1:480408b156e67a90b1ce8c1e67d69498645309a68f55a208f88d4ed642a61501",
+        "row h1:54eca428c2d9926864f776573053cfe138941f0c0d1449e2f86cabd31f505868": "h1:824e6c8f3556be7b8b5b84ad6a36967286863c6af4eed9a6f92f49bde9c22112",
+        "row h1:6525fc1cd353a241bd2c4203648bf9bbc4fc281effc151b0d22f37c1fab09628": "h1:6e37efcc4735abb1ce5d517b175f68ac4741810773c67d5d392bea92d1c98df7",
+        "row h1:6c996043caeb18fe31ab14d7c5afee99e1e30a8025a5cd59f1afccf9e2ae2c1d": "h1:0976aae4659d4887a4d2714eb2d05a86a9aecaf14ecb96a0b3ad4ffcf28495f1",
+        "row h1:73aba7a65e84c79f5592c8190a1a7c96d1fdfe7894f8b48d3e4a935c84ba1467": "h1:bf15e16e27bbb2a89b326a49ecbfc514fca1697d864434d43c893284b499462b",
+        "row h1:774a61fc6fcccacb16a3555f9a30435475e53625f95998af9759bee7f11312f2": "h1:4dcc2891838b43bc717410c7086999ef7ade0c29cb3b7cdb622f465c4f28935a",
+        "row h1:7e9b967b9fe4e8ac1d2a2af27c89471cefb90095880e4948abd0d3a5918295d6": "h1:bf2b7224df3f543d4f8c2b9e086a6b4d825b1946559ee1b099a12c07353a0f69",
+        "row h1:a03c990501cebd0c802ec81329ce4cd4a5cbd22d270425c753754bf7f455dc08": "h1:7f6367752e9c0d07b8f35faad8cb08c0e05f3d22701a12287eb6bc88d4ca877c",
+        "row h1:a37e406df7740c97db68ddd8946c8014de501ac6dca75a4c1c2341f73484cada": "h1:4f396bc9f835287fe5ad26ce7b11fa8f6e91b7f45fb7f145bf119e3d06f6422d",
+        "row h1:b8be3c078bd19cdc7d26f2782326a4ae30c9688c2183acb76710b2a9ae46adc6": "h1:60a9ad10d79fcbafa508f18966b33fc2c5eaceb6e9f007e75e74eb3de2804f0e",
+        "row h1:f4d1b518efe5fa9bbc2b07b7ad416782c56b04eb6c79c2712e965d915166d45f": "h1:f22ed923397f18f9042c8e2debb112b1241de12103cee03ac2587ab304ded698",
+        "step Otherwise": "h1:321fdf2cc389dc5fe12a73bcf2239749cb4691d0a9712d00b5a3a1fa6498c8e2",
+        "step Provided": "h1:c78ceb35701786646a68da89fcfa1876a9b7aef49aa2df48a65b36e70012b289",
+        "step Then": "h1:2cc3ba46d1a7cde6c03bb1e139a12b05098995d7430e13c4acbf5bb4d6771b1b",
+        "step When": "h1:b4d8d6a74e8f926eec449629f5ee00dae1ff4e48c77fd7d6496587ced85f516c"
+      }
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment only renames the identifier in one Examples cell of baseline.parts.split (lint.tree-layout to system.tree-layout); which files manifest, diff and pack may change, and that git is only read, stay as they were",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:0101c3acefa540bfda643e587bfa79163ed606518974c8a6a5a8fbc7ab252232",
+        "section Ranges over": "h1:383c70385ae62d1c0a1170d2e6a012d814227e3d85ca7b90d3bc6713d0b65ddf",
+        "section Rationale": "h1:9099ea22ad913d5fcbac510ed5cd2c12625dfa397c359d4385db12197a7dbf25"
+      }
+    },
+    {
+      "id": "lint.structure.field-once",
+      "reason": "untouched: the amendment only changes the identifier in one Examples cell of lint.structure.field-required from lint.tree-layout to system.tree-layout; the event the candidate shares with that rule, its guard and its outcomes read as before, and none of its own Examples name that element",
+      "parts": {
+        "heading": "h1:92ad2068552f24bacc48c3c7c0f3e5772467f965c83f8f389b152f419a7e1071",
+        "row h1:17984eb183b9c3324d2b651b7414f4c0eeb27a8fabadd6b9a3bb23cbb4bd2456": "h1:ea40f76e1417bf749bc79e1b543acdb5839d8f19d79cf97564f002be3c9ddb88",
+        "row h1:30b2f0d31c05134b53d982905f169aec064e1324ce2a2b91ab851422797fdbba": "h1:c684661df9b80e451cadb87ed35f2e6a20665b84ca8660d1ec60a45a0309a391",
+        "step Otherwise": "h1:c6f2890d5918da6dd214f8d77f4b2e17a363f24bd29577ae2784b02e1e68e0f6",
+        "step Provided": "h1:f7811b5bbda68ffa0d2eabba7a886d9931100a4e007f2840ccbf157b4e0cfdb4",
+        "step Then": "h1:a073ce7909a97700cdd1a4b515af824232ace235cf45a1bdc6d99d04bc084299",
+        "step When": "h1:6ae7a95190e92f646a753f0bc1a2e616c6aa0f189436943fa4ddec081ad8e6bf"
+      }
+    },
+    {
+      "id": "lint.structure.once",
+      "reason": "untouched: the amendment only changes the identifier in one Examples cell of lint.structure.field-required from lint.tree-layout to system.tree-layout; the event the candidate shares with that rule, its guard and its outcomes read as before, and none of its own Examples name that element",
+      "parts": {
+        "heading": "h1:6506cda53f5c48b11c72ce7302f6ebd7576b8dd822467af638b01dc3d05ee038",
+        "row h1:1b673355359bbd859adbbfa60c1784ce744514fffd67d5cc4e630dffe2ec33bb": "h1:1fb8a50ae37894acdfd16882f63accabc02cdd83c2bca4b2ef71ba631f5680ec",
+        "row h1:2cfde8ee5a62f063f6dc92c56d2712785a314162efb60618f4fa1d474e64d540": "h1:ec50bf3fca957dd90adbc2c863092b9cd7c47262a468eb21ecd6ddca8c433d1b",
+        "row h1:a9f9b52ede1d2f4531145eb7cf0da61fa53d393ae23d21fd0c48e14265d65ba3": "h1:e116fcffd2f60acf11837d20fe0be56835a2b0f503b1575a4aec3dcd82e9e026",
+        "step Otherwise": "h1:0299b14396bff33ea3d973ea89075dccb4a0c03224a3acac05930e8ea209d439",
+        "step Provided": "h1:32f312ded01d0f2065b9bebab22aa3a96e4f92d68b63282b93d97abf5fc70336",
+        "step Then": "h1:d1e259c4dba42d1a397fee0cdf318aa64fbf8bc2c142e1588f5321503765caf5",
+        "step When": "h1:ad15278102d20e60ace08505286368b46708b2df994bdd73d8487ce1f4bd0b19"
+      }
+    },
+    {
+      "id": "lint.structure.required",
+      "reason": "untouched: the amendment only changes the identifier in one Examples cell of lint.structure.field-required from lint.tree-layout to system.tree-layout; the event the candidate shares with that rule, its guard and its outcomes read as before, and none of its own Examples name that element",
+      "parts": {
+        "heading": "h1:a2a6339804534ad1db97afd8d126227592d2205e7141797542ab35f544b43438",
+        "row h1:b769eaff9759052d175c3ff36c23b221e80b0837b4b88e654931de31630308b4": "h1:c2ea465c9a77f6c22a3a5a339dffa7330b1fe06b8f655ffb99bdd0e69aec9b91",
+        "row h1:c11cb20a2524461aa9163c1cdc4893f8690918c4a9aa42b90204ccb6d4aa9fe9": "h1:116cbfaac30ae73760bbf0ffbc8c4a257ed4e276aaaed877078ba93d2088ca74",
+        "row h1:d15132b85e0feedd8427cdd6bf2f783e9f35721d2746bb08370890b01f3819b2": "h1:009e0e66268ff566aa7fdb6f2e8a949872dcfc377de60100562eee7500b8b4b7",
+        "row h1:d62038aaf673a264c7085263703483d51b3b594869869e877ff35a5cbbd73954": "h1:0fffdf195c93ead9fb3aad1070036721b744ec7e56dd449dbafdbb5218226f77",
+        "step Otherwise": "h1:206ad2482148ff981c0f1a3ffb6b1acd6b71660a69096442033d98ffe5d283c2",
+        "step Provided": "h1:9b473d821f556a832ea7251842db5a1868ca8f2d6ba1756d307042ee753650be",
+        "step Then": "h1:522a05fde409155febcd5b23cd83fd6b7f496e45dd1045d7c7b366974c4ff32b",
+        "step When": "h1:a7897ec459eacb08c72cd981fd4b053d51520cb30f51b17c35918d7a9115c7de"
+      }
+    },
+    {
+      "id": "query.read-only",
+      "reason": "untouched: the amendment only renames the expected identifier in one Examples outcome of query.show.match from lint.tree-layout to system.tree-layout; what show takes is unchanged, and nothing about show writing under the spec root changes",
+      "parts": {
+        "heading": "h1:7510e42a0d0a394f4e0843c6597f08a737f655bd87bd6495c0a160b49e1efc59",
+        "section Property": "h1:0b098c1360b044c1e70ee67af1208af355c2094b467b65f15af594c33fea0224",
+        "section Ranges over": "h1:adbc272aae04bcb39cfe055397443469820195c48f8fe018c4edf9c6cd5c0219",
+        "section Rationale": "h1:0d3dc6c472224a4a11492fea19099f7eb7ea239107f7134cfacca86aaf924619"
+      }
+    }
+  ],
+  "findings": []
+}
