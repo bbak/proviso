@@ -158,6 +158,7 @@ Then      <skill> is the [kit]'s [skill] of that name, with the [kit]'s writing 
 | `.claude/skills/proviso-accept/SKILL.md` | the skill that accepts an amendment, named `proviso-accept`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
 | `.claude/skills/proviso-rehome/SKILL.md` | the skill that gives moved elements the identifiers of their place, named `proviso-rehome`, and no writing guide, stamped with `init`'s Proviso version | it edits the spec tree only through `rehome` |
 | `.claude/skills/proviso-mutate/SKILL.md` | the skill that measures with mutants how many slips the tests catch, named `proviso-mutate`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
+| `.claude/skills/proviso-explain/SKILL.md` | the skill that answers questions about the system from the spec tree, named `proviso-explain`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
 
 ## <a id="install.init.exit"></a> Rule: The exit status tells whether every installed file is in place
 

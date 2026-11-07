@@ -728,6 +728,122 @@ properties:
 - `identifier` is the identifier a collision would take, and `from` the
   old identifiers of the renames planned to take it.
 
+## <a id="system.cli.show"></a> show
+
+The command `proviso show <query>`, run anywhere inside the system's
+repository. It writes every element the query names as `show_text` by
+default, or an `element_view` with `--json`.
+
+### <a id="system.cli.show.query"></a> query
+
+The one argument of `show` that is not an option nor the value of one:
+the identifier or name of the elements to show, such as `lint.run.exit`
+or `spec tree`. It is not empty, does not start with `-`, and is given
+once; a name of several words is one argument, quoted for the shell, as
+in `proviso show "spec tree"`.
+
+### <a id="system.cli.show.in"></a> in
+
+The option `--in <capability>`: look only among the elements of the
+capability whose folder is named `<capability>`, such as `lint`, and
+those of the system level.
+
+### <a id="system.cli.show.json"></a> json
+
+The option `--json`: write the `element_view` to standard output instead
+of `show_text`.
+
+### <a id="system.cli.show.exit-status"></a> exit-status
+
+The process exit status.
+
+```yaml
+type: integer
+enum: [0, 1, 2]
+```
+
+- `0`: at least one element was written.
+- `1`: the query names no element.
+- `2`: the command could not run, it was given no query, or `--in`
+  names no capability of the spec tree.
+
+## <a id="system.cli.show-text"></a> show_text
+
+What `show` writes by default: Markdown in UTF-8, read by engineers and
+agents. Like `pack_text`, it is part of the contract.
+
+- **Each element** appears in the order `show` takes them, as a
+  frontmatter and the element's own text, with a blank line between one
+  element and the next.
+- **The frontmatter** is a line `---`, then one line for each of `id`,
+  `type`, `heading`, `file`, `line` and `parent`, in this order, then a
+  line `---`. A line holds the key, `: ` and the value as JSON writes
+  it, which YAML reads alike: a string in double quotes, `line` as a
+  number, `null` where there is none. The keys mean what they mean in
+  `element_view`.
+- **The element's text** follows the frontmatter after a blank line, as
+  `text` in `element_view` holds it, without the blank lines at its end.
+
+```text
+---
+id: "lint.finding"
+type: "glossary entry"
+heading: "finding"
+file: "proviso/capabilities/lint/glossary.md"
+line: 3
+parent: "lint"
+---
+
+## <a id="lint.finding"></a> finding
+…
+```
+
+## <a id="system.cli.element-view"></a> element_view
+
+What `show --json` writes: the spec root that was read, and every
+element the query names, in the order `show` takes them. Paths and
+`root` follow the same conventions as in `report`.
+
+```yaml
+type: object
+required: [root, elements]
+properties:
+  root:
+    type: string
+  elements:
+    type: array
+    items:
+      type: object
+      required: [id, type, heading, file, line, parent, text]
+      properties:
+        id:
+          type: string
+        type:
+          enum: [system, capability, feature, rule, invariant, glossary entry, parameter, reference, constraint, contract element, null]
+        heading:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+          minimum: 1
+        parent:
+          type: [string, "null"]
+        text:
+          type: string
+```
+
+- `type` is the element's type as `tree_layout` names it, or null where
+  `tree_layout` gives the element none.
+- `heading` is the text of the element's heading after its anchor.
+- `file` and `line` say where the element stands, at the line of its
+  heading.
+- `parent` is the identifier of the element it belongs to, its element
+  parent, or null for the system.
+- `text` is the element's own text, from its heading to the next
+  element's heading, as `text` in `element_diff` holds it.
+- `elements` is empty where the query names no element.
+
 ## <a id="system.cli.init"></a> init
 
 The command `proviso init`, run in the root of a git repository; it
@@ -828,8 +944,8 @@ anywhere; it takes no argument. It writes `page` to standard output.
 
 The help page: what Proviso is, in one line; every command with its
 options and one sentence on what it does, first those engineers run,
-`init`, `update`, `version`, `lint`, `diff`, `impact`, `verify` and
-`help`, then those the skills run, `pack`, `judge`, `manifest` and `rehome`; the
+`init`, `update`, `version`, `lint`, `diff`, `impact`, `verify`,
+`show` and `help`, then those the skills run, `pack`, `judge`, `manifest` and `rehome`; the
 exit statuses the commands share;
 and where the documentation is. It names every command and every
 option. Its wording is for people and not part of the contract.

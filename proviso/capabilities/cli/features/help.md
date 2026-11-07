@@ -39,7 +39,7 @@ Otherwise "proviso" writes `help.page` to "stderr"
 
 ```guarded
 When      "proviso" reads its command <command>
-Provided  <command> is `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify`, `rehome` or `help`, or "--help" or "-h"
+Provided  <command> is `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify`, `rehome`, `show` or `help`, or "--help" or "-h"
 Then      "proviso" runs <command>, and runs `help` for "--help" and "-h"
   And     the command reads its arguments as its own [rules] say
 Otherwise "proviso" writes to "stderr" one line naming <command> as no command of Proviso, and that "proviso help" shows the help page
@@ -53,6 +53,7 @@ Otherwise "proviso" writes to "stderr" one line naming <command> as no command o
 | verify | yes | `verify` runs | |
 | update | yes | `update` runs | |
 | rehome | yes | `rehome` runs | |
+| show | yes | `show` runs | |
 | help | yes | `help` runs | |
 | --help | yes | `help` runs | |
 | -h | yes | `help` runs | |
@@ -90,14 +91,19 @@ element comes from no revision, so `--since` and `--element` exclude
 each other. The value after either belongs to that option and is not
 read as an argument of its own. No revision git accepts and no
 identifier starts with "-", so an argument that does is a forgotten
-value, not one to look up.
+value, not one to look up. A second `--in` would name two capabilities.
+`show` takes one argument that is no option, its query, since it has
+nothing to do without one. A second would ask for two lookups, which
+`show` does not make; a name of several words is quoted for the shell
+rather than joined, so that a mistyped option is refused rather than
+read as part of a name.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write` and `rehome.json` define
-  And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since" or "--element"
-  And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element"
-Then      <command> reads <argument>, with the value after it where <argument> is "--since" or "--element"
+Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `show.query`, `show.in` and `show.json` define
+  And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since", "--element" or "--in"
+  And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element", no "--in", where <argument> is "--in", and no `show.query`, where <argument> is one
+Then      <command> reads <argument>, with the value after it where <argument> is "--since", "--element" or "--in"
   And     <command> goes on with the arguments after them
 Otherwise <command> writes to "stderr" one line naming <command> and <argument>, and that "proviso help" shows the help page
   And     <command> exits with 2, as its exit status defines
@@ -112,6 +118,9 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | pack | --json | --since | `a1b2c3d` | yes | read, with `a1b2c3d` | |
 | pack | --json | --element | `lint.run.exit` | yes | read, with `lint.run.exit` | |
 | rehome | --json | --write | none | yes | read | |
+| show | none | `spec tree` | none | yes | read as the query | |
+| show | `lint.run.exit` | --in | `lint` | yes | read, with `lint` | |
+| show | `lint.run.exit` | --json | none | yes | read | |
 | version | none | 0.1.0 | none | no (takes) | refused, exit status 2 | `version` takes no argument |
 | init | none | --json | none | no (takes) | refused, exit status 2 | |
 | judge | none | --json | none | no (takes) | refused, exit status 2 | `judge` reads its input on stdin |
@@ -119,11 +128,17 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | lint | none | --since | `HEAD~1` | no (takes) | refused, exit status 2 | only `diff` and `pack` compare with a revision |
 | diff | none | --help | none | no (takes) | refused, exit status 2 | the page is `help`'s alone |
 | diff | none | --element | `lint.run.exit` | no (takes) | refused, exit status 2 | only `pack` names an element |
+| lint | none | `spec tree` | none | no (takes) | refused, exit status 2 | only `show` takes a query |
+| show | none | `""` | none | no (takes) | refused, exit status 2 | an empty query names nothing |
+| show | none | -x | none | no (takes) | refused, exit status 2 | an argument starting with "-" is an option |
 | diff | none | --since | none | no (a value after it) | refused, exit status 2 | |
 | pack | none | --since | `""` | no (a value after it) | refused, exit status 2 | an empty revision names nothing |
 | diff | none | --since | --json | no (a value after it) | refused, exit status 2 | an option is no revision |
 | pack | none | --element | none | no (a value after it) | refused, exit status 2 | |
+| show | `lint.run.exit` | --in | none | no (a value after it) | refused, exit status 2 | |
 | diff | --since `HEAD~1` | --since | `HEAD~2` | no (neither before it) | refused, exit status 2 | two revisions contradict |
 | pack | --element `lint.run.exit` | --element | `lint.run.root` | no (neither before it) | refused, exit status 2 | one element per pack |
 | pack | --since `HEAD~1` | --element | `lint.run.exit` | no (neither before it) | refused, exit status 2 | a named element comes from no revision |
 | pack | --element `lint.run.exit` | --since | `HEAD~1` | no (neither before it) | refused, exit status 2 | |
+| show | `lint.run.exit` --in `lint` | --in | `query` | no (neither before it) | refused, exit status 2 | two capabilities contradict |
+| show | `spec` | `tree` | none | no (neither before it) | refused, exit status 2 | one query per run; a name of several words is quoted |
