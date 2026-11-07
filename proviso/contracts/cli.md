@@ -839,7 +839,7 @@ properties:
 - `file` and `line` say where the element stands, at the line of its
   heading.
 - `parent` is the identifier of the element it belongs to, its element
-  parent, or null for the system.
+  parent, or null where it belongs to none, as the system does.
 - `text` is the element's own text, from its heading to the next
   element's heading, as `text` in `element_diff` holds it.
 - `elements` is empty where the query names no element.
