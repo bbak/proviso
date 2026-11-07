@@ -161,7 +161,7 @@ Otherwise `rehome` writes <renames>, naming each collision with the [identifier]
 ```guarded
 When      `rehome`, run with `rehome.write`, goes on with the renames <renames>
 Provided  every file of the [spec tree] that holds a place `rehome_references` lists for <renames>, or an [identifier mention] `rehome.mentions` names, and `manifest_file`, can be opened for writing
-Then      every place `rehome_references` lists that holds an old [identifier] of <renames> holds the new one, so does every [identifier mention] `rehome.mentions` names, and nothing else of its file changes
+Then      every place `rehome_references` lists that holds an old [identifier] of <renames> holds the new one, so does every [identifier mention] of an old [identifier] on a line `rehome.mentions` names for it, and nothing else of its file changes
   And     `manifest_file` is what `manifest` would write for the rewritten [spec tree]
 Otherwise `rehome` writes to "stderr" each file it cannot open for writing
   And     `rehome` exits with `rehome.exit-status` 2
@@ -173,6 +173,7 @@ Otherwise `rehome` writes to "stderr" each file it cannot open for writing
 | `baseline.impact.events` to `coherence.impact.events`, its anchor in `impact.md` and a hand-over to it in `verify.md` | yes | both files and `manifest.sum` rewritten | |
 | the same, with `baseline.impact.events` also in an Examples cell of `verify.md` | yes | the anchor and the hand-over renamed, the cell as it was | an Examples cell may hold an identifier as data |
 | the same, run with `--mentions` naming that cell's line | yes | the anchor, the hand-over and the cell renamed | the engineer picked the mention |
+| the same, the cell's line holding `baseline.impact.events` twice, run with `--mentions` naming that line | yes | the anchor, the hand-over and both code spans renamed | a line is picked whole |
 | the same, run with `--mentions` naming no mention | yes | the anchor and the hand-over renamed, the cell as it was | |
 | `baseline.dependencies` to `coherence.dependencies`, tagging a question in `questions.md` | yes | the tag renamed | |
 | none | yes | nothing rewritten, `manifest.sum` as it was | the manifest of an unchanged tree is the same |
