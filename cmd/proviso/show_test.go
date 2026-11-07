@@ -12,7 +12,7 @@ import (
 var showTree = map[string]string{
 	"proviso/system.md":                            "# <a id=\"system\"></a> Shop\n\n## Goal\n\nx\n",
 	"proviso/glossary.md":                          "# Glossary\n\n## <a id=\"system.spec-tree\"></a> spec tree\n\n- Definition: x\n- Aliases: tree\n\n",
-	"proviso/parameters.md":                        "# Parameters\n\n## <a id=\"lint.tree-layout\"></a> tree_layout\n\n- Configurable: no\n",
+	"proviso/parameters.md":                        "# Parameters\n\n## <a id=\"system.tree-layout\"></a> tree_layout\n\n- Configurable: no\n",
 	"proviso/contracts/cli.md":                     "# CLI\n\n## <a id=\"system.cli.diff\"></a> diff\n\nx\n\n### <a id=\"system.cli.diff.since\"></a> since\n\ny\n",
 	"proviso/capabilities/lint/capability.md":      "# <a id=\"lint\"></a> Lint\n",
 	"proviso/capabilities/lint/glossary.md":        "# Glossary\n\n## <a id=\"lint.finding\"></a> finding\n\n- Definition: x\n",
@@ -36,7 +36,7 @@ func TestShow(t *testing.T) {
 		{[]string{"finding", "--in", "lint"}, 0, []string{"lint.finding glossary entry lint"}},
 		{[]string{"diff.since"}, 0, []string{"system.cli.diff.since contract element system.cli.diff"}},
 		{[]string{"diff"}, 0, []string{"system.cli.diff contract element system"}},
-		{[]string{"tree_layout"}, 0, []string{"lint.tree-layout parameter system"}},
+		{[]string{"tree_layout"}, 0, []string{"system.tree-layout parameter system"}},
 		{[]string{"lint.run.odd"}, 0, []string{"lint.run.odd <nil> lint.run"}},
 		{[]string{"system"}, 0, []string{"system system <nil>"}},
 		{[]string{"lint"}, 0, []string{"lint capability system"}},
