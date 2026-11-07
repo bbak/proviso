@@ -159,7 +159,7 @@ Otherwise `rehome` writes <renames>, naming each collision with the [identifier]
 ## <a id="upkeep.rehome.write"></a> Rule: With write, every planned rename is written, or none
 
 ```guarded
-When      `rehome`, run with `rehome.write`, goes on with the renames <renames>
+When      `rehome`, run with `rehome.write`, goes on with the renames <renames>, and, run with `rehome.mentions`, with the [identifier mentions] its input names
 Provided  every file of the [spec tree] that holds a place `rehome_references` lists for <renames>, or an [identifier mention] `rehome.mentions` names, and `manifest_file`, can be opened for writing
 Then      every place `rehome_references` lists that holds an old [identifier] of <renames> holds the new one, so does every [identifier mention] of an old [identifier] on a line `rehome.mentions` names for it, and nothing else of its file changes
   And     `manifest_file` is what `manifest` would write for the rewritten [spec tree]
@@ -186,7 +186,7 @@ Otherwise `rehome` writes to "stderr" each file it cannot open for writing
 When      `rehome`, run with `rehome.write` and `rehome.mentions`, goes on with its renames, and reads the input <input> from "stdin"
 Provided  <input> is a `mention_list`
   And     every [identifier mention] <input> names is one its plan lists
-Then      `rehome` writes its renames with the [identifier mentions] <input> names
+Then      `rehome` goes on with its renames and the [identifier mentions] <input> names
   And     every other [identifier mention] stays as it was
 Otherwise `rehome` writes to "stderr" why <input> cannot be taken
   And     `rehome` exits with `rehome.exit-status` 2
@@ -195,9 +195,9 @@ Otherwise `rehome` writes to "stderr" why <input> cannot be taken
 
 | input | provided | outcome | why |
 | --- | --- | --- | --- |
-| a `mention_list` naming one mention the plan lists | yes | that mention renamed with the rest | |
-| a `mention_list` with no mentions | yes | no mention renamed | |
-| a `mention_list` naming one mention twice | yes | that mention renamed once | the same mention asked for twice |
+| a `mention_list` naming one mention the plan lists | yes | goes on with that mention | |
+| a `mention_list` with no mentions | yes | goes on with no mention | |
+| a `mention_list` naming one mention twice | yes | goes on with that mention once | the same mention asked for twice |
 | `{` | no (a `mention_list`) | exit status 2, nothing written | |
 | a `mention_list` naming a line where the identifier stands in plain text only | no (one the plan lists) | exit status 2, nothing written | a stale or mistyped list writes nothing |
 | a `mention_list` naming a mention of `lint.run`, which the plan does not rename | no (one the plan lists) | exit status 2, nothing written | |
