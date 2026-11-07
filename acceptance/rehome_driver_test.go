@@ -4,7 +4,8 @@ package acceptance
 // holds for every run (the contract rehome_plan, the exit status, the order,
 // the rules upkeep.rehome.exit and upkeep.rehome.collision as far as the plan
 // shows them, and the invariant upkeep.rehome.writes), and oracles of the
-// identifier home and the collisions, computed from the test tree alone.
+// identifier home, the collisions and the identifier mentions, computed from
+// the test tree alone.
 
 import (
 	"bytes"
@@ -28,10 +29,29 @@ type planCollision struct {
 	From       []string `json:"from"`
 }
 
+// planMention is an item of mentions in rehome_plan; Element is nil where
+// the plan gives null.
+type planMention struct {
+	Identifier string  `json:"identifier"`
+	File       string  `json:"file"`
+	Line       int     `json:"line"`
+	Count      int     `json:"count"`
+	Element    *string `json:"element"`
+}
+
+func (m planMention) String() string {
+	e := "null"
+	if m.Element != nil {
+		e = *m.Element
+	}
+	return fmt.Sprintf("{%s %s:%d x%d in %s}", m.Identifier, m.File, m.Line, m.Count, e)
+}
+
 type rehomePlan struct {
 	Root       string          `json:"root"`
 	Renames    []planRename    `json:"renames"`
 	Collisions []planCollision `json:"collisions"`
+	Mentions   []planMention   `json:"mentions"`
 }
 
 // rehomeOutcome is one run of `rehome`, with every entry below the base
@@ -50,12 +70,24 @@ type rehomeOutcome struct {
 // returns runs after the command and before the second snapshot.
 func rehomeIn(t *testing.T, base, cwd, root string, prepare func() func(), args ...string) rehomeOutcome {
 	t.Helper()
+	return rehomeWith(t, base, cwd, root, "", prepare, args...)
+}
+
+// rehomeWith is rehomeIn with input, if not empty, on standard input, as the
+// mention_list of a run with --mentions.
+func rehomeWith(t *testing.T, base, cwd, root, input string, prepare func() func(), args ...string) rehomeOutcome {
+	t.Helper()
 	before := snapshotAll(t, base)
 	var undo func()
 	if prepare != nil {
 		undo = prepare()
 	}
-	r := execProviso(t, cwd, append([]string{"rehome"}, args...)...)
+	var r run
+	if input != "" {
+		r = execProvisoWith(t, cwd, strings.NewReader(input), append([]string{"rehome"}, args...)...)
+	} else {
+		r = execProviso(t, cwd, append([]string{"rehome"}, args...)...)
+	}
 	if undo != nil {
 		undo()
 	}
@@ -120,6 +152,31 @@ func (r *repo) rehome(args ...string) rehomeOutcome {
 	return rehomeIn(r.t, r.dir, r.dir, r.root(), nil, args...)
 }
 
+// rehomePicking runs `proviso rehome` with args in the repository, with input
+// on standard input.
+func (r *repo) rehomePicking(input string, args ...string) rehomeOutcome {
+	r.t.Helper()
+	return rehomeWith(r.t, r.dir, r.dir, r.root(), input, nil, args...)
+}
+
+// mentionList writes a mention_list naming ms by their identifier, file and
+// line.
+func mentionList(ms ...planMention) string {
+	type item struct {
+		Identifier string `json:"identifier"`
+		File       string `json:"file"`
+		Line       int    `json:"line"`
+	}
+	l := struct {
+		Mentions []item `json:"mentions"`
+	}{Mentions: []item{}}
+	for _, m := range ms {
+		l.Mentions = append(l.Mentions, item{m.Identifier, m.File, m.Line})
+	}
+	b, _ := json.Marshal(l)
+	return string(b) + "\n"
+}
+
 // parsePlan checks stdout against the schema of rehome_plan and that nothing
 // else is on stdout.
 func parsePlan(t *testing.T, stdout string) rehomePlan {
@@ -132,7 +189,7 @@ func parsePlan(t *testing.T, stdout string) rehomePlan {
 	if raw["root"] == nil || json.Unmarshal(raw["root"], &s) != nil {
 		t.Errorf("system.cli.rehome-plan: root missing or not a string: %s", raw["root"])
 	}
-	for _, k := range []string{"renames", "collisions"} {
+	for _, k := range []string{"renames", "collisions", "mentions"} {
 		if v := bytes.TrimSpace(raw[k]); len(v) == 0 || v[0] != '[' {
 			t.Fatalf("system.cli.rehome-plan: %s missing or not an array: %s", k, raw[k])
 		}
@@ -161,6 +218,30 @@ func parsePlan(t *testing.T, stdout string) rehomePlan {
 			t.Errorf("system.cli.rehome-plan: collision %d: from missing or not an array of strings", i)
 		} else if len(from) == 0 {
 			t.Errorf("system.cli.rehome-plan: collision %d names no old identifier planned for it", i)
+		}
+	}
+	var mentions []map[string]json.RawMessage
+	if err := json.Unmarshal(raw["mentions"], &mentions); err != nil {
+		t.Fatalf("system.cli.rehome-plan: mentions are not objects: %v", err)
+	}
+	for i, it := range mentions {
+		for _, k := range []string{"identifier", "file"} {
+			if v, ok := it[k]; !ok || json.Unmarshal(v, &s) != nil {
+				t.Errorf("system.cli.rehome-plan: mention %d: %s missing or not a string", i, k)
+			}
+		}
+		for _, k := range []string{"line", "count"} {
+			var n int
+			if v, ok := it[k]; !ok || json.Unmarshal(v, &n) != nil {
+				t.Errorf("system.cli.rehome-plan: mention %d: %s missing or not an integer", i, k)
+			} else if n < 1 {
+				t.Errorf("system.cli.rehome-plan: mention %d: %s is %d, below 1", i, k, n)
+			}
+		}
+		if v, ok := it["element"]; !ok {
+			t.Errorf("system.cli.rehome-plan: mention %d: element missing", i)
+		} else if string(bytes.TrimSpace(v)) != "null" && json.Unmarshal(v, &s) != nil {
+			t.Errorf("system.cli.rehome-plan: mention %d: element is neither a string nor null: %s", i, v)
 		}
 	}
 	var p rehomePlan
@@ -195,6 +276,25 @@ func checkPlanOrder(t *testing.T, p rehomePlan) {
 			}
 		}
 	}
+	for i := 1; i < len(p.Mentions); i++ {
+		if !mentionBefore(p.Mentions[i-1], p.Mentions[i]) {
+			t.Errorf("upkeep.rehome.order: the mention %v before %v", p.Mentions[i-1], p.Mentions[i])
+		}
+	}
+}
+
+// mentionBefore tells whether a comes before b: by their file's path, then
+// their line, then their identifier, paths and identifiers compared byte by
+// byte. No mention comes before itself, since the plan lists each line once
+// for each identifier.
+func mentionBefore(a, b planMention) bool {
+	if a.File != b.File {
+		return a.File < b.File
+	}
+	if a.Line != b.Line {
+		return a.Line < b.Line
+	}
+	return a.Identifier < b.Identifier
 }
 
 // identifierToken is what a test tree writes as an identifier, or any word
@@ -327,6 +427,19 @@ func sameRenames(t *testing.T, got, want []planRename) {
 	if fmt.Sprint(got) != fmt.Sprint(want) && !(len(got) == 0 && len(want) == 0) {
 		t.Errorf("want the renames %v, got %v", want, got)
 	}
+}
+
+func sameMentions(t *testing.T, got, want []planMention) {
+	t.Helper()
+	if fmt.Sprint(got) != fmt.Sprint(want) && !(len(got) == 0 && len(want) == 0) {
+		t.Errorf("upkeep.rehome.mentions: want the mentions\n%v\ngot\n%v", want, got)
+	}
+}
+
+// mentions asserts the mentions of the plan, in their order.
+func (o rehomeOutcome) mentions(t *testing.T, want []planMention) {
+	t.Helper()
+	sameMentions(t, o.plan.Mentions, want)
 }
 
 func sameCollisions(t *testing.T, got, want []planCollision) {
@@ -474,4 +587,118 @@ func manifestWritten(t *testing.T, tr tree) string {
 		t.Fatal("writing the manifest of the tree failed in another test")
 	}
 	return m.content
+}
+
+// ---------------------------------------------------------------------------
+// The oracle of upkeep.identifier-mention and upkeep.rehome.mentions
+
+// mention is a planMention of the identifier id on the line of the file p,
+// standing count times there, in the element elem, or in none where elem is
+// "".
+func mention(id, p string, line, count int, elem string) planMention {
+	m := planMention{Identifier: id, File: p, Line: line, Count: count}
+	if elem != "" {
+		m.Element = &elem
+	}
+	return m
+}
+
+// codeSpans gives the contents of the code spans of one line: from a run of
+// backticks to the next run of as many, with one space stripped from each
+// end where both ends hold one and the content is not all spaces. The test
+// trees hold no code span over several lines.
+func codeSpans(l string) []string {
+	var out []string
+	runAt := func(i int) int {
+		j := i
+		for j < len(l) && l[j] == '`' {
+			j++
+		}
+		return j - i
+	}
+	for i := 0; i < len(l); {
+		if l[i] != '`' {
+			i++
+			continue
+		}
+		n := runAt(i)
+		closed := false
+		for j := i + n; j < len(l); {
+			if l[j] != '`' {
+				j++
+				continue
+			}
+			m := runAt(j)
+			if m == n {
+				c := l[i+n : j]
+				if len(c) >= 2 && c[0] == ' ' && c[len(c)-1] == ' ' && strings.Trim(c, " ") != "" {
+					c = c[1 : len(c)-1]
+				}
+				out = append(out, c)
+				i, closed = j+m, true
+				break
+			}
+			j += m
+		}
+		if !closed {
+			i += n
+		}
+	}
+	return out
+}
+
+// mentionsOf gives the mentions upkeep.rehome.mentions lists for the renames
+// of tr, ordered as upkeep.rehome.order says: each line of a Markdown file of
+// the spec root, outside fenced blocks (rule blocks among them), holding a
+// code span whose whole content is the old identifier of a rename, once for
+// each such identifier, with how often it stands there and the identifier
+// of the element whose heading the line follows in its file; none in a
+// questions.md, or above the first heading with an identifier.
+func mentionsOf(tr tree) []planMention {
+	old := map[string]bool{}
+	for _, r := range homeRenames(tr) {
+		old[r.From] = true
+	}
+	var out []planMention
+	for p, content := range tr {
+		name := p[strings.LastIndex(p, "/")+1:]
+		if !strings.HasPrefix(p, "proviso/") || !strings.HasSuffix(p, ".md") || strings.HasPrefix(name, ".") {
+			continue
+		}
+		fence, elem := "", ""
+		for i, l := range strings.Split(content, "\n") {
+			trimmed := strings.TrimLeft(l, " ")
+			if fence != "" {
+				if strings.HasPrefix(trimmed, fence) && strings.Trim(trimmed, fence[:1]+" ") == "" {
+					fence = ""
+				}
+				continue
+			}
+			if strings.HasPrefix(trimmed, "```") || strings.HasPrefix(trimmed, "~~~") {
+				c := trimmed[:1]
+				fence = trimmed[:len(trimmed)-len(strings.TrimLeft(trimmed, c))]
+				continue
+			}
+			if m := headingAnchor.FindStringSubmatch(l); m != nil && name != "questions.md" {
+				elem = m[1]
+			}
+			count := map[string]int{}
+			for _, c := range codeSpans(l) {
+				if old[c] {
+					count[c]++
+				}
+			}
+			for id, n := range count {
+				out = append(out, mention(id, p, i+1, n, elem))
+			}
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return mentionBefore(out[i], out[j]) })
+	return out
+}
+
+// mentioned asserts that the plan lists the mentions the oracle gives for tr.
+func (o rehomeOutcome) mentioned(t *testing.T, tr tree) {
+	t.Helper()
+	sameMentions(t, o.plan.Mentions, mentionsOf(tr))
 }

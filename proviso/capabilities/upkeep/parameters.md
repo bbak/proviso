@@ -6,11 +6,12 @@
 - Rationale: these are the places where the notation itself marks an
   identifier as one; anywhere else an identifier may be data, such as
   the Examples rows of a rule about identifiers, and only a person can
-  tell.
+  tell, so `rehome` lists those mentions for the person to pick.
 
 The places where `rehome` renames an identifier. Nothing else is
-rewritten: an identifier in plain text, in an Examples cell, in a code
-span, in a fenced block or in an image stays as it is. A fragment is
+rewritten, but the mentions the engineer picks: an identifier in plain
+text, in an Examples cell, in a code span, in a fenced block or in an
+image stays as it is. A fragment is
 renamed wherever its link leads, inside the spec tree or out of it.
 
 | reference | the identifier it holds | such as |

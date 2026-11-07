@@ -57,7 +57,11 @@ itself, which holds the coherence file.
 
 If the candidates to judge span more than one capability, because a
 system-level frame changed, prepare one run per capability, each with
-only that capability's candidates named, and the system level.
+only that capability's candidates named, and the system level; and one
+run of the amendment itself, with the capabilities holding an element
+the element diff lists and the system level, which judges no candidate
+and checks those elements. A split run judges only what it is named, so
+without that run nobody reads the amendment against its frames.
 
 ## 3. Start the checker
 
@@ -66,7 +70,9 @@ several. Give each, and nothing more:
 
 - the paths of `pack.md`, `impact.json` and `verify.json`;
 - the folders and files of the tree it may read;
-- for a split run, the identifiers of the candidates it judges.
+- for a split run, the identifiers of the candidates it judges, or,
+  for the run of the amendment, that it judges no candidate and checks
+  every element the element diff lists.
 
 Wait until each has reported.
 

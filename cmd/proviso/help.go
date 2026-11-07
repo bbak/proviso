@@ -42,10 +42,12 @@ Commands the skills run:
   judge               Record the check result on standard input in the
                       coherence file.
   manifest            Record the spec tree as the baseline.
-  rehome [--write] [--json]
+  rehome [--write [--mentions]] [--json]
                       Plan the renames that give moved elements the
-                      identifiers of their place; with --write, write
-                      them into the spec tree and the manifest.
+                      identifiers of their place, and list the other
+                      mentions of the identifiers it renames; with
+                      --write, write the renames into the spec tree and
+                      the manifest.
 
 Options:
   --json              Write JSON instead of text.
@@ -55,6 +57,9 @@ Options:
                       Pack the element with that identifier instead of
                       the amendment (pack only).
   --write             Write the planned renames (rehome only).
+  --mentions          Read a mention list on standard input and rename
+                      the mentions it names too (rehome, with --write
+                      only).
   --in <capability>   Look only among the elements of that capability
                       and of the system level (show only).
 
@@ -86,7 +91,7 @@ var commandOptions = map[string][]string{
 	"pack":     {"--json", "--since", "--element"},
 	"judge":    nil,
 	"verify":   {"--json"},
-	"rehome":   {"--write", "--json"},
+	"rehome":   {"--write", "--json", "--mentions"},
 	"show":     {"--json", "--in"},
 	"help":     nil,
 }
@@ -121,6 +126,11 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 			o.json = true
 		case a == "--write":
 			o.write = true
+		case a == "--mentions" && !slices.Contains(args, "--write"):
+			// Without --write nothing is written, so nothing is picked.
+			return refuse(a, "takes --mentions only with --write, so it refuses")
+		case a == "--mentions":
+			o.mentions = true
 		case a == "--in" && o.in != "":
 			// One capability per run.
 			return refuse(a, "takes one --in, so it refuses")
@@ -145,11 +155,11 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 	return o, true
 }
 
-// options are the arguments a command read: whether it was given --json
-// and --write, the values of --since, --element and --in, and the query,
-// "" for none.
+// options are the arguments a command read: whether it was given --json,
+// --write and --mentions, the values of --since, --element and --in, and
+// the query, "" for none.
 type options struct {
-	json, write               bool
+	json, write, mentions     bool
 	since, element, in, query string
 }
 

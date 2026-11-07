@@ -104,7 +104,7 @@ func TestCollisions(t *testing.T) {
 func TestRewrite(t *testing.T) {
 	tr, els := load(t, nil)
 	renames, _ := Plan(els)
-	got := Rewrite(tr, els, renames)
+	got := Rewrite(tr, els, renames, nil)
 	if len(got) != 5 {
 		t.Errorf("%d files rewritten", len(got))
 	}
@@ -129,7 +129,74 @@ func TestRewrite(t *testing.T) {
 	if !strings.Contains(m, "\nc.f.s\theading\t") || strings.Contains(m, "x.f.s\t") || !strings.Contains(m, "\nsystem.ref.std\t") {
 		t.Errorf("manifest %q", m)
 	}
-	if len(Rewrite(tr, els, nil)) != 0 {
+	if len(Rewrite(tr, els, nil, nil)) != 0 {
 		t.Error("rewritten without renames")
+	}
+}
+
+// mentioned adds identifier mentions of x.f.s: twice in one Examples row,
+// once in a Rationale, once in a question, and places that are none.
+func mentioned(f map[string]string) {
+	f["capabilities/c/features/f.md"] = strings.Replace(f["capabilities/c/features/f.md"], "| a | yes | read | |", "| a | yes | read | `x.f.s` and ` x.f.s ` |", 1)
+	f["capabilities/c/features/f.md"] = strings.Replace(f["capabilities/c/features/f.md"], "## Rationale\n\nr\n", "## Rationale\n\nSee `x.f.s`, `x.f.s.y`, x.f.s and `<a id=\"x.f.s\"></a>`.\n\n```text\n`x.f.s`\n```\n", 1)
+	f["capabilities/c/questions.md"] += "- [c.f.r] And `x.f.s`?\n"
+}
+
+func TestMentions(t *testing.T) {
+	tr, els := load(t, mentioned)
+	renames, _ := Plan(els)
+	got := Mentions(tr, els, renames)
+	want := []Mention{
+		{"x.f.s", "proviso/capabilities/c/features/f.md", 11, 1, "c.f"},
+		{"x.f.s", "proviso/capabilities/c/features/f.md", 29, 2, "c.f.r"},
+		{"x.f.s", "proviso/capabilities/c/questions.md", 5, 1, ""},
+	}
+	if !slices.Equal(got, want) {
+		t.Errorf("mentions %v", got)
+	}
+	if len(Mentions(tr, els, nil)) != 0 {
+		t.Error("mentions without renames")
+	}
+}
+
+func TestRewriteMentions(t *testing.T) {
+	tr, els := load(t, mentioned)
+	renames, _ := Plan(els)
+	f := "proviso/capabilities/c/features/f.md"
+	got := Rewrite(tr, els, renames, nil)
+	if s := string(got["capabilities/c/features/f.md"]); !strings.Contains(s, "`x.f.s` and ` x.f.s `") || !strings.Contains(s, "See `x.f.s`") {
+		t.Errorf("unpicked mentions renamed: %q", s)
+	}
+	got = Rewrite(tr, els, renames, []Picked{{"x.f.s", f, 29}})
+	s := string(got["capabilities/c/features/f.md"])
+	if !strings.Contains(s, "| a | yes | read | `c.f.s` and ` c.f.s ` |") || !strings.Contains(s, "See `x.f.s`, `x.f.s.y`, x.f.s and `<a id=\"x.f.s\"></a>`") || !strings.Contains(s, "```text\n`x.f.s`\n```") {
+		t.Errorf("picked line: %q", s)
+	}
+	if s := string(Rewrite(tr, els, renames, []Picked{{"x.f.s", "proviso/capabilities/c/questions.md", 5}})["capabilities/c/questions.md"]); !strings.HasSuffix(s, "- [c.f.r] And `c.f.s`?\n") {
+		t.Errorf("question %q", s)
+	}
+}
+
+func TestParseMentionList(t *testing.T) {
+	got, err := ParseMentionList([]byte(`{"mentions": [{"identifier": "a.b", "file": "proviso/f.md", "line": 3, "count": 2, "element": null}, {"identifier": "a.b", "file": "proviso/f.md", "line": 3}], "root": "x"}`))
+	if err != nil || !slices.Equal(got, []Picked{{"a.b", "proviso/f.md", 3}}) {
+		t.Errorf("%v %v", got, err)
+	}
+	if got, err := ParseMentionList([]byte(`{"mentions": []}`)); err != nil || len(got) != 0 {
+		t.Errorf("empty: %v %v", got, err)
+	}
+	for _, in := range []string{`{`, `[]`, `{}`, `{"mentions": {}}`, `{"mentions": [1]}`, `{"mentions": [{"file": "f", "line": 1}]}`,
+		`{"mentions": [{"identifier": "a", "file": "f", "line": 0}]}`, `{"mentions": [{"identifier": "a", "file": "f", "line": 1.5}]}`,
+		`{"mentions": [{"identifier": "a", "file": "f", "line": "1"}]}`, `{"mentions": []} {}`, "\xff"} {
+		if _, err := ParseMentionList([]byte(in)); err == nil {
+			t.Errorf("%q taken", in)
+		}
+	}
+}
+
+func TestUnlisted(t *testing.T) {
+	listed := []Mention{{"a.b", "f", 3, 1, ""}}
+	if u := Unlisted([]Picked{{"a.b", "f", 3}, {"a.b", "f", 4}, {"c.d", "f", 3}}, listed); !slices.Equal(u, []Picked{{"a.b", "f", 4}, {"c.d", "f", 3}}) {
+		t.Errorf("%v", u)
 	}
 }

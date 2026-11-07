@@ -37,7 +37,8 @@ const (
 // -ldflags "-X main.version=..."; "dev" for a build given none.
 var version = "dev"
 
-// stdin is what judge reads its check_result from.
+// stdin is what judge reads its check_result from, and rehome its
+// mention_list.
 var stdin io.Reader = os.Stdin
 
 func main() {
@@ -117,7 +118,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		case "verify":
 			return verifyRun(t, res, o.json, stdout, stderr)
 		case "rehome":
-			return rehomeRun(t, res, o.json, o.write, stdout, stderr)
+			return rehomeRun(t, res, o.json, o.write, o.mentions, stdout, stderr)
 		}
 		return impactRun(t, res, o.json, stdout, stderr)
 	}

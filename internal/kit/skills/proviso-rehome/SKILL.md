@@ -56,13 +56,17 @@ so that `a.b` never matches inside `a.b.c`:
   `.proviso/build.md` or the engineers' notes say how one is derived,
   such as a test named after its element. For each new identifier,
   check that its derived form is not already taken.
-- **In the spec tree itself,** wherever the notation does not mark it:
-  plain text, Examples cells, code spans, fenced blocks. Such a mention
-  may be a reference or data. A reference goes stale with the rename:
-  a rule named in a Rationale, or an Examples row whose outcome depends
-  on the tree holding the element. Data does not: an Examples row about
-  the form of identifiers. `rehome` leaves either as it is, and so do
-  you: changing it is an edit of the tree, an amendment of its own.
+- **In the spec tree itself:** the plan's `mentions` list every line
+  where an old identifier stands as a whole code span outside rule
+  blocks and fenced blocks, such as in an Examples cell or a Rationale.
+  Read each in its element: a reference goes stale with the rename, such
+  as a rule named in a Rationale, or an Examples row whose outcome
+  depends on the tree holding the element; data does not, such as an
+  Examples row about the form of identifiers. Propose to rename every
+  reference and to keep every piece of data. Search the tree too for
+  the old identifiers where the plan cannot see them, in plain text and
+  in fenced blocks: those stay as they are, since changing them is an
+  edit of the tree, an amendment of its own.
 
 Tell a reference from data by reading it, never by its form alone: a
 short identifier can also be a module path or a word in another
@@ -77,15 +81,22 @@ Show the engineer, and wait for the answer:
   match you will leave, with why;
 - every derived name already taken, which stops the step until the
   engineer decides;
-- the mentions in the tree that stay as they are, each with its file
-  and line, and whether it is a reference or data.
+- the plan's mentions, grouped by element, each with its file and
+  line, and whether you propose to rename it, a reference, or to keep
+  it, data;
+- the mentions in plain text and fenced blocks that stay as they are,
+  each with its file and line, and whether it is a reference or data.
 
 Write nothing until the engineer agrees.
 
 ## 5. Write
 
-1. Run `proviso rehome --write --json`. It must exit with 0 and list
-   the same renames as the plan; if not, stop and say why.
+1. Write the mentions the engineer approved for renaming, as a
+   `mention_list` of the plan's items, to a file in the system's
+   temporary folder, and run `proviso rehome --write --mentions --json`
+   with that file on standard input; with none approved, run it
+   without `--mentions`. It must exit with 0 and list the same renames
+   and mentions as the plan; if not, stop and say why.
 2. Rename every approved place beside the tree. Make each edit fail if
    it matches nothing, and read each one back: a rename that never
    landed is the error this step most easily hides.
@@ -99,9 +110,9 @@ Write nothing until the engineer agrees.
 
 ## 6. Report
 
-The renames, the files changed beside the tree, the mentions left in
-the tree, the checks that ran, and the commit. If any mention left is a
-reference, recommend a small amendment that names it by its new
-identifier, before the next amendment builds on it.
+The renames, the files changed beside the tree, the mentions renamed
+in the tree and those left, the checks that ran, and the commit. If any
+mention left is a reference, recommend a small amendment that names it
+by its new identifier, before the next amendment builds on it.
 
 Never push, never edit the spec tree but through `proviso rehome`.

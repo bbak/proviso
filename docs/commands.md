@@ -307,7 +307,7 @@ Specified in [baseline/features/manifest.md](https://github.com/bbak/proviso/blo
 ## rehome
 
 ```sh
-proviso rehome [--write] [--json]
+proviso rehome [--write [--mentions]] [--json]
 ```
 
 Gives the elements that moved to another capability, or to the system,
@@ -315,13 +315,24 @@ the identifiers of their place. An identifier whose first segment names
 another place than the capability the element stands in, or `system`,
 is renamed to name it, keeping the rest: `baseline.impact.events` in the
 capability `coherence` becomes `coherence.impact.events`. Without
-`--write` it only lists the renames and the collisions that refuse
-them, and changes nothing. With `--write` it renames every anchor,
-hand-over, inline link, autolink, link reference definition and question
-tag that names an old identifier, and writes the manifest of the
-rewritten tree in the same step, so the tree is again what the manifest
-records. An identifier in plain text, an Examples cell or code is left
-as it is: it may be data.
+`--write` it only lists the renames, the collisions that refuse them
+and the mentions of the old identifiers, and changes nothing. With
+`--write` it renames every anchor, hand-over, inline link, autolink,
+link reference definition and question tag that names an old
+identifier, and writes the manifest of the rewritten tree in the same
+step, so the tree is again what the manifest records.
+
+A mention is a code span that holds nothing but an old identifier,
+outside rule blocks and fenced blocks, such as in an Examples cell or a
+Rationale. It may refer to its element or be data, so the plan lists
+each line holding one, with its file, line, how often it stands there,
+and the element holding it; it is renamed only when picked. With
+`--write --mentions`, `rehome` reads a mention list from standard
+input, a JSON object whose `mentions` are items of the plan's own list,
+and renames every mention of that identifier on each line named. A list
+that is no mention list, or names a line the plan does not list,
+refuses the run. An identifier in plain text or a fenced block is left
+as it is.
 
 It runs only on a tree that is what the manifest records, with no
 coherence file or amendment note beside it: after an amendment is
@@ -342,6 +353,6 @@ shows them to you with the plan, and renames them in the same commit.
 | --- | --- |
 | 0 | the renames were planned, any or none, and written with `--write` |
 | 1 | a rename would take an identifier; nothing was written |
-| 2 | the tree is not what the manifest records, a coherence file or note lies beside it, a file could not be opened for writing, or the command could not run; nothing was written |
+| 2 | the tree is not what the manifest records, a coherence file or note lies beside it, a file could not be opened for writing, the input of `--mentions` could not be taken, or the command could not run; nothing was written |
 
 Specified in [upkeep/features/rehome.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/upkeep/features/rehome.md).
