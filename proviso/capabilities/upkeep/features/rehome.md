@@ -219,7 +219,8 @@ Otherwise `rehome` writes <renames>, their [identifier mentions] and <collisions
 | one | none | `--json` | yes | a `rehome_plan` with one rename | |
 | one, its identifier in two Examples cells | none | `--json` | yes | a `rehome_plan` with one rename and two mentions | |
 | none | none | `--json` | yes | a `rehome_plan` with no renames | an empty list, not an empty output |
-| one | none | `--write --json` | yes | a `rehome_plan` with one rename | what was written |
+| one | none | `--write --json` | yes | a `rehome_plan` with one rename | the renames written; the mentions listed as planned, picked or not |
+| one, its identifier in two Examples cells | none | `--write --mentions --json`, naming one of them | yes | a `rehome_plan` with one rename and both mentions | the output shows the plan; the list passed in says what was picked |
 | two, one colliding | one | none | no | both renames and the collision as text | |
 | none | none | none | no | nothing written | silence when there is nothing to say |
 
