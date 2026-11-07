@@ -82,6 +82,7 @@ func TestSystemCliUpdate(t *testing.T) {
 			"skipped .claude/skills/proviso-accept/SKILL.md\n" +
 			"skipped .claude/skills/proviso-build/SKILL.md\n" +
 			"skipped .claude/skills/proviso-check/SKILL.md\n" +
+			"skipped .claude/skills/proviso-explain/SKILL.md\n" +
 			"skipped .claude/skills/proviso-integrate/SKILL.md\n" +
 			"skipped .claude/skills/proviso-mutate/SKILL.md\n" +
 			"skipped .claude/skills/proviso-recover/SKILL.md\n" +

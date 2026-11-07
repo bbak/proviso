@@ -27,6 +27,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
 		"written .claude/skills/proviso-check/SKILL.md\n" +
+		"written .claude/skills/proviso-explain/SKILL.md\n" +
 		"written .claude/skills/proviso-integrate/SKILL.md\n" +
 		"written .claude/skills/proviso-mutate/SKILL.md\n" +
 		"written .claude/skills/proviso-recover/SKILL.md\n" +
@@ -71,8 +72,9 @@ func TestSystemCliInit(t *testing.T) {
 // other tests do not: the skills that accept, build and check an amendment,
 // the one that brings a request into the spec tree, the one that recovers
 // the spec tree of an existing system, the one that gives moved elements
-// the identifiers of their place and the one that measures with mutants how
-// many slips the tests catch are written, and are no empty files.
+// the identifiers of their place, the one that measures with mutants how
+// many slips the tests catch and the one that answers questions about the
+// system from the spec tree are written, and are no empty files.
 // Their wording, and that of the stubs, is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
@@ -83,6 +85,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-accept/SKILL.md",
 		".claude/skills/proviso-build/SKILL.md",
 		".claude/skills/proviso-check/SKILL.md",
+		".claude/skills/proviso-explain/SKILL.md",
 		".claude/skills/proviso-integrate/SKILL.md",
 		".claude/skills/proviso-mutate/SKILL.md",
 		".claude/skills/proviso-recover/SKILL.md",
@@ -278,6 +281,7 @@ func TestInstallInitSkills(t *testing.T) {
 		{"row5 the skill that accepts an amendment, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-accept/SKILL.md", "proviso-accept", false},
 		{"row6 the skill that gives moved elements the identifiers of their place, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-rehome/SKILL.md", "proviso-rehome", false},
 		{"row7 the skill that measures with mutants how many slips the tests catch, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-mutate/SKILL.md", "proviso-mutate", false},
+		{"row8 the skill that answers questions about the system from the spec tree, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-explain/SKILL.md", "proviso-explain", false},
 	}
 	var writers []string
 	for _, row := range rows {
