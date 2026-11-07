@@ -476,7 +476,7 @@
       "now": {
         "field Aliases": "h1:e4e660d023313a1c12f2803c8fc4322670b622c0e34c54f78d5a7fad07e04eda",
         "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
-        "field Definition": "h1:9843fa1b318da3e2817e988ac49573251aa96327b7ea8d33f2c6862d40f954bd",
+        "field Definition": "h1:4837d6cafc69344f829c173edde066bd3db74812fd235392b1040e1df74c5488",
         "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
         "heading": "h1:9860e3455c91c47abc54b7e995bf57de5149b9b44ad2fca47696317cb87ea7a2"
       },
@@ -624,7 +624,7 @@
     {
       "id": "system.cli.element-view",
       "now": {
-        "body": "h1:1e7c062f6a7479fed7f5d5f0eb5913a8258db6ff497947faaed846c4b8671250",
+        "body": "h1:d4bc7019aa11ed143d77b8ae699b261cbe1f8036901fdae46aaa040b98572aa3",
         "heading": "h1:f69237b985c3bb851f578cc9400962fcd406fdbd37f18e519cdcf950a4b52450"
       },
       "baseline": {}
@@ -3192,6 +3192,17 @@
       "text": "query.show.tree decides when `show` refuses, and what it writes then, by what `lint` would do, which only lint's rules lint.run.root, lint.run.unreadable, lint.run.model and lint.run.model-other define. No element at the system level ties the two capabilities, and the rule refers only to the contract element `lint`. So a later change to one of those lint rules would change `show` without query.show.tree reaching the impact set.",
       "status": "dismissed",
       "reason": "show relies on lint as baseline.run.lint, coherence.run.lint and upkeep.rehome.lint do, by what `lint` would do rather than by repeating its rules; that a change of lint's rules reaches these commands without impact is the same for all four, and stating the reading of the tree once at the system level is a follow-up of its own, not this amendment's."
+    },
+    {
+      "id": "f5",
+      "kind": "contradiction",
+      "elements": [
+        "query.element-parent",
+        "system.cli.element-view"
+      ],
+      "text": "`element_view` says `parent` is the identifier of the element parent \"or null for the system\", so only the system gets a null parent. The changed definition of element parent says that an element also belongs to none where the tree holds no element it would belong to, such as a feature in a capability folder without its `capability.md`, so `show --json` must write null for elements other than the system too.",
+      "status": "resolved",
+      "reason": "edited in bb26414"
     }
   ]
 }
