@@ -30,7 +30,7 @@ Then      <element> has one [element part] for each entry of `part_kinds` it hol
 | `lint.run.exit`, a rule without a Rationale | `heading`, `step When`, `step Provided`, `step Then`, `step Otherwise`, one `row` per Examples row | |
 | `lint.run`, a feature with rules | `heading`, `field Contact`, `section Goal`, `section Rationale` | its rules have parts of their own |
 | `lint.step`, a glossary entry | `heading`, `field Definition`, `field Contact`, `field Status`, `field Aliases` | |
-| `lint.tree-layout`, a parameter with a table | `heading`, `field Configurable`, `field Rationale`, `body` | the prose and the table |
+| `system.tree-layout`, a parameter with a table | `heading`, `field Configurable`, `field Rationale`, `body` | the prose and the table |
 | `lint.cli.lint`, a contract element with members | `heading`, `body` | `json` and `exit-status` are elements of their own |
 
 ## <a id="baseline.parts.fingerprint"></a> Rule: A fingerprint ignores whitespace and nothing else

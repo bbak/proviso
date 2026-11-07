@@ -174,7 +174,9 @@ func TestLintStructureFieldRequired(t *testing.T) {
 			file: featurePath, lines: lines(1)},
 		{name: "row6 a numbered list is prose, not fields", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "1. Contact: Dana Reyes"),
 			file: featurePath, lines: lines(1)},
-		{name: "row7 a table-valued parameter needs no Value", tree: baseline().appendTo(paramsPath,
+		// system.tree-layout: system.shelf-layout, a parameter of the system.
+		{name: "row7 a table-valued parameter needs no Value", tree: baseline().with(sysParamsPath, sysParamsMD), holds: true},
+		{name: "derived: a table-valued parameter of a capability needs no Value", tree: baseline().appendTo(paramsPath,
 			"\n## <a id=\"cart.sizes\"></a> sizes\n\n- Configurable: no\n- Rationale: the shelves come in these sizes.\n\n| size | pieces |\n| --- | --- |\n| small | 5 |\n"), holds: true},
 		{name: "row8 a glossary entry without Status", tree: noStatus,
 			file: glossaryPath, lines: lines(noStatus.line(glossaryPath, `id="cart.basket"`))},

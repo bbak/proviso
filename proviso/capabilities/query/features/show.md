@@ -133,7 +133,7 @@ Otherwise `show` writes to "stdout" an `element_view` without [elements], where 
 | `finding` | the tree | yes | `coherence.finding`, then `lint.finding` | one name in two capabilities, in the tree's order |
 | `finding` | lint's and the system's | yes | `lint.finding` | |
 | `diff.since` | the tree | yes | `system.cli.diff.since` | a member as a rule refers to it |
-| `tree_layout` | the tree | yes | `lint.tree-layout`, a parameter of the system | |
+| `tree_layout` | the tree | yes | `system.tree-layout`, a parameter of the system | |
 | `lint.run.twice`, the identifier of two rules in the middle of an amendment | the tree | yes | both | |
 | `lint.run.odd`, a level-2 heading with an anchor in a feature file, its text starting neither `Rule:` nor `Invariant:` | the tree | yes | `lint.run.odd`, with no element type | |
 | `system` | the tree | yes | `system`, with no element parent | |

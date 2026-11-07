@@ -62,7 +62,7 @@ const showBillingGlossaryMD = `# Glossary
 //	coherence.finding   billing.finding
 //	lint.finding        cart.finding
 //	system.cli.diff.since, as diff.since   the same
-//	lint.tree-layout, as tree_layout       cart.max-quantity, as max_quantity
+//	system.tree-layout, as tree_layout     system.shelf-layout, as shelf_layout
 //	lint                cart
 //	coherence           billing
 //
@@ -73,6 +73,7 @@ func showTree() tree {
 		showContractPath, showContractMD,
 		glossaryPath, showCartGlossaryMD,
 		billingGlossaryPath, showBillingGlossaryMD,
+		sysParamsPath, sysParamsMD,
 	)
 }
 

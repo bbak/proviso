@@ -30,6 +30,7 @@ var (
 	sSince    = shown{"system.cli.diff.since", showContractPath, "contract element", "system.cli.diff"}
 	sDiff     = shown{"system.cli.diff", showContractPath, "contract element", "system"}
 	sMaxQty   = shown{"cart.max-quantity", paramsPath, "parameter", "cart"}
+	sLayout   = shown{"system.shelf-layout", sysParamsPath, "parameter", "system"}
 	sSystem   = shown{"system", systemPath, "system", ""}
 	sCart     = shown{"cart", capPath, "capability", "system"}
 	sAdd      = shown{"cart.add", featurePath, "feature", "cart"}
@@ -262,8 +263,8 @@ func TestQueryShowMatch(t *testing.T) {
 		{"row5 finding, the tree", tr, []string{"finding"}, []shown{sBillFind, sCartFind}},
 		{"row6 finding, lint's and the system's", tr, []string{"finding", "--in", "cart"}, []shown{sCartFind}},
 		{"row7 diff.since, the tree", tr, []string{"diff.since"}, []shown{sSince}},
-		// tree_layout: max_quantity.
-		{"row8 tree_layout, the tree", tr, []string{"max_quantity"}, []shown{sMaxQty}},
+		// tree_layout: shelf_layout, a parameter of the system.
+		{"row8 tree_layout, the tree", tr, []string{"shelf_layout"}, []shown{sLayout}},
 		// lint.run.twice: cart.add.limit, again in x.md.
 		{"row9 lint.run.twice, the identifier of two rules", tr.with(xPath, xHead+ruleMD("cart.add.limit", "The cart takes a limited quantity", idBlock, idTable)),
 			[]string{"cart.add.limit"}, []shown{sLimit, {"cart.add.limit", xPath, "rule", "cart.x"}}},
