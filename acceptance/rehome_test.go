@@ -1,14 +1,16 @@
 package acceptance
 
 // Feature upkeep.rehome: proviso/capabilities/upkeep/features/rehome.md, the
-// parameter rehome_references, the term identifier home, and the contracts
-// system.cli.rehome and system.cli.rehome-plan (proviso/contracts/cli.md).
+// parameter rehome_references, the terms identifier home and identifier
+// mention, and the contracts system.cli.rehome, system.cli.rehome-plan and
+// system.cli.mention-list (proviso/contracts/cli.md).
 // What holds for every run (the plan's shape and order, the exit status and
 // the invariant upkeep.rehome.writes) is checked by rehomeIn. Every tree is
 // accepted in a git repository first, so that it is as its manifest records
 // it.
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,6 +31,41 @@ func readOnly(t *testing.T, dir, p string) {
 		f.Close()
 		t.Skipf("%s stays writable without permission (running as root?)", p)
 	}
+}
+
+// rewritten asserts that every file of want is as the run left it, and
+// manifest.sum what `manifest` writes for want.
+func (o rehomeOutcome) rewritten(t *testing.T, rule string, want tree) {
+	t.Helper()
+	for p, content := range want {
+		o.holds(t, rule, p, content)
+	}
+	o.holds(t, rule, manifestPath, manifestWritten(t, want))
+}
+
+// mentionOn gives the mention of the mentions tree on the line of the file p
+// that holds l, as the plan lists it.
+func mentionOn(p, l string) planMention {
+	line := mentionsTree().line(p, l)
+	for _, m := range mentionsOfTree() {
+		if m.File == p && m.Line == line {
+			return m
+		}
+	}
+	panic("mentionOn: no mention on " + l)
+}
+
+// listedOn gives the mentions the plan lists on the line of the file p that
+// holds l in tr.
+func (o rehomeOutcome) listedOn(tr tree, p, l string) []planMention {
+	line := tr.line(p, l)
+	var out []planMention
+	for _, m := range o.plan.Mentions {
+		if m.File == p && m.Line == line {
+			out = append(out, m)
+		}
+	}
+	return out
 }
 
 func TestUpkeepRehomeLint(t *testing.T) {
@@ -269,7 +306,7 @@ func TestUpkeepRehomeCollision(t *testing.T) {
 func TestUpkeepRehomeWrite(t *testing.T) {
 	t.Parallel()
 	const rule = "upkeep.rehome.write"
-	t.Run("rows 1 to 3", func(t *testing.T) {
+	t.Run("rows 1, 2 and 6", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, mainRehomeTree())
 		o := r.rehome("--write", "--json")
@@ -292,7 +329,7 @@ func TestUpkeepRehomeWrite(t *testing.T) {
 				t.Errorf("%s: want the hand-over renamed to cart.x.r, got\n%s", rule, got)
 			}
 		})
-		t.Run("row3 baseline.dependencies to coherence.dependencies, tagging a question in questions.md", func(t *testing.T) {
+		t.Run("row6 baseline.dependencies to coherence.dependencies, tagging a question in questions.md", func(t *testing.T) {
 			t.Parallel()
 			o.holds(t, rule, cartQuestions, want[cartQuestions])
 		})
@@ -303,7 +340,52 @@ func TestUpkeepRehomeWrite(t *testing.T) {
 			}
 		})
 	})
-	t.Run("row4 none", func(t *testing.T) {
+	// Rows 3 to 5 run on the mentions tree: billing.x.r to cart.x.r, its
+	// anchor in x.md and a hand-over to it in add.md, which also holds it as
+	// a code span in Examples cells.
+	t.Run("row3 the same, run with --mentions naming that cell's line", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineA)), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"billing.x.r", "cart.x.r"}})
+		o.rewritten(t, rule, mentionsRehomed(mentionLineA))
+	})
+	t.Run("row4 the same, the cell's line holding baseline.impact.events twice, run with --mentions naming that line", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineB)), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineB))
+		got, _ := o.file(featurePath)
+		if !strings.Contains(got, md("| ´cart.x.r´ again | yes | shown | as ´cart.x.r´ twice |")) {
+			t.Errorf("%s: want both code spans of the line renamed, got\n%s", rule, got)
+		}
+	})
+	t.Run("row5 the same, run with --mentions naming no mention", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehomePicking(mentionList(), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed())
+	})
+	t.Run("derived: a file that holds only a mention picked, read-only", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		readOnly(t, r.dir, cartQuestions)
+		o := r.rehomePicking(mentionList(mentionOn(cartQuestions, mentionLineG)), "--write", "--mentions", "--json")
+		o.exits(t, 2)
+		o.names(t, "questions.md")
+	})
+	t.Run("derived: a file that holds only a mention not picked, read-only", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		readOnly(t, r.dir, cartQuestions)
+		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineA)), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineA))
+	})
+	t.Run("row7 none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, baseline())
 		o := r.rehome("--write", "--json")
@@ -312,7 +394,7 @@ func TestUpkeepRehomeWrite(t *testing.T) {
 		o.unchanged(t, rule, manifestPath)
 		checkWrites(t, rule, o.before, o.after, "")
 	})
-	t.Run("row5 baseline.impact.events to coherence.impact.events, impact.md read-only", func(t *testing.T) {
+	t.Run("row8 baseline.impact.events to coherence.impact.events, impact.md read-only", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, mainRehomeTree())
 		readOnly(t, r.dir, xPath)
@@ -320,7 +402,7 @@ func TestUpkeepRehomeWrite(t *testing.T) {
 		o.exits(t, 2)
 		o.names(t, "x.md")
 	})
-	t.Run("row6 the same, manifest.sum read-only", func(t *testing.T) {
+	t.Run("row9 the same, manifest.sum read-only", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, mainRehomeTree())
 		readOnly(t, r.dir, manifestPath)
@@ -355,7 +437,16 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 		o.renames(t, []planRename{{"cart.item", "system.item"}})
 		o.collisions(t, nil)
 	})
-	t.Run("row2 none, none, --json", func(t *testing.T) {
+	t.Run("row2 one, its identifier in two Examples cells, none, --json", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, twoCellsTree())
+		o := r.rehome("--json")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"cart.item", "system.item"}})
+		o.mentions(t, twoCellsMentions())
+		o.collisions(t, nil)
+	})
+	t.Run("row3 none, none, --json", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, baseline())
 		o := r.rehome("--json")
@@ -366,7 +457,7 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 			t.Errorf("upkeep.rehome.output: want no renames and no collisions, got %v", o.plan)
 		}
 	})
-	t.Run("row3 one, none, --write --json", func(t *testing.T) {
+	t.Run("row4 one, none, --write --json", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, oneRehomeTree())
 		o := r.rehome("--write", "--json")
@@ -374,7 +465,27 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 		o.renames(t, []planRename{{"cart.item", "system.item"}})
 		o.collisions(t, nil)
 	})
-	t.Run("row4 two, one colliding, one, none", func(t *testing.T) {
+	t.Run("derived: one, its identifier in two Examples cells, none, --write --json, the mentions listed though none is picked", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, twoCellsTree())
+		o := r.rehome("--write", "--json")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"cart.item", "system.item"}})
+		o.mentions(t, twoCellsMentions())
+	})
+	t.Run("row5 one, its identifier in two Examples cells, none, --write --mentions --json, naming one of them", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, twoCellsTree())
+		o := r.rehomePicking(mentionList(twoCellsMentions()[0]), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"cart.item", "system.item"}})
+		// The plan, not what was picked: both mentions, as the tree held
+		// them before the run.
+		o.mentions(t, twoCellsMentions())
+		o.collisions(t, nil)
+		o.rewritten(t, "upkeep.rehome.output", twoCellsRehomed())
+	})
+	t.Run("row6 two, one colliding, one, none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, chainRehomeTree())
 		o := r.rehome()
@@ -391,7 +502,7 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 			}
 		}
 	})
-	t.Run("row5 none, none, none", func(t *testing.T) {
+	t.Run("row7 none, none, none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, baseline())
 		o := r.rehome()
@@ -419,6 +530,22 @@ func TestUpkeepRehomeOrder(t *testing.T) {
 		o.collisions(t, []planCollision{
 			{"cart.gizmo", []string{"billing.gizmo", "pay.gizmo"}},
 			{"cart.widget", []string{"pay.widget"}},
+		})
+	})
+	t.Run("row3 lint.keyword to system.keyword, mentioned in rules.md lines 9 and 3 and in diff.md line 40", func(t *testing.T) {
+		t.Parallel()
+		// stock.keyword: lint.keyword, in cart/capability.md line 9 and in
+		// stock/features/shelf.md lines 7 and 12; billing.part on line 12
+		// as well, after it.
+		tr := order3RehomeTree()
+		r, _ := accepted(t, tr)
+		o := r.rehome("--json")
+		o.exits(t, 0)
+		o.mentions(t, []planMention{
+			mention("stock.keyword", capPath, 9, 1, "cart"),
+			mention("stock.keyword", shelfPath, 7, 1, "stock.shelf"),
+			mention("billing.part", shelfPath, 12, 1, "stock.shelf"),
+			mention("stock.keyword", shelfPath, 12, 1, "stock.shelf"),
 		})
 	})
 }
@@ -484,6 +611,33 @@ func TestUpkeepRehomeWrites(t *testing.T) {
 		r.set(mainRehomeTree().with(coherencePath, "{}\n"))
 		o := r.rehome("--write", "--json")
 		o.exits(t, 2)
+		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
+	})
+	t.Run("derived: with --write --mentions and exit status 0, only the renamed identifiers, the mentions picked and manifest.sum", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineB), mentionOn(cartQuestions, mentionLineG)), "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		want := mentionsRehomed(mentionLineB, mentionLineG)
+		for p, v := range o.after {
+			if p == manifestPath || !strings.HasPrefix(p, "proviso/") || !strings.HasPrefix(v, "file: ") {
+				continue
+			}
+			if content, ok := want[p]; !ok || "file: "+content != v {
+				t.Errorf("upkeep.rehome.writes: %s is not as the renames and the mentions picked leave it", p)
+			}
+		}
+		for p, v := range o.before {
+			if strings.HasPrefix(p, ".git/") && o.after[p] != v {
+				t.Errorf("upkeep.rehome.writes: %s of the git repository changed", p)
+			}
+		}
+	})
+	t.Run("derived: with --write --mentions and exit status 1, nothing changes", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, takenRehomeTree())
+		o := r.rehomePicking(mentionList(), "--write", "--mentions", "--json")
+		o.exits(t, 1)
 		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
 	})
 	t.Run("derived: with --write, in the text form, only the renamed identifiers and manifest.sum", func(t *testing.T) {
@@ -570,6 +724,179 @@ func TestUpkeepRehomeReferences(t *testing.T) {
 	})
 }
 
+func TestUpkeepRehomeMentions(t *testing.T) {
+	t.Parallel()
+	const rule = "upkeep.rehome.mentions"
+	tr := mentionsTree()
+	r, _ := accepted(t, tr)
+	o := r.rehome("--json")
+	o.exits(t, 0)
+	o.renames(t, []planRename{{"billing.x.r", "cart.x.r"}})
+	// listed asserts that the line of p holding l is listed once, as want.
+	listed := func(t *testing.T, p, l string, want planMention) {
+		t.Helper()
+		got := o.listedOn(tr, p, l)
+		if len(got) != 1 || got[0].String() != want.String() {
+			t.Errorf("%s: want the line %d of %s listed once, as %v, got %v", rule, tr.line(p, l), p, want, got)
+		}
+	}
+	notListed := func(t *testing.T, p, l string) {
+		t.Helper()
+		if got := o.listedOn(tr, p, l); len(got) != 0 {
+			t.Errorf("%s: want nothing listed for the line %d of %s, got %v", rule, tr.line(p, l), p, got)
+		}
+	}
+	t.Run("row1 baseline.impact.events, standing as a code span in an Examples cell of verify.md", func(t *testing.T) {
+		t.Parallel()
+		listed(t, featurePath, mentionLineA, mention("billing.x.r", featurePath, tr.line(featurePath, mentionLineA), 1, "cart.add.show"))
+	})
+	t.Run("row2 baseline.impact.events, standing twice as a code span in one Examples row", func(t *testing.T) {
+		t.Parallel()
+		listed(t, featurePath, mentionLineB, mention("billing.x.r", featurePath, tr.line(featurePath, mentionLineB), 2, "cart.add.show"))
+	})
+	t.Run("row3 baseline.impact.events, standing as a code span in the Rationale of a feature", func(t *testing.T) {
+		t.Parallel()
+		listed(t, xPath, mentionLineF, mention("billing.x.r", xPath, tr.line(xPath, mentionLineF), 1, "cart.x"))
+	})
+	t.Run("row4 baseline.impact.events, standing only within a longer code span in an Examples cell", func(t *testing.T) {
+		t.Parallel()
+		notListed(t, featurePath, mentionLineC)
+	})
+	t.Run("row5 baseline.impact.events, standing only in a fenced block of a contract", func(t *testing.T) {
+		t.Parallel()
+		for _, m := range o.plan.Mentions {
+			if m.File == sysContractPath {
+				t.Errorf("%s: want nothing listed in %s, got %v", rule, sysContractPath, m)
+			}
+		}
+	})
+	t.Run("row6 baseline.impact.events, standing only in plain text, without backticks", func(t *testing.T) {
+		t.Parallel()
+		notListed(t, featurePath, mentionLinePlain)
+		notListed(t, xPath, mentionLineXText)
+	})
+	t.Run("row7 lint.run, not planned for a rename, standing as a code span in an Examples cell", func(t *testing.T) {
+		t.Parallel()
+		notListed(t, featurePath, mentionLineD)
+		for _, m := range o.plan.Mentions {
+			if m.Identifier == "lint.run" {
+				t.Errorf("%s: want no mention of lint.run, got %v", rule, m)
+			}
+		}
+	})
+	t.Run("row8 baseline.impact.events, standing as a code span in the text of a question in a questions.md", func(t *testing.T) {
+		t.Parallel()
+		listed(t, cartQuestions, mentionLineG, mention("billing.x.r", cartQuestions, tr.line(cartQuestions, mentionLineG), 1, ""))
+	})
+	t.Run("derived: exactly the mentions of the tree", func(t *testing.T) {
+		t.Parallel()
+		o.mentions(t, mentionsOfTree())
+	})
+	t.Run("derived: a mention in the renamed element names its identifier before the run", func(t *testing.T) {
+		t.Parallel()
+		listed(t, xPath, mentionLineH, mention("billing.x.r", xPath, tr.line(xPath, mentionLineH), 1, "billing.x.r"))
+	})
+	t.Run("derived: with --write, no mention is renamed that --mentions does not name", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		w := r.rehome("--write", "--json")
+		w.exits(t, 0)
+		w.mentions(t, mentionsOfTree())
+		w.rewritten(t, rule, mentionsRehomed())
+	})
+	t.Run("derived: with --write --mentions, only the mentions it names are renamed", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		w := r.rehomePicking(mentionList(mentionOn(xPath, mentionLineF), mentionOn(xPath, mentionLineH)), "--write", "--mentions", "--json")
+		w.exits(t, 0)
+		w.rewritten(t, rule, mentionsRehomed(mentionLineF, mentionLineH))
+	})
+	for name, tr := range map[string]func() tree{
+		"main": mainRehomeTree, "two cells": twoCellsTree, "order3": order3RehomeTree, "chain": chainRehomeTree,
+	} {
+		t.Run("derived: the mentions of the "+name+" tree", func(t *testing.T) {
+			t.Parallel()
+			r, _ := accepted(t, tr())
+			o := r.rehome("--json")
+			if o.exit == 2 {
+				t.Fatalf("want rehome to plan, got exit status 2\n%s", o.stderr)
+			}
+			o.mentioned(t, tr())
+		})
+	}
+}
+
+func TestUpkeepRehomePicked(t *testing.T) {
+	t.Parallel()
+	const rule = "upkeep.rehome.picked"
+	pick := func(t *testing.T, input string) rehomeOutcome {
+		t.Helper()
+		r, _ := accepted(t, mentionsTree())
+		return r.rehomePicking(input, "--write", "--mentions", "--json")
+	}
+	a := mentionOn(featurePath, mentionLineA)
+	t.Run("row1 a mention_list naming one mention the plan lists", func(t *testing.T) {
+		t.Parallel()
+		o := pick(t, mentionList(a))
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineA))
+	})
+	t.Run("row2 a mention_list with no mentions", func(t *testing.T) {
+		t.Parallel()
+		o := pick(t, mentionList())
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed())
+	})
+	t.Run("row3 a mention_list naming one mention twice", func(t *testing.T) {
+		t.Parallel()
+		o := pick(t, mentionList(a, a))
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineA))
+	})
+	// The refused rows: rehomeWith checks that nothing goes to stdout,
+	// something to stderr, and nothing is written.
+	t.Run("row4 {", func(t *testing.T) {
+		t.Parallel()
+		pick(t, "{").exits(t, 2)
+	})
+	t.Run("row5 a mention_list naming a line where the identifier stands in plain text only", func(t *testing.T) {
+		t.Parallel()
+		tr := mentionsTree()
+		pick(t, mentionList(mention("billing.x.r", xPath, tr.line(xPath, mentionLineXText), 1, ""))).exits(t, 2)
+	})
+	t.Run("row6 a mention_list naming a mention of lint.run, which the plan does not rename", func(t *testing.T) {
+		t.Parallel()
+		tr := mentionsTree()
+		pick(t, mentionList(mention("lint.run", featurePath, tr.line(featurePath, mentionLineD), 1, ""))).exits(t, 2)
+	})
+	t.Run("derived: a mention_list naming one mention the plan lists and one it does not", func(t *testing.T) {
+		t.Parallel()
+		tr := mentionsTree()
+		pick(t, mentionList(a, mention("billing.x.r", featurePath, tr.line(featurePath, mentionLinePlain), 1, ""))).exits(t, 2)
+	})
+	t.Run("derived: a mention_list naming every mention the plan lists", func(t *testing.T) {
+		t.Parallel()
+		o := pick(t, mentionList(mentionsOfTree()...))
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineA, mentionLineB, mentionLineF, mentionLineG, mentionLineH))
+	})
+}
+
+// TestUpkeepIdentifierMention checks the term identifier mention: a code
+// span whose whole content is an identifier, outside rule blocks and fenced
+// blocks, through the plan of the mentions tree, against the oracle
+// mentionsOf.
+func TestUpkeepIdentifierMention(t *testing.T) {
+	t.Parallel()
+	r, _ := accepted(t, mentionsTree())
+	o := r.rehome("--json")
+	o.exits(t, 0)
+	t.Run("derived: as the oracle gives them", func(t *testing.T) {
+		t.Parallel()
+		o.mentioned(t, mentionsTree())
+	})
+}
+
 // TestUpkeepIdentifierHome checks the term identifier home through the
 // plans of trees whose elements stand at every kind of place: the oracle
 // identifierHome gives each element's home, and every element whose first
@@ -609,5 +936,75 @@ func TestSystemCliRehome(t *testing.T) {
 		o := rehomeIn(t, r.dir, filepath.Join(r.dir, "src"), r.root(), nil, "--json")
 		o.exits(t, 0)
 		o.renames(t, mainRenames)
+	})
+}
+
+// TestSystemCliRehomeMentions checks the contract system.cli.rehome.mentions:
+// with --write, without --mentions no mention is renamed.
+func TestSystemCliRehomeMentions(t *testing.T) {
+	t.Parallel()
+	t.Run("derived: without --mentions, a mention_list on stdin is not read", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineA)), "--write", "--json")
+		o.exits(t, 0)
+		o.rewritten(t, "system.cli.rehome.mentions", mentionsRehomed())
+	})
+}
+
+// TestSystemCliMentionList checks the contract system.cli.mention-list: a
+// mention is named by its identifier, file and line, other members are not
+// read, and an input that is no mention_list is refused.
+func TestSystemCliMentionList(t *testing.T) {
+	t.Parallel()
+	const rule = "system.cli.mention-list"
+	t.Run("derived: the plan's own list, with count and element", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		plan := r.rehome("--json")
+		plan.exits(t, 0)
+		// The plan's mentions without A, as the plan wrote them, with a
+		// count that does not hold, which is not read.
+		var keep []planMention
+		for _, m := range plan.plan.Mentions {
+			if m.String() != mentionOn(featurePath, mentionLineA).String() {
+				m.Count = 7
+				keep = append(keep, m)
+			}
+		}
+		b, _ := json.Marshal(struct {
+			Mentions []planMention `json:"mentions"`
+			Extra    string        `json:"note"`
+		}{keep, "not read"})
+		o := r.rehomePicking(string(b)+"\n", "--write", "--mentions", "--json")
+		o.exits(t, 0)
+		o.rewritten(t, rule, mentionsRehomed(mentionLineB, mentionLineF, mentionLineG, mentionLineH))
+	})
+	t.Run("derived: an object without mentions", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		r.rehomePicking("{}\n", "--write", "--mentions", "--json").exits(t, 2)
+	})
+	t.Run("derived: a mention without its line", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		input := `{"mentions": [{"identifier": "billing.x.r", "file": "` + featurePath + `"}]}` + "\n"
+		r.rehomePicking(input, "--write", "--mentions", "--json").exits(t, 2)
+	})
+}
+
+// TestSystemCliRehomePlan checks the contract system.cli.rehome-plan, whose
+// shape rehomeIn checks on every run: element is null for a mention no
+// element holds.
+func TestSystemCliRehomePlan(t *testing.T) {
+	t.Parallel()
+	t.Run("derived: element null in a questions.md", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, mentionsTree())
+		o := r.rehome("--json")
+		o.exits(t, 0)
+		if !strings.Contains(strings.ReplaceAll(o.stdout, " ", ""), `"element":null`) {
+			t.Errorf("system.cli.rehome-plan: want element null for the mention in questions.md, got\n%s", o.stdout)
+		}
 	})
 }

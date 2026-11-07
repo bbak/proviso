@@ -395,29 +395,29 @@ func TestCliHelpArgument(t *testing.T) {
 		command  string
 		argument string
 	}{
-		{"row11 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
-		{"row12 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
-		{"row13 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
-		{"row14 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
-		{"row15 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
+		{"row13 init, none, --json, none", "fresh", "", []string{"init", "--json"}, "init", "--json"},
+		{"row14 judge, none, --json, none", "amended", "{}", []string{"judge", "--json"}, "judge", "--json"},
+		{"row15 help, none, diff, none", "anywhere", "", []string{"help", "diff"}, "help", "diff"},
+		{"row16 lint, none, --since, HEAD~1", "lint", "", []string{"lint", "--since", "HEAD~1"}, "lint", "--since"},
+		{"row17 diff, none, --help, none", "amended", "", []string{"diff", "--help"}, "diff", "--help"},
 		// lint.run.exit: cart.add.limit, here and below.
-		{"row16 diff, none, --element, lint.run.exit", "amended", "", []string{"diff", "--element", "cart.add.limit"}, "diff", "--element"},
-		{"row17 lint, none, spec tree, none", "lint", "", []string{"lint", "spec tree"}, "lint", "spec tree"},
-		{`row18 show, none, "", none`, "show", "", []string{"show", ""}, "show", ""},
-		{"row19 show, none, -x, none", "show", "", []string{"show", "-x"}, "show", "-x"},
-		{"row20 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
-		{`row21 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
-		{"row22 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
-		{"row23 pack, none, --element, none", "amended", "", []string{"pack", "--element"}, "pack", "--element"},
-		{"row24 show, lint.run.exit, --in, none", "show", "", []string{"show", "cart.add.limit", "--in"}, "show", "--in"},
-		{"row25 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
+		{"row18 diff, none, --element, lint.run.exit", "amended", "", []string{"diff", "--element", "cart.add.limit"}, "diff", "--element"},
+		{"row19 lint, none, spec tree, none", "lint", "", []string{"lint", "spec tree"}, "lint", "spec tree"},
+		{`row20 show, none, "", none`, "show", "", []string{"show", ""}, "show", ""},
+		{"row21 show, none, -x, none", "show", "", []string{"show", "-x"}, "show", "-x"},
+		{"row22 diff, none, --since, none", "amended", "", []string{"diff", "--since"}, "diff", "--since"},
+		{`row23 pack, none, --since, ""`, "amended", "", []string{"pack", "--since", ""}, "pack", "--since"},
+		{"row24 diff, none, --since, --json", "amended", "", []string{"diff", "--since", "--json"}, "diff", "--since"},
+		{"row25 pack, none, --element, none", "amended", "", []string{"pack", "--element"}, "pack", "--element"},
+		{"row26 show, lint.run.exit, --in, none", "show", "", []string{"show", "cart.add.limit", "--in"}, "show", "--in"},
+		{"row27 diff, --since HEAD~1, --since, HEAD~2", "amended", "", []string{"diff", "--since", "HEAD~1", "--since", "HEAD~2"}, "diff", "--since"},
 		// lint.run.root: cart.add.empty.
-		{"row26 pack, --element lint.run.exit, --element, lint.run.root", "amended", "", []string{"pack", "--element", "cart.add.limit", "--element", "cart.add.empty"}, "pack", "--element"},
-		{"row27 pack, --since HEAD~1, --element, lint.run.exit", "amended", "", []string{"pack", "--since", "HEAD~1", "--element", "cart.add.limit"}, "pack", "--element"},
-		{"row28 pack, --element lint.run.exit, --since, HEAD~1", "amended", "", []string{"pack", "--element", "cart.add.limit", "--since", "HEAD~1"}, "pack", "--since"},
+		{"row28 pack, --element lint.run.exit, --element, lint.run.root", "amended", "", []string{"pack", "--element", "cart.add.limit", "--element", "cart.add.empty"}, "pack", "--element"},
+		{"row29 pack, --since HEAD~1, --element, lint.run.exit", "amended", "", []string{"pack", "--since", "HEAD~1", "--element", "cart.add.limit"}, "pack", "--element"},
+		{"row30 pack, --element lint.run.exit, --since, HEAD~1", "amended", "", []string{"pack", "--element", "cart.add.limit", "--since", "HEAD~1"}, "pack", "--since"},
 		// lint: cart.
-		{"row29 show, lint.run.exit --in lint, --in, query", "show", "", []string{"show", "cart.add.limit", "--in", "cart", "--in", "query"}, "show", "--in"},
-		{"row30 show, spec, tree, none", "show", "", []string{"show", "spec", "tree"}, "show", "tree"},
+		{"row31 show, lint.run.exit --in lint, --in, query", "show", "", []string{"show", "cart.add.limit", "--in", "cart", "--in", "query"}, "show", "--in"},
+		{"row32 show, spec, tree, none", "show", "", []string{"show", "spec", "tree"}, "show", "tree"},
 		{"derived: show, a value of --in that starts with a hyphen", "show", "", []string{"show", "cart.add.limit", "--in", "-cart"}, "show", "--in"},
 		{"derived: show, an empty value of --in", "show", "", []string{"show", "cart.add.limit", "--in", ""}, "show", "--in"},
 		{"derived: show, an option is no capability", "show", "", []string{"show", "cart.add.limit", "--in", "--json"}, "show", "--in"},
@@ -462,7 +462,32 @@ func TestCliHelpArgument(t *testing.T) {
 		o.renames(t, []planRename{{"cart.item", "system.item"}})
 		o.holds(t, "cli.help.argument", "proviso/glossary.md", oneRehomed()["proviso/glossary.md"])
 	})
-	t.Run("row10 version, none, 0.1.0, none", func(t *testing.T) {
+	// Rows 7 and 8 give --mentions an empty mention_list, so that the run
+	// goes on and writes the renames.
+	for _, c := range []struct {
+		name string
+		args []string
+	}{
+		{"row7 rehome, --write, --mentions, none", []string{"--write", "--mentions", "--json"}},
+		{"row8 rehome, none, --mentions, --write", []string{"--mentions", "--write", "--json"}},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			r, _ := accepted(t, oneRehomeTree())
+			o := r.rehomePicking(mentionList(), c.args...)
+			o.exits(t, 0)
+			o.renames(t, []planRename{{"cart.item", "system.item"}})
+			o.holds(t, "cli.help.argument", "proviso/glossary.md", oneRehomed()["proviso/glossary.md"])
+		})
+	}
+	t.Run("row33 rehome, --json, --mentions, none", func(t *testing.T) {
+		t.Parallel()
+		// With a mention_list on stdin, so that only the missing --write
+		// refuses the run; provisoIn checks that nothing is written.
+		r, _ := accepted(t, oneRehomeTree())
+		misused(t, provisoIn(t, r.dir, r.dir, mentionList(), "rehome", "--json", "--mentions"), "rehome", "--mentions")
+	})
+	t.Run("row12 version, none, 0.1.0, none", func(t *testing.T) {
 		t.Parallel()
 		// After init, in a root whose skills are stale, so that anything
 		// checked would show; versionIn checks that nothing is written.
@@ -472,7 +497,7 @@ func TestCliHelpArgument(t *testing.T) {
 		misused(t, o.run, "version", "0.1.0")
 	})
 
-	t.Run("row7 show, none, spec tree, none", func(t *testing.T) {
+	t.Run("row9 show, none, spec tree, none", func(t *testing.T) {
 		t.Parallel()
 		// Run as the row gives it, without --json: read as the query.
 		dir := showTree().write(t)
@@ -484,7 +509,7 @@ func TestCliHelpArgument(t *testing.T) {
 			t.Errorf("cli.help.argument: want system.spec-tree, got %v", ids)
 		}
 	})
-	t.Run("row8 show, lint.run.exit, --in, lint", func(t *testing.T) {
+	t.Run("row10 show, lint.run.exit, --in, lint", func(t *testing.T) {
 		t.Parallel()
 		// lint: cart; the value is read with --in, not as a second query.
 		tr := showTree()
@@ -495,7 +520,7 @@ func TestCliHelpArgument(t *testing.T) {
 			t.Fatalf("cli.help.argument: want show to read --in with cart and run, got exit status %d\nstderr: %s", o.exit, o.stderr)
 		}
 	})
-	t.Run("row9 show, lint.run.exit, --json, none", func(t *testing.T) {
+	t.Run("row11 show, lint.run.exit, --json, none", func(t *testing.T) {
 		t.Parallel()
 		tr := showTree()
 		dir := tr.write(t)

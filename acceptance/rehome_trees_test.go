@@ -6,6 +6,7 @@ package acceptance
 // Backticks are written as ´ (see md).
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -314,6 +315,190 @@ func order2RehomeTree() tree {
 `)
 }
 
+// The mentions tree holds the rule billing.x.r in the feature cart.x, renamed
+// to cart.x.r, with an identifier mention of it on every kind of line
+// upkeep.rehome.mentions names, and the same identifier where it is none:
+//
+//   - the rule cart.add.show hands over to billing.x.r and holds it as a
+//     code span in an Examples cell (A), twice in one row (B), only within a
+//     longer code span (C) and in plain text; and ´lint.run´, which is not
+//     renamed, as a code span in a cell (D);
+//   - x.md names it as a code span in the Rationale of cart.x (F), in plain
+//     text on the next line, and as a code span in an Examples cell of the
+//     rule billing.x.r itself (H);
+//   - the system's contracts/cli.md names it only in a fenced block;
+//   - questions.md names it as a code span in the text of a question (G).
+const mentionShowRule = `
+## <a id="cart.add.show"></a> Rule: A short code shows its product
+
+´´´guarded
+When      a buyer enters the code <code>
+Provided  <code> is short
+Then      the shop shows the product of <code>
+  And     nothing else changes
+Otherwise → billing.x.r
+´´´
+
+| code | provided | outcome | why |
+| --- | --- | --- | --- |
+| ´billing.x.r´ | yes | shown | a code may look like an identifier |
+| ´billing.x.r´ again | yes | shown | as ´billing.x.r´ twice |
+| ´## <a id="billing.x.r"></a> Rule: B´ | no | handed over | a heading as data |
+| ´lint.run´ | yes | shown | an identifier not renamed |
+| billing.x.r in plain text | yes | shown | |
+`
+
+// The lines of the mentions tree its comment names.
+const (
+	mentionLineA     = "| ´billing.x.r´ | yes | shown | a code may look like an identifier |"
+	mentionLineB     = "| ´billing.x.r´ again | yes | shown | as ´billing.x.r´ twice |"
+	mentionLineC     = "| ´## <a id=\"billing.x.r\"></a> Rule: B´ | no | handed over | a heading as data |"
+	mentionLineD     = "| ´lint.run´ | yes | shown | an identifier not renamed |"
+	mentionLinePlain = "| billing.x.r in plain text | yes | shown | |"
+	mentionLineF     = "Moved here from billing: see ´billing.x.r´."
+	mentionLineXText = "Also billing.x.r in plain text."
+	mentionLineG     = "- [cart.add.limit] Should ´billing.x.r´ show pears?"
+	mentionLineH     = "| pear | no | nothing shown | ´billing.x.r´ names this rule |"
+)
+
+const mentionXMD = `# <a id="cart.x"></a> Experiments
+
+- Contact: Dana Reyes
+
+## Goal
+
+Try out a rule.
+
+## Rationale
+
+Moved here from billing: see ´billing.x.r´.
+Also billing.x.r in plain text.
+
+## <a id="billing.x.r"></a> Rule: Under test
+
+´´´guarded
+` + idBlock + `
+´´´
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| apple | yes | shown | |
+| pear | no | nothing shown | ´billing.x.r´ names this rule |
+`
+
+const mentionContractMD = `# Command line
+
+## <a id="system.cli.lint"></a> lint
+
+The command.
+
+´´´text
+´billing.x.r´
+´´´
+`
+
+const mentionQuestionsMD = `# Questions
+
+- [cart.add.limit] Should ´billing.x.r´ show pears?
+`
+
+func mentionsTree() tree {
+	return baseline().
+		appendTo(featurePath, mentionShowRule).
+		with(
+			xPath, mentionXMD,
+			sysContractPath, mentionContractMD,
+			cartQuestions, mentionQuestionsMD,
+		)
+}
+
+// mentionsRehomed is the mentions tree as `rehome --write` leaves it with
+// the mentions picked, each given as the line that holds it: the anchor and
+// the hand-over renamed, and every code span of billing.x.r on those lines.
+func mentionsRehomed(picked ...string) tree {
+	tr := mentionsTree().
+		edit(xPath, `<a id="billing.x.r">`, `<a id="cart.x.r">`).
+		edit(featurePath, "Otherwise → billing.x.r", "Otherwise → cart.x.r")
+	for _, l := range picked {
+		for _, p := range []string{featurePath, xPath, cartQuestions} {
+			if strings.Contains(tr[p], md(l)) {
+				tr = tr.edit(p, l, strings.ReplaceAll(l, "´billing.x.r´", "´cart.x.r´"))
+			}
+		}
+	}
+	return tr
+}
+
+// mentionsOfTree are the mentions of the mentions tree, as
+// upkeep.rehome.mentions lists them.
+func mentionsOfTree() []planMention {
+	tr := mentionsTree()
+	return []planMention{
+		mention("billing.x.r", featurePath, tr.line(featurePath, mentionLineA), 1, "cart.add.show"),
+		mention("billing.x.r", featurePath, tr.line(featurePath, mentionLineB), 2, "cart.add.show"),
+		mention("billing.x.r", xPath, tr.line(xPath, mentionLineF), 1, "cart.x"),
+		mention("billing.x.r", xPath, tr.line(xPath, mentionLineH), 1, "billing.x.r"),
+		mention("billing.x.r", cartQuestions, tr.line(cartQuestions, mentionLineG), 1, ""),
+	}
+}
+
+// The two-cells tree is the one tree with its rename's old identifier,
+// cart.item, as a code span in the why cells of both Examples rows of
+// cart.add.limit.
+const (
+	twoCellsLine1 = "| 1 | apple | yes | added | ´cart.item´ |"
+	twoCellsLine2 = "| 11 | apple | no | refused | more than one ´cart.item´ holds |"
+)
+
+func twoCellsTree() tree {
+	return oneRehomeTree().
+		edit(featurePath, "| 1 | apple | yes | added | |", twoCellsLine1).
+		edit(featurePath, "| 11 | apple | no | refused | more than a shelf holds |", twoCellsLine2)
+}
+
+// twoCellsRehomed is the two-cells tree as `rehome --write` leaves it with
+// the first cell's mention picked.
+func twoCellsRehomed() tree {
+	return twoCellsTree().
+		edit("proviso/glossary.md", `<a id="cart.item">`, `<a id="system.item">`).
+		edit(featurePath, twoCellsLine1, "| 1 | apple | yes | added | ´system.item´ |")
+}
+
+func twoCellsMentions() []planMention {
+	tr := twoCellsTree()
+	return []planMention{
+		mention("cart.item", featurePath, tr.line(featurePath, twoCellsLine1), 1, "cart.add.limit"),
+		mention("cart.item", featurePath, tr.line(featurePath, twoCellsLine2), 1, "cart.add.limit"),
+	}
+}
+
+// The third order tree is the first with the capability stock: stock.keyword
+// stands as a code span in cart's capability.md on line 9, and in the stock
+// feature shelf.md on lines 7 and 12, line 12 holding billing.part after
+// it; so the path decides before the line, a line of two digits comes after
+// one of one, and the identifier decides last.
+const shelfPath = "proviso/capabilities/stock/features/shelf.md"
+
+const shelfMD = `# <a id="stock.shelf"></a> Shelves
+
+- Contact: Dana Reyes
+
+## Goal
+
+Shelves hold every ´stock.keyword´ the shop keeps.
+
+## Rationale
+
+Goods need a place.
+A ´stock.keyword´ or a ´billing.part´ marks it.
+`
+
+func order3RehomeTree() tree {
+	return order1RehomeTree().
+		edit(capPath, "Paying once for many goods is easier.", "Paying once for many goods, each a ´stock.keyword´, is easier.").
+		with(stockCapPath, stockCapMD, shelfPath, shelfMD)
+}
+
 // TestFixtureRehome checks the ground the rehome tests stand on: lint
 // reports nothing about their trees, nor about the trees rehome is expected
 // to write, and the oracle of identifier homes plans what each tree's
@@ -325,6 +510,9 @@ func TestFixtureRehome(t *testing.T) {
 		"one": oneRehomeTree(), "one rehomed": oneRehomed(),
 		"taken": takenRehomeTree(), "chain": chainRehomeTree(),
 		"order1": order1RehomeTree(), "order2": order2RehomeTree(),
+		"mentions": mentionsTree(), "mentions rehomed": mentionsRehomed(),
+		"two cells": twoCellsTree(), "two cells rehomed": twoCellsRehomed(),
+		"order3": order3RehomeTree(), "mentions all picked": mentionsRehomed(mentionLineA, mentionLineB, mentionLineF, mentionLineG, mentionLineH),
 	}
 	for name, tr := range trees {
 		t.Run(name, func(t *testing.T) {
@@ -345,5 +533,13 @@ func TestFixtureRehome(t *testing.T) {
 			{"cart.widget", []string{"pay.widget"}},
 		})
 		sameCollisions(t, collisionsOf(mainRehomeTree()), nil)
+		sameRenames(t, homeRenames(mentionsTree()), []planRename{{"billing.x.r", "cart.x.r"}})
+		sameMentions(t, mentionsOf(mentionsTree()), mentionsOfTree())
+		sameMentions(t, mentionsOf(twoCellsTree()), twoCellsMentions())
+		sameRenames(t, homeRenames(order3RehomeTree()), []planRename{{"billing.part", "system.part"}, {"stock.keyword", "system.keyword"}})
+		tr := order3RehomeTree()
+		if tr.line(capPath, "´stock.keyword´") != 9 || tr.line(shelfPath, "´stock.keyword´ the shop") != 7 || tr.line(shelfPath, "´stock.keyword´ or") != 12 {
+			t.Errorf("the third order tree's mentions stand on other lines than its comment says")
+		}
 	})
 }
