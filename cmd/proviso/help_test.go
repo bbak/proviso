@@ -43,6 +43,9 @@ func TestRefused(t *testing.T) {
 		{"diff", "--element", "lint.run.exit"}, {"pack", "--element"}, {"pack", "--element", "-x"},
 		{"pack", "--element", "a", "--element", "b"}, {"pack", "--since", "HEAD~1", "--element", "a"},
 		{"pack", "--element", "a", "--since", "HEAD~1"},
+		{"lint", "spec tree"}, {"show", ""}, {"show", "-x"}, {"show", "lint.run.exit", "--in"},
+		{"show", "a", "--in", "lint", "--in", "query"}, {"show", "spec", "tree"}, {"show", "a", "--since", "HEAD~1"},
+		{"show", "a", "--in", "-x"},
 	}
 	for _, args := range cases {
 		t.Chdir(t.TempDir()) // nothing to check: a refusal reads no tree
@@ -72,6 +75,10 @@ func TestReadArgs(t *testing.T) {
 		{"diff", []string{"--since", "HEAD~1", "--json"}, options{json: true, since: "HEAD~1"}},
 		{"rehome", []string{"--json", "--write"}, options{json: true, write: true}},
 		{"rehome", nil, options{}},
+		{"show", []string{"spec tree"}, options{query: "spec tree"}},
+		{"show", []string{"lint.run.exit", "--in", "lint"}, options{query: "lint.run.exit", in: "lint"}},
+		{"show", []string{"--in", "lint", "--json", "lint.run.exit", "--json"}, options{json: true, query: "lint.run.exit", in: "lint"}},
+		{"show", []string{"--in", "lint"}, options{in: "lint"}},
 	}
 	for _, c := range cases {
 		var errOut bytes.Buffer

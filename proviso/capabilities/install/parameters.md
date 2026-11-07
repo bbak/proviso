@@ -22,7 +22,10 @@
   distributed on its own. Measuring the tests with mutants is a step
   outside any amendment, but the engineer's in the same repository, so
   its skill is installed with the others; the mutating agent gets no
-  notes, as nothing yet needs them.
+  notes, as nothing yet needs them. Answering an engineer's question
+  about the system from the tree is the engineer's too, at any time, so
+  its skill is installed with the others; it starts no agent of its
+  own.
 
 The paths are relative to the directory `init` runs in, with `/` as the
 separator.
@@ -36,6 +39,7 @@ separator.
 | `.claude/skills/proviso-accept/SKILL.md` | the kit's skill that accepts an amendment |
 | `.claude/skills/proviso-build/SKILL.md` | the kit's skill that builds an amendment |
 | `.claude/skills/proviso-check/SKILL.md` | the kit's skill that checks an amendment |
+| `.claude/skills/proviso-explain/SKILL.md` | the kit's skill that answers questions about the system from the spec tree |
 | `.claude/skills/proviso-integrate/SKILL.md` | the kit's skill that brings a request into the spec tree |
 | `.claude/skills/proviso-mutate/SKILL.md` | the kit's skill that measures with mutants how many slips the tests catch |
 | `.claude/skills/proviso-recover/SKILL.md` | the kit's skill that recovers the spec tree of an existing system |
