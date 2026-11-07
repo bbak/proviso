@@ -7,13 +7,15 @@ nav_order: 7
 
 Every command of `proviso`, with what it is for, its options and its
 exit statuses. Engineers run `help`, `init`, `update`, `version`, `lint`,
-`diff`, `impact` and `verify`; the skills run all of them, `pack`, `judge`, `manifest` and
-`rehome` included.
+`diff`, `impact`, `verify` and `show`; the skills run all of them, `pack`, `judge`,
+`manifest` and `rehome` included.
 
 Every command but `help`, `init`, `update` and `version` runs anywhere inside the
 repository and works on the nearest spec root. The commands that compare with the baseline,
 `manifest`, `diff`, `impact`, `pack`, `judge`, `verify` and `rehome`, run only on
-a tree that `lint` finds no error in, and exit with 2 otherwise.
+a tree that `lint` finds no error in, and exit with 2 otherwise. `show`
+reads the tree as `lint` does but runs none of its checks, so it works
+in the middle of an amendment too.
 
 The exact behaviour of each command is specified in Proviso's own spec
 tree: the [command line contract](https://github.com/bbak/proviso/blob/main/proviso/contracts/cli.md),
@@ -249,6 +251,37 @@ reported.
 | 2 | the coherence file could not be read, or the command could not run |
 
 Specified in [coherence/features/verify.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/coherence/features/verify.md).
+
+## show
+
+```sh
+proviso show <query> [--in <capability>] [--json]
+```
+
+Shows the elements an identifier or name stands for, as you meet it in
+the tree: an identifier such as `lint.run.exit`, a term or one of its
+aliases such as `spec tree`, or a contract element or parameter as a
+rule writes it in backticks, such as `diff.since`. Identifiers and
+backtick names match exactly; terms match as lint compares them, so
+case and spacing do not matter. Nothing else matches: no part of a
+name, and no heading. Quote a name of several words for the shell:
+`proviso show "spec tree"`.
+
+Each element comes with its text as the tree holds it, under a
+frontmatter naming its identifier, type, heading, file and line, and
+the element it belongs to (`parent`), such as a rule's feature. A name
+can stand for one element in each of two capabilities, so the result is
+a list: every match, in the tree's order. `--in` narrows it to one
+capability, named by its folder, and the system level; `--json` writes
+the same as JSON.
+
+| Exit status | Meaning |
+| --- | --- |
+| 0 | at least one element was shown |
+| 1 | the query names no element |
+| 2 | no query, `--in` names no capability of the tree, or the tree could not be read |
+
+Specified in [query/features/show.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/query/features/show.md).
 
 ## manifest
 

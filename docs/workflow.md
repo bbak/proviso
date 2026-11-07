@@ -252,6 +252,18 @@ You decide each. Name a folder for the records of runs in
 `.proviso/build.md`, and keep it out of git, if you want the kill share
 tracked over time; otherwise the skill asks, or only reports.
 
+## Explain: `proviso-explain`
+
+To understand the tree, ask Claude Code about it: "What does *spec
+tree* mean?", "What does `diff.since` stand for?", "What happens when
+…?". The skill answers only from the tree, never from what a word
+usually means or from the code: it looks up every term, identifier and
+name with `proviso show`, names each element it rests on with its file
+and line, gives every meaning where a name has several, and says so
+where the tree does not decide a case, offering to bring it in with
+`proviso-integrate`. It edits nothing, and works on any branch, also in
+the middle of an amendment.
+
 ## Edits outside the skills
 
 The tree can be edited by hand, and an amendment need not be built by

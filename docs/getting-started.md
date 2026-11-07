@@ -44,7 +44,7 @@ it wrote and what it left alone. It never replaces a file that exists.
 | --- | --- |
 | `proviso/system.md` | the start of the spec tree: the system, with six sections to decide |
 | `proviso/.gitattributes`, `proviso/.markdownlint.jsonc` | settings that keep the tree on line feeds and markdownlint content with the notation |
-| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/`, `proviso-recover/`, `proviso-rehome/`, `proviso-mutate/` | the skills that bring a request into the tree, build, check and accept an amendment, recover the tree of an existing system, rehome moved elements, and measure with mutants how many slips the tests catch |
+| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/`, `proviso-recover/`, `proviso-rehome/`, `proviso-mutate/`, `proviso-explain/` | the skills that bring a request into the tree, build, check and accept an amendment, recover the tree of an existing system, rehome moved elements, measure with mutants how many slips the tests catch, and answer questions about the system from the tree |
 | `.claude/agents/proviso-tester.md`, `proviso-coder.md`, `proviso-checker.md`, `proviso-mutator.md` | the testing, coding, checking and mutating agents |
 | `.proviso/build.md`, `tester.md`, `coder.md` | your notes to the skills and the implementing agents |
 
