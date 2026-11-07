@@ -655,10 +655,11 @@ properties:
 ## <a id="system.cli.rehome"></a> rehome
 
 The command `proviso rehome`, run anywhere inside the system's
-repository. It writes the renames it plans, and the collisions that
-refuse them, as text by default, or a `rehome_plan` with `--json`; with
-`--write`, it also writes them into the spec tree and writes the
-manifest.
+repository. It writes the renames it plans, the collisions that refuse
+them, and the mentions of every identifier it renames, as text by
+default, or a `rehome_plan` with `--json`; with `--write`, it also
+writes the renames into the spec tree, with `--mentions` the mentions
+picked as well, and writes the manifest.
 
 ### <a id="system.cli.rehome.write"></a> write
 
