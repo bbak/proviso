@@ -57,6 +57,7 @@ func Files(system, version string) []File {
 		{".claude/skills/proviso-accept/SKILL.md", skill("proviso-accept"), true},
 		{".claude/skills/proviso-build/SKILL.md", skill("proviso-build"), true},
 		{".claude/skills/proviso-check/SKILL.md", skill("proviso-check"), true},
+		{".claude/skills/proviso-explain/SKILL.md", skill("proviso-explain"), true},
 		{".claude/skills/proviso-integrate/SKILL.md", skill("proviso-integrate"), true},
 		{".claude/skills/proviso-mutate/SKILL.md", skill("proviso-mutate"), true},
 		{".claude/skills/proviso-recover/SKILL.md", skill("proviso-recover"), true},
