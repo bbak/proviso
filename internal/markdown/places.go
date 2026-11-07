@@ -25,6 +25,9 @@ const (
 	// PlaceDefinition is the fragment of the destination of a link
 	// reference definition, after its first "#".
 	PlaceDefinition
+	// PlaceCode is the content of a code span; CodeSpans finds it, Places
+	// does not.
+	PlaceCode
 )
 
 // Place is where a value stands in the source: the bytes Start..End of
@@ -86,6 +89,37 @@ func Places(src []byte) []Place {
 			if start, end, ok := tag(v, trimmed); ok {
 				add(PlaceTag, start, end)
 			}
+		}
+		return ast.WalkContinue, nil
+	})
+	return out
+}
+
+// CodeSpans returns the code spans in src outside fenced blocks, indented
+// code blocks and HTML blocks, in the order of the source, each as the
+// place of its content as CommonMark reads it. A code span whose content
+// spans a line break is left out: it is not one place on one line.
+func CodeSpans(src []byte) []Place {
+	trimmed := bytes.TrimPrefix(src, []byte("\xef\xbb\xbf"))
+	bom := len(src) - len(trimmed)
+	d := &Doc{src: trimmed, lines: lineStarts(trimmed)}
+	root := md.Parser().Parse(text.NewReader(trimmed))
+	var out []Place
+	_ = ast.Walk(root, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
+		}
+		switch n.(type) {
+		case *ast.FencedCodeBlock, *ast.CodeBlock, *ast.HTMLBlock:
+			return ast.WalkSkipChildren, nil
+		case *ast.CodeSpan:
+			if t, ok := n.FirstChild().(*ast.Text); ok && t.NextSibling() == nil {
+				seg := t.Segment
+				if seg.Stop > seg.Start && bytes.IndexByte(trimmed[seg.Start:seg.Stop], '\n') < 0 {
+					out = append(out, Place{PlaceCode, d.line(seg.Start), seg.Start + bom, seg.Stop + bom, string(trimmed[seg.Start:seg.Stop])})
+				}
+			}
+			return ast.WalkSkipChildren, nil
 		}
 		return ast.WalkContinue, nil
 	})

@@ -20,28 +20,38 @@ import (
 )
 
 // rehomeRun plans the renames that give every element an identifier
-// naming its identifier home, writes them with write, and writes the plan.
-// Lint has found no error in t.
-func rehomeRun(t *tree.Tree, res *lint.Result, asJSON, write bool, stdout, stderr io.Writer) int {
+// naming its identifier home, and lists the identifier mentions of the
+// identifiers it renames; with write it writes the renames, with mentions
+// also the identifier mentions the mention_list on stdin names, and it
+// writes the plan. Lint has found no error in t.
+func rehomeRun(t *tree.Tree, res *lint.Result, asJSON, write, mentions bool, stdout, stderr io.Writer) int {
 	if !recorded(t, res, stderr) {
 		return exitCantRun
 	}
 	renames, collisions := rehome.Plan(res.Elements)
+	listed := rehome.Mentions(t, res.Elements, renames)
 	status := exitClean
 	switch {
 	case len(collisions) > 0:
 		// upkeep.rehome.collision: nothing is written under the spec root.
 		status = exitErrors
 	case write:
-		if !rehomeWrite(t, res, renames, stderr) {
+		var picked []rehome.Picked
+		if mentions {
+			var ok bool
+			if picked, ok = readPicked(listed, stderr); !ok {
+				return exitCantRun
+			}
+		}
+		if !rehomeWrite(t, res, renames, picked, stderr) {
 			return exitCantRun
 		}
 	}
 	if !emit("rehome", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
-			return report.RehomeJSON(w, reportRoot(t.Root), renames, collisions)
+			return report.RehomeJSON(w, reportRoot(t.Root), renames, collisions, listed)
 		}
-		return report.RehomeText(w, renames, collisions)
+		return report.RehomeText(w, renames, collisions, listed)
 	}) {
 		return exitCantRun
 	}
@@ -81,13 +91,38 @@ func recorded(t *tree.Tree, res *lint.Result, stderr io.Writer) bool {
 	return ok
 }
 
+// readPicked reads the mention_list on stdin, following
+// upkeep.rehome.picked: the identifier mentions it names, each of them one
+// of listed. It writes to stderr why the input cannot be taken.
+func readPicked(listed []rehome.Mention, stderr io.Writer) ([]rehome.Picked, bool) {
+	data, err := io.ReadAll(stdin)
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso rehome: cannot read standard input: %v; nothing is written\n", err)
+		return nil, false
+	}
+	picked, err := rehome.ParseMentionList(data)
+	if err != nil {
+		fmt.Fprintf(stderr, "proviso rehome: the input of --mentions is no mention_list: %v; nothing is written\n", err)
+		return nil, false
+	}
+	if unlisted := rehome.Unlisted(picked, listed); len(unlisted) > 0 {
+		fmt.Fprintln(stderr, "proviso rehome: the input of --mentions names mentions the plan does not list; nothing is written:")
+		for _, p := range unlisted {
+			fmt.Fprintf(stderr, "  %s:%d: %s\n", p.File, p.Line, p.Identifier)
+		}
+		return nil, false
+	}
+	return picked, true
+}
+
 // rehomeWrite writes the renames into the files of the spec tree that hold
-// a place rehome_references lists for them, and the manifest of the
-// rewritten tree, following upkeep.rehome.write: either every file, once
-// each of them and manifest_file can be opened for writing, or none. It
-// writes to stderr each file it cannot open for writing.
-func rehomeWrite(t *tree.Tree, res *lint.Result, renames []rehome.Rename, stderr io.Writer) bool {
-	files := rehome.Rewrite(t, res.Elements, renames)
+// a place rehome_references lists for them, the picked identifier mentions,
+// and the manifest of the rewritten tree, following upkeep.rehome.write:
+// either every file, once each of them and manifest_file can be opened for
+// writing, or none. It writes to stderr each file it cannot open for
+// writing.
+func rehomeWrite(t *tree.Tree, res *lint.Result, renames []rehome.Rename, picked []rehome.Picked, stderr io.Writer) bool {
+	files := rehome.Rewrite(t, res.Elements, renames, picked)
 	manifest := rehome.Manifest(t, files)
 	rels := append(slices.Sorted(maps.Keys(files)), tree.ManifestName)
 	ok := true

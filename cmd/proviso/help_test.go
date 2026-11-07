@@ -45,7 +45,7 @@ func TestRefused(t *testing.T) {
 		{"pack", "--element", "a", "--since", "HEAD~1"},
 		{"lint", "spec tree"}, {"show", ""}, {"show", "-x"}, {"show", "lint.run.exit", "--in"},
 		{"show", "a", "--in", "lint", "--in", "query"}, {"show", "spec", "tree"}, {"show", "a", "--since", "HEAD~1"},
-		{"show", "a", "--in", "-x"},
+		{"show", "a", "--in", "-x"}, {"rehome", "--json", "--mentions"}, {"lint", "--mentions", "--write"},
 	}
 	for _, args := range cases {
 		t.Chdir(t.TempDir()) // nothing to check: a refusal reads no tree
@@ -75,6 +75,8 @@ func TestReadArgs(t *testing.T) {
 		{"diff", []string{"--since", "HEAD~1", "--json"}, options{json: true, since: "HEAD~1"}},
 		{"rehome", []string{"--json", "--write"}, options{json: true, write: true}},
 		{"rehome", nil, options{}},
+		{"rehome", []string{"--write", "--mentions"}, options{write: true, mentions: true}},
+		{"rehome", []string{"--mentions", "--write"}, options{write: true, mentions: true}},
 		{"show", []string{"spec tree"}, options{query: "spec tree"}},
 		{"show", []string{"lint.run.exit", "--in", "lint"}, options{query: "lint.run.exit", in: "lint"}},
 		{"show", []string{"--in", "lint", "--json", "lint.run.exit", "--json"}, options{json: true, query: "lint.run.exit", in: "lint"}},
