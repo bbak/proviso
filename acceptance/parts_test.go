@@ -11,7 +11,7 @@ import (
 
 func TestBaselinePartsSplit(t *testing.T) {
 	t.Parallel()
-	m := manifestOf(t, richTree())
+	m := manifestOf(t, richTree().with(sysParamsPath, sysParamsMD))
 	limitRows := []string{"row " + rowKey("quantity", "1", "product", "apple"), "row " + rowKey("quantity", "11", "product", "apple")}
 	cases := []struct {
 		name, id string
@@ -23,7 +23,10 @@ func TestBaselinePartsSplit(t *testing.T) {
 			[]string{"heading", "field Contact", "section Goal", "section Rationale"}},
 		{"row3 a glossary entry", "cart.item",
 			[]string{"heading", "field Definition", "field Contact", "field Status", "field Aliases"}},
-		{"row4 a parameter with a table", "cart.sizes",
+		// system.tree-layout: system.shelf-layout, a parameter of the system.
+		{"row4 a parameter with a table", "system.shelf-layout",
+			[]string{"heading", "field Configurable", "field Rationale", "body"}},
+		{"derived: a parameter with a table of a capability", "cart.sizes",
 			[]string{"heading", "field Configurable", "field Rationale", "body"}},
 		{"row5 a contract element with members", "cart.cli.lint",
 			[]string{"heading", "body"}},
@@ -57,7 +60,7 @@ func TestBaselinePartsSplit(t *testing.T) {
 		for k := range manifestParts(m) {
 			ids[k[0]] = true
 		}
-		for _, id := range []string{"system", "cart", "cart.item", "cart.max-quantity", "cart.sizes", "cart.add",
+		for _, id := range []string{"system", "cart", "cart.item", "cart.max-quantity", "cart.sizes", "system.shelf-layout", "cart.add",
 			"cart.add.limit", "cart.add.empty", "cart.cli.lint", "cart.cli.lint.exit-status", "cart.x", "cart.x.open", "cart.x.never"} {
 			if !ids[id] {
 				t.Errorf("want parts of %s in the manifest, got none", id)

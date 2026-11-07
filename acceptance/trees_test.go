@@ -18,6 +18,25 @@ const (
 	xPath        = "proviso/capabilities/cart/features/x.md"
 )
 
+// The system's parameters: a parameter with a table and no Value, as
+// Proviso's own system.tree-layout.
+const sysParamsPath = "proviso/parameters.md"
+
+const sysParamsMD = `# Parameters
+
+## <a id="system.shelf-layout"></a> shelf_layout
+
+- Configurable: no
+- Rationale: every shop lays out its shelves alike.
+
+Where each kind of goods stands.
+
+| goods | shelf |
+| --- | --- |
+| fruit | 1 |
+| bread | 2 |
+`
+
 const systemMD = `# <a id="system"></a> Shop
 
 ## Goal
