@@ -29,6 +29,10 @@ Commands engineers run:
   impact [--json]     Write the rules and invariants the amendment may
                       affect.
   verify [--json]     Tell whether the spec tree may become the baseline.
+  show <query> [--json] [--in <capability>]
+                      Write every element the identifier or name
+                      <query> stands for, with where it stands; quote a
+                      name of several words.
   help, --help, -h    Write this page.
 
 Commands the skills run:
@@ -51,12 +55,15 @@ Options:
                       Pack the element with that identifier instead of
                       the amendment (pack only).
   --write             Write the planned renames (rehome only).
+  --in <capability>   Look only among the elements of that capability
+                      and of the system level (show only).
 
 Exit statuses:
   0                   The command did what it was asked.
   1                   lint, diff or verify found what it reports,
-                      judge refused its input, or a rename of rehome
-                      would take an identifier.
+                      judge refused its input, a rename of rehome
+                      would take an identifier, or the query of show
+                      names no element.
   2                   The command could not run, or was misused.
 
 Documentation: https://github.com/bbak/proviso/blob/main/docs/commands.md
@@ -67,7 +74,7 @@ const helpHint = `"proviso help" shows the help page`
 
 // commandOptions is, for every command of cli.help.command, the options
 // it takes; "--since" takes a revision after it, "--element" an
-// identifier.
+// identifier, "--in" a capability.
 var commandOptions = map[string][]string{
 	"init":     nil,
 	"update":   nil,
@@ -80,8 +87,13 @@ var commandOptions = map[string][]string{
 	"judge":    nil,
 	"verify":   {"--json"},
 	"rehome":   {"--write", "--json"},
+	"show":     {"--json", "--in"},
 	"help":     nil,
 }
+
+// takesQuery names the commands that take one argument that is no option,
+// their query: show.query.
+var takesQuery = map[string]bool{"show": true}
 
 // readArgs reads the arguments of the command name, which is cmd as it
 // was given, following cli.help.argument. It writes to stderr one line
@@ -95,22 +107,36 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 	var o options
 	for i := 0; i < len(args); i++ {
 		a := args[i]
+		// A query is not empty and does not start with "-", as no option.
+		query := takesQuery[cmd] && a != "" && a[0] != '-'
 		switch {
+		case query && o.query != "":
+			// One lookup per run; a name of several words is quoted.
+			return refuse(a, "takes one query, so it refuses")
+		case query:
+			o.query = a
 		case !slices.Contains(takes, a):
 			return refuse(a, "does not take the argument")
 		case a == "--json":
 			o.json = true
 		case a == "--write":
 			o.write = true
-		case o.since != "" || o.element != "":
+		case a == "--in" && o.in != "":
+			// One capability per run.
+			return refuse(a, "takes one --in, so it refuses")
+		case a != "--in" && (o.since != "" || o.element != ""):
 			// One revision or one element per run, never both.
 			return refuse(a, "takes one --since or one --element, so it refuses")
 		case i+1 == len(args) || args[i+1] == "" || args[i+1][0] == '-':
-			// No revision git accepts and no identifier starts with "-".
+			// No revision git accepts, no identifier and no capability
+			// starts with "-".
 			return refuse(a, "needs a value after")
 		case a == "--since":
 			i++
 			o.since = args[i]
+		case a == "--in":
+			i++
+			o.in = args[i]
 		default:
 			i++
 			o.element = args[i]
@@ -120,10 +146,11 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 }
 
 // options are the arguments a command read: whether it was given --json
-// and --write, and the values of --since and --element, "" for none.
+// and --write, the values of --since, --element and --in, and the query,
+// "" for none.
 type options struct {
-	json, write    bool
-	since, element string
+	json, write               bool
+	since, element, in, query string
 }
 
 // helpRun writes the help page to stdout.

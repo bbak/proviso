@@ -57,6 +57,30 @@ type Element struct {
 	LeansOn    []string // the identifiers of the glossary entries its Definition and Deviations mark
 	DefinedBy  string   // the identifier of the reference its Defined by links to
 	Undecided  []Pos    // the lines holding a place lint asks about as undecided, each once, in order
+
+	terms []string // a glossary entry's name and aliases
+	ref   string   // the name a rule refers to a contract element or parameter by in backticks
+}
+
+// Named reports whether query names the element as query.show.match says:
+// as its identifier, character by character; as a glossary entry's name or
+// alias, compared as name_comparison says; or as the name a rule refers to
+// a contract element or parameter by in backticks, character by character,
+// a member after the name of the contract element holding it and a ".".
+func (e *Element) Named(query string) bool {
+	if e.ID == query || (e.ref != "" && e.ref == query) {
+		return true
+	}
+	return len(e.terms) > 0 && slices.Contains(uniqueKeys(e.terms), nameKey(query))
+}
+
+// refName is the name a rule refers to the contract element or parameter e
+// by in backticks, as resolveReference reads it.
+func refName(e *element) string {
+	if e.parent != nil {
+		return refName(e.parent) + "." + e.name
+	}
+	return e.name
 }
 
 // Ref is a backtick reference as written, and the identifier of the
@@ -105,6 +129,12 @@ func (l *linter) export() []Element {
 		}
 		if e.parent != nil {
 			x.Parent = e.parent.id
+		}
+		switch e.typ {
+		case tGlossary:
+			x.terms = termNames(e)
+		case tParameter, tContract:
+			x.ref = refName(e)
 		}
 		if e.rule != nil && e.rule.next != nil {
 			x.HandOver = e.rule.next.id

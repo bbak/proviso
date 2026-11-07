@@ -1,8 +1,8 @@
 // Command proviso is the tooling for a spec tree written in the Proviso
 // Model: `proviso init`, `proviso update`, `proviso lint`,
 // `proviso manifest`, `proviso diff`, `proviso impact`, `proviso pack`,
-// `proviso judge`, `proviso verify`, `proviso rehome`, `proviso version`
-// and `proviso help`.
+// `proviso judge`, `proviso verify`, `proviso rehome`, `proviso show`,
+// `proviso version` and `proviso help`.
 package main
 
 import (
@@ -25,11 +25,11 @@ import (
 // system.cli.manifest.exit-status, system.cli.diff.exit-status,
 // system.cli.impact.exit-status, system.cli.pack.exit-status,
 // system.cli.judge.exit-status, system.cli.verify.exit-status,
-// system.cli.rehome.exit-status, system.cli.version.exit-status and
-// system.cli.help.exit-status.
+// system.cli.rehome.exit-status, system.cli.show.exit-status,
+// system.cli.version.exit-status and system.cli.help.exit-status.
 const (
 	exitClean   = 0
-	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem; a rename would take an identifier
+	exitErrors  = 1 // lint found an error; diff listed an element; judge refused the check result; verify found a problem; a rename would take an identifier; show's query names no element
 	exitCantRun = 2
 )
 
@@ -74,6 +74,12 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return updateRun(stdout, stderr)
 	case "version":
 		return versionRun(stdout, stderr)
+	case "show":
+		// query.show.query: without a query, show has nothing to look for.
+		if o.query == "" {
+			fmt.Fprintf(stderr, "proviso show: needs a query, the identifier or name of the elements to show; %s\n", helpHint)
+			return exitCantRun
+		}
 	}
 	// lint.run.model checks the first line of manifest.sum for every command
 	// lint precedes, with --since and --element too.
@@ -84,6 +90,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 	switch cmd {
 	case "lint":
 		return lintRun(t, res, o.json, stdout, stderr)
+	case "show":
+		// query.show.tree: whatever lint finds, show runs.
+		return showRun(t, res, o, stdout, stderr)
 	case "manifest", "diff", "impact", "pack", "judge", "verify", "rehome":
 		// baseline.run.lint for manifest, diff and pack, coherence.run.lint
 		// for impact, judge and verify, upkeep.rehome.lint for rehome: only
