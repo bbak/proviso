@@ -183,7 +183,7 @@ Otherwise lint reports the [error] `findings.field-missing` at <element>, naming
 | `lint.run` | feature | `- Contact:` | no | error, naming Contact | an empty value |
 | `lint.run` | feature | `* Contact: Bruno Baketarić` | no | error, naming Contact | a list marked with `*` is prose, not fields |
 | `lint.run` | feature | `1. Contact: Bruno Baketarić` | no | error, naming Contact | a numbered list is prose, not fields |
-| `lint.tree-layout` | parameter | Configurable, Rationale | yes | nothing reported | a table-valued parameter needs no Value |
+| `system.tree-layout` | parameter | Configurable, Rationale | yes | nothing reported | a table-valued parameter needs no Value |
 | `lint.finding` | glossary entry | Definition, Contact | no | error, naming Status | |
 
 ## <a id="lint.structure.field-once"></a> Rule: A field appears once per element
