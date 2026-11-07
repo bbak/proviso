@@ -8,8 +8,9 @@ Rehoming gives every element whose identifier names another place than
 its identifier home an identifier that names it, renames every reference to
 it that the notation marks, and writes the manifest of the rewritten
 tree, so that the tree says the same as before under identifiers that
-say where their elements stand. It shows what it would rename before it
-writes anything.
+say where their elements stand. It also lists every other mention of an
+identifier it renames, and renames those the engineer picks. It shows
+what it would rename before it writes anything.
 
 ## Rationale
 
@@ -32,6 +33,17 @@ that runs it, see every rename before the tree changes. Whether a new
 identifier was once given to an element since removed is left to the
 authors: the manifest forgets removed elements, and the tree's history
 is not searched.
+
+An identifier in a code span outside what the notation marks, such as
+in an Examples cell, mostly refers to its element, but in the rules
+about identifiers it is data, and only a person can tell which. `rehome`
+therefore lists every such mention in its plan and renames only those
+the engineer picks, in the same step as the rest: a mention left
+behind would name an element the tree no longer holds, and no check
+would notice. A mention is named by its file, line and identifier, as
+findings are, since one line, such as one Examples row, is one case.
+A list naming a mention the plan does not hold refuses the run, so
+that a stale or mistyped list never writes half of what was meant.
 
 ## <a id="upkeep.rehome.lint"></a> Rule: Rehome runs only where lint finds no error
 
@@ -99,6 +111,30 @@ Otherwise `rehome` plans to rename <id> to the [identifier home] of <element>, f
 | `system` | the system | yes | stays | |
 | `checks.run`, in the folder `capabilities/coherence/`, whose `capability.md` is identified as `checks` | a feature of that capability | yes | stays | the identifier home is the capability's identifier, not its folder's name |
 
+## <a id="upkeep.rehome.mentions"></a> Rule: The plan lists every mention of an identifier it renames
+
+### Rationale
+
+The event needs no condition: whatever the plan renames, its mentions
+are listed, so that the engineer sees them before anything is written.
+
+```guarded
+When      `rehome` plans to rename the [identifier] <id>
+Then      every [identifier mention] of <id> in the [spec tree] is listed with the plan, once for each line it stands on, with the file and the line, how often it stands on that line, and the [element] whose text holds that line, where one does
+  And     no [identifier mention] is renamed unless `rehome.mentions` names it
+```
+
+| id | outcome | why |
+| --- | --- | --- |
+| `baseline.impact.events`, standing as a code span in an Examples cell of `verify.md` | that cell's line listed, once, naming the rule whose table holds it | |
+| `baseline.impact.events`, standing twice as a code span in one Examples row | that line listed once, standing there twice | one line is one case |
+| `baseline.impact.events`, standing as a code span in the Rationale of a feature | that line listed, naming the feature | prose is listed too |
+| `baseline.impact.events`, standing only within the longer code span `` `## <a id="baseline.impact.events"></a> Rule: B` `` in an Examples cell | nothing listed | the code span holds more than the identifier |
+| `baseline.impact.events`, standing only in a fenced block of a contract | nothing listed | a fenced block is not read for mentions |
+| `baseline.impact.events`, standing only in plain text, without backticks | nothing listed | |
+| `lint.run`, not planned for a rename, standing as a code span in an Examples cell | nothing listed | only identifiers the plan renames |
+| `baseline.impact.events`, standing as a code span in the text of a question in a `questions.md` | that line listed, naming no element | a `questions.md` holds no element |
+
 ## <a id="upkeep.rehome.collision"></a> Rule: A rename that would take an identifier refuses the run
 
 ```guarded
@@ -124,8 +160,8 @@ Otherwise `rehome` writes <renames>, naming each collision with the [identifier]
 
 ```guarded
 When      `rehome`, run with `rehome.write`, goes on with the renames <renames>
-Provided  every file of the [spec tree] that holds a place `rehome_references` lists for <renames>, and `manifest_file`, can be opened for writing
-Then      every place `rehome_references` lists that holds an old [identifier] of <renames> holds the new one, and nothing else of its file changes
+Provided  every file of the [spec tree] that holds a place `rehome_references` lists for <renames>, or an [identifier mention] `rehome.mentions` names, and `manifest_file`, can be opened for writing
+Then      every place `rehome_references` lists that holds an old [identifier] of <renames> holds the new one, so does every [identifier mention] `rehome.mentions` names, and nothing else of its file changes
   And     `manifest_file` is what `manifest` would write for the rewritten [spec tree]
 Otherwise `rehome` writes to "stderr" each file it cannot open for writing
   And     `rehome` exits with `rehome.exit-status` 2
@@ -136,26 +172,51 @@ Otherwise `rehome` writes to "stderr" each file it cannot open for writing
 | --- | --- | --- | --- |
 | `baseline.impact.events` to `coherence.impact.events`, its anchor in `impact.md` and a hand-over to it in `verify.md` | yes | both files and `manifest.sum` rewritten | |
 | the same, with `baseline.impact.events` also in an Examples cell of `verify.md` | yes | the anchor and the hand-over renamed, the cell as it was | an Examples cell may hold an identifier as data |
+| the same, run with `--mentions` naming that cell's line | yes | the anchor, the hand-over and the cell renamed | the engineer picked the mention |
+| the same, run with `--mentions` naming no mention | yes | the anchor and the hand-over renamed, the cell as it was | |
 | `baseline.dependencies` to `coherence.dependencies`, tagging a question in `questions.md` | yes | the tag renamed | |
 | none | yes | nothing rewritten, `manifest.sum` as it was | the manifest of an unchanged tree is the same |
 | `baseline.impact.events` to `coherence.impact.events`, `impact.md` read-only | no | exit status 2, naming `impact.md`, nothing written | |
 | the same, `manifest.sum` read-only | no | exit status 2, naming `manifest.sum`, nothing written | |
 
+## <a id="upkeep.rehome.picked"></a> Rule: Only mentions the plan lists can be picked
+
+```guarded
+When      `rehome`, run with `rehome.write` and `rehome.mentions`, goes on with its renames, and reads the input <input> from "stdin"
+Provided  <input> is a `mention_list`
+  And     every [identifier mention] <input> names is one its plan lists
+Then      `rehome` writes its renames with the [identifier mentions] <input> names
+  And     every other [identifier mention] stays as it was
+Otherwise `rehome` writes to "stderr" why <input> cannot be taken
+  And     `rehome` exits with `rehome.exit-status` 2
+  And     nothing goes to "stdout", and nothing is written
+```
+
+| input | provided | outcome | why |
+| --- | --- | --- | --- |
+| a `mention_list` naming one mention the plan lists | yes | that mention renamed with the rest | |
+| a `mention_list` with no mentions | yes | no mention renamed | |
+| a `mention_list` naming one mention twice | yes | that mention renamed once | the same mention asked for twice |
+| `{` | no (a `mention_list`) | exit status 2, nothing written | |
+| a `mention_list` naming a line where the identifier stands in plain text only | no (one the plan lists) | exit status 2, nothing written | a stale or mistyped list writes nothing |
+| a `mention_list` naming a mention of `lint.run`, which the plan does not rename | no (one the plan lists) | exit status 2, nothing written | |
+
 ## <a id="upkeep.rehome.output"></a> Rule: The plan is written as text or as JSON
 
 ```guarded
-Given     `rehome` has planned the renames <renames> and found the collisions <collisions>
+Given     `rehome` has planned the renames <renames>, with their [identifier mentions], and found the collisions <collisions>
 When      `rehome` writes them, run with the options <options>
 Provided  <options> include `rehome.json`
-Then      `rehome` writes the `rehome_plan` of <renames> and <collisions> to "stdout"
+Then      `rehome` writes the `rehome_plan` of <renames>, their [identifier mentions] and <collisions> to "stdout"
   And     nothing else goes to "stdout"
-Otherwise `rehome` writes <renames> and <collisions> to "stdout" as text
+Otherwise `rehome` writes <renames>, their [identifier mentions] and <collisions> to "stdout" as text
   And     nothing else goes to "stdout"
 ```
 
 | renames | collisions | options | provided | outcome | why |
 | --- | --- | --- | --- | --- | --- |
 | one | none | `--json` | yes | a `rehome_plan` with one rename | |
+| one, its identifier in two Examples cells | none | `--json` | yes | a `rehome_plan` with one rename and two mentions | |
 | none | none | `--json` | yes | a `rehome_plan` with no renames | an empty list, not an empty output |
 | one | none | `--write --json` | yes | a `rehome_plan` with one rename | what was written |
 | two, one colliding | one | none | no | both renames and the collision as text | |
@@ -167,12 +228,14 @@ Otherwise `rehome` writes <renames> and <collisions> to "stdout" as text
 When      `rehome` writes the renames <renames> and the collisions <collisions>
 Then      <renames> appear ordered by their old [identifier], compared byte by byte
   And     <collisions> appear ordered by the [identifier] each would take, compared so too, each naming its old [identifiers] in that order
+  And     the [identifier mentions] of <renames> appear ordered by their file's path, then their line, then their [identifier], paths and [identifiers] compared byte by byte
 ```
 
 | renames | collisions | outcome |
 | --- | --- | --- |
 | `lint.keyword` to `system.keyword`, `baseline.part` to `system.part` | none | `baseline.part` first, then `lint.keyword` |
 | `lint.x` and `baseline.x`, both to `coherence.x`, and `lint.y` to `coherence.y`, taken | on `coherence.x` and on `coherence.y` | `coherence.x`, naming `baseline.x` then `lint.x`, then `coherence.y` |
+| `lint.keyword` to `system.keyword`, mentioned in `capabilities/lint/features/rules.md` lines 9 and 3 and in `capabilities/baseline/features/diff.md` line 40 | none | `baseline/features/diff.md` 40, then `lint/features/rules.md` 3, then 9 |
 
 ## <a id="upkeep.rehome.exit"></a> Rule: The exit status tells whether the plan holds
 
@@ -213,6 +276,7 @@ Every run of `rehome`, however it ends.
 
 Every file and folder under the [spec root] is byte for byte and entry
 for entry as it was before the run, except, after a run with
-`rehome.write` that exits with 0, `manifest.sum` and the identifiers
-renamed in the places `rehome_references` lists. The git repository
+`rehome.write` that exits with 0, `manifest.sum`, the identifiers
+renamed in the places `rehome_references` lists, and the
+[identifier mentions] `rehome.mentions` names. The git repository
 holding the [spec root] is as it was before the run.

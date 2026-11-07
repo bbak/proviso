@@ -671,6 +671,12 @@ the manifest of the rewritten tree into the spec root. Without it,
 The option `--json`: write the `rehome_plan` to standard output instead
 of text. The text form is for people and not part of the contract.
 
+### <a id="system.cli.rehome.mentions"></a> mentions
+
+The option `--mentions`, given only with `--write`: read a
+`mention_list` from standard input, and rename the mentions it names
+together with the planned renames. Without it, no mention is renamed.
+
 ### <a id="system.cli.rehome.exit-status"></a> exit-status
 
 The process exit status.
@@ -686,17 +692,18 @@ enum: [0, 1, 2]
   written.
 - `2`: the tree is not as the manifest records it, a coherence file or
   an amendment note lies in the spec root, a file could not be opened
-  for writing, or the command could not run; nothing was written.
+  for writing, the input of `--mentions` could not be taken, or the
+  command could not run; nothing was written.
 
 ## <a id="system.cli.rehome-plan"></a> rehome_plan
 
 What `rehome --json` writes: the spec root that was planned for, every
-rename, and every collision. `root` follows the same conventions as in
-`report`.
+rename, every collision, and every mention of a renamed identifier.
+Paths and `root` follow the same conventions as in `report`.
 
 ```yaml
 type: object
-required: [root, renames, collisions]
+required: [root, renames, collisions, mentions]
 properties:
   root:
     type: string
@@ -722,11 +729,65 @@ properties:
           type: array
           items:
             type: string
+  mentions:
+    type: array
+    items:
+      type: object
+      required: [identifier, file, line, count, element]
+      properties:
+        identifier:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+          minimum: 1
+        count:
+          type: integer
+          minimum: 1
+        element:
+          type: [string, "null"]
 ```
 
 - `from` and `to` are the old and the new identifier of a rename.
 - `identifier` is the identifier a collision would take, and `from` the
   old identifiers of the renames planned to take it.
+- A mention is one line holding the old identifier of a rename,
+  `identifier`, as an identifier mention: `file` and `line` say where,
+  counting lines as in `report`, `count` how often it stands on that
+  line, and `element` the identifier the element whose text holds that
+  line has before the run, or null where no element holds it, as in a
+  `questions.md`.
+
+## <a id="system.cli.mention-list"></a> mention_list
+
+What `rehome --write --mentions` reads from standard input: the
+mentions to rename, each written as an item of `mentions` in
+`rehome_plan`, such as the plan's own list without the mentions to
+keep.
+
+```yaml
+type: object
+required: [mentions]
+properties:
+  mentions:
+    type: array
+    items:
+      type: object
+      required: [identifier, file, line]
+      properties:
+        identifier:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+          minimum: 1
+```
+
+- A mention is named by its `identifier`, `file` and `line`. Other
+  members, such as the `count` and `element` an item of the plan
+  carries, are not read.
 
 ## <a id="system.cli.show"></a> show
 

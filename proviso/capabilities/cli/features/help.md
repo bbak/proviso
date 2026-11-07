@@ -100,9 +100,10 @@ read as part of a name.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `show.query`, `show.in` and `show.json` define
+Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `rehome.mentions`, `show.query`, `show.in` and `show.json` define
   And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since", "--element" or "--in"
   And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element", no "--in", where <argument> is "--in", and no `show.query`, where <argument> is one
+  And     <before> or <rest> hold "--write", where <argument> is "--mentions"
 Then      <command> reads <argument>, with the value after it where <argument> is "--since", "--element" or "--in"
   And     <command> goes on with the arguments after them
 Otherwise <command> writes to "stderr" one line naming <command> and <argument>, and that "proviso help" shows the help page
@@ -118,6 +119,8 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | pack | --json | --since | `a1b2c3d` | yes | read, with `a1b2c3d` | |
 | pack | --json | --element | `lint.run.exit` | yes | read, with `lint.run.exit` | |
 | rehome | --json | --write | none | yes | read | |
+| rehome | --write | --mentions | none | yes | read | |
+| rehome | none | --mentions | --write | yes | read | the order of options is free |
 | show | none | `spec tree` | none | yes | read as the query | |
 | show | `lint.run.exit` | --in | `lint` | yes | read, with `lint` | |
 | show | `lint.run.exit` | --json | none | yes | read | |
@@ -142,3 +145,4 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | pack | --element `lint.run.exit` | --since | `HEAD~1` | no (neither before it) | refused, exit status 2 | |
 | show | `lint.run.exit` --in `lint` | --in | `query` | no (neither before it) | refused, exit status 2 | two capabilities contradict |
 | show | `spec` | `tree` | none | no (neither before it) | refused, exit status 2 | one query per run; a name of several words is quoted |
+| rehome | --json | --mentions | none | no (with --write) | refused, exit status 2 | a plan alone writes nothing, so there is nothing to pick for |
