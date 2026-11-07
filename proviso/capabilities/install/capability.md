@@ -7,8 +7,9 @@ code: the start of a spec tree that lint accepts, the settings that keep
 the tree readable on every platform, the definitions of the agents and
 the skills that recover the spec tree of an existing system, bring a
 request into it, build, check and accept an amendment, give moved
-elements the identifiers of their place, and measure with mutants how
-many slips the tests catch, so that an engineer begins
+elements the identifiers of their place, measure with mutants how many
+slips the tests catch, and answer an engineer's questions about the
+system from the spec tree, so that an engineer begins
 with one command; and it tells which version of Proviso
 installed the skills and agents, and whether they and the spec tree fit
 the binary in use, and brings the skills and agents to the binary's
