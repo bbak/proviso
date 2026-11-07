@@ -36,6 +36,7 @@ var stampedFiles = []string{
 	".claude/skills/proviso-accept/SKILL.md",
 	".claude/skills/proviso-build/SKILL.md",
 	".claude/skills/proviso-check/SKILL.md",
+	".claude/skills/proviso-explain/SKILL.md",
 	".claude/skills/proviso-integrate/SKILL.md",
 	".claude/skills/proviso-mutate/SKILL.md",
 	".claude/skills/proviso-recover/SKILL.md",
