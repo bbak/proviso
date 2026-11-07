@@ -244,8 +244,9 @@ Then      <renames> appear ordered by their old [identifier], compared byte by b
 ### Rationale
 
 A run that stops earlier, because lint finds an error, the tree is not
-as the manifest records it, or a file cannot be opened for writing,
-writes no plan and exits with 2 by its own rule.
+as the manifest records it, the input of `--mentions` cannot be taken,
+or a file cannot be opened for writing, writes no plan and exits with 2
+by its own rule.
 
 ```guarded
 When      `rehome` exits, having written the plan of its renames, with the collisions <collisions>
