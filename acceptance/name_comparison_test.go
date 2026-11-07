@@ -1,6 +1,6 @@
 package acceptance
 
-// Parameter lint.name-comparison: proviso/capabilities/lint/parameters.md
+// Parameter system.name-comparison: proviso/parameters.md
 
 import (
 	"strings"
@@ -10,7 +10,7 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// sameName is the oracle of lint.name-comparison: two names are the same
+// sameName is the oracle of system.name-comparison: two names are the same
 // when they are equal after each of its steps, in order.
 func sameName(a, b string) bool { return comparedName(a) == comparedName(b) }
 
@@ -37,11 +37,11 @@ func comparedName(s string) string {
 	return norm.NFC.String(s)
 }
 
-// TestLintNameComparison checks that a glossary name, a term mark and a run
+// TestSystemNameComparison checks that a glossary name, a term mark and a run
 // of words in unmarked text are compared alike, as the steps of
 // name_comparison say: a mark resolves wherever plain text would match, and
 // the reverse.
-func TestLintNameComparison(t *testing.T) {
+func TestSystemNameComparison(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
 		name    string

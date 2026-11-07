@@ -53,7 +53,7 @@ a dependency, whose meaning changed while its text did not.
 | the section `Goal` of a capability or a feature | no | scope |
 | any other part, such as a field `Contact` or a section `Rationale` | no | none |
 
-## <a id="lint.tree-layout"></a> tree_layout
+## <a id="system.tree-layout"></a> tree_layout
 
 - Configurable: no
 - Rationale: the Proviso Model fixes where each type of element stands,
@@ -83,7 +83,7 @@ place.
 | `.markdownlint.jsonc`, in the spec root | none | none |
 | `manifest.sum`, in the spec root | none | none |
 
-## <a id="lint.name-comparison"></a> name_comparison
+## <a id="system.name-comparison"></a> name_comparison
 
 - Configurable: no
 - Rationale: one comparison for every name and alias of a glossary
