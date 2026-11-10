@@ -235,7 +235,7 @@ func TestInstallUpdateExit(t *testing.T) {
 		if err := os.Chmod(file, 0o444); err != nil {
 			t.Fatal(err)
 		}
-		t.Cleanup(func() { os.Chmod(file, 0o644) })
+		t.Cleanup(func() { _ = os.Chmod(file, 0o644) })
 		lockFolder(t, filepath.Dir(file))
 		o := r.update("0.2.0")
 		named := false

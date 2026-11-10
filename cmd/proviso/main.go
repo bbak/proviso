@@ -48,7 +48,7 @@ func main() {
 func run(args []string, stdout, stderr io.Writer) int {
 	// cli.help.start: without a command, the page goes to stderr.
 	if len(args) == 0 {
-		io.WriteString(stderr, helpPage)
+		_, _ = io.WriteString(stderr, helpPage)
 		return exitCantRun
 	}
 	// cli.help.command: commands are matched exactly.
@@ -100,7 +100,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		// where lint finds no error, and without writing what lint would
 		// write.
 		if lint.HasError(res.Findings) {
-			report.Text(stderr, res.Findings)
+			_ = report.Text(stderr, res.Findings)
 			return exitCantRun
 		}
 		switch cmd {

@@ -79,6 +79,11 @@ tasks:
       - rm -rf .claude/skills/proviso-*
       - go run ./cmd/{{.BINARY}} init
 
+  lint:
+    desc: Run golangci-lint, go vet among its linters (settings in .golangci.yml)
+    cmds:
+      - golangci-lint run ./... {{.CLI_ARGS}}
+
   vet:
     desc: Run go vet
     cmds:
@@ -111,7 +116,7 @@ tasks:
     desc: Local quality gate, run before every push
     cmds:
       - task: spec
-      - task: vet
+      - task: lint
       - task: test
       - task: request
       - task: acceptance

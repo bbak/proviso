@@ -22,7 +22,9 @@ func TestManifestRemovesJunction(t *testing.T) {
 	note, _ := filepath.Abs(filepath.Join("proviso", ".amendment.md"))
 	coherence, _ := filepath.Abs(filepath.Join("proviso", ".coherence.json"))
 	junction(note)
-	os.MkdirAll(coherence, 0o755)
+	if err := os.MkdirAll(coherence, 0o755); err != nil {
+		t.Fatal(err)
+	}
 	junction(filepath.Join(coherence, "inner"))
 	var out, errOut bytes.Buffer
 	if status := run([]string{"manifest"}, &out, &errOut); status != 0 {

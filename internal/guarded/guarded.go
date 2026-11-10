@@ -105,10 +105,10 @@ func Parse(src []SourceLine) *Block {
 		}
 		l := parseLine(sl)
 		b.Lines = append(b.Lines, l)
-		switch {
-		case l.Keyword == "":
+		switch l.Keyword {
+		case "":
 			// Not part of any step.
-		case l.Keyword == And:
+		case And:
 			if cur == nil {
 				b.LeadingAnds = append(b.LeadingAnds, l)
 			} else {

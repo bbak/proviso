@@ -75,7 +75,7 @@ func (c *Coherence) Encode() []byte {
 	enc := json.NewEncoder(&b)
 	enc.SetEscapeHTML(false)
 	enc.SetIndent("", "  ")
-	enc.Encode(c) // a Coherence always encodes
+	_ = enc.Encode(c) // a Coherence always encodes
 	return b.Bytes()
 }
 

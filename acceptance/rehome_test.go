@@ -26,7 +26,7 @@ func readOnly(t *testing.T, dir, p string) {
 	if err := os.Chmod(full, 0o444); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { os.Chmod(full, 0o644) })
+	t.Cleanup(func() { _ = os.Chmod(full, 0o644) })
 	if f, err := os.OpenFile(full, os.O_WRONLY, 0); err == nil {
 		f.Close()
 		t.Skipf("%s stays writable without permission (running as root?)", p)

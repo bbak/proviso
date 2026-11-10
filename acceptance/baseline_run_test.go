@@ -210,7 +210,9 @@ func writesOver(t *testing.T, cmds ...string) {
 	staged := func(r *repo) {
 		r.set(r.tr.apply(change{featurePath, "Buyers put goods into the cart.", "Buyers put goods in the cart."}))
 		r.git("add", filepath.ToSlash(featurePath))
-		os.WriteFile(filepath.Join(r.dir, "untracked.txt"), []byte("untracked\n"), 0o644)
+		if err := os.WriteFile(filepath.Join(r.dir, "untracked.txt"), []byte("untracked\n"), 0o644); err != nil {
+			t.Fatal(err)
+		}
 	}
 	cases := []struct {
 		name  string
@@ -300,7 +302,9 @@ func writesOver(t *testing.T, cmds ...string) {
 		{"diff, a malformed manifest", "diff", func(t *testing.T) *repo {
 			r, _ := accepted(t, diffTree())
 			b, _ := os.ReadFile(filepath.Join(r.dir, filepath.FromSlash(manifestPath)))
-			os.WriteFile(filepath.Join(r.dir, filepath.FromSlash(manifestPath)), append(b, "<<<<<<< HEAD\n"...), 0o644)
+			if err := os.WriteFile(filepath.Join(r.dir, filepath.FromSlash(manifestPath)), append(b, "<<<<<<< HEAD\n"...), 0o644); err != nil {
+				t.Fatal(err)
+			}
 			return r
 		}},
 		{"diff, a manifest written again and not committed", "diff", func(t *testing.T) *repo {
@@ -323,7 +327,9 @@ func writesOver(t *testing.T, cmds ...string) {
 		{"diff, a damaged coherence file", "diff", func(t *testing.T) *repo {
 			r, _ := accepted(t, diffTree())
 			r.set(r.tr.apply(limitThen))
-			os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD\n"), 0o644)
+			if err := os.WriteFile(filepath.Join(r.root(), coherenceName), []byte("<<<<<<< HEAD\n"), 0o644); err != nil {
+				t.Fatal(err)
+			}
 			return r
 		}},
 	}

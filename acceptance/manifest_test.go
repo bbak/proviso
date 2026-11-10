@@ -438,8 +438,10 @@ func lockCoherence(t *testing.T, r *repo) func() func() {
 	if err := os.WriteFile(filepath.Join(locked, "f"), []byte("x\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	os.Chmod(locked, 0o555)
-	t.Cleanup(func() { os.Chmod(locked, 0o755) })
+	if err := os.Chmod(locked, 0o555); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chmod(locked, 0o755) })
 	if err := os.Remove(filepath.Join(locked, "f")); err == nil {
 		t.Skip("the folder stays writable without permission (running as root?)")
 	}

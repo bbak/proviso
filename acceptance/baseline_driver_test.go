@@ -69,7 +69,7 @@ func execProvisoWith(t *testing.T, cwd string, stdin io.Reader, args ...string) 
 func snapshotAll(t *testing.T, base string) map[string]string {
 	t.Helper()
 	snap := map[string]string{}
-	filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
+	if err := filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
 		rel, _ := filepath.Rel(base, p)
 		rel = filepath.ToSlash(rel)
 		switch {
@@ -91,7 +91,9 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 			}
 		}
 		return nil
-	})
+	}); err != nil {
+		t.Fatal(err)
+	}
 	return snap
 }
 

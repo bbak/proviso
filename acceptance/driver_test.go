@@ -624,7 +624,7 @@ func snapshot(t *testing.T, base string) map[string]string {
 	t.Helper()
 	snap := map[string]string{}
 	var roots []string
-	filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
+	if err := filepath.WalkDir(base, func(p string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return nil
 		}
@@ -634,9 +634,11 @@ func snapshot(t *testing.T, base string) map[string]string {
 			}
 		}
 		return nil
-	})
+	}); err != nil {
+		t.Fatal(err)
+	}
 	for _, root := range roots {
-		filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+		if err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
 			rel, _ := filepath.Rel(base, p)
 			switch {
 			case err != nil:
@@ -658,7 +660,9 @@ func snapshot(t *testing.T, base string) map[string]string {
 				}
 			}
 			return nil
-		})
+		}); err != nil {
+			t.Fatal(err)
+		}
 	}
 	return snap
 }

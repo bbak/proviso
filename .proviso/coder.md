@@ -3,7 +3,7 @@
 Working practice for Proviso's own code. They add to the definition of
 the coding agent; the context pack decides what is built.
 
-- **Build and check:** `go build ./...`, `task test` and `task vet`
+- **Build and check:** `go build ./...`, `task test` and `task lint`
   must pass. Build a binary for your own runs into a temporary folder,
   never into `bin/` or the repository root: a virus scanner may
   quarantine binaries in `bin/`.

@@ -63,8 +63,12 @@ func withoutNote(o packOutcome) string {
 func sameButNote(t *testing.T, without, with packOutcome) {
 	t.Helper()
 	var a, b map[string]any
-	json.Unmarshal([]byte(without.json.stdout), &a)
-	json.Unmarshal([]byte(with.json.stdout), &b)
+	if err := json.Unmarshal([]byte(without.json.stdout), &a); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal([]byte(with.json.stdout), &b); err != nil {
+		t.Fatal(err)
+	}
 	delete(a, "note")
 	delete(b, "note")
 	if !reflect.DeepEqual(a, b) {

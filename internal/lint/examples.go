@@ -151,9 +151,7 @@ func columnName(columns []string, i int) string {
 func splitRow(line string) []string {
 	s := strings.TrimSpace(line)
 	s = strings.TrimPrefix(s, "|")
-	if strings.HasSuffix(s, "|") {
-		s = s[:len(s)-1]
-	}
+	s = strings.TrimSuffix(s, "|")
 	var cells []string
 	start := 0
 	for i := 0; i < len(s); i++ {

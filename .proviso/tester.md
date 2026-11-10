@@ -4,8 +4,8 @@ Working practice for Proviso's own acceptance tests. They add to the
 definition of the testing agent; the context pack decides what is
 tested.
 
-- **Build and run:** `go vet ./acceptance/...` must be clean; run the
-  suite with `task acceptance`, or one test with
+- **Build and run:** `golangci-lint run ./acceptance/...` must be
+  clean; run the suite with `task acceptance`, or one test with
   `go test ./acceptance/... -run '^TestBaselinePackFrames$'`.
 - **Runtime matters.** Every process start costs about 0.2 s on Windows,
   and engineers skip a slow suite. Keep the whole suite within a few

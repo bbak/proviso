@@ -573,7 +573,7 @@ func lockFolder(t *testing.T, dir string) {
 	if err := os.Chmod(dir, 0o555); err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { os.Chmod(dir, 0o755) })
+	t.Cleanup(func() { _ = os.Chmod(dir, 0o755) })
 }
 
 // TestInstallInitKeeps checks install.init.keeps, a property checked by

@@ -334,20 +334,6 @@ func (o impactOutcome) hasReason(t *testing.T, id, source, via string, from ...s
 	t.Errorf("want %s found through %s %q, got:\n%s", id, source, via, o.dump())
 }
 
-// lacksSource asserts that no candidate is found through source.
-func (o impactOutcome) lacksSource(t *testing.T, source string) {
-	t.Helper()
-	o.ran(t)
-	for _, c := range o.is.Candidates {
-		for _, r := range c.Reasons {
-			if r.Source == source {
-				t.Errorf("want nothing found through %s, got:\n%s", source, o.dump())
-				return
-			}
-		}
-	}
-}
-
 // at asserts that each candidate stands where the impact tree has it, at the
 // line of its heading.
 func (o impactOutcome) at(t *testing.T, tr tree) {

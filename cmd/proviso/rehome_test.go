@@ -35,7 +35,9 @@ func TestRehome(t *testing.T) {
 	}
 	recorded := read(manifest)
 
-	os.WriteFile(filepath.Join("proviso", ".amendment.md"), []byte("- x\n"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", ".amendment.md"), []byte("- x\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("rehome"); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md") {
 		t.Errorf("with a note: %d %q %q", status, out, errOut)
 	}
@@ -52,11 +54,15 @@ func TestRehome(t *testing.T) {
 	}
 
 	// A file that cannot be opened for writing stops every write.
-	os.Chmod(manifest, 0o444)
+	if err := os.Chmod(manifest, 0o444); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("rehome", "--write"); status != 2 || out != "" || !strings.Contains(errOut, "proviso/manifest.sum") {
 		t.Errorf("read-only manifest: %d %q %q", status, out, errOut)
 	}
-	os.Chmod(manifest, 0o644)
+	if err := os.Chmod(manifest, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if read(glossary) != glossaryMoved || read(manifest) != recorded {
 		t.Error("a refused write wrote")
 	}

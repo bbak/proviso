@@ -151,17 +151,23 @@ func TestBaselineCommands(t *testing.T) {
 
 	// A changed part needs former text, which a tree in no git repository
 	// cannot give.
-	os.WriteFile(filepath.Join("proviso", "system.md"), []byte(strings.Replace(system, "\ng\n", "\nh\n", 1)), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "system.md"), []byte(strings.Replace(system, "\ng\n", "\nh\n", 1)), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("diff", "--json"); status != 2 || out != "" || errOut == "" {
 		t.Errorf("no former text: %d %q %q", status, out, errOut)
 	}
 
-	os.WriteFile(filepath.Join("proviso", "manifest.sum"), append(data, "<<<<<<< HEAD\n"...), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "manifest.sum"), append(data, "<<<<<<< HEAD\n"...), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("diff"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
 		t.Errorf("malformed: %d %q %q", status, out, errOut)
 	}
 
-	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	for _, cmd := range []string{"manifest", "diff"} {
 		status, out, errOut := call(cmd)
 		if status != 2 || out != "" || !strings.Contains(errOut, "error file-unknown") {
@@ -195,7 +201,9 @@ func TestImpactCommand(t *testing.T) {
 	if status := run([]string{"impact"}, &out, &errOut); status != 0 || out.Len() != 0 {
 		t.Errorf("text without candidates: %d %q", status, out.String())
 	}
-	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	out.Reset()
 	errOut.Reset()
 	if status := run([]string{"impact", "--json"}, &out, &errOut); status != 2 || out.Len() != 0 || !strings.Contains(errOut.String(), "file-unknown") {
@@ -252,11 +260,15 @@ func TestPackCommand(t *testing.T) {
 		t.Errorf("json: %d %s", status, out)
 	}
 	note := filepath.Join("proviso", ".amendment.md")
-	os.WriteFile(note, []byte("\n  \n"), 0o644)
+	if err := os.WriteFile(note, []byte("\n  \n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system {
 		t.Errorf("a blank note: %d %q", status, out)
 	}
-	os.WriteFile(note, []byte("- refunds"), 0o644)
+	if err := os.WriteFile(note, []byte("- refunds"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("pack"); status != 0 || out != "# System\n\n"+system+"\n# Not in this amendment\n\n- refunds\n" {
 		t.Errorf("a note: %d %q", status, out)
 	}
@@ -264,30 +276,40 @@ func TestPackCommand(t *testing.T) {
 		t.Errorf("a note, json: %d %s", status, out)
 	}
 	os.Remove(note)
-	os.Mkdir(note, 0o755)
+	if err := os.Mkdir(note, 0o755); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
 		t.Errorf("a folder for a note: %d %q %q", status, out, errOut)
 	}
 	os.Remove(note)
-	os.WriteFile(note, []byte("- caf\xe9\n"), 0o644)
+	if err := os.WriteFile(note, []byte("- caf\xe9\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	for _, args := range [][]string{{"pack"}, {"pack", "--json"}} {
 		if status, out, errOut := call(args...); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
 			t.Errorf("a note not in UTF-8, %v: %d %q %q", args, status, out, errOut)
 		}
 	}
 	os.Remove(note)
-	os.WriteFile("refunds.md", []byte("- refunds"), 0o644)
+	if err := os.WriteFile("refunds.md", []byte("- refunds"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if err := os.Symlink(filepath.Join("..", "refunds.md"), note); err != nil {
 		t.Logf("no link: %v", err)
 	} else if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, ".amendment.md cannot be read") {
 		t.Errorf("a link for a note: %d %q %q", status, out, errOut)
 	}
 	os.Remove(note)
-	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 0\n<<<<<<< HEAD\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("pack"); status != 2 || out != "" || !strings.Contains(errOut, "<<<<<<< HEAD") {
 		t.Errorf("malformed: %d %q %q", status, out, errOut)
 	}
-	os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "notes.md"), []byte("x"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("pack", "--json"); status != 2 || out != "" || !strings.Contains(errOut, "error file-unknown") {
 		t.Errorf("a tree with an error: %d %q %q", status, out, errOut)
 	}
@@ -311,7 +333,9 @@ func TestPackElementCommand(t *testing.T) {
 		t.Errorf("text: %d %q %q", status, out, errOut)
 	}
 	os.Remove(filepath.Join("proviso", ".amendment.md"))
-	os.Mkdir(filepath.Join("proviso", ".amendment.md"), 0o755)
+	if err := os.Mkdir(filepath.Join("proviso", ".amendment.md"), 0o755); err != nil {
+		t.Fatal(err)
+	}
 	status, out, errOut := call("pack", "--json", "--element", "system")
 	if status != 0 || !strings.Contains(out, `"diff": []`) || !strings.Contains(out, `"note": null`) || !strings.Contains(out, `"revision": null`) || !strings.Contains(out, `"heading": "element"`) || strings.Contains(out, `"heading": "system"`) {
 		t.Errorf("json: %d %s %q", status, out, errOut)
@@ -320,7 +344,9 @@ func TestPackElementCommand(t *testing.T) {
 		t.Errorf("no such element: %d %q %q", status, out, errOut)
 	}
 	// lint.run.model: lint, which precedes it, checks the first line.
-	os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 1\n"), 0o644)
+	if err := os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 1\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, errOut := call("pack", "--element", "system"); status != 2 || out != "" || !strings.Contains(errOut, "model version 1") {
 		t.Errorf("another model version: %d %q %q", status, out, errOut)
 	}
@@ -331,7 +357,9 @@ func TestManifestRemoves(t *testing.T) {
 	note := filepath.Join("proviso", ".amendment.md")
 	if err := os.Symlink(filepath.Join("..", "outside.md"), note); err != nil {
 		t.Logf("no link, a folder instead: %v", err)
-		os.MkdirAll(filepath.Join(note, "inner"), 0o755)
+		if err := os.MkdirAll(filepath.Join(note, "inner"), 0o755); err != nil {
+			t.Fatal(err)
+		}
 	}
 	var out, errOut bytes.Buffer
 	if status := run([]string{"manifest"}, &out, &errOut); status != 0 || errOut.Len() > 0 {
@@ -559,7 +587,9 @@ func TestJudgeAndVerify(t *testing.T) {
 	if status, out, _ := call("", "verify"); status != 0 || out != "" {
 		t.Errorf("covered, text: %d %q", status, out)
 	}
-	os.WriteFile(coherence, append([]byte("<<<<<<< HEAD\n"), data...), 0o644)
+	if err := os.WriteFile(coherence, append([]byte("<<<<<<< HEAD\n"), data...), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	for _, cmd := range []string{"judge", "verify"} {
 		if status, out, errOut := call("{}", cmd); status != 2 || out != "" || !strings.Contains(errOut, "cannot be read") {
 			t.Errorf("%s on a damaged file: %d %q %q", cmd, status, out, errOut)
@@ -569,7 +599,9 @@ func TestJudgeAndVerify(t *testing.T) {
 		t.Errorf("judge on a damaged file, with input that is no JSON: %d %q %q", status, out, errOut)
 	}
 	os.Remove(coherence)
-	os.WriteFile("judged.json", data, 0o644)
+	if err := os.WriteFile("judged.json", data, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if err := os.Symlink(filepath.Join("..", "judged.json"), coherence); err != nil {
 		t.Logf("no link: %v", err)
 	} else {
@@ -580,9 +612,13 @@ func TestJudgeAndVerify(t *testing.T) {
 		}
 		os.Remove(coherence)
 	}
-	os.WriteFile(coherence, data, 0o644)
+	if err := os.WriteFile(coherence, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	note := filepath.Join("proviso", ".amendment.md")
-	os.WriteFile(note, []byte("- refunds\n"), 0o644)
+	if err := os.WriteFile(note, []byte("- refunds\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("", "verify"); status != 0 || out != "" {
 		t.Errorf("covered, with a note: %d %q", status, out)
 	}
@@ -595,17 +631,23 @@ func TestJudgeAndVerify(t *testing.T) {
 	if _, err := os.Stat(note); err == nil {
 		t.Error("manifest leaves the amendment note")
 	}
-	os.WriteFile(note, nil, 0o644)
+	if err := os.WriteFile(note, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("", "verify"); status != 1 || !strings.HasPrefix(out, "leftover: ") {
 		t.Errorf("a note left over: %d %q", status, out)
 	}
-	os.WriteFile(coherence, data, 0o644)
+	if err := os.WriteFile(coherence, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("", "verify"); status != 1 || strings.Count(out, "leftover") != 1 {
 		t.Errorf("both left over: %d %q", status, out)
 	}
 	os.Remove(coherence)
 	os.Remove(note)
-	os.MkdirAll(filepath.Join(note, "inner"), 0o755)
+	if err := os.MkdirAll(filepath.Join(note, "inner"), 0o755); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("", "verify"); status != 1 || !strings.HasPrefix(out, "leftover: ") {
 		t.Errorf("a folder for a note left over: %d %q", status, out)
 	}
@@ -621,7 +663,9 @@ func TestJudgeAndVerify(t *testing.T) {
 	if status, _, errOut := call("{}", "judge"); status != 1 || !strings.Contains(errOut, "no amendment") {
 		t.Errorf("nothing to judge: %d %q", status, errOut)
 	}
-	os.WriteFile(coherence, data, 0o644)
+	if err := os.WriteFile(coherence, data, 0o644); err != nil {
+		t.Fatal(err)
+	}
 	if status, out, _ := call("", "verify", "--json"); status != 1 || !strings.Contains(out, `"kind": "leftover"`) {
 		t.Errorf("leftover: %d %q", status, out)
 	}

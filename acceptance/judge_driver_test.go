@@ -337,7 +337,9 @@ func parseVerification(t *testing.T, stdout string) verification {
 			}
 		}
 		var kind string
-		json.Unmarshal(it["kind"], &kind)
+		if err := json.Unmarshal(it["kind"], &kind); err != nil {
+			t.Fatal(err)
+		}
 		if _, ok := kindRank[kind]; !ok {
 			t.Errorf("system.cli.verification: problem %d: kind %q is none of missing, leftover, undecided, unjudged, stale, open", i, kind)
 		}

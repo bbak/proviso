@@ -300,7 +300,7 @@ func definitionFragment(def *ast.LinkReferenceDefinition, src []byte) (int, int,
 	for i < to && isSpace(src[i]) {
 		i++
 	}
-	end := i
+	var end int
 	if i < to && src[i] == '<' {
 		i++
 		for end = i; end < to && src[end] != '>'; end++ {

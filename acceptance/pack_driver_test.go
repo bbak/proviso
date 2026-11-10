@@ -204,7 +204,9 @@ func checkPackElement(t *testing.T, o packOutcome, id string) {
 		return
 	}
 	var raw map[string]json.RawMessage
-	json.Unmarshal([]byte(o.json.stdout), &raw)
+	if err := json.Unmarshal([]byte(o.json.stdout), &raw); err != nil {
+		t.Fatal(err)
+	}
 	if d := string(bytes.TrimSpace(raw["diff"])); d != "[]" {
 		t.Errorf("system.cli.context-pack: want diff empty in the pack of a named element, got %s", d)
 	}
@@ -604,8 +606,12 @@ func checkPackDiff(t *testing.T, o packOutcome) {
 		return
 	}
 	var packRaw, diffRaw map[string]any
-	json.Unmarshal([]byte(o.json.stdout), &packRaw)
-	json.Unmarshal([]byte(o.diff.json.stdout), &diffRaw)
+	if err := json.Unmarshal([]byte(o.json.stdout), &packRaw); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal([]byte(o.diff.json.stdout), &diffRaw); err != nil {
+		t.Fatal(err)
+	}
 	// Each item exactly as element_diff's; diff stands in the order of
 	// pack_text, element_diff in its own (see checkPackOrder).
 	byID := func(list any) map[string]any {

@@ -296,11 +296,11 @@ func (d *Doc) strayIn(n ast.Node, src []byte) {
 		if !entering {
 			return ast.WalkContinue, nil
 		}
-		switch c.(type) {
+		switch c := c.(type) {
 		case *ast.CodeSpan, *ast.FencedCodeBlock, *ast.CodeBlock:
 			return ast.WalkSkipChildren, nil
 		case *ast.HTMLBlock:
-			d.strayInHTML(c.(*ast.HTMLBlock), src)
+			d.strayInHTML(c, src)
 			return ast.WalkSkipChildren, nil
 		}
 		if id, ok := anchorAt(c, src); ok {

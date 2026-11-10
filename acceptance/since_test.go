@@ -322,8 +322,12 @@ func TestBaselineDiffSince(t *testing.T) {
 			d := diffIn(t, r.dir, r.dir, r.root(), "--since", base)
 			d.ran(t)
 			var pe, se map[string]any
-			json.Unmarshal([]byte(plain.json.stdout), &pe)
-			json.Unmarshal([]byte(d.json.stdout), &se)
+			if err := json.Unmarshal([]byte(plain.json.stdout), &pe); err != nil {
+				t.Fatal(err)
+			}
+			if err := json.Unmarshal([]byte(d.json.stdout), &se); err != nil {
+				t.Fatal(err)
+			}
 			if !reflect.DeepEqual(pe, se) {
 				t.Errorf("want the same element_diff with --since %s as without, got\n%s\n---\n%s", base, plain.dump(), d.dump())
 			}

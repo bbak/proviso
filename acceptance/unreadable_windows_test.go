@@ -22,7 +22,7 @@ func makeUnreadable(path string) (func(), error) {
 	if err != nil {
 		return nil, err
 	}
-	return func() { syscall.CloseHandle(h) }, nil
+	return func() { _ = syscall.CloseHandle(h) }, nil
 }
 
 // makeJunction makes link a junction to the folder target. It sets the
@@ -69,7 +69,7 @@ func makeJunction(link, target string) error {
 	}
 	var n uint32
 	err = syscall.DeviceIoControl(h, fsctlSetReparsePoint, &buf[0], uint32(len(buf)), nil, 0, &n, nil)
-	syscall.CloseHandle(h)
+	_ = syscall.CloseHandle(h)
 	if err != nil {
 		os.Remove(link)
 	}
@@ -110,5 +110,5 @@ func makeCoherenceUnwritable(root string) (func(), error) {
 	if err != nil {
 		return nil, err
 	}
-	return func() { syscall.CloseHandle(h) }, nil
+	return func() { _ = syscall.CloseHandle(h) }, nil
 }

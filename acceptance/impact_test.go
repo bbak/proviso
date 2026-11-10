@@ -18,7 +18,6 @@ var (
 	iLimitRatio    = change{featurePath, "A shelf holds ten pieces.", "A shelf holds no more than ten pieces."}
 	iFullThen      = change{featurePath, "Then      <cart> refuses <quantity>", "Then      <cart> turns <quantity> away"}
 	iItemDef       = change{glossaryPath, "- Definition: A product placed in the cart.", "- Definition: A product a buyer placed in the cart."}
-	iAddContact    = change{featurePath, "- Contact: Dana Reyes", "- Contact: Bruno Baketarić"}
 	iAddGoal       = change{featurePath, "Buyers put goods into the cart.", "Buyers put goods into the cart, one by one."}
 	iAddRatio      = change{featurePath, "A cart that takes anything would empty the shelves.", "A cart that takes everything would empty the shelves."}
 	iCountBody     = change{apiPath, "How many pieces the line holds.", "How many pieces the line holds, at most ten."}

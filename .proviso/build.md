@@ -6,12 +6,12 @@ so that the skills always run the checked-out code.
 Commands, in the order integration runs them, all from the integration
 worktree:
 
-1. `go vet ./...`
+1. `task lint`
 2. `task build`
 3. `task test`
 4. `task acceptance`, about five minutes.
 
-The checks, which acceptance runs: `task spec`, `task vet`, `task test`,
+The checks, which acceptance runs: `task spec`, `task lint`, `task test`,
 `task request` and, for the acceptance tests, `task acceptance`. The
 acceptance tests never read `proviso/`: they build trees of their own.
 

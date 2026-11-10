@@ -140,7 +140,7 @@ func sinceDiff(cmd string, t *tree.Tree, res *lint.Result, since string, stderr 
 		formerRes := lint.Check(formerTree)
 		if lint.HasError(formerRes.Findings) {
 			fail("lint finds an error in the spec tree there:")
-			report.Text(stderr, formerRes.Findings)
+			_ = report.Text(stderr, formerRes.Findings)
 			return nil, "", nil, false
 		}
 		formerElements = formerRes.Elements

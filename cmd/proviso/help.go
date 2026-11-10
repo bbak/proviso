@@ -165,6 +165,6 @@ type options struct {
 
 // helpRun writes the help page to stdout.
 func helpRun(stdout io.Writer) int {
-	io.WriteString(stdout, helpPage)
+	_, _ = io.WriteString(stdout, helpPage)
 	return exitClean
 }
