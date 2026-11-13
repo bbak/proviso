@@ -128,7 +128,8 @@ How far Proviso reaches this goal is still being found out; see
 The agents call Proviso; Proviso never drives them. Four skills,
 installed into the repository, take an amendment through steps 2 to 5;
 others recover the spec tree of a system that exists already, rehome
-moved elements, and measure the tests with mutants. Claude Code is the
+elements that moved or whose identifiers name no place, and measure the
+tests with mutants. Claude Code is the
 first agent host they run on.
 
 ## Limits

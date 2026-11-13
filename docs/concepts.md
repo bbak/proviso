@@ -26,9 +26,11 @@ written as an anchor at the start of its heading, such as
 `coherence.judge.touched`. Besides the four levels, invariants,
 constraints, glossary entries, parameters, references and contract
 elements are elements. Its first segment names where the element
-stands. An element that moves keeps its identifier, so a move breaks no
-reference; `proviso-rehome` later gives moved elements the identifiers
-of their place, in a step of its own.
+stands, `system` or a capability, and lint asks about one that names no
+place. An element that moves keeps its identifier, so a move breaks no
+reference; `proviso-rehome` later gives elements that moved, or whose
+identifiers name no place, the identifiers of their place, in a step of
+its own.
 
 **Rule.** The lowest level: one block in **Guarded Gherkin**, Gherkin
 with a **guard**. `Provided` states the condition, `Then` what happens
@@ -142,7 +144,8 @@ installs. Proviso owns them.
 spec tree, such as a step of an amendment: `proviso-integrate`, `proviso-build`, `proviso-check`,
 `proviso-accept`, and `proviso-recover`, which writes the tree of an
 existing system one capability per amendment; and `proviso-rehome`,
-which renames moved elements outside any amendment; and
+which gives elements that moved, or whose identifiers name no place,
+the identifiers of their place, outside any amendment; and
 `proviso-mutate`, which measures with mutants how many slips the tests
 catch; and `proviso-explain`, which answers questions about the system
 from the tree. A skill runs Proviso's commands for every mechanical

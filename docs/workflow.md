@@ -213,19 +213,24 @@ and run. The tests stay, and pin what the system does today.
 ## Rehome: `proviso-rehome`
 
 Amendments move elements, such as a term lifted to the system, and keep
-their identifiers, so a move stays cheap. Once the amendment is
-accepted, ask Claude Code to **rehome the tree**: `proviso rehome`
-plans the renames of every identifier that names another place than the
-one its element stands in, and lists every mention of an old
-identifier in a code span of the tree, such as in an Examples cell; the
-skill searches the code, tests and documents for the old identifiers.
-You see every rename, and every mention, before anything is written:
-the skill proposes to rename the mentions that refer to the element and
-to keep those that are data, such as the rows of a rule about
-identifiers, and you decide; then the tree, the
-manifest and the code are renamed together, the checks run, and one
-`refactor:` commit holds it all. Nothing changes what anything means,
-so no check is needed.
+their identifiers, so a move stays cheap; an amendment that gives a
+capability another identifier, or a tree recovered without prefixes,
+leaves identifiers that name no place, which lint asks about. Once the
+amendment is accepted, ask Claude Code to **rehome the tree**:
+`proviso rehome` plans the renames of every identifier that names
+another place than the one its element stands in, puts the place in
+front of one that names no place, such as `okf-get` in the capability
+`access`, which becomes `access.okf-get`, and lists every mention of an
+old identifier in a code span of the tree, such as in an Examples cell;
+the skill searches the code, tests and documents for the old
+identifiers. You see every rename, and every mention, before anything is
+written: the skill proposes to rename the mentions that refer to the
+element and to keep those that are data, such as the rows of a rule
+about identifiers, and you decide. Where a new identifier is taken, or
+awkward, you give the element another one, and the skill passes it as
+`--rename <old>=<new>`; then the tree, the manifest and the code are
+renamed together, the checks run, and one `refactor:` commit holds it
+all. Nothing changes what anything means, so no check is needed.
 
 ## Mutate: `proviso-mutate`
 

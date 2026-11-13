@@ -69,13 +69,17 @@ its heading:
 - **Readable:** people read diffs and impact sets by identifier, so it
   says something, such as `cash.withdrawal.pay`.
 - **Stable:** its prefix names where the element stands, the capability
-  or `system`. An amendment that moves an element keeps its identifier,
-  so the move breaks nothing; after acceptance, `proviso-rehome` gives
-  moved elements the prefix of their place, together with every
-  reference to them and the manifest. A removed element's identifier
-  stays unused, since git history, commit messages and links outside
-  the tree still name the old element by it; no tool checks this, as
-  the manifest forgets a removed element.
+  or `system`, for every element, contract elements included: the member
+  `id` of the contract `customer` in the capability `cash` is identified
+  as `cash.customer.id`, while rules refer to it as `` `customer.id` ``.
+  Lint asks about an identifier whose prefix names no place. An
+  amendment that moves an element keeps its identifier, so the move
+  breaks nothing; after acceptance, `proviso-rehome` gives elements that
+  moved, or whose identifiers name no place, the prefix of their place,
+  together with every reference to them and the manifest. A removed
+  element's identifier stays unused, since git history, commit messages
+  and links outside the tree still name the old element by it; no tool
+  checks this, as the manifest forgets a removed element.
 - **`system` is reserved** for the system and the elements at its
   level, such as `system.read-only`. A capability's identifier is one
   segment.
