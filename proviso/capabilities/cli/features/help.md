@@ -91,7 +91,9 @@ element comes from no revision, so `--since` and `--element` exclude
 each other. The value after either belongs to that option and is not
 read as an argument of its own. No revision git accepts and no
 identifier starts with "-", so an argument that does is a forgotten
-value, not one to look up. A second `--in` would name two capabilities.
+value, not one to look up. A second `--in` would name two capabilities. `--rename` is given once
+for each element whose new identifier the engineer gives; what its
+value holds is `rehome`'s to check.
 `show` takes one argument that is no option, its query, since it has
 nothing to do without one. A second would ask for two lookups, which
 `show` does not make; a name of several words is quoted for the shell
@@ -100,11 +102,11 @@ read as part of a name.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `rehome.mentions`, `show.query`, `show.in` and `show.json` define
-  And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since", "--element" or "--in"
+Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `rehome.mentions`, `rehome.rename`, `show.query`, `show.in` and `show.json` define
+  And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since", "--element", "--in" or "--rename"
   And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element", no "--in", where <argument> is "--in", and no `show.query`, where <argument> is one
   And     <before> or <rest> hold "--write", where <argument> is "--mentions"
-Then      <command> reads <argument>, with the value after it where <argument> is "--since", "--element" or "--in"
+Then      <command> reads <argument>, with the value after it where <argument> is "--since", "--element", "--in" or "--rename"
   And     <command> goes on with the arguments after them
 Otherwise <command> writes to "stderr" one line naming <command> and <argument>, and that "proviso help" shows the help page
   And     <command> exits with 2, as its exit status defines
@@ -121,6 +123,8 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | rehome | --json | --write | none | yes | read | |
 | rehome | --write | --mentions | none | yes | read | |
 | rehome | none | --mentions | --write | yes | read | the order of options is free |
+| rehome | none | --rename | `serving.snapshot=system.whole-snapshot` | yes | read, with `serving.snapshot=system.whole-snapshot` | |
+| rehome | --rename `a.x=b.x` | --rename | `a.y=b.y` | yes | read, with `a.y=b.y` | one value per element to rename |
 | show | none | `spec tree` | none | yes | read as the query | |
 | show | `lint.run.exit` | --in | `lint` | yes | read, with `lint` | |
 | show | `lint.run.exit` | --json | none | yes | read | |
@@ -138,6 +142,7 @@ Otherwise <command> writes to "stderr" one line naming <command> and <argument>,
 | pack | none | --since | `""` | no (a value after it) | refused, exit status 2 | an empty revision names nothing |
 | diff | none | --since | --json | no (a value after it) | refused, exit status 2 | an option is no revision |
 | pack | none | --element | none | no (a value after it) | refused, exit status 2 | |
+| rehome | none | --rename | --write | no (a value after it) | refused, exit status 2 | an option is no value |
 | show | `lint.run.exit` | --in | none | no (a value after it) | refused, exit status 2 | |
 | diff | --since `HEAD~1` | --since | `HEAD~2` | no (neither before it) | refused, exit status 2 | two revisions contradict |
 | pack | --element `lint.run.exit` | --element | `lint.run.root` | no (neither before it) | refused, exit status 2 | one element per pack |

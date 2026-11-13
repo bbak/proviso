@@ -12,7 +12,8 @@ where tooling and links expect it.
 Identifiers are what everything else refers to: links, hand-overs, the
 manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
-reference to it ambiguous. Lint checks the identifiers as they stand. An
+reference to it ambiguous; an identifier that names no place hides
+where its element stands. Lint checks the identifiers as they stand. An
 identifier renamed by hand shows in the element diff, as one element
 removed and one added. That a removed identifier is never reused is left to the
 authors: the manifest forgets a removed element, and within the tree,
@@ -140,3 +141,38 @@ Otherwise lint reports the [error] `findings.capability-identifier` at <id>
 | `coherence` | yes | nothing reported | |
 | `cash.withdrawal` | no | error | two segments |
 | `system` | yes | nothing reported | uniqueness reports it, as the system's identifier |
+
+## <a id="lint.identifiers.home"></a> Rule: An identifier starts with a place
+
+### Rationale
+
+The first segment of an identifier says where its element stands, so
+an identifier written without one, such as a contract's name alone,
+says nowhere, and `rehome` cannot tell its place from its name. Any
+place will do: an amendment that moves an element keeps its identifier,
+and the identifier names the element's former place until the engineer
+rehomes the tree. A capability's identifier of several segments is
+already an error of its own, so its first segment counts as a place,
+and the one mistake is reported once.
+
+```guarded
+When      lint reads the [identifier] <id> of an [element]
+Provided  the first segment of <id>, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
+Then      lint reports nothing about the first segment of <id>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.identifier-unhomed` at <id>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| `lint.run.root`, a rule of the capability `lint` | yes | nothing reported | |
+| `system.read-only`, an invariant of the system | yes | nothing reported | |
+| `coherence.impact.events`, a rule of the capability `baseline`, while a capability is identified as `coherence` | yes | nothing reported | a moved element keeps its identifier until a rehome |
+| `system` | yes | nothing reported | the system |
+| `lint`, the capability so identified | yes | nothing reported | a capability names its own place |
+| `cash.withdrawal.pay`, while a capability is identified as `cash.withdrawal` | yes | nothing reported | that capability's identifier is the error |
+| `okf-get`, a contract element of the capability `access` | no | error | a contract's name, no place |
+| `severity.error`, a member of a contract of the system | no | error | |
+| `checks.run`, in the folder `capabilities/checks/`, whose `capability.md` is identified as `coherence`, no capability identified as `checks` | no | error | a place is a capability's identifier, not its folder's name |
+| `systems.x`, no capability identified as `systems` | no | error | a segment is compared whole |

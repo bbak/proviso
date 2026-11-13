@@ -9,8 +9,10 @@ its identifier home an identifier that names it, renames every reference to
 it that the notation marks, and writes the manifest of the rewritten
 tree, so that the tree says the same as before under identifiers that
 say where their elements stand. It also lists every other mention of an
-identifier it renames, and renames those the engineer picks. It shows
-what it would rename before it writes anything.
+identifier it renames, and renames those the engineer picks. The
+engineer may give an element another new identifier than the one
+`rehome` derives. It shows what it would rename before it writes
+anything.
 
 ## Rationale
 
@@ -25,14 +27,27 @@ as `manifest` does.
 
 Only the first segment of an identifier names a place; the rest stays,
 so an element moved between features of one capability keeps its
-identifier. `rehome` renames all or nothing: a tree half rehomed would
-say where some elements stand and not others, so one collision refuses
-the whole run, and so does one file it cannot write. Without
-`rehome.write` it writes nothing, so that the engineer, and the skill
-that runs it, see every rename before the tree changes. Whether a new
-identifier was once given to an element since removed is left to the
-authors: the manifest forgets removed elements, and the tree's history
-is not searched.
+identifier. An identifier whose first segment names no place, such as a
+contract's name alone, gets its place put in front: replacing its first
+segment would replace a name, and the contracts of one capability would
+all take the capability's own identifier. Lint reports such an
+identifier as an error, yet `rehome` runs on a tree whose only errors
+are these, since it is what repairs them. `rehome` renames all or
+nothing: a tree half rehomed would say where some elements stand and not
+others, so one collision refuses the whole run, and so does one file it
+cannot write. Without `rehome.write` it writes nothing, so that the
+engineer, and the skill that runs it, see every rename before the tree
+changes. Whether a new identifier was once given to an element since
+removed is left to the authors: the manifest forgets removed elements,
+and the tree's history is not searched.
+
+A derived identifier can be taken, such as by a system term sharing the
+last segment of an invariant moved to the system, or awkward, such as
+the place put in front of an identifier whose capability has since been
+given another identifier. Renaming such an element by hand would be an
+amendment of its own, although no meaning changes, so the engineer
+gives its new identifier to `rehome` instead, and it is checked and
+planned as a derived one is.
 
 An identifier in a code span outside what the notation marks, such as
 in an Examples cell, mostly refers to its element, but in the rules
@@ -49,7 +64,7 @@ that a stale or mistyped list never writes half of what was meant.
 
 ```guarded
 When      someone runs `rehome`, with arguments it takes, in the directory <directory>
-Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0
+Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0, or with 1 for no other reason than [identifiers] whose first segment is neither "system" nor the [identifier] of a capability
 Then      `rehome` works on the [spec tree] that `lint` would check
   And     nothing of what `lint` would write is written
 Otherwise `rehome` writes to "stderr" what `lint` would write as text
@@ -61,7 +76,9 @@ Otherwise `rehome` writes to "stderr" what `lint` would write as text
 | --- | --- | --- | --- |
 | `repo/`, its tree without findings | yes | the command runs | |
 | `repo/`, its tree with an ask only | yes | the command runs | |
+| `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | the error `rehome` repairs |
 | `repo/`, its tree with an error | no | exit status 2, the error on stderr | |
+| `repo/`, its tree with the contract `okf-get` and an anchor not starting its heading | no | exit status 2, both errors on stderr | another error besides |
 | `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
 
@@ -97,19 +114,74 @@ When      `rehome` plans the renames of the [spec tree], and reads the [identifi
 Provided  the first segment of <id>, up to its first ".", is the [identifier home] of <element>
 Then      <id> stays as it is
   And     no rename is planned for <element>
-Otherwise `rehome` plans to rename <id> to the [identifier home] of <element>, followed by what follows the first segment of <id>
-  And     every place `rehome_references` lists that holds <id> is planned to hold the new [identifier]
+Otherwise → upkeep.rehome.place
 ```
 
 | id | element | provided | outcome | why |
 | --- | --- | --- | --- | --- |
 | `coherence.impact.events` | a rule of the capability `coherence` | yes | stays | |
-| `baseline.impact.events` | a rule of the capability `coherence` | no | renamed to `coherence.impact.events` | only the first segment names a place |
-| `baseline.part` | a glossary entry of the system | no | renamed to `system.part` | |
-| `lint.cli.lint.exit-status` | a member in `contracts/cli.md` of the system | no | renamed to `system.cli.lint.exit-status` | |
+| `baseline.impact.events` | a rule of the capability `coherence` | no | handed over | |
 | `coherence` | the capability `coherence` | yes | stays | a capability is its own identifier home |
 | `system` | the system | yes | stays | |
 | `checks.run`, in the folder `capabilities/coherence/`, whose `capability.md` is identified as `checks` | a feature of that capability | yes | stays | the identifier home is the capability's identifier, not its folder's name |
+| `okf-get` | a contract element of the capability `access` | no | handed over | |
+
+## <a id="upkeep.rehome.place"></a> Rule: An identifier that names no place gets its place put in front
+
+```guarded
+When      `rehome` plans the renames of the [spec tree], and reads the [identifier] <id> of the [element] <element>, its first segment not the [identifier home] of <element>
+Provided  the first segment of <id>, up to its first ".", is "system" or the [identifier] of a capability
+Then      `rehome` plans to rename <id> to the [identifier home] of <element>, followed by what follows the first segment of <id>
+  And     every place `rehome_references` lists that holds <id> is planned to hold the new [identifier]
+Otherwise `rehome` plans to rename <id> to the [identifier home] of <element>, followed by "." and <id>
+  And     every place `rehome_references` lists that holds <id> is planned to hold the new [identifier]
+```
+
+| id | element | provided | outcome | why |
+| --- | --- | --- | --- | --- |
+| `baseline.impact.events` | a rule of the capability `coherence` | yes | renamed to `coherence.impact.events` | only the first segment names a place |
+| `baseline.part` | a glossary entry of the system | yes | renamed to `system.part` | |
+| `lint.cli.lint.exit-status` | a member in `contracts/cli.md` of the system | yes | renamed to `system.cli.lint.exit-status` | |
+| `system.streams` | an invariant of the capability `serving` | yes | renamed to `serving.streams` | |
+| `okf-get` | a contract element of the capability `access` | no | renamed to `access.okf-get` | a contract's name stays, behind its place |
+| `okf-get.input` | a member of `okf-get` in the capability `access` | no | renamed to `access.okf-get.input` | the member still says whose it is |
+| `severity.error` | a member of a contract of the system | no | renamed to `system.severity.error` | |
+| `checks.run`, no capability identified as `checks` any more | a feature of the capability `coherence` | no | renamed to `coherence.checks.run` | a former place is a name now; the engineer may give another identifier |
+
+## <a id="upkeep.rehome.given"></a> Rule: An identifier the engineer gives replaces the one derived
+
+### Rationale
+
+A value names the old and the new identifier, joined by "=", which no
+identifier holds. The same value given twice asks for the same rename;
+two new identifiers for one element contradict. Whether the new
+identifier is free is left to the collision rule, so that a given
+identifier and a derived one are refused alike.
+
+```guarded
+When      `rehome`, run with `rehome.rename`, has planned its renames, and reads one value <value> of `rehome.rename`
+Provided  <value> is an old [identifier] of the planned renames, then "=", then a new [identifier] that is [well-formed]
+  And     the first segment of the new [identifier] is the [identifier home] of the [element] the old one identifies
+  And     no other value of `rehome.rename` gives the same old [identifier] another new one
+Then      `rehome` plans to rename the old [identifier] to the new one, instead of the [identifier] it derived
+  And     every place `rehome_references` lists that holds the old [identifier] is planned to hold the new one
+Otherwise `rehome` writes to "stderr" why <value> cannot be taken
+  And     `rehome` exits with `rehome.exit-status` 2
+  And     nothing goes to "stdout", and nothing is written
+```
+
+| value | provided | outcome | why |
+| --- | --- | --- | --- |
+| `serving.snapshot=system.whole-snapshot`, `serving.snapshot` an invariant of the system | yes | renamed to `system.whole-snapshot` | instead of `system.snapshot`, a term's identifier |
+| `checks.run=coherence.run`, `checks.run` a feature of the capability `coherence` | yes | renamed to `coherence.run` | instead of `coherence.checks.run` |
+| `serving.snapshot=system.snapshot`, while a term is identified as `system.snapshot` | yes | planned, then refused as a collision, exit status 1 | whether it is free is the collision rule's |
+| `serving.snapshot=system.whole-snapshot`, given twice | yes | renamed to `system.whole-snapshot` once | the same rename asked for twice |
+| `lint.run=system.run`, `lint.run` not planned for a rename | no (an old identifier of the planned renames) | exit status 2, nothing written | only a planned rename can be given another identifier |
+| `serving.snapshot` | no (an old identifier of the planned renames) | exit status 2, nothing written | no "=" and no new identifier |
+| `serving.snapshot=` | no (well-formed) | exit status 2, nothing written | an empty identifier |
+| `serving.snapshot=System.Snapshot` | no (well-formed) | exit status 2, nothing written | uppercase |
+| `serving.snapshot=serving.whole-snapshot`, `serving.snapshot` an invariant of the system | no (identifier home) | exit status 2, nothing written | it would name another place |
+| `serving.snapshot=system.a`, while `serving.snapshot=system.b` is given too | no (another new one) | exit status 2, nothing written | two identifiers for one element |
 
 ## <a id="upkeep.rehome.mentions"></a> Rule: The plan lists every mention of an identifier it renames
 
@@ -219,6 +291,7 @@ Otherwise `rehome` writes <renames>, their [identifier mentions] and <collisions
 | one | none | `--json` | yes | a `rehome_plan` with one rename | |
 | one, its identifier in two Examples cells | none | `--json` | yes | a `rehome_plan` with one rename and two mentions | |
 | none | none | `--json` | yes | a `rehome_plan` with no renames | an empty list, not an empty output |
+| one, its new identifier given | none | `--rename serving.snapshot=system.whole-snapshot --json` | yes | a `rehome_plan` renaming `serving.snapshot` to `system.whole-snapshot` | a plan without `--write` shows the identifier given, to be approved |
 | one | none | `--write --json` | yes | a `rehome_plan` with one rename | the renames written; the mentions listed as planned, picked or not |
 | one, its identifier in two Examples cells | none | `--write --mentions --json`, naming one of them | yes | a `rehome_plan` with one rename and both mentions | the output shows the plan; the list passed in says what was picked |
 | two, one colliding | one | none | no | both renames and the collision as text | |
@@ -244,9 +317,9 @@ Then      <renames> appear ordered by their old [identifier], compared byte by b
 ### Rationale
 
 A run that stops earlier, because lint finds an error, the tree is not
-as the manifest records it, the input of `--mentions` cannot be taken,
-or a file cannot be opened for writing, writes no plan and exits with 2
-by its own rule.
+as the manifest records it, the input of `--mentions` or a value of
+`--rename` cannot be taken, or a file cannot be opened for writing,
+writes no plan and exits with 2 by its own rule.
 
 ```guarded
 When      `rehome` exits, having written the plan of its renames, with the collisions <collisions>

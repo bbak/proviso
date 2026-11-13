@@ -19,6 +19,11 @@ An identifier that is not well-formed.
 
 An identifier that another element has too.
 
+### <a id="lint.findings.identifier-unhomed"></a> identifier-unhomed
+
+An identifier whose first segment names no place: neither `system` nor
+the first segment of a capability's identifier.
+
 ### <a id="lint.findings.system-identifier"></a> system-identifier
 
 A system whose identifier is not `system`.
