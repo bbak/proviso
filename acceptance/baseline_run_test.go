@@ -52,9 +52,9 @@ func TestBaselineRunLint(t *testing.T) {
 	// an argument it takes.
 	runsOnlyWhereLintAccepts(t, "manifest", "diff", "pack", "pack --element")
 
-	// Rows 6 and 7 are baseline.run.lint's own; coherence.run.lint does
+	// Rows 7 and 8 are baseline.run.lint's own; coherence.run.lint does
 	// not share them, so they stay out of runsOnlyWhereLintAccepts.
-	t.Run("row6 a manifest.sum naming another model version", func(t *testing.T) {
+	t.Run("row7 a manifest.sum naming another model version", func(t *testing.T) {
 		t.Parallel()
 		for _, cmd := range []string{"manifest", "diff", "pack", "pack --element"} {
 			t.Run(cmd, func(t *testing.T) {
@@ -66,7 +66,7 @@ func TestBaselineRunLint(t *testing.T) {
 			})
 		}
 	})
-	t.Run("row7 the same, diff or pack run with --since HEAD~1", func(t *testing.T) {
+	t.Run("row8 the same, diff or pack run with --since HEAD~1", func(t *testing.T) {
 		t.Parallel()
 		// Only diff and pack take --since; pack --element is not given
 		// with it.
@@ -138,14 +138,33 @@ func runsOnlyWhereLintAccepts(t *testing.T, cmds ...string) {
 					}
 				}
 			})
-			t.Run("row4 a tree with an unreadable file", func(t *testing.T) {
+			t.Run("row4 a tree with the contract okf-get in the capability access", func(t *testing.T) {
+				t.Parallel()
+				// okf-get: the contract of the cart in placeAPIMD, whose
+				// identifiers name no place: an ask (lint.identifiers.home).
+				dir := plainTree().with(placeAPIPath, placeAPIMD).write(t)
+				lint := lintLines(t, dir)
+				if len(lint) == 0 {
+					t.Fatal("want lint to ask about the identifiers that name no place")
+				}
+				r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso"))
+				if r.exit == 2 {
+					t.Fatalf("want the command to run, got exit status 2\nstderr: %s", r.stderr)
+				}
+				for _, l := range lint {
+					if strings.Contains(r.stdout, l) || strings.Contains(r.stderr, l) {
+						t.Errorf("want nothing of lint's output written, got %q in\nstdout: %s\nstderr: %s", l, r.stdout, r.stderr)
+					}
+				}
+			})
+			t.Run("row5 a tree with an unreadable file", func(t *testing.T) {
 				t.Parallel()
 				dir := plainTree().with("proviso/capabilities/cart/features/a.md", invalid).write(t)
 				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
 					t.Errorf("want exit status 2, got %d", r.exit)
 				}
 			})
-			t.Run("row5 no spec root up to the file system's root", func(t *testing.T) {
+			t.Run("row6 no spec root up to the file system's root", func(t *testing.T) {
 				t.Parallel()
 				dir := tree{"other/readme.txt": "nothing here\n"}.write(t)
 				skipIfSpecRootAbove(t, dir)

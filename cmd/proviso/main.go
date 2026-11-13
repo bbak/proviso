@@ -118,7 +118,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 		case "verify":
 			return verifyRun(t, res, o.json, stdout, stderr)
 		case "rehome":
-			return rehomeRun(t, res, o.json, o.write, o.mentions, stdout, stderr)
+			return rehomeRun(t, res, o.json, o.write, o.mentions, o.renames, stdout, stderr)
 		}
 		return impactRun(t, res, o.json, stdout, stderr)
 	}

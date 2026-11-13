@@ -2,11 +2,12 @@
 
 ## Goal
 
-Upkeep keeps a spec tree in order where amendments leave it out of
-order without changing what it says: it gives the elements that moved
-the identifiers of their place, together with every reference to them,
-the mentions of them the engineer picks, and the manifest, so that an
-identifier says where its element stands.
+Upkeep keeps a spec tree in order where amendments leave it out of order
+without changing what it says: it gives the elements that moved, or
+whose identifiers name no place, the identifiers of their place,
+together with every reference to them, the mentions of them the engineer
+picks, and the manifest, so that an identifier says where its element
+stands.
 
 ## Rationale
 

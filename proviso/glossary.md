@@ -59,6 +59,14 @@
 - Status: defined
 - Aliases: identifiers
 
+## <a id="lint.well-formed"></a> well-formed
+
+- Definition: An identifier is well-formed if it consists of one or more
+  segments separated by single dots, and each segment starts with a
+  lowercase letter, followed by lowercase letters, digits and hyphens.
+- Contact: Bruno Baketarić
+- Status: defined
+
 ## <a id="system.section"></a> section
 
 - Definition: A heading without an identifier, written one heading level

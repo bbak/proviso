@@ -307,14 +307,24 @@ Specified in [baseline/features/manifest.md](https://github.com/bbak/proviso/blo
 ## rehome
 
 ```sh
-proviso rehome [--write [--mentions]] [--json]
+proviso rehome [--write [--mentions]] [--json] [--rename <old>=<new>]...
 ```
 
 Gives the elements that moved to another capability, or to the system,
-the identifiers of their place. An identifier whose first segment names
-another place than the capability the element stands in, or `system`,
-is renamed to name it, keeping the rest: `baseline.impact.events` in the
-capability `coherence` becomes `coherence.impact.events`. Without
+or whose identifiers name no place, the identifiers of their place. An
+identifier whose first segment names another place than the capability
+the element stands in, or `system`, is renamed to name it, keeping the
+rest: `baseline.impact.events` in the capability `coherence` becomes
+`coherence.impact.events`. An identifier whose first segment is neither
+`system` nor a capability's identifier, such as a contract's name
+alone, gets its place put in front: `okf-get` in the capability
+`access` becomes `access.okf-get`; lint asks about such an identifier
+as `identifier-unhomed`. With `--rename <old>=<new>`, given once for
+each such element, the engineer gives an element of the plan another
+new identifier than the one derived, such as
+`--rename checks.run=coherence.run`; the new identifier must be
+well-formed and start with the element's place, or the run is refused,
+and it is checked for collisions as a derived one is. Without
 `--write` it only lists the renames, the collisions that refuse them
 and the mentions of the old identifiers, and changes nothing. With
 `--write` it renames every anchor, hand-over, inline link, autolink,
@@ -353,6 +363,6 @@ shows them to you with the plan, and renames them in the same commit.
 | --- | --- |
 | 0 | the renames were planned, any or none, and written with `--write` |
 | 1 | a rename would take an identifier; nothing was written |
-| 2 | the tree is not what the manifest records, a coherence file or note lies beside it, a file could not be opened for writing, the input of `--mentions` could not be taken, or the command could not run; nothing was written |
+| 2 | the tree is not what the manifest records, a coherence file or note lies beside it, a file could not be opened for writing, the input of `--mentions` or a value of `--rename` could not be taken, or the command could not run; nothing was written |
 
 Specified in [upkeep/features/rehome.md](https://github.com/bbak/proviso/blob/main/proviso/capabilities/upkeep/features/rehome.md).

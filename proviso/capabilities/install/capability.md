@@ -6,8 +6,9 @@ Installing gives a repository what Proviso needs beside the system's
 code: the start of a spec tree that lint accepts, the settings that keep
 the tree readable on every platform, the definitions of the agents and
 the skills that recover the spec tree of an existing system, bring a
-request into it, build, check and accept an amendment, give moved
-elements the identifiers of their place, measure with mutants how many
+request into it, build, check and accept an amendment, give elements
+that moved, or whose identifiers name no place, the identifiers of
+their place, measure with mutants how many
 slips the tests catch, and answer an engineer's questions about the
 system from the spec tree, so that an engineer begins
 with one command; and it tells which version of Proviso

@@ -12,7 +12,8 @@ where tooling and links expect it.
 Identifiers are what everything else refers to: links, hand-overs, the
 manifest, impact sets and the element diff. An anchor in the wrong place
 silently drops its element; two elements with one identifier make every
-reference to it ambiguous. Lint checks the identifiers as they stand. An
+reference to it ambiguous; an identifier that names no place hides
+where its element stands. Lint checks the identifiers as they stand. An
 identifier renamed by hand shows in the element diff, as one element
 removed and one added. That a removed identifier is never reused is left to the
 authors: the manifest forgets a removed element, and within the tree,
@@ -140,3 +141,48 @@ Otherwise lint reports the [error] `findings.capability-identifier` at <id>
 | `coherence` | yes | nothing reported | |
 | `cash.withdrawal` | no | error | two segments |
 | `system` | yes | nothing reported | uniqueness reports it, as the system's identifier |
+
+## <a id="lint.identifiers.home"></a> Rule: An identifier starts with a place
+
+### Rationale
+
+The first segment of an identifier says where its element stands, so
+an identifier written without one, such as a contract's name alone,
+says nowhere, and `rehome` cannot tell its place from its name. Any
+place will do: an amendment that moves an element keeps its identifier,
+and the identifier names the element's former place until the engineer
+rehomes the tree. It is an ask, not an error: an amendment that gives
+a capability another identifier, or removes one whose elements move
+elsewhere, leaves such identifiers behind, and every command must still
+run on that tree, so that the amendment can be accepted and the tree
+rehomed afterwards. A capability's identifier of several segments is
+already an error of its own, so its first segment counts as a place; a
+malformed identifier, the system's identifier and the elements of a
+capability without a well-formed identifier are left to their own rules
+too, so that one mistake is reported once.
+
+```guarded
+When      lint reads the [identifier] <id> of an [element]
+Provided  <id> is not [well-formed], or is the [identifier] of the system, or the capability whose folder holds the [element] has no [well-formed] [identifier], or the first segment of <id>, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
+Then      lint reports nothing about the first segment of <id>
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [ask] `findings.identifier-unhomed` at <id>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| id | provided | outcome | why |
+| --- | --- | --- | --- |
+| `lint.run.root`, a rule of the capability `lint` | yes | nothing reported | |
+| `system.read-only`, an invariant of the system | yes | nothing reported | |
+| `coherence.impact.events`, a rule of the capability `baseline`, while a capability is identified as `coherence` | yes | nothing reported | a moved element keeps its identifier until a rehome |
+| `system` | yes | nothing reported | the system |
+| `proviso`, the system's identifier | yes | nothing reported | `findings.system-identifier` alone reports it |
+| `Lint.run`, a rule of the capability `lint` | yes | nothing reported | `findings.identifier-malformed` alone reports it |
+| `lint`, the capability so identified | yes | nothing reported | a capability names its own place |
+| `cash.withdrawal.pay`, while a capability is identified as `cash.withdrawal` | yes | nothing reported | that capability's identifier is the error |
+| `lint.run.exit`, in the folder `capabilities/lint/`, which holds no `capability.md` | yes | nothing reported | `findings.capability-file-missing` alone reports it |
+| `coherence.x`, in a capability identified as `Coherence` | yes | nothing reported | `findings.identifier-malformed` alone reports it |
+| `okf-get`, a contract element of the capability `access` | no | ask | a contract's name, no place |
+| `severity.error`, a member of a contract of the system | no | ask | |
+| `checks.run`, in the folder `capabilities/checks/`, whose `capability.md` is identified as `coherence`, no capability identified as `checks` | no | ask | a place is a capability's identifier, not its folder's name; an amendment that gave the capability another identifier left it |
+| `systems.x`, no capability identified as `systems` | no | ask | a segment is compared whole |

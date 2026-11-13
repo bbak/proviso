@@ -659,7 +659,8 @@ repository. It writes the renames it plans, the collisions that refuse
 them, and the mentions of every identifier it renames, as text by
 default, or a `rehome_plan` with `--json`; with `--write`, it also
 writes the renames into the spec tree, with `--mentions` the mentions
-picked as well, and writes the manifest.
+picked as well, and writes the manifest. With `--rename`, the engineer
+gives an element another new identifier than the one derived.
 
 ### <a id="system.cli.rehome.write"></a> write
 
@@ -678,6 +679,13 @@ The option `--mentions`, given only with `--write`: read a
 `mention_list` from standard input, and rename the mentions it names
 together with the planned renames. Without it, no mention is renamed.
 
+### <a id="system.cli.rehome.rename"></a> rename
+
+The option `--rename <old>=<new>`, with or without `--write`, and as
+often as needed: plan the rename of the old identifier `<old>` to the
+new identifier `<new>` instead of the one derived, as in
+`--rename serving.snapshot=system.whole-snapshot`.
+
 ### <a id="system.cli.rehome.exit-status"></a> exit-status
 
 The process exit status.
@@ -693,8 +701,8 @@ enum: [0, 1, 2]
   written.
 - `2`: the tree is not as the manifest records it, a coherence file or
   an amendment note lies in the spec root, a file could not be opened
-  for writing, the input of `--mentions` could not be taken, or the
-  command could not run; nothing was written.
+  for writing, the input of `--mentions` or a value of `--rename` could
+  not be taken, or the command could not run; nothing was written.
 
 ## <a id="system.cli.rehome-plan"></a> rehome_plan
 

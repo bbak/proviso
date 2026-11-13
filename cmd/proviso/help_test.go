@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -46,6 +47,7 @@ func TestRefused(t *testing.T) {
 		{"lint", "spec tree"}, {"show", ""}, {"show", "-x"}, {"show", "lint.run.exit", "--in"},
 		{"show", "a", "--in", "lint", "--in", "query"}, {"show", "spec", "tree"}, {"show", "a", "--since", "HEAD~1"},
 		{"show", "a", "--in", "-x"}, {"rehome", "--json", "--mentions"}, {"lint", "--mentions", "--write"},
+		{"rehome", "--rename", "--write"}, {"rehome", "--rename"}, {"rehome", "--rename", ""}, {"diff", "--rename", "a=b"},
 	}
 	for _, args := range cases {
 		t.Chdir(t.TempDir()) // nothing to check: a refusal reads no tree
@@ -81,11 +83,13 @@ func TestReadArgs(t *testing.T) {
 		{"show", []string{"lint.run.exit", "--in", "lint"}, options{query: "lint.run.exit", in: "lint"}},
 		{"show", []string{"--in", "lint", "--json", "lint.run.exit", "--json"}, options{json: true, query: "lint.run.exit", in: "lint"}},
 		{"show", []string{"--in", "lint"}, options{in: "lint"}},
+		{"rehome", []string{"--rename", "serving.snapshot=system.whole-snapshot"}, options{renames: []string{"serving.snapshot=system.whole-snapshot"}}},
+		{"rehome", []string{"--rename", "a.x=b.x", "--json", "--rename", "a.y=b.y"}, options{json: true, renames: []string{"a.x=b.x", "a.y=b.y"}}},
 	}
 	for _, c := range cases {
 		var errOut bytes.Buffer
 		got, ok := readArgs(c.cmd, c.cmd, c.args, &errOut)
-		if !ok || got != c.want {
+		if !ok || !reflect.DeepEqual(got, c.want) {
 			t.Errorf("%s %q: %+v %v (stderr %q)", c.cmd, c.args, got, ok, errOut.String())
 		}
 	}
