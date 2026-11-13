@@ -118,6 +118,7 @@ var severities = map[string]string{
 	"undecided":                    "ask",
 	"element-missing":              "error",
 	"section-level":                "error",
+	"identifier-unhomed":           "ask",
 }
 
 // ---------------------------------------------------------------------------

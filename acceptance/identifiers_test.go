@@ -2,7 +2,10 @@ package acceptance
 
 // Feature lint.identifiers: proviso/capabilities/lint/features/identifiers.md
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 const limitHeading = `## <a id="cart.add.limit"></a> Rule: The cart takes a limited quantity`
 
@@ -117,5 +120,95 @@ func TestLintIdentifiersCapability(t *testing.T) {
 		{name: "derived: three segments, in a second capability", tree: withBilling(baseline(), idBlock, idTable).
 			edit("proviso/capabilities/billing/capability.md", `id="billing"`, `id="billing.pay.now"`),
 			file: "proviso/capabilities/billing/capability.md", lines: lines(1)},
+	})
+}
+
+// TestLintIdentifiersHome checks lint.identifiers.home: an identifier whose
+// first segment names no place, neither system nor the first segment of a
+// capability's identifier, is asked about, but where another rule reports
+// the identifier. Every row compares the findings identifier-unhomed with
+// the oracle unhomed as well.
+func TestLintIdentifiersHome(t *testing.T) {
+	t.Parallel()
+	const sysGlossaryPath = "proviso/glossary.md"
+	payPath := "proviso/capabilities/billing/features/pay.md"
+	billing := withBilling(baseline(), idBlock, idTable)
+	for _, c := range []struct {
+		name  string
+		tree  tree
+		file  string
+		id    string // the identifier the row is about, at the start of its heading
+		holds bool
+	}{
+		// lint.run.root: cart.add.limit, a rule of the capability cart.
+		{"row1 lint.run.root, a rule of the capability lint", baseline(), featurePath, "cart.add.limit", true},
+		{"row2 system.read-only, an invariant of the system", baseline().with("proviso/invariants.md", invariantsMD),
+			"proviso/invariants.md", "system.read-only", true},
+		// coherence.impact.events: billing.moved, a rule of the cart, while
+		// a capability is identified as billing.
+		{"row3 coherence.impact.events, a rule of the capability baseline, while a capability is identified as coherence",
+			billing.with(xPath, xHead+ruleMD("billing.moved", "Moved here", idBlock, idTable)), xPath, "billing.moved", true},
+		{"row4 system", baseline(), systemPath, "system", true},
+		{"row5 proviso, the system's identifier", baseline().edit(systemPath, `id="system"`, `id="proviso"`), systemPath, "proviso", true},
+		{"row6 Lint.run, a rule of the capability lint", baseline().edit(featurePath, `id="cart.add.limit"`, `id="Cart.add.limit"`),
+			featurePath, "Cart.add.limit", true},
+		{"row7 lint, the capability so identified", baseline(), capPath, "cart", true},
+		// cash.withdrawal.pay: cart.add.limit, while the capability is
+		// identified as cart.shop.
+		{"row8 cash.withdrawal.pay, while a capability is identified as cash.withdrawal",
+			baseline().edit(capPath, `id="cart"`, `id="cart.shop"`), featurePath, "cart.add.limit", true},
+		{"row9 lint.run.exit, in the folder capabilities/lint/, which holds no capability.md", baseline().without(capPath),
+			featurePath, "cart.add.limit", true},
+		{"row10 coherence.x, in a capability identified as Coherence", baseline().edit(capPath, `id="cart"`, `id="Cart"`),
+			featurePath, "cart.add.limit", true},
+		// okf-get: a contract of the cart.
+		{"row11 okf-get, a contract element of the capability access", baseline().with(placeAPIPath, placeAPIMD),
+			placeAPIPath, "okf-get", false},
+		{"row12 severity.error, a member of a contract of the system", baseline().with(placeFindingsPath, placeFindingsMD),
+			placeFindingsPath, "severity.error", false},
+		// checks.run: billing.pay, the feature in the folder
+		// capabilities/billing/, whose capability.md is identified as pay.
+		{"row13 checks.run, in the folder capabilities/checks/, whose capability.md is identified as coherence, no capability identified as checks",
+			billing.edit("proviso/capabilities/billing/capability.md", `id="billing"`, `id="pay"`), payPath, "billing.pay", false},
+		{"row14 systems.x, no capability identified as systems", baseline().with(sysGlossaryPath, `# Glossary
+
+## <a id="systems.x"></a> shelf
+
+- Definition: Where goods stand.
+- Contact: Dana Reyes
+- Status: defined
+`), sysGlossaryPath, "systems.x", false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			o := checkGoesOn(t, c.tree)
+			line := c.tree.line(c.file, `id="`+c.id+`"`)
+			if c.holds {
+				o.lacks(t, "identifier-unhomed", c.file, line)
+			} else {
+				o.has(t, "identifier-unhomed", c.file, line)
+			}
+			// Exactly the identifiers the oracle gives, one finding each.
+			want := map[string]int{}
+			for _, u := range unhomed(c.tree) {
+				want[fmt.Sprintf("%s:%d", u[1], c.tree.line(u[1], `id="`+u[0]+`"`))]++
+			}
+			got := map[string]int{}
+			for _, f := range o.find("identifier-unhomed", "", nil) {
+				got[fmt.Sprintf("%s:%d", f.File, f.Line)]++
+			}
+			if fmt.Sprint(got) != fmt.Sprint(want) {
+				t.Errorf("lint.identifiers.home: want identifier-unhomed at %v, got %v", want, got)
+			}
+		})
+	}
+	t.Run("derived: an ask, lint exits with 0", func(t *testing.T) {
+		t.Parallel()
+		tr := baseline().with(placeAPIPath, placeAPIMD)
+		o := check(t, tr)
+		o.has(t, "identifier-unhomed", placeAPIPath, tr.line(placeAPIPath, `id="okf-get"`))
+		if o.json.exit != 0 {
+			t.Errorf("lint.identifiers.home: an ask, but lint exits with %d", o.json.exit)
+		}
 	})
 }

@@ -84,7 +84,15 @@ func TestUpkeepRehomeLint(t *testing.T) {
 		o.exits(t, 0)
 		o.planned(t, undecidedTree())
 	})
-	t.Run("row3 repo/, its tree with an error, the error on stderr", func(t *testing.T) {
+	t.Run("row3 repo/, its tree with the contract okf-get in the capability access", func(t *testing.T) {
+		t.Parallel()
+		// okf-get: the contracts of the place tree, which lint asks about.
+		r, _ := accepted(t, placeRehomeTree())
+		o := r.rehome("--json")
+		o.exits(t, 0)
+		o.renames(t, placeRenames)
+	})
+	t.Run("row4 repo/, its tree with an error, the error on stderr", func(t *testing.T) {
 		t.Parallel()
 		// notes.md is no file of the layout and no element: lint reports
 		// an error, while the tree is still as the manifest records it.
@@ -101,13 +109,13 @@ func TestUpkeepRehomeLint(t *testing.T) {
 			t.Errorf("upkeep.rehome.lint: want stderr to hold what lint writes as text\n%s\ngot\n%s", text.stdout, o.stderr)
 		}
 	})
-	t.Run("row4 repo/, its tree with an unreadable file", func(t *testing.T) {
+	t.Run("row5 repo/, its tree with an unreadable file", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, mainRehomeTree())
 		r.set(mainRehomeTree().with("proviso/capabilities/cart/features/bad.md", "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"))
 		r.rehome("--write", "--json").exits(t, 2)
 	})
-	t.Run("row5 other/, with no spec root up to the file system's root", func(t *testing.T) {
+	t.Run("row6 other/, with no spec root up to the file system's root", func(t *testing.T) {
 		t.Parallel()
 		dir := anywhere(t)
 		rehomeIn(t, dir, dir, "", nil, "--write", "--json").exits(t, 2)
@@ -177,75 +185,259 @@ func TestUpkeepRehomeBaseline(t *testing.T) {
 	})
 }
 
-func TestUpkeepRehomeHome(t *testing.T) {
-	t.Parallel()
-	r, _ := accepted(t, mainRehomeTree())
+// planOf runs `rehome --json` on tr, accepted, which must plan.
+func planOf(t *testing.T, tr tree) rehomeOutcome {
+	t.Helper()
+	r, _ := accepted(t, tr)
 	o := r.rehome("--json")
 	o.exits(t, 0)
+	return o
+}
+
+// renamed asserts that the plan renames from to to.
+func (o rehomeOutcome) renamed(t *testing.T, rule, from, to string) {
+	t.Helper()
+	for _, rn := range o.plan.Renames {
+		if rn.From == from {
+			if rn.To != to {
+				t.Errorf("%s: want %s renamed to %s, got %s", rule, from, to, rn.To)
+			}
+			return
+		}
+	}
+	t.Errorf("%s: want %s renamed to %s, got the renames %v", rule, from, to, o.plan.Renames)
+}
+
+// handedOver asserts that the plan renames id, to whatever
+// upkeep.rehome.place derives.
+func (o rehomeOutcome) handedOver(t *testing.T, id string) {
+	t.Helper()
+	for _, rn := range o.plan.Renames {
+		if rn.From == id {
+			return
+		}
+	}
+	t.Errorf("upkeep.rehome.home: want %s handed over and renamed, got the renames %v", id, o.plan.Renames)
+}
+
+// stays asserts that the plan holds no rename of id.
+func (o rehomeOutcome) stays(t *testing.T, id string) {
+	t.Helper()
+	for _, rn := range o.plan.Renames {
+		if rn.From == id {
+			t.Errorf("upkeep.rehome.home: want %s to stay, got it renamed to %s", id, rn.To)
+		}
+	}
+}
+
+func TestUpkeepRehomeHome(t *testing.T) {
+	t.Parallel()
+	o := planOf(t, mainRehomeTree())
 	o.planned(t, mainRehomeTree())
-	// renamed checks that the plan renames from to to; stays that it plans
-	// no rename of id.
-	renamed := func(t *testing.T, from, to string) {
-		t.Helper()
-		for _, rn := range o.plan.Renames {
-			if rn.From == from {
-				if rn.To != to {
-					t.Errorf("upkeep.rehome.home: want %s renamed to %s, got %s", from, to, rn.To)
-				}
-				return
-			}
-		}
-		t.Errorf("upkeep.rehome.home: want %s renamed to %s, got the renames %v", from, to, o.plan.Renames)
-	}
-	stays := func(t *testing.T, id string) {
-		t.Helper()
-		for _, rn := range o.plan.Renames {
-			if rn.From == id {
-				t.Errorf("upkeep.rehome.home: want %s to stay, got it renamed to %s", id, rn.To)
-			}
-		}
-	}
 	t.Run("row1 coherence.impact.events, a rule of the capability coherence", func(t *testing.T) {
 		t.Parallel()
-		stays(t, "cart.add.limit")
-		stays(t, "cart.add.show")
+		o.stays(t, "cart.add.limit")
+		o.stays(t, "cart.add.show")
 	})
 	t.Run("row2 baseline.impact.events, a rule of the capability coherence", func(t *testing.T) {
 		t.Parallel()
-		renamed(t, "billing.x.r", "cart.x.r")
+		o.handedOver(t, "billing.x.r")
 	})
-	t.Run("row3 baseline.part, a glossary entry of the system", func(t *testing.T) {
+	t.Run("row3 coherence, the capability coherence", func(t *testing.T) {
 		t.Parallel()
-		renamed(t, "cart.item", "system.item")
+		o.stays(t, "cart")
+		o.stays(t, "pay")
+		o.stays(t, "billing")
 	})
-	t.Run("row4 lint.cli.lint.exit-status, a member in contracts/cli.md of the system", func(t *testing.T) {
+	t.Run("row4 system, the system", func(t *testing.T) {
 		t.Parallel()
-		renamed(t, "cart.cli.lint.exit-status", "system.cli.lint.exit-status")
-		renamed(t, "cart.cli.lint", "system.cli.lint")
+		o.stays(t, "system")
+		o.stays(t, "system.break")
 	})
-	t.Run("row5 coherence, the capability coherence", func(t *testing.T) {
+	t.Run("row5 checks.run, in the folder capabilities/coherence/, whose capability.md is identified as checks", func(t *testing.T) {
 		t.Parallel()
-		stays(t, "cart")
-		stays(t, "pay")
+		o.stays(t, "pay.card")
 	})
-	t.Run("row6 system, the system", func(t *testing.T) {
+	t.Run("row6 okf-get, a contract element of the capability access", func(t *testing.T) {
 		t.Parallel()
-		stays(t, "system")
-		stays(t, "system.break")
+		// okf-get: a contract of the cart.
+		p := planOf(t, placeRehomeTree())
+		p.handedOver(t, "okf-get")
+		p.stays(t, "cart.add.limit")
 	})
-	t.Run("row7 checks.run, in the folder capabilities/coherence/, whose capability.md is identified as checks", func(t *testing.T) {
+	t.Run("derived: named after the folder, not the capability, handed over", func(t *testing.T) {
 		t.Parallel()
-		stays(t, "pay.card")
-		// Named after the folder, not the capability: renamed.
-		renamed(t, "billing.refund", "pay.refund")
+		o.handedOver(t, "billing.refund")
 	})
-	t.Run("derived: a feature moved into another capability's folder", func(t *testing.T) {
+	t.Run("derived: a feature moved into another capability's folder, handed over", func(t *testing.T) {
 		t.Parallel()
-		renamed(t, "billing.x", "cart.x")
+		o.handedOver(t, "billing.x")
 	})
-	t.Run("derived: a reference of the system", func(t *testing.T) {
+}
+
+func TestUpkeepRehomePlace(t *testing.T) {
+	t.Parallel()
+	const rule = "upkeep.rehome.place"
+	mainPlan := planOf(t, mainRehomeTree())
+	place := planOf(t, placeRehomeTree())
+	t.Run("derived: the renames as the oracle derives them", func(t *testing.T) {
 		t.Parallel()
-		renamed(t, "cart.ref.commonmark", "system.ref.commonmark")
+		mainPlan.renames(t, mainRenames)
+		place.renames(t, placeRenames)
+		place.collisions(t, nil)
+	})
+	// Rows 1 to 3 on the main tree, where billing names a place.
+	t.Run("row1 baseline.impact.events, a rule of the capability coherence", func(t *testing.T) {
+		t.Parallel()
+		mainPlan.renamed(t, rule, "billing.x.r", "cart.x.r")
+	})
+	t.Run("row2 baseline.part, a glossary entry of the system", func(t *testing.T) {
+		t.Parallel()
+		mainPlan.renamed(t, rule, "cart.item", "system.item")
+	})
+	t.Run("row3 lint.cli.lint.exit-status, a member in contracts/cli.md of the system", func(t *testing.T) {
+		t.Parallel()
+		mainPlan.renamed(t, rule, "cart.cli.lint.exit-status", "system.cli.lint.exit-status")
+		mainPlan.renamed(t, rule, "cart.cli.lint", "system.cli.lint")
+	})
+	// Rows 4 to 8 on the place tree.
+	t.Run("row4 system.streams, an invariant of the capability serving", func(t *testing.T) {
+		t.Parallel()
+		place.renamed(t, rule, "system.bounded", "cart.bounded")
+	})
+	t.Run("row5 okf-get, a contract element of the capability access", func(t *testing.T) {
+		t.Parallel()
+		place.renamed(t, rule, "okf-get", "cart.okf-get")
+	})
+	t.Run("row6 okf-get.input, a member of okf-get in the capability access", func(t *testing.T) {
+		t.Parallel()
+		place.renamed(t, rule, "okf-get.input", "cart.okf-get.input")
+	})
+	t.Run("row7 severity.error, a member of a contract of the system", func(t *testing.T) {
+		t.Parallel()
+		place.renamed(t, rule, "severity.error", "system.severity.error")
+		place.renamed(t, rule, "severity", "system.severity")
+	})
+	t.Run("row8 checks.run, no capability identified as checks any more, a feature of the capability coherence", func(t *testing.T) {
+		t.Parallel()
+		// checks.run: checkout.offers, a feature of the cart.
+		place.renamed(t, rule, "checkout.offers", "cart.checkout.offers")
+	})
+	t.Run("derived: with --write, the anchors and the link to a contract renamed", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, placeRehomeTree())
+		o := r.rehome("--write", "--json")
+		o.exits(t, 0)
+		o.renames(t, placeRenames)
+		o.rewritten(t, rule, placeRehomed())
+	})
+}
+
+// givenRehomed is the given tree as `rehome --write` leaves it, with cart.item
+// renamed to item and checkout.offers to offers.
+func givenRehomed(item, offers string) tree {
+	return mainRehomed().
+		edit("proviso/glossary.md", `<a id="system.item">`, `<a id="`+item+`">`).
+		appendTo("proviso/glossary.md", basketEntryMD).
+		with(offersPath, offersMD).
+		edit(offersPath, `<a id="checkout.offers">`, `<a id="`+offers+`">`)
+}
+
+// TestUpkeepRehomeGiven checks upkeep.rehome.given on the given tree: the
+// main tree, where cart.item, a glossary entry of the system, is derived to
+// system.item, with the feature checkout.offers of the cart, derived to
+// cart.checkout.offers, and the system's term system.basket. serving.snapshot
+// is cart.item here, and checks.run is checkout.offers. The refused rows run
+// with --write, so that a run that went on would have written; rehomeIn
+// checks that nothing is written and nothing goes to stdout.
+func TestUpkeepRehomeGiven(t *testing.T) {
+	t.Parallel()
+	const rule = "upkeep.rehome.given"
+	run := func(t *testing.T, args ...string) rehomeOutcome {
+		t.Helper()
+		r, _ := accepted(t, givenRehomeTree())
+		return r.rehome(args...)
+	}
+	t.Run("row1 serving.snapshot=system.whole-snapshot, serving.snapshot an invariant of the system", func(t *testing.T) {
+		t.Parallel()
+		o := run(t, "--write", "--json", "--rename", "cart.item=system.goods")
+		o.exits(t, 0)
+		o.renames(t, withGiven(givenRenames, "cart.item", "system.goods"))
+		o.rewritten(t, rule, givenRehomed("system.goods", "cart.checkout.offers"))
+	})
+	t.Run("row2 checks.run=coherence.run, checks.run a feature of the capability coherence", func(t *testing.T) {
+		t.Parallel()
+		o := run(t, "--write", "--json", "--rename", "checkout.offers=cart.offers")
+		o.exits(t, 0)
+		o.renames(t, withGiven(givenRenames, "checkout.offers", "cart.offers"))
+		o.rewritten(t, rule, givenRehomed("system.item", "cart.offers"))
+	})
+	t.Run("row3 serving.snapshot=system.snapshot, while a term is identified as system.snapshot", func(t *testing.T) {
+		t.Parallel()
+		o := run(t, "--write", "--json", "--rename", "cart.item=system.basket")
+		o.exits(t, 1)
+		o.renames(t, withGiven(givenRenames, "cart.item", "system.basket"))
+		o.collisions(t, []planCollision{{"system.basket", []string{"cart.item"}}})
+	})
+	t.Run("row4 serving.snapshot=system.whole-snapshot, given twice", func(t *testing.T) {
+		t.Parallel()
+		o := run(t, "--json", "--rename", "cart.item=system.goods", "--rename", "cart.item=system.goods")
+		o.exits(t, 0)
+		o.renames(t, withGiven(givenRenames, "cart.item", "system.goods"))
+	})
+	for _, c := range []struct {
+		name   string
+		values []string
+	}{
+		// lint.run: cart.add.limit, at its identifier home.
+		{"row5 lint.run=system.run, lint.run not planned for a rename", []string{"cart.add.limit=system.limit"}},
+		{"row6 serving.snapshot", []string{"cart.item"}},
+		{"row7 serving.snapshot=", []string{"cart.item="}},
+		{"row8 serving.snapshot=System.Snapshot", []string{"cart.item=System.Goods"}},
+		{"row9 serving.snapshot=serving.whole-snapshot, serving.snapshot an invariant of the system", []string{"cart.item=cart.goods"}},
+		{"row10 serving.snapshot=system.a, while serving.snapshot=system.b is given too", []string{"cart.item=system.a", "cart.item=system.b"}},
+		{"derived: a new identifier that is not well-formed, a segment starting with a digit", []string{"cart.item=system.2nd"}},
+		{"derived: no old identifier", []string{"=system.goods"}},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			args := []string{"--write", "--json"}
+			for _, v := range c.values {
+				args = append(args, "--rename", v)
+			}
+			run(t, args...).exits(t, 2)
+		})
+	}
+	t.Run("row11 nosuch.x=system.x, while the plan renames baseline.x to coherence.x, taken", func(t *testing.T) {
+		t.Parallel()
+		// The taken tree: billing.x.r is renamed to cart.x.r, which the tree
+		// holds.
+		r, _ := accepted(t, takenRehomeTree())
+		o := r.rehome("--write", "--json", "--rename", "nosuch.x=system.x")
+		o.exits(t, 2)
+		if strings.Contains(o.stderr, "cart.x.r") {
+			t.Errorf("%s: want no collision named, got stderr: %s", rule, o.stderr)
+		}
+	})
+	t.Run("derived: with --write, every reference to the old identifier holds the given one", func(t *testing.T) {
+		t.Parallel()
+		o := run(t, "--write", "--json", "--rename", "billing.x.r=cart.trial")
+		o.exits(t, 0)
+		o.renames(t, withGiven(givenRenames, "billing.x.r", "cart.trial"))
+		add, _ := o.file(featurePath)
+		if !strings.Contains(add, "Otherwise → cart.trial\n") {
+			t.Errorf("%s: want the hand-over renamed to cart.trial, got\n%s", rule, add)
+		}
+		questions, _ := o.file(cartQuestions)
+		if !strings.Contains(questions, "- [cart.trial] Should") {
+			t.Errorf("%s: want the question's tag renamed to cart.trial, got\n%s", rule, questions)
+		}
+		x, _ := o.file(xPath)
+		for _, want := range []string{`## <a id="cart.trial"></a> Rule: Under test`, "see [the rule](x.md#cart.trial), not", "\n[rule]: x.md#cart.trial\n"} {
+			if !strings.Contains(x, want) {
+				t.Errorf("%s: want x.md to hold %q, got\n%s", rule, want, x)
+			}
+		}
 	})
 }
 
@@ -300,6 +492,22 @@ func TestUpkeepRehomeCollision(t *testing.T) {
 			}
 		}
 		t.Errorf("upkeep.rehome.collision: want a collision on cart.gizmo, got %v", o.plan.Collisions)
+	})
+	t.Run("derived: an identifier given with --rename that a derived one takes", func(t *testing.T) {
+		t.Parallel()
+		// billing.x.r is derived to cart.x.r, given to checkout.offers too.
+		r, _ := accepted(t, givenRehomeTree())
+		o := r.rehome("--write", "--json", "--rename", "checkout.offers=cart.x.r")
+		o.exits(t, 1)
+		o.collisions(t, []planCollision{{"cart.x.r", []string{"billing.x.r", "checkout.offers"}}})
+	})
+	t.Run("derived: an identifier given with --rename in place of one taken", func(t *testing.T) {
+		t.Parallel()
+		r, _ := accepted(t, takenRehomeTree())
+		o := r.rehome("--json", "--rename", "billing.x.r=cart.y.r")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"billing.x.r", "cart.y.r"}})
+		o.collisions(t, nil)
 	})
 }
 
@@ -457,7 +665,17 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 			t.Errorf("upkeep.rehome.output: want no renames and no collisions, got %v", o.plan)
 		}
 	})
-	t.Run("row4 one, none, --write --json", func(t *testing.T) {
+	t.Run("row4 one, its new identifier given, none, --rename serving.snapshot=system.whole-snapshot --json", func(t *testing.T) {
+		t.Parallel()
+		// serving.snapshot: cart.item. Without --write, rehomeIn checks that
+		// nothing is written.
+		r, _ := accepted(t, oneRehomeTree())
+		o := r.rehome("--rename", "cart.item=system.goods", "--json")
+		o.exits(t, 0)
+		o.renames(t, []planRename{{"cart.item", "system.goods"}})
+		o.collisions(t, nil)
+	})
+	t.Run("row5 one, none, --write --json", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, oneRehomeTree())
 		o := r.rehome("--write", "--json")
@@ -473,7 +691,7 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 		o.renames(t, []planRename{{"cart.item", "system.item"}})
 		o.mentions(t, twoCellsMentions())
 	})
-	t.Run("row5 one, its identifier in two Examples cells, none, --write --mentions --json, naming one of them", func(t *testing.T) {
+	t.Run("row6 one, its identifier in two Examples cells, none, --write --mentions --json, naming one of them", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, twoCellsTree())
 		o := r.rehomePicking(mentionList(twoCellsMentions()[0]), "--write", "--mentions", "--json")
@@ -485,7 +703,7 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 		o.collisions(t, nil)
 		o.rewritten(t, "upkeep.rehome.output", twoCellsRehomed())
 	})
-	t.Run("row6 two, one colliding, one, none", func(t *testing.T) {
+	t.Run("row7 two, one colliding, one, none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, chainRehomeTree())
 		o := r.rehome()
@@ -502,7 +720,7 @@ func TestUpkeepRehomeOutput(t *testing.T) {
 			}
 		}
 	})
-	t.Run("row7 none, none, none", func(t *testing.T) {
+	t.Run("row8 none, none, none", func(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, baseline())
 		o := r.rehome()
@@ -905,6 +1123,7 @@ func TestUpkeepIdentifierHome(t *testing.T) {
 	t.Parallel()
 	for name, tr := range map[string]func() tree{
 		"main": mainRehomeTree, "one": oneRehomeTree, "order1": order1RehomeTree, "chain": chainRehomeTree,
+		"place": placeRehomeTree, "given": givenRehomeTree,
 	} {
 		t.Run("derived: "+name, func(t *testing.T) {
 			t.Parallel()
