@@ -35,7 +35,7 @@ Otherwise the command writes to "stderr" what `lint` would write as text
 | `repo/`, its tree without findings | yes | the command runs | |
 | `repo/`, its tree with an ask only | yes | the command runs | |
 | `repo/`, its tree with an error | no | exit status 2, the error on stderr | |
-| `repo/`, its tree with the contract `okf-get` in the capability `access` | no | exit status 2, the error on stderr | an identifier that names no place; `rehome` repairs it first |
+| `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | an identifier that names no place is an ask, which `rehome` repairs later |
 | `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
 | `repo/`, its `manifest.sum` naming another model version | no | exit status 2 | lint refuses a tree of another model version |

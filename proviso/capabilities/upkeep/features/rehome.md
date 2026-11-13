@@ -30,9 +30,8 @@ so an element moved between features of one capability keeps its
 identifier. An identifier whose first segment names no place, such as a
 contract's name alone, gets its place put in front: replacing its first
 segment would replace a name, and the contracts of one capability would
-all take the capability's own identifier. Lint reports such an
-identifier as an error, yet `rehome` runs on a tree whose only errors
-are these, since it is what repairs them. `rehome` renames all or
+all take the capability's own identifier. Lint asks about such an
+identifier, and `rehome` is what repairs it. `rehome` renames all or
 nothing: a tree half rehomed would say where some elements stand and not
 others, so one collision refuses the whole run, and so does one file it
 cannot write. Without `rehome.write` it writes nothing, so that the
@@ -64,7 +63,7 @@ that a stale or mistyped list never writes half of what was meant.
 
 ```guarded
 When      someone runs `rehome`, with arguments it takes, in the directory <directory>
-Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0, or with 1 for no other reason than [identifiers] whose first segment is neither "system" nor the [identifier] of a capability
+Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0
 Then      `rehome` works on the [spec tree] that `lint` would check
   And     nothing of what `lint` would write is written
 Otherwise `rehome` writes to "stderr" what `lint` would write as text
@@ -76,9 +75,8 @@ Otherwise `rehome` writes to "stderr" what `lint` would write as text
 | --- | --- | --- | --- |
 | `repo/`, its tree without findings | yes | the command runs | |
 | `repo/`, its tree with an ask only | yes | the command runs | |
-| `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | the error `rehome` repairs |
+| `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | an ask, the one `rehome` repairs |
 | `repo/`, its tree with an error | no | exit status 2, the error on stderr | |
-| `repo/`, its tree with the contract `okf-get` and an anchor not starting its heading | no | exit status 2, both errors on stderr | another error besides |
 | `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
 

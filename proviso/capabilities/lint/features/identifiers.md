@@ -151,17 +151,22 @@ an identifier written without one, such as a contract's name alone,
 says nowhere, and `rehome` cannot tell its place from its name. Any
 place will do: an amendment that moves an element keeps its identifier,
 and the identifier names the element's former place until the engineer
-rehomes the tree. A capability's identifier of several segments is
-already an error of its own, so its first segment counts as a place;
-a malformed identifier and the system's identifier are left to their
-own rules too, so that one mistake is reported once.
+rehomes the tree. It is an ask, not an error: an amendment that gives
+a capability another identifier, or removes one whose elements move
+elsewhere, leaves such identifiers behind, and every command must still
+run on that tree, so that the amendment can be accepted and the tree
+rehomed afterwards. A capability's identifier of several segments is
+already an error of its own, so its first segment counts as a place; a
+malformed identifier, the system's identifier and the elements of a
+capability without a well-formed identifier are left to their own rules
+too, so that one mistake is reported once.
 
 ```guarded
 When      lint reads the [identifier] <id> of an [element]
-Provided  <id> is not [well-formed], or is the [identifier] of the system, or its first segment, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
+Provided  <id> is not [well-formed], or is the [identifier] of the system, or the capability whose folder holds the [element] has no [well-formed] [identifier], or the first segment of <id>, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
 Then      lint reports nothing about the first segment of <id>
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [error] `findings.identifier-unhomed` at <id>
+Otherwise lint reports the [ask] `findings.identifier-unhomed` at <id>
   And     lint goes on with the rest of the [spec tree]
 ```
 
@@ -175,7 +180,9 @@ Otherwise lint reports the [error] `findings.identifier-unhomed` at <id>
 | `Lint.run`, a rule of the capability `lint` | yes | nothing reported | `findings.identifier-malformed` alone reports it |
 | `lint`, the capability so identified | yes | nothing reported | a capability names its own place |
 | `cash.withdrawal.pay`, while a capability is identified as `cash.withdrawal` | yes | nothing reported | that capability's identifier is the error |
-| `okf-get`, a contract element of the capability `access` | no | error | a contract's name, no place |
-| `severity.error`, a member of a contract of the system | no | error | |
-| `checks.run`, in the folder `capabilities/checks/`, whose `capability.md` is identified as `coherence`, no capability identified as `checks` | no | error | a place is a capability's identifier, not its folder's name |
-| `systems.x`, no capability identified as `systems` | no | error | a segment is compared whole |
+| `lint.run.exit`, in the folder `capabilities/lint/`, which holds no `capability.md` | yes | nothing reported | `findings.capability-file-missing` alone reports it |
+| `coherence.x`, in a capability identified as `Coherence` | yes | nothing reported | `findings.identifier-malformed` alone reports it |
+| `okf-get`, a contract element of the capability `access` | no | ask | a contract's name, no place |
+| `severity.error`, a member of a contract of the system | no | ask | |
+| `checks.run`, in the folder `capabilities/checks/`, whose `capability.md` is identified as `coherence`, no capability identified as `checks` | no | ask | a place is a capability's identifier, not its folder's name; an amendment that gave the capability another identifier left it |
+| `systems.x`, no capability identified as `systems` | no | ask | a segment is compared whole |
