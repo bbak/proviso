@@ -59,7 +59,7 @@
 - Status: defined
 - Aliases: identifiers
 
-## <a id="lint.well-formed"></a> well-formed
+## <a id="system.well-formed"></a> well-formed
 
 - Definition: An identifier is well-formed if it consists of one or more
   segments separated by single dots, and each segment starts with a
