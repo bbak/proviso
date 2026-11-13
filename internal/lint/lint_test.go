@@ -542,3 +542,60 @@ func TestNameKey(t *testing.T) {
 		}
 	}
 }
+
+func TestIdentifierHome(t *testing.T) {
+	contract := func(id string) map[string]string {
+		f := base()
+		f["capabilities/c/contracts/cli.md"] = strings.Replace(baseContract, `id="c.cli.lint"`, `id="`+id+`"`, 1)
+		return f
+	}
+	cases := []struct {
+		name  string
+		files map[string]string
+		want  []string
+	}{
+		{"a contract's name alone", contract("okf-get"), []string{"identifier-unhomed@capabilities/c/contracts/cli.md:3"}},
+		{"a system place", contract("system.cli.lint"), nil},
+		{"another capability's place", func() map[string]string {
+			f := contract("d.cli.lint")
+			f["capabilities/d/capability.md"] = strings.Replace(baseCapability, `id="c"`, `id="d"`, 1)
+			return f
+		}(), nil},
+		{"a folder's name is no place", func() map[string]string {
+			f := contract("d.cli.lint")
+			f["capabilities/d/capability.md"] = strings.Replace(baseCapability, `id="c"`, `id="e"`, 1)
+			return f
+		}(), []string{"identifier-unhomed@capabilities/c/contracts/cli.md:3"}},
+		{"a segment is compared whole", contract("systems.cli.lint"), []string{"identifier-unhomed@capabilities/c/contracts/cli.md:3"}},
+		{"malformed is reported once", contract("Okf"), []string{"identifier-malformed@capabilities/c/contracts/cli.md:3"}},
+		{"the system's identifier is reported once", func() map[string]string {
+			f := base()
+			f["system.md"] = strings.Replace(baseSystem, `id="system"`, `id="proviso"`, 1)
+			return f
+		}(), []string{"system-identifier@system.md:1"}},
+		{"a capability of several segments counts its first", func() map[string]string {
+			f := base()
+			f["capabilities/c/capability.md"] = strings.Replace(baseCapability, `id="c"`, `id="c.d"`, 1)
+			return f
+		}(), []string{"capability-identifier@capabilities/c/capability.md:1"}},
+		{"a capability without a well-formed identifier", func() map[string]string {
+			f := contract("okf-get")
+			f["capabilities/c/capability.md"] = strings.Replace(baseCapability, `id="c"`, `id="C"`, 1)
+			return f
+		}(), []string{"identifier-malformed@capabilities/c/capability.md:1"}},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			var got []string
+			for _, k := range kinds(lintFiles(c.files)) {
+				if strings.HasPrefix(k, "identifier-") || strings.HasPrefix(k, "system-") || strings.HasPrefix(k, "capability-") {
+					got = append(got, k)
+				}
+			}
+			slices.Sort(got)
+			if !slices.Equal(got, c.want) {
+				t.Errorf("got  %v\nwant %v", got, c.want)
+			}
+		})
+	}
+}

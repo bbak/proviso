@@ -26,6 +26,8 @@ type linter struct {
 	glossary map[string][]*element            // glossary entries by level
 	names    map[string]map[string][]*element // top-level contract elements and parameters, by level and name
 	refsIn   map[string]map[string]bool       // reference identifiers by the file that holds them
+	places   map[string]bool                  // "system" and the first segment of every capability's identifier
+	homed    map[string]bool                  // the capabilities, by folder, with a well-formed identifier
 }
 
 // Run checks a tree read completely and returns its findings, ordered.
@@ -39,6 +41,8 @@ func Check(t *tree.Tree) *Result {
 		glossary: map[string][]*element{},
 		names:    map[string]map[string][]*element{},
 		refsIn:   map[string]map[string]bool{},
+		places:   map[string]bool{"system": true},
+		homed:    map[string]bool{},
 	}
 	for _, rel := range t.Unknown {
 		l.report(Error, "file-unknown", Pos{reportPath(rel), 1}, "the layout does not list this file")
@@ -98,6 +102,13 @@ func (l *linter) report(sev Severity, kind string, p Pos, format string, args ..
 func (l *linter) index() {
 	for _, e := range l.elements {
 		l.ids[e.id] = append(l.ids[e.id], e)
+		if e.typ == tCapability {
+			first, _, _ := strings.Cut(e.id, ".")
+			l.places[first] = true
+			if wellFormed.MatchString(e.id) {
+				l.homed[e.cap] = true
+			}
+		}
 		switch {
 		case e.typ == tGlossary:
 			l.glossary[e.cap] = append(l.glossary[e.cap], e)
@@ -126,6 +137,11 @@ func visible(cap string) []string {
 
 var wellFormed = regexp.MustCompile(`^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)*$`)
 
+// WellFormed reports whether id is well-formed: one or more segments
+// separated by single dots, each a lowercase letter followed by lowercase
+// letters, digits and hyphens.
+func WellFormed(id string) bool { return wellFormed.MatchString(id) }
+
 func (l *linter) checkIdentifier(e *element) {
 	if !wellFormed.MatchString(e.id) {
 		l.report(Error, "identifier-malformed", e.pos(), "the identifier %q is not well-formed", e.id)
@@ -148,6 +164,13 @@ func (l *linter) checkIdentifier(e *element) {
 	// elements in it, and a prefix is one segment.
 	if e.typ == tCapability && strings.Contains(e.id, ".") {
 		l.report(Error, "capability-identifier", e.pos(), "the capability is identified as %q, which has more than one segment", e.id)
+	}
+	// lint.identifiers.home: the first segment names a place. A malformed
+	// identifier, the system's and those in a capability without a
+	// well-formed identifier are left to their own rules.
+	first, _, _ := strings.Cut(e.id, ".")
+	if wellFormed.MatchString(e.id) && e.typ != tSystem && (e.cap == "" || l.homed[e.cap]) && !l.places[first] {
+		l.report(Ask, "identifier-unhomed", e.pos(), "the identifier %q names no place: %q is neither \"system\" nor the first segment of a capability's identifier; rehome puts its place in front", e.id, first)
 	}
 }
 
