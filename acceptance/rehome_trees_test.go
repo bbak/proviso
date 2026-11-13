@@ -6,6 +6,7 @@ package acceptance
 // Backticks are written as ´ (see md).
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -18,7 +19,41 @@ const (
 	payRefundPath   = "proviso/capabilities/billing/features/refund.md"
 	stockCapPath    = "proviso/capabilities/stock/capability.md"
 	stockGlossPath  = "proviso/capabilities/stock/glossary.md"
+	invoicesCapPath = "proviso/capabilities/invoices/capability.md"
 )
+
+// The capability billing, in the folder capabilities/invoices/, makes billing
+// a place (lint.identifiers.home): an identifier whose first segment is
+// billing names another place than its identifier home, and rehome replaces
+// that segment (upkeep.rehome.place), rather than putting a place in front.
+const billingCapMD = `# <a id="billing"></a> Invoices
+
+## Goal
+
+Buyers get an invoice.
+
+## Rationale
+
+The shop keeps its books.
+`
+
+// withPlaces adds to tr the capability billing and, for each name of stock
+// and pay, that capability, so that every first segment the test trees use
+// names a place.
+func withPlaces(tr tree, names ...string) tree {
+	tr = tr.with(invoicesCapPath, billingCapMD)
+	for _, n := range names {
+		switch n {
+		case "stock":
+			tr = tr.with(stockCapPath, stockCapMD)
+		case "pay":
+			tr = tr.with(payCapPath, payCapMD)
+		default:
+			panic("withPlaces: no capability " + n)
+		}
+	}
+	return tr
+}
 
 // The main tree holds an element of every row of upkeep.rehome.home and a
 // place of every row of rehome_references:
@@ -37,7 +72,9 @@ const (
 //     with it, and names it in another;
 //   - the capability pay in the folder capabilities/billing/, with the
 //     features pay.card, at its identifier home, and billing.refund, named
-//     after the folder.
+//     after the folder;
+//   - the capability billing, in the folder capabilities/invoices/, so that
+//     billing names a place, and every rename replaces a first segment.
 const mainSysGlossaryMD = `# Glossary
 
 ## <a id="cart.item"></a> item
@@ -168,7 +205,7 @@ Goods break.
 `
 
 func mainRehomeTree() tree {
-	return baseline().without(glossaryPath).
+	return withPlaces(baseline()).without(glossaryPath).
 		appendTo(featurePath, showRule).
 		with(
 			"proviso/glossary.md", mainSysGlossaryMD,
@@ -226,7 +263,7 @@ func oneRehomed() tree {
 // The taken tree holds the rule cart.x.r, and the rule billing.x.r in the
 // feature cart.add, whose rename to cart.x.r collides with it.
 func takenRehomeTree() tree {
-	return withRule(idBlock, idTable).appendTo(featurePath, "\n"+ruleMD("billing.x.r", "Also under test", idBlock, idTable))
+	return withPlaces(withRule(idBlock, idTable)).appendTo(featurePath, "\n"+ruleMD("billing.x.r", "Also under test", idBlock, idTable))
 }
 
 // The chain tree holds billing.widget in the cart's glossary and cart.widget
@@ -253,7 +290,7 @@ const chainStockGlossaryMD = `# Glossary
 `
 
 func chainRehomeTree() tree {
-	return baseline().
+	return withPlaces(baseline()).
 		appendTo(glossaryPath, `
 ## <a id="billing.widget"></a> widget
 
@@ -267,7 +304,7 @@ func chainRehomeTree() tree {
 // The first order tree holds, in the system's glossary, stock.keyword before
 // billing.part, both renamed to system.
 func order1RehomeTree() tree {
-	return baseline().with("proviso/glossary.md", `# Glossary
+	return withPlaces(baseline(), "stock").with("proviso/glossary.md", `# Glossary
 
 ## <a id="stock.keyword"></a> keyword
 
@@ -288,7 +325,7 @@ func order1RehomeTree() tree {
 // are both renamed to cart.gizmo, and pay.widget to cart.widget, which the
 // tree holds.
 func order2RehomeTree() tree {
-	return baseline().appendTo(glossaryPath, `
+	return withPlaces(baseline(), "pay").appendTo(glossaryPath, `
 ## <a id="pay.widget"></a> widget
 
 - Definition: A thing a buyer adds.
@@ -403,7 +440,7 @@ const mentionQuestionsMD = `# Questions
 `
 
 func mentionsTree() tree {
-	return baseline().
+	return withPlaces(baseline()).
 		appendTo(featurePath, mentionShowRule).
 		with(
 			xPath, mentionXMD,
@@ -499,6 +536,168 @@ func order3RehomeTree() tree {
 		with(stockCapPath, stockCapMD, shelfPath, shelfMD)
 }
 
+// The place tree holds an element of every row of upkeep.rehome.place that
+// the main tree does not: an invariant system.bounded of the cart; the
+// contract okf-get of the cart, with its member okf-get.input; the contract
+// severity of the system, with its member severity.error; and the feature
+// checkout.offers of the cart, whose first segment names no capability.
+const (
+	placeAPIPath      = "proviso/capabilities/cart/contracts/api.md"
+	placeFindingsPath = "proviso/contracts/findings.md"
+	offersPath        = "proviso/capabilities/cart/features/offers.md"
+)
+
+const placeAPIMD = `# API
+
+## <a id="okf-get"></a> okf-get
+
+The operation that gets an offer.
+
+### <a id="okf-get.input"></a> input
+
+What [the operation](api.md#okf-get) takes.
+`
+
+const placeFindingsMD = `# Findings
+
+## <a id="severity"></a> severity
+
+How bad a finding is.
+
+### <a id="severity.error"></a> error
+
+A finding that stops the shop.
+`
+
+const offersMD = `# <a id="checkout.offers"></a> Offers
+
+- Contact: Dana Reyes
+
+## Goal
+
+Buyers see what is on offer.
+
+## Rationale
+
+Offers sell goods.
+`
+
+const placeInvariantMD = `
+## <a id="system.bounded"></a> Invariant: The cart never holds too much
+
+### Rationale
+
+Shelves are small.
+
+### Ranges over
+
+Every addition to the cart.
+
+### Property
+
+The cart holds at most ´max_quantity´ pieces of one product.
+`
+
+func placeRehomeTree() tree {
+	return baseline().
+		appendTo(featurePath, placeInvariantMD).
+		with(
+			placeAPIPath, placeAPIMD,
+			placeFindingsPath, placeFindingsMD,
+			offersPath, offersMD,
+		)
+}
+
+// placeRehomed is the place tree as `rehome --write` leaves it.
+func placeRehomed() tree {
+	return placeRehomedAPI(placeRehomeTree()).
+		edit(featurePath, `<a id="system.bounded">`, `<a id="cart.bounded">`).
+		edit(placeFindingsPath, `<a id="severity">`, `<a id="system.severity">`).
+		edit(placeFindingsPath, `<a id="severity.error">`, `<a id="system.severity.error">`).
+		edit(offersPath, `<a id="checkout.offers">`, `<a id="cart.checkout.offers">`)
+}
+
+// placeRehomedAPI is tr with the cart's contract okf-get as `rehome --write`
+// leaves it: its anchors and the link to it renamed.
+func placeRehomedAPI(tr tree) tree {
+	return tr.with(placeAPIPath, placeAPIMD).
+		edit(placeAPIPath, `<a id="okf-get">`, `<a id="cart.okf-get">`).
+		edit(placeAPIPath, `<a id="okf-get.input">`, `<a id="cart.okf-get.input">`).
+		edit(placeAPIPath, "(api.md#okf-get)", "(api.md#cart.okf-get)")
+}
+
+// placeRenames are the renames of the place tree, ordered by their old
+// identifier.
+var placeRenames = []planRename{
+	{"checkout.offers", "cart.checkout.offers"},
+	{"okf-get", "cart.okf-get"},
+	{"okf-get.input", "cart.okf-get.input"},
+	{"severity", "system.severity"},
+	{"severity.error", "system.severity.error"},
+	{"system.bounded", "cart.bounded"},
+}
+
+// The given tree is the main tree with the feature checkout.offers of the
+// cart, whose first segment names no place, and the system's term
+// system.basket, which a given identifier can take.
+const basketEntryMD = `
+## <a id="system.basket"></a> basket
+
+- Definition: What a buyer carries.
+- Contact: Dana Reyes
+- Status: defined
+`
+
+func givenRehomeTree() tree {
+	return mainRehomeTree().
+		appendTo("proviso/glossary.md", basketEntryMD).
+		with(offersPath, offersMD)
+}
+
+// givenRenames are the renames of the given tree, ordered by their old
+// identifier, as derived.
+var givenRenames = append(append([]planRename(nil), mainRenames...), planRename{"checkout.offers", "cart.checkout.offers"})
+
+// withGiven gives the renames rs with the rename of from given to as its
+// new identifier.
+func withGiven(rs []planRename, from, to string) []planRename {
+	out := append([]planRename(nil), rs...)
+	for i := range out {
+		if out[i].From == from {
+			out[i].To = to
+		}
+	}
+	return out
+}
+
+// asksUnhomedOnly asserts that lint exits with 0 on tr and reports nothing
+// but findings.identifier-unhomed, each at an identifier the oracle unhomed
+// gives, and one at each.
+func asksUnhomedOnly(t *testing.T, tr tree) {
+	t.Helper()
+	o := check(t, tr)
+	if o.json.exit != 0 {
+		t.Fatalf("want lint to exit with 0, got %d:\n%s%s", o.json.exit, dump(o.report.Findings), o.json.stderr)
+	}
+	want := map[string]bool{}
+	for _, u := range unhomed(tr) {
+		want[fmt.Sprintf("%s:%d", u[1], tr.line(u[1], `id="`+u[0]+`"`))] = true
+	}
+	got := map[string]bool{}
+	for _, f := range o.report.Findings {
+		at := fmt.Sprintf("%s:%d", f.File, f.Line)
+		if f.Kind != "identifier-unhomed" || !want[at] {
+			t.Errorf("want only identifier-unhomed at %v, got %s at %s", want, f.Kind, at)
+		}
+		got[at] = true
+	}
+	for at := range want {
+		if !got[at] {
+			t.Errorf("want identifier-unhomed at %s, got:\n%s", at, dump(o.report.Findings))
+		}
+	}
+}
+
 // TestFixtureRehome checks the ground the rehome tests stand on: lint
 // reports nothing about their trees, nor about the trees rehome is expected
 // to write, and the oracle of identifier homes plans what each tree's
@@ -512,12 +711,19 @@ func TestFixtureRehome(t *testing.T) {
 		"order1": order1RehomeTree(), "order2": order2RehomeTree(),
 		"mentions": mentionsTree(), "mentions rehomed": mentionsRehomed(),
 		"two cells": twoCellsTree(), "two cells rehomed": twoCellsRehomed(),
-		"order3": order3RehomeTree(), "mentions all picked": mentionsRehomed(mentionLineA, mentionLineB, mentionLineF, mentionLineG, mentionLineH),
+		"order3": order3RehomeTree(), "place rehomed": placeRehomed(), "mentions all picked": mentionsRehomed(mentionLineA, mentionLineB, mentionLineF, mentionLineG, mentionLineH),
 	}
 	for name, tr := range trees {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 			check(t, tr).clean(t)
+		})
+	}
+	// Their identifiers name no place, which lint asks about.
+	for name, tr := range map[string]tree{"place": placeRehomeTree(), "given": givenRehomeTree()} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			asksUnhomedOnly(t, tr)
 		})
 	}
 	t.Run("oracle", func(t *testing.T) {
@@ -537,6 +743,12 @@ func TestFixtureRehome(t *testing.T) {
 		sameMentions(t, mentionsOf(mentionsTree()), mentionsOfTree())
 		sameMentions(t, mentionsOf(twoCellsTree()), twoCellsMentions())
 		sameRenames(t, homeRenames(order3RehomeTree()), []planRename{{"billing.part", "system.part"}, {"stock.keyword", "system.keyword"}})
+		sameRenames(t, homeRenames(placeRehomeTree()), placeRenames)
+		sameRenames(t, homeRenames(givenRehomeTree()), givenRenames)
+		sameCollisions(t, collisionsOf(givenRehomeTree()), nil)
+		if got := unhomed(placeRehomeTree()); len(got) != 5 {
+			t.Errorf("want the place tree to hold five identifiers that name no place, got %v", got)
+		}
 		tr := order3RehomeTree()
 		if tr.line(capPath, "´stock.keyword´") != 9 || tr.line(shelfPath, "´stock.keyword´ the shop") != 7 || tr.line(shelfPath, "´stock.keyword´ or") != 12 {
 			t.Errorf("the third order tree's mentions stand on other lines than its comment says")

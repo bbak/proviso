@@ -179,7 +179,23 @@ func TestBaselineDiffSince(t *testing.T) {
 				}
 				since(t, r, cmd, c3d4).stopped(t)
 			})
-			t.Run("row8 a1b2, whose manifest.sum names another model version", func(t *testing.T) {
+			t.Run("row8 b7c8, whose tree holds the contract okf-get in the capability access, from before the tree was rehomed", func(t *testing.T) {
+				t.Parallel()
+				// okf-get: the contract of the cart in placeAPIMD, with its
+				// member okf-get.input; lint asks about both
+				// (lint.identifiers.home). Since then, the tree was rehomed
+				// and cart.add.limit changed.
+				before := diffTree().with(placeAPIPath, placeAPIMD)
+				r, b7c8 := accepted(t, before)
+				r.set(placeRehomedAPI(diffTree()).apply(limitThen))
+				if l := execLint(t, r.dir); l.exit != 0 {
+					t.Fatalf("want the tree as it stands now to pass lint, got exit status %d:\n%s%s", l.exit, l.stdout, l.stderr)
+				}
+				d := since(t, r, cmd, b7c8).ran(t)
+				d.only(t, "cart.add.limit:changed", "okf-get:removed", "okf-get.input:removed", "cart.okf-get:added", "cart.okf-get.input:added")
+				checkSinceRevision(t, d, b7c8, true)
+			})
+			t.Run("row9 a1b2, whose manifest.sum names another model version", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				path := filepath.Join(r.root(), "manifest.sum")
@@ -207,7 +223,7 @@ func TestBaselineDiffSince(t *testing.T) {
 				}
 				since(t, r, cmd, a1b2).stopped(t)
 			})
-			t.Run("row9 a1b2, whose tree holds x.md as a symbolic link", func(t *testing.T) {
+			t.Run("row10 a1b2, whose tree holds x.md as a symbolic link", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				// The link points out of the tree to a file holding x.md as
