@@ -1,14 +1,15 @@
 ---
 name: proviso-rehome
-description: Give the elements of a Proviso spec tree that moved to another capability or to the system the identifiers of their place, with every reference in the tree, the manifest, and the code and tests beside it, in one step outside any amendment. Use when the engineer asks to rehome, realign or tidy identifiers, or after an amendment moved elements. Shows the plan and waits for the engineer's approval before anything is written; does not integrate, check, build or accept, and never pushes.
+description: Give the elements of a Proviso spec tree that moved to another capability or to the system, or whose identifiers name no place, the identifiers of their place, with every reference in the tree, the manifest, and the code and tests beside it, in one step outside any amendment. Use when the engineer asks to rehome, realign or tidy identifiers, after an amendment moved elements or gave a capability another identifier, or when lint asks about an identifier-unhomed. Shows the plan and waits for the engineer's approval before anything is written; does not integrate, check, build or accept, and never pushes.
 ---
 
 # Rehoming identifiers
 
-You give the elements that moved the identifiers of their place, in one
-step of its own: Proviso renames them in the spec tree and writes the
-manifest, and you carry the same renames into the code, tests and
-documents beside the tree, which Proviso never reads. Nothing changes
+You give the elements that moved, or whose identifiers name no place,
+the identifiers of their place, in one step of its own: Proviso renames
+them in the spec tree and writes the manifest, and you carry the same
+renames into the code, tests and documents beside the tree, which
+Proviso never reads. Nothing changes
 what anything means, and nothing is written before the engineer has seen
 every rename.
 
@@ -39,10 +40,21 @@ Run `proviso rehome --json`, which writes nothing.
 - Exit 0 with no renames: every identifier names its place; say so and
   stop.
 - Exit 1: some renames would take an identifier. Show each collision:
-  the identifier and the elements planned to take it. Renaming one of
-  them by hand is an edit of the tree, an amendment of its own; say so
-  and stop.
+  the identifier and the elements planned to take it, and ask the
+  engineer for another new identifier for one of them; renaming one by
+  hand is an edit of the tree, an amendment of its own.
 - Exit 2: say why, from what it wrote to standard error, and stop.
+
+An identifier whose first segment names no place, such as a contract's
+name alone, gets its place put in front: `okf-get` in the capability
+`access` becomes `access.okf-get`. Where a derived identifier is taken
+or awkward, such as `coherence.checks.run` for a feature whose
+capability was once identified as `checks`, the engineer may give its
+new identifier: run the plan again with
+`--rename <old>=<new>` for each, such as
+`--rename checks.run=coherence.run`. The new identifier starts with the
+element's place. Keep every `--rename` the engineer gives, and pass the
+same ones to every later run of `proviso rehome`.
 
 ## 3. What the renames reach beside the tree
 
@@ -55,7 +67,9 @@ so that `a.b` never matches inside `a.b.c`:
   identifier as it stands, and every form derived from it where
   `.proviso/build.md` or the engineers' notes say how one is derived,
   such as a test named after its element. For each new identifier,
-  check that its derived form is not already taken.
+  check that its derived form is not already taken; if it is, ask the
+  engineer for another new identifier, given with `--rename`, and run
+  the plan again.
 - **In the spec tree itself:** the plan's `mentions` list every line
   where an old identifier stands as a whole code span outside rule
   blocks and fenced blocks, such as in an Examples cell or a Rationale.
@@ -80,7 +94,9 @@ Show the engineer, and wait for the answer:
 - every place beside the tree you will rename, file by file, and every
   match you will leave, with why;
 - every derived name already taken, which stops the step until the
-  engineer decides;
+  engineer gives another new identifier with `--rename`, or decides
+  otherwise;
+- every new identifier the engineer gave with `--rename`;
 - the plan's mentions, grouped by element, each with its file and
   line, and whether you propose to rename it, a reference, or to keep
   it, data;
@@ -93,10 +109,11 @@ Write nothing until the engineer agrees.
 
 1. Write the mentions the engineer approved for renaming, as a
    `mention_list` of the plan's items, to a file in the system's
-   temporary folder, and run `proviso rehome --write --mentions --json`
-   with that file on standard input; with none approved, run it
-   without `--mentions`. It must exit with 0 and list the same renames
-   and mentions as the plan; if not, stop and say why.
+   temporary folder, and run `proviso rehome --write --mentions --json`,
+   with every `--rename` the engineer gave, and with that file on
+   standard input; with none approved, run it without `--mentions`. It
+   must exit with 0 and list the same renames and mentions as the
+   plan; if not, stop and say why.
 2. Rename every approved place beside the tree. Make each edit fail if
    it matches nothing, and read each one back: a rename that never
    landed is the error this step most easily hides.

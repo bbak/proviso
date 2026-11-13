@@ -1,6 +1,7 @@
 // Package rehome plans the renames that give every element of a spec tree
-// an identifier naming its identifier home, finds the renames that would
-// take an identifier, and rewrites the places rehome_references lists.
+// an identifier naming its identifier home, takes the new identifiers the
+// engineer gives, finds the renames that would take an identifier, and
+// rewrites the places rehome_references lists.
 package rehome
 
 import (
@@ -42,37 +43,121 @@ type Collision struct {
 	From       []string
 }
 
-// Plan returns the renames of upkeep.rehome.home, ordered by their old
-// identifier, and the collisions of upkeep.rehome.collision, ordered by the
-// identifier each would take, both compared byte by byte.
-func Plan(elements []lint.Element) ([]Rename, []Collision) {
+// Plan returns the renames of upkeep.rehome.home and upkeep.rehome.place,
+// ordered by their old identifier, compared byte by byte: an identifier
+// whose first segment is "system" or a capability's identifier, but not
+// its element's identifier home, gets that home for its first segment; an
+// identifier whose first segment names no place gets its home put in
+// front.
+func Plan(elements []lint.Element) []Rename {
 	// The identifier home of a capability's folder is the capability's
 	// identifier, not the folder's name.
 	homes := map[string]string{}
-	ids := map[string]bool{}
+	places := map[string]bool{System: true}
 	for _, e := range elements {
-		ids[e.ID] = true
 		if e.Type == lint.TypeCapability {
 			homes[e.Cap] = e.ID
+			places[e.ID] = true
 		}
 	}
 	var renames []Rename
 	for _, e := range elements {
-		home := System
-		if e.Cap != "" {
-			home = homes[e.Cap]
-		}
+		home := Home(e, homes)
 		first, rest, hasRest := strings.Cut(e.ID, ".")
 		if home == "" || first == home {
 			continue
 		}
-		to := home
-		if hasRest {
-			to += "." + rest
+		to := home + "." + e.ID
+		switch {
+		case !places[first]:
+			// A name, not a place: it stays, behind its place.
+		case hasRest:
+			to = home + "." + rest
+		default:
+			to = home
 		}
 		renames = append(renames, Rename{e.ID, to})
 	}
 	slices.SortFunc(renames, func(a, b Rename) int { return cmp.Compare(a.From, b.From) })
+	return renames
+}
+
+// Home returns the identifier home of the element e, given the
+// identifiers of the capabilities by their folders: "" where its folder
+// holds no capability.
+func Home(e lint.Element, homes map[string]string) string {
+	if e.Cap == "" {
+		return System
+	}
+	return homes[e.Cap]
+}
+
+// Give returns renames with the new identifiers the values of
+// rehome.rename give in place of those derived, following
+// upkeep.rehome.given: each value an old identifier of renames, "=", and
+// a well-formed new identifier whose first segment is the identifier home
+// of the element the old one identifies, no two values giving one old
+// identifier two new ones. It returns, for every value that cannot be
+// taken, in the order given, why, and then renames as they were.
+func Give(elements []lint.Element, renames []Rename, values []string) ([]Rename, []string) {
+	homes := map[string]string{}
+	byID := map[string]lint.Element{}
+	for _, e := range elements {
+		byID[e.ID] = e
+		if e.Type == lint.TypeCapability {
+			homes[e.Cap] = e.ID
+		}
+	}
+	planned := map[string]bool{}
+	for _, r := range renames {
+		planned[r.From] = true
+	}
+	given := map[string][]string{} // the new identifiers given for each old one
+	for _, v := range values {
+		if from, to, ok := strings.Cut(v, "="); ok && !slices.Contains(given[from], to) {
+			given[from] = append(given[from], to)
+		}
+	}
+	var why []string
+	for _, v := range values {
+		from, to, ok := strings.Cut(v, "=")
+		switch {
+		case !ok:
+			why = append(why, fmt.Sprintf("%q holds no \"=\" between an old and a new identifier", v))
+		case !planned[from]:
+			why = append(why, fmt.Sprintf("%q: %q is no old identifier of the planned renames", v, from))
+		case !lint.WellFormed(to):
+			why = append(why, fmt.Sprintf("%q: the new identifier %q is not well-formed", v, to))
+		case len(given[from]) > 1:
+			why = append(why, fmt.Sprintf("%q: %q is given another new identifier too", v, from))
+		default:
+			home := Home(byID[from], homes)
+			if first, _, _ := strings.Cut(to, "."); first != home {
+				why = append(why, fmt.Sprintf("%q: the new identifier %q does not start with %q, the identifier home of %q", v, to, home, from))
+			}
+		}
+	}
+	if len(why) > 0 {
+		return renames, why
+	}
+	out := slices.Clone(renames)
+	for i, r := range out {
+		if to, ok := given[r.From]; ok {
+			out[i].To = to[0]
+		}
+	}
+	return out, nil
+}
+
+// Collisions returns the collisions of upkeep.rehome.collision among the
+// renames of the elements: every new identifier an element has, or that
+// is planned for two elements, ordered by that identifier, compared byte
+// by byte.
+func Collisions(elements []lint.Element, renames []Rename) []Collision {
+	ids := map[string]bool{}
+	for _, e := range elements {
+		ids[e.ID] = true
+	}
 	// An identifier is taken until the run ends, so no two elements swap.
 	byTo := map[string][]string{}
 	for _, r := range renames {
@@ -84,7 +169,7 @@ func Plan(elements []lint.Element) ([]Rename, []Collision) {
 			collisions = append(collisions, Collision{to, byTo[to]})
 		}
 	}
-	return renames, collisions
+	return collisions
 }
 
 // Mention is an identifier mention of an old identifier of a rename: the

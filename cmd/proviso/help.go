@@ -42,12 +42,12 @@ Commands the skills run:
   judge               Record the check result on standard input in the
                       coherence file.
   manifest            Record the spec tree as the baseline.
-  rehome [--write [--mentions]] [--json]
-                      Plan the renames that give moved elements the
-                      identifiers of their place, and list the other
-                      mentions of the identifiers it renames; with
-                      --write, write the renames into the spec tree and
-                      the manifest.
+  rehome [--write [--mentions]] [--json] [--rename <old>=<new>]...
+                      Plan the renames that give elements that moved, or
+                      whose identifiers name no place, the identifiers
+                      of their place, and list the other mentions of the
+                      identifiers it renames; with --write, write the
+                      renames into the spec tree and the manifest.
 
 Options:
   --json              Write JSON instead of text.
@@ -60,6 +60,9 @@ Options:
   --mentions          Read a mention list on standard input and rename
                       the mentions it names too (rehome, with --write
                       only).
+  --rename <old>=<new>
+                      Rename <old> to <new> instead of the identifier
+                      derived; once for each element (rehome only).
   --in <capability>   Look only among the elements of that capability
                       and of the system level (show only).
 
@@ -79,7 +82,7 @@ const helpHint = `"proviso help" shows the help page`
 
 // commandOptions is, for every command of cli.help.command, the options
 // it takes; "--since" takes a revision after it, "--element" an
-// identifier, "--in" a capability.
+// identifier, "--in" a capability, "--rename" an old and a new identifier.
 var commandOptions = map[string][]string{
 	"init":     nil,
 	"update":   nil,
@@ -91,7 +94,7 @@ var commandOptions = map[string][]string{
 	"pack":     {"--json", "--since", "--element"},
 	"judge":    nil,
 	"verify":   {"--json"},
-	"rehome":   {"--write", "--json", "--mentions"},
+	"rehome":   {"--write", "--json", "--mentions", "--rename"},
 	"show":     {"--json", "--in"},
 	"help":     nil,
 }
@@ -134,13 +137,18 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 		case a == "--in" && o.in != "":
 			// One capability per run.
 			return refuse(a, "takes one --in, so it refuses")
-		case a != "--in" && (o.since != "" || o.element != ""):
+		case (a == "--since" || a == "--element") && (o.since != "" || o.element != ""):
 			// One revision or one element per run, never both.
 			return refuse(a, "takes one --since or one --element, so it refuses")
 		case i+1 == len(args) || args[i+1] == "" || args[i+1][0] == '-':
 			// No revision git accepts, no identifier and no capability
 			// starts with "-".
 			return refuse(a, "needs a value after")
+		case a == "--rename":
+			// Once for each element; what the value holds is rehome's to
+			// check.
+			i++
+			o.renames = append(o.renames, args[i])
 		case a == "--since":
 			i++
 			o.since = args[i]
@@ -157,10 +165,11 @@ func readArgs(cmd, name string, args []string, stderr io.Writer) (options, bool)
 
 // options are the arguments a command read: whether it was given --json,
 // --write and --mentions, the values of --since, --element and --in, and
-// the query, "" for none.
+// the query, "" for none, and every value of --rename, in the order given.
 type options struct {
 	json, write, mentions     bool
 	since, element, in, query string
+	renames                   []string
 }
 
 // helpRun writes the help page to stdout.

@@ -13,6 +13,9 @@ import (
 const glossaryMoved = "# Glossary\n\n## <a id=\"c.thing\"></a> thing\n\n- Definition: A thing.\n- Contact: Ann\n- Status: defined\n\n" +
 	"## <a id=\"system.other\"></a> other\n\n- Definition: Not a [thing](#c.thing).\n- Contact: Ann\n- Status: defined\n"
 
+// capabilityC is the capability c, the place of c.thing before it moved.
+const capabilityC = "# <a id=\"c\"></a> C\n\n## Goal\n\ng\n\n## Rationale\n\nr\n"
+
 func TestRehome(t *testing.T) {
 	call := func(args ...string) (int, string, string) {
 		var out, errOut bytes.Buffer
@@ -26,7 +29,7 @@ func TestRehome(t *testing.T) {
 		return string(data)
 	}
 
-	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/glossary.md": glossaryMoved})
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/capabilities/c/capability.md": capabilityC, "proviso/glossary.md": glossaryMoved})
 	if status, out, errOut := call("rehome"); status != 2 || out != "" || !strings.Contains(errOut, "no proviso/manifest.sum") {
 		t.Errorf("without a manifest: %d %q %q", status, out, errOut)
 	}
@@ -82,7 +85,7 @@ func TestRehome(t *testing.T) {
 
 	// The mentions of a renamed identifier are listed, and renamed only
 	// where the mention list on stdin names them.
-	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/glossary.md": glossaryMoved + "\n## <a id=\"system.third\"></a> third\n\n- Definition: Not `c.thing`, nor `c.thing`.\n- Contact: Ann\n- Status: defined\n\n## <a id=\"system.fourth\"></a> fourth\n\n- Definition: Not `c.thing`.\n- Contact: Ann\n- Status: defined\n"})
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/capabilities/c/capability.md": capabilityC, "proviso/glossary.md": glossaryMoved + "\n## <a id=\"system.third\"></a> third\n\n- Definition: Not `c.thing`, nor `c.thing`.\n- Contact: Ann\n- Status: defined\n\n## <a id=\"system.fourth\"></a> fourth\n\n- Definition: Not `c.thing`.\n- Contact: Ann\n- Status: defined\n"})
 	call("manifest")
 	before := read(glossary)
 	if status, out, _ := call("rehome"); status != 0 || !strings.Contains(out, "mention: proviso/glossary.md:17: c.thing, 2 times, in system.third\n") || !strings.Contains(out, "mention: proviso/glossary.md:23: c.thing, once, in system.fourth\n") {
@@ -113,7 +116,7 @@ func TestRehome(t *testing.T) {
 	}
 
 	// A rename that takes an identifier refuses the run.
-	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/glossary.md": glossaryMoved + "\n## <a id=\"system.thing\"></a> thing2\n\n- Definition: A thing.\n- Contact: Ann\n- Status: defined\n"})
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/capabilities/c/capability.md": capabilityC, "proviso/glossary.md": glossaryMoved + "\n## <a id=\"system.thing\"></a> thing2\n\n- Definition: A thing.\n- Contact: Ann\n- Status: defined\n"})
 	call("manifest")
 	before = read(glossary)
 	if status, out, _ := call("rehome", "--write"); status != 1 || !strings.Contains(out, "collision: system.thing would be taken by c.thing") {
@@ -121,5 +124,51 @@ func TestRehome(t *testing.T) {
 	}
 	if read(glossary) != before {
 		t.Error("a collision wrote")
+	}
+}
+
+func TestRehomeRename(t *testing.T) {
+	call := func(args ...string) (int, string, string) {
+		var out, errOut bytes.Buffer
+		status := run(args, &out, &errOut)
+		return status, out.String(), errOut.String()
+	}
+	// okf-get names no place, and c.thing names a place no capability
+	// is identified as any more: both get their place put in front.
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/glossary.md": glossaryMoved,
+		"proviso/contracts/api.md": "# API\n\n## <a id=\"okf-get\"></a> okf get\n\nIt gets.\n\n### <a id=\"okf-get.input\"></a> input\n\nWhat it takes.\n"})
+	if status, _, errOut := call("manifest"); status != 0 {
+		t.Fatalf("manifest: %d %q", status, errOut)
+	}
+	if status, out, errOut := call("rehome"); status != 0 || out != "c.thing → system.c.thing\nokf-get → system.okf-get\nokf-get.input → system.okf-get.input\n" || errOut != "" {
+		t.Errorf("plan: %d %q %q", status, out, errOut)
+	}
+	if status, out, errOut := call("rehome", "--rename", "c.thing=system.thing", "--rename", "c.thing=system.thing"); status != 0 || !strings.HasPrefix(out, "c.thing → system.thing\nokf-get → system.okf-get\n") || errOut != "" {
+		t.Errorf("given: %d %q %q", status, out, errOut)
+	}
+	if status, out, _ := call("rehome", "--rename", "c.thing=system.other"); status != 1 || !strings.Contains(out, "collision: system.other would be taken by c.thing") {
+		t.Errorf("given, taken: %d %q", status, out)
+	}
+	for _, v := range [][]string{{"system.other=system.x"}, {"c.thing"}, {"c.thing="}, {"c.thing=System.Thing"}, {"c.thing=c.thing2"}, {"c.thing=system.a", "c.thing=system.b"}} {
+		var args []string
+		for _, x := range v {
+			args = append(args, "--rename", x)
+		}
+		before, _ := os.ReadFile(filepath.Join("proviso", "glossary.md"))
+		if status, out, errOut := call(append([]string{"rehome", "--write"}, args...)...); status != 2 || out != "" || !strings.Contains(errOut, "--rename") {
+			t.Errorf("%q: %d %q %q", v, status, out, errOut)
+		}
+		if after, _ := os.ReadFile(filepath.Join("proviso", "glossary.md")); !bytes.Equal(before, after) {
+			t.Errorf("%q wrote", v)
+		}
+	}
+	if status, _, errOut := call("rehome", "--write", "--rename", "c.thing=system.thing"); status != 0 {
+		t.Fatalf("write: %d %q", status, errOut)
+	}
+	if status, out, _ := call("diff"); status != 0 || out != "" {
+		t.Errorf("after the write, the diff: %d %q", status, out)
+	}
+	if status, out, _ := call("lint"); status != 0 || out != "" {
+		t.Errorf("after the write, lint: %d %q", status, out)
 	}
 }

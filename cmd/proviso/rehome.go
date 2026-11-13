@@ -20,15 +20,25 @@ import (
 )
 
 // rehomeRun plans the renames that give every element an identifier
-// naming its identifier home, and lists the identifier mentions of the
+// naming its identifier home, with the new identifiers given takes those
+// the values of --rename give, and lists the identifier mentions of the
 // identifiers it renames; with write it writes the renames, with mentions
 // also the identifier mentions the mention_list on stdin names, and it
 // writes the plan. Lint has found no error in t.
-func rehomeRun(t *tree.Tree, res *lint.Result, asJSON, write, mentions bool, stdout, stderr io.Writer) int {
+func rehomeRun(t *tree.Tree, res *lint.Result, asJSON, write, mentions bool, given []string, stdout, stderr io.Writer) int {
 	if !recorded(t, res, stderr) {
 		return exitCantRun
 	}
-	renames, collisions := rehome.Plan(res.Elements)
+	renames, why := rehome.Give(res.Elements, rehome.Plan(res.Elements), given)
+	if len(why) > 0 {
+		// upkeep.rehome.given: a value that cannot be taken stops the run
+		// before collisions are found.
+		for _, w := range why {
+			fmt.Fprintf(stderr, "proviso rehome: the value of --rename %s; nothing is written\n", w)
+		}
+		return exitCantRun
+	}
+	collisions := rehome.Collisions(res.Elements, renames)
 	listed := rehome.Mentions(t, res.Elements, renames)
 	status := exitClean
 	switch {
