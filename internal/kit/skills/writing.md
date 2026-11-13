@@ -33,14 +33,19 @@ Write for that reader.
   amendment is accepted.
 - An identifier is readable, `<prefix>.<name>` in lowercase with
   hyphens, such as `cash.withdrawal.pay`. The prefix names where the
-  element stands, the capability or `system`. An identifier is never
+  element stands, the capability or `system`, for every element,
+  contract elements included: the identifier of the member `id` of the
+  contract `customer` in the capability `cash` is `cash.customer.id`,
+  while rules refer to it by its names, `` `customer.id` ``. Lint asks
+  about an identifier whose prefix names no place. An identifier is never
   reused once its element is removed, since history, commit messages
   and links outside the tree still name the old element by it. Search
   the tree and its history before you choose one.
 - The layout follows what the system does, not its packages. Moving
   an element to another feature or capability changes no identifier and
-  no behaviour, so regrouping is cheap; `proviso-rehome` gives moved
-  elements the identifiers of their place afterwards, in a step of its
+  no behaviour, so regrouping is cheap; `proviso-rehome` gives elements
+  that moved, or whose identifiers name no place, the identifiers of
+  their place afterwards, in a step of its
   own. Suggest it to the engineer when
   a Goal can no longer be said in one to three sentences without joining
   unrelated purposes with "and", when the rules form groups that share
