@@ -5,14 +5,14 @@
 ## Goal
 
 Rehoming gives every element whose identifier names another place than
-its identifier home an identifier that names it, renames every reference to
-it that the notation marks, and writes the manifest of the rewritten
-tree, so that the tree says the same as before under identifiers that
-say where their elements stand. It also lists every other mention of an
-identifier it renames, and renames those the engineer picks. The
-engineer may give an element another new identifier than the one
-`rehome` derives. It shows what it would rename before it writes
-anything.
+its identifier home, or no place at all, an identifier that names it,
+renames every reference to it that the notation marks, and writes the
+manifest of the rewritten tree, so that the tree says the same as before
+under identifiers that say where their elements stand. It also lists
+every other mention of an identifier it renames, and renames those the
+engineer picks. The engineer may give an element another new identifier
+than the one `rehome` derives. It shows what it would rename before it
+writes anything.
 
 ## Rationale
 
@@ -182,6 +182,7 @@ Otherwise `rehome` writes to "stderr" why <value> cannot be taken
 | `serving.snapshot=System.Snapshot` | no (well-formed) | exit status 2, nothing written | uppercase |
 | `serving.snapshot=serving.whole-snapshot`, `serving.snapshot` an invariant of the system | no (identifier home) | exit status 2, nothing written | it would name another place |
 | `serving.snapshot=system.a`, while `serving.snapshot=system.b` is given too | no (another new one) | exit status 2, nothing written | two identifiers for one element |
+| `nosuch.x=system.x`, while the plan renames `baseline.x` to `coherence.x`, taken | no (an old identifier of the planned renames) | exit status 2, no collision named, nothing written | a value that cannot be taken stops the run before collisions are found |
 
 ## <a id="upkeep.rehome.mentions"></a> Rule: The plan lists every mention of an identifier it renames
 
@@ -210,7 +211,7 @@ Then      every [identifier mention] of <id> in the [spec tree] is listed with t
 ## <a id="upkeep.rehome.collision"></a> Rule: A rename that would take an identifier refuses the run
 
 ```guarded
-When      `rehome` has planned the renames <renames>
+When      `rehome` has planned the renames <renames>, with every [identifier] `rehome.rename` gives
 Provided  no new [identifier] of <renames> is the [identifier] of an [element] of the [spec tree]
   And     no new [identifier] of <renames> is planned for two [elements]
 Then      `rehome` goes on with <renames>

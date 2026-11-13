@@ -26,8 +26,8 @@ line. Proviso is those mechanics.
 - Acceptance checks.
 - Measuring, with mutants of the system's code, how many slips its
   tests catch and where they miss, through a skill.
-- Upkeep of a spec tree: giving elements that moved the identifiers
-  of their place.
+- Upkeep of a spec tree: giving elements that moved, or whose
+  identifiers name no place, the identifiers of their place.
 - Showing an element of a spec tree by the identifier or name a
   reader meets, and answering an engineer's questions about the system
   from the tree, through a skill.

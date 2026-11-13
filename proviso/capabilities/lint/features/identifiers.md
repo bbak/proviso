@@ -152,12 +152,13 @@ says nowhere, and `rehome` cannot tell its place from its name. Any
 place will do: an amendment that moves an element keeps its identifier,
 and the identifier names the element's former place until the engineer
 rehomes the tree. A capability's identifier of several segments is
-already an error of its own, so its first segment counts as a place,
-and the one mistake is reported once.
+already an error of its own, so its first segment counts as a place;
+a malformed identifier and the system's identifier are left to their
+own rules too, so that one mistake is reported once.
 
 ```guarded
 When      lint reads the [identifier] <id> of an [element]
-Provided  the first segment of <id>, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
+Provided  <id> is not [well-formed], or is the [identifier] of the system, or its first segment, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
 Then      lint reports nothing about the first segment of <id>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [error] `findings.identifier-unhomed` at <id>
@@ -170,6 +171,8 @@ Otherwise lint reports the [error] `findings.identifier-unhomed` at <id>
 | `system.read-only`, an invariant of the system | yes | nothing reported | |
 | `coherence.impact.events`, a rule of the capability `baseline`, while a capability is identified as `coherence` | yes | nothing reported | a moved element keeps its identifier until a rehome |
 | `system` | yes | nothing reported | the system |
+| `proviso`, the system's identifier | yes | nothing reported | `findings.system-identifier` alone reports it |
+| `Lint.run`, a rule of the capability `lint` | yes | nothing reported | `findings.identifier-malformed` alone reports it |
 | `lint`, the capability so identified | yes | nothing reported | a capability names its own place |
 | `cash.withdrawal.pay`, while a capability is identified as `cash.withdrawal` | yes | nothing reported | that capability's identifier is the error |
 | `okf-get`, a contract element of the capability `access` | no | error | a contract's name, no place |
