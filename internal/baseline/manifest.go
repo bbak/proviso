@@ -40,18 +40,19 @@ func NamedModel(line string) (string, bool) {
 	return m[1], true
 }
 
-// CheckModel reports whether the first line of a manifest names the model
-// version this binary reads, its line ending left out. It checks nothing
-// else of the manifest.
+// CheckModel reports whether the first line of a manifest, its line
+// ending left out, names a model version this binary reads, from
+// oldest_model_version to model_version. It checks nothing else of the
+// manifest.
 func CheckModel(data []byte) error {
-	first := FirstLine(data)
-	if first == modelLine {
-		return nil
+	v, ok := NamedModel(FirstLine(data))
+	if !ok {
+		return fmt.Errorf("the first line of manifest.sum names no model version, so the version the spec tree needs is unknown; this proviso reads %s", model.Range())
 	}
-	if v, ok := NamedModel(first); ok {
-		return fmt.Errorf("the spec tree needs model version %s, as the first line of %s says, and this proviso reads model version %d", v, "manifest.sum", model.Version)
+	if !model.Reads(v) {
+		return fmt.Errorf("the spec tree needs model version %s, as the first line of %s says, and this proviso reads %s", v, "manifest.sum", model.Range())
 	}
-	return fmt.Errorf("the first line of manifest.sum names no model version, so the version the spec tree needs is unknown; this proviso reads model version %d", model.Version)
+	return nil
 }
 
 // Write returns the manifest of the elements: the model line, then one

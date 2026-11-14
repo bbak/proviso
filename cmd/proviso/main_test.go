@@ -700,7 +700,7 @@ func TestVersionCommand(t *testing.T) {
 		{"before init", map[string]string{".git/HEAD": ""}, []string{"no Proviso skill", "manifest.sum does not exist"}},
 		{"other claude files", map[string]string{".git/HEAD": "", ".claude/settings.json": "{}", "proviso/manifest.sum": "model 0\n"}, []string{"no Proviso skill"}},
 		{"one skill only", map[string]string{".git/HEAD": "", ".claude/skills/proviso-build/SKILL.md": stamped("0.2.0"), "proviso/manifest.sum": "model 0\n"}, []string{"proviso-checker.md is not installed", "proviso-coder.md is not", "proviso-mutator.md is not", "proviso-tester.md is not", "proviso-accept/SKILL.md is not", "proviso-check/SKILL.md is not", "proviso-explain/SKILL.md is not", "proviso-integrate/SKILL.md is not", "proviso-mutate/SKILL.md is not", "proviso-recover/SKILL.md is not", "proviso-rehome/SKILL.md is not"}},
-		{"stale with model", all(map[string]string{tester: stamped("0.1.0")}), []string{tester + " was installed by Proviso 0.1.0, which reads model 0"}},
+		{"stale with model", all(map[string]string{tester: stamped("0.1.0")}), []string{tester + " was installed by Proviso 0.1.0, which writes model 0"}},
 		{"stale dev", all(map[string]string{tester: stamped("dev")}), []string{tester + " was installed by Proviso dev; this"}},
 		{"later release", all(map[string]string{tester: stamped("0.3.0")}), []string{tester + " was installed by Proviso 0.3.0; this"}},
 		{"two stamps", all(map[string]string{tester: "---\nmetadata:\n  proviso-version: 0.2.0\n  proviso-version: 0.2.0\n---\n"}), []string{tester + " holds more than one"}},

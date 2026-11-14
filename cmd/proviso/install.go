@@ -48,10 +48,11 @@ func initRun(stdout, stderr io.Writer) int {
 	return status
 }
 
-// versionRun writes the Proviso version and the model version and then, in
-// the root of a git repository, one line to stderr for each installed
-// skill or agent definition and for a spec tree that does not fit them. It
-// writes nothing to disk, and its warnings never change its exit status.
+// versionRun writes the Proviso version and the model version it writes
+// and then, in the root of a git repository, one line to stderr for each
+// installed skill or agent definition and for a spec tree that does not
+// fit them. It writes nothing to disk, and its warnings never change its
+// exit status.
 func versionRun(stdout, stderr io.Writer) int {
 	fmt.Fprintf(stdout, "proviso %s\nmodel %d\n", version, model.Version)
 	wd, err := os.Getwd()
@@ -109,13 +110,13 @@ func checkStamp(p string) string {
 		return ""
 	}
 	if m, ok := stamp.Model(stamps[0], version); ok {
-		return fmt.Sprintf("was installed by Proviso %s, which reads model %d; this is Proviso %s", stamps[0], m, version)
+		return fmt.Sprintf("was installed by Proviso %s, which writes model %d; this is Proviso %s", stamps[0], m, version)
 	}
 	return fmt.Sprintf("was installed by Proviso %s; this is Proviso %s", stamps[0], version)
 }
 
 // checkManifest returns how the manifest at p does not fit this binary's
-// model version, or "" where it fits.
+// model versions, or "" where it fits.
 func checkManifest(p string) string {
 	if _, err := os.Lstat(p); err != nil {
 		return "does not exist, so no model version is recorded for the spec tree"
@@ -128,7 +129,7 @@ func checkManifest(p string) string {
 		return ""
 	}
 	if v, ok := baseline.NamedModel(baseline.FirstLine(data)); ok {
-		return fmt.Sprintf("says the spec tree needs model version %s; this proviso reads model version %d", v, model.Version)
+		return fmt.Sprintf("says the spec tree needs model version %s; this proviso reads %s", v, model.Range())
 	}
 	return "names no model version"
 }

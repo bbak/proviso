@@ -21,8 +21,9 @@ Commands engineers run:
   update              Bring the installed skills and agent definitions
                       to this release; run in the root of a git
                       repository.
-  version             Write the Proviso version and the model version,
-                      and check what is installed against them.
+  version             Write the Proviso version and the model version
+                      it writes, and check what is installed against
+                      them.
   lint [--json]       Check the spec tree against the model's notation.
   diff [--json] [--since <revision>]
                       Write the element diff against the baseline.

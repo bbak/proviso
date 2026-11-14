@@ -92,7 +92,7 @@ Otherwise lint writes every file in <unreadable> to "stderr"
 | none, while `capabilities/lint/features/old/` is a folder holding `run.md` | yes | goes on to the model version, and `old/run.md` is reported as `file-unknown` | `old` is no name the layout lists for a file |
 | none, while `.shared.md` is a symbolic link with a hidden name | yes | goes on to the model version, and the link is skipped | a hidden entry never holds spec content |
 
-## <a id="lint.run.model"></a> Rule: Lint checks only a tree of its own model version
+## <a id="lint.run.model"></a> Rule: Lint checks only a tree of a model version it reads
 
 ### Rationale
 
@@ -101,12 +101,14 @@ with another version's notation is misread without any sign of it. The
 manifest records the version a tree was last accepted under, where no
 author has to keep it. A tree without a manifest has not been accepted
 yet and has nothing to be compatible with, so it is read with the
-binary's own version.
+binary's own version. A tree of an older model version from
+`oldest_model_version` on is read as it was written, so lint reads it
+too.
 
 ```guarded
 Given     lint has read every file of its [spec tree] that `tree_layout` lists
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
-Provided  <root> holds no `manifest_file`, or its first line, without its [line ending], names `model_version`
+Provided  <root> holds no `manifest_file`, or its first line, without its [line ending], names a model version from `oldest_model_version` to `model_version`
 Then      lint checks the [spec tree]
   And     lint reports what it finds
   And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
@@ -116,19 +118,19 @@ Otherwise → lint.run.model-other
 | root | provided | outcome | why |
 | --- | --- | --- | --- |
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
-| `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | `oldest_model_version` and `model_version` are both 0 |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
 | `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
 | `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
 
-## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
+## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree it does not read needs
 
 ```guarded
-When      lint finds that the first line <line> of `manifest_file` does not name `model_version`
+When      lint finds that the first line <line> of `manifest_file` does not name a model version from `oldest_model_version` to `model_version`
 Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
-Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and `model_version` as the one lint reads
+Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and the model versions lint reads, from `oldest_model_version` to `model_version`, as one number where both are the same
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
 Otherwise lint writes to "stderr" that `manifest_file` names no model version

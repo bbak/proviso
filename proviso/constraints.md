@@ -160,6 +160,27 @@ Every first release in `model_releases` is a release version whose
 patch number is 0. From row to row, both the model version and the
 first release rise, and the last row names `model_version`.
 
+## <a id="system.model-compatibility"></a> A tree of a model version the binary reads stays as it was
+
+### Rationale
+
+A tree in use was accepted under some model version, and its manifest
+records that version. A binary that reads it must find in it what the
+binary that accepted it found, or the first `diff` after an upgrade
+shows changes nobody made, and a new error stops every command that
+gates on lint. Then no migration is needed: the next manifest written,
+as at an acceptance, names the binary's own model version.
+
+### Property
+
+Every spec tree accepted by a release of a model version from
+`oldest_model_version` to `model_version`, and the `manifest_file`
+written with it, are read by the binary with the same elements, the
+same element parts and the same fingerprints as by that release, and
+lint reports no error in such a tree that that release did not report.
+A change that breaks this is a change of the notation: it raises
+`model_version`, and `oldest_model_version` to the new `model_version`.
+
 ## <a id="system.build-version"></a> Only a release gives the binary a release version
 
 ### Rationale

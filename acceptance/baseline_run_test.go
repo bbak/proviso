@@ -54,7 +54,7 @@ func TestBaselineRunLint(t *testing.T) {
 
 	// Rows 7 and 8 are baseline.run.lint's own; coherence.run.lint does
 	// not share them, so they stay out of runsOnlyWhereLintAccepts.
-	t.Run("row7 a manifest.sum naming another model version", func(t *testing.T) {
+	t.Run("row7 a manifest.sum naming a model version lint does not read", func(t *testing.T) {
 		t.Parallel()
 		for _, cmd := range []string{"manifest", "diff", "pack", "pack --element"} {
 			t.Run(cmd, func(t *testing.T) {

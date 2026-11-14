@@ -750,6 +750,12 @@ func TestLintRunModel(t *testing.T) {
 		// model 0; handed over, lint stops before it reports line-ending.
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 0\rfoo\n")))
 	})
+	for _, v := range readModelVersions() {
+		t.Run("derived: manifest.sum starting with model "+v+", from oldest_model_version to model_version", func(t *testing.T) {
+			t.Parallel()
+			check(t, baseline().with("proviso/manifest.sum", "model "+v+"\n")).clean(t)
+		})
+	}
 	t.Run("derived: manifest.sum starting with model 0, a carriage return and a line feed, in a tree with an error", func(t *testing.T) {
 		t.Parallel()
 		// The tree is checked and lint reports what it finds: the error
@@ -811,8 +817,8 @@ func TestLintRunModelOther(t *testing.T) {
 				}
 				nums := numbers(r.stderr, dir, filepath.ToSlash(dir), "manifest.sum")
 				if row.needs != "" {
-					if count(nums, row.needs) == 0 || count(nums, modelVersion) == 0 {
-						t.Errorf("lint.run.model-other: want stderr to name model %s as the one the tree needs and model %s as the one lint reads: %q", row.needs, modelVersion, r.stderr)
+					if count(nums, row.needs) == 0 || !namesReadVersions(nums) {
+						t.Errorf("lint.run.model-other: want stderr to name model %s as the one the tree needs and the model versions lint reads, from %s to %s, as one number where both are the same: %q", row.needs, oldestModelVersion, modelVersion, r.stderr)
 					}
 				} else if count(nums, modelVersion) > 1 {
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed: %q", row.line, modelVersion, r.stderr)

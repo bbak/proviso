@@ -4,24 +4,36 @@
 
 - Value: 0
 - Configurable: no
-- Rationale: 0 says the notation is not declared stable yet, so trees
-  and binaries of version 0 promise each other nothing; 1 follows when
-  it is declared stable.
+- Rationale: a whole number counts the changes of the notation; which
+  trees a binary still reads is for `oldest_model_version` to say, not
+  the number itself.
 
 The version of the Proviso Model a binary reads and writes. A whole
 number, not a semantic version: every change to the notation breaks an
 older binary, since a section it does not know is an error to it.
 
+## <a id="system.oldest-model-version"></a> oldest_model_version
+
+- Value: 0
+- Configurable: no
+- Rationale: a change that only adds to the notation leaves every tree
+  as it was, so a binary goes on reading it without a migration; only a
+  change that breaks `system.model-compatibility` raises it.
+
+The oldest version of the Proviso Model a binary reads. A binary reads
+every model version from it to `model_version`, and writes only
+`model_version`.
+
 ## <a id="system.model-releases"></a> model_releases
 
 - Configurable: no
-- Rationale: a binary knows its own model version only; the first
-  release of each model version lets it tell which model an older
-  release reads, and the table grows with the model, not with every
+- Rationale: a binary knows only the model versions it reads; the
+  first release of each model version lets it tell which model an
+  older release writes, and the table grows with the model, not with every
   release.
 
-Each row holds from its first release up to the next row's first
-release; the last row holds for every later release. Versions are
+Each row names the model version its releases write, and holds from
+its first release up to the next row's first release; the last row holds for every later release. Versions are
 release versions, without a leading `v`.
 
 | model_version | first release |

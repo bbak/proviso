@@ -12,8 +12,8 @@ binary, and says file by file what it wrote, replaced and left alone.
 After an upgrade, the skills and agent definitions in a repository still
 hold the instructions of the version that installed them, and `init`
 never replaces a file. What Proviso owns is today the skills and agent
-definitions; once the model changes, the spec tree will follow as a
-second part of the same command, with options to run one part alone.
+definitions; once a change of the notation raises
+`oldest_model_version`, the spec tree will follow as a second part of the same command, with options to run one part alone.
 Each part decides on its own and reports its own lines, so that the next
 one adds to the command without changing the first.
 

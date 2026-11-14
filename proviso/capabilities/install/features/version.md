@@ -4,16 +4,19 @@
 
 ## Goal
 
-`version` names the Proviso version of the binary and the model version
-it reads, and, in the root of a git repository, says which installed
-skill or agent and which part of the spec tree does not fit them.
+`version` names the Proviso version of the binary and the
+`model_version` it writes, and, in the root of a git repository, says
+which installed skill or agent does not fit the binary, and whether the
+spec tree is of a model version the binary reads.
 
 ## Rationale
 
 Proviso has two versions: its own, which follows semantic versioning,
 and the model version, a whole number that changes with every change to
 the notation. An engineer who upgrades the binary needs both, and needs
-to know what was installed by another version.
+to know what was installed by another version. The model versions a
+binary reads, from `oldest_model_version` on, are named only where a
+tree's manifest names one outside them.
 
 Standard output carries the two lines and nothing else, wherever
 `version` runs, so that a script or a skill reads them without
@@ -181,9 +184,9 @@ Otherwise `version` writes no line about <file>
 
 | file | stamp | version | provided | outcome | why |
 | --- | --- | --- | --- | --- | --- |
-| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.2.0` | yes | named, installed by 0.1.0, which reads model 0 | |
+| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.2.0` | yes | named, installed by 0.1.0, which writes model 0 | |
 | `.claude/agents/proviso-tester.md` | `dev` | `0.2.0` | yes | named, installed by dev, no model | |
-| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.1.1-dev` | yes | named, installed by 0.1.0, which reads model 0 | a local build is another version |
+| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.1.1-dev` | yes | named, installed by 0.1.0, which writes model 0 | a local build is another version |
 | `.claude/agents/proviso-tester.md` | `0.1.0+build.5` | `0.1.0` | yes | named, installed by 0.1.0+build.5, no model | another build, though semantic versioning ranks them alike |
 | `.claude/agents/proviso-tester.md` | `0.3.0` | `0.2.0` | yes | named, installed by 0.3.0, no model | a later release may read a model this binary does not know |
 | `.claude/agents/proviso-tester.md` | `0.2.0` | `0.2.0` | no | no line | |
@@ -262,17 +265,17 @@ Otherwise → install.version.manifest-model
 | `manifest.sum`, a folder | yes | named as unreadable | |
 | `manifest.sum`, a readable file | no | handed over | |
 
-## <a id="install.version.manifest-model"></a> Rule: A spec tree of another model version is named
+## <a id="install.version.manifest-model"></a> Rule: A spec tree of a model version the binary does not read is named
 
 ### Rationale
 
 `version` judges the manifest's first line by the same rule as `lint`,
-so that the two agree on whether the model version a tree needs is the
-one the binary reads.
+so that the two agree on whether the model version a tree needs is one
+the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
-Provided  <line>, without its [line ending], names `model_version`
+Provided  <line>, without its [line ending], names a model version from `oldest_model_version` to `model_version`
 Then      `version` writes no line about the [spec tree]
   And     everything else stays as it was
 Otherwise → install.version.manifest-other
@@ -290,9 +293,9 @@ Otherwise → install.version.manifest-other
 ## <a id="install.version.manifest-other"></a> Rule: The model version the spec tree needs is named
 
 ```guarded
-When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name `model_version`
+When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name a model version from `oldest_model_version` to `model_version`
 Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
-Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and `model_version` as the one it reads
+Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and the model versions it reads, from `oldest_model_version` to `model_version`, as one number where both are the same
   And     everything else stays as it was
 Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.sum" names no model version
   And     everything else stays as it was

@@ -126,8 +126,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 }
 
 // check finds the spec root as lint does, reads its tree completely,
-// checks that it is of this binary's model version, and lints it. It
-// writes to stderr why it could not.
+// checks that it is of a model version this binary reads, and lints it.
+// It writes to stderr why it could not.
 func check(cmd string, stderr io.Writer) (*tree.Tree, *lint.Result, bool) {
 	wd, err := os.Getwd()
 	if err != nil {

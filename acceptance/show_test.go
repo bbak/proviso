@@ -187,6 +187,14 @@ func TestQueryShowTree(t *testing.T) {
 		o := showIn(t, dir, dir, "--json", "system")
 		sameAsLint(t, o, execLint(t, dir, "--json"))
 	})
+	for _, v := range readModelVersions() {
+		t.Run("derived: its manifest.sum starting with model "+v+", from oldest_model_version to model_version", func(t *testing.T) {
+			t.Parallel()
+			withV := tr.with("proviso/manifest.sum", "model "+v+"\n")
+			dir := withV.write(t)
+			showIn(t, dir, dir, "--json", "system.spec-tree").elementsAre(t, withV, dir, sSpecTree)
+		})
+	}
 }
 
 func TestQueryShowIn(t *testing.T) {
