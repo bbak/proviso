@@ -1,0 +1,657 @@
+{
+  "touched": [
+    {
+      "id": "baseline.diff.former",
+      "now": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:5e65065dc154ade8b17e964081706caa5be9b2e874c245897ce4645a8a9a30f3": "h1:1b4c2e0283d826a1817765c9beba7cf1d904f554be55b356673c7f5fefad8dfe",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "row h1:f9fa4a2ed7159b61410608319f79bc36c055ba799d59fd0237ada5872b586257": "h1:cd853cd488ac9df9ef1eee8a7e9a75e48b195d5d59ddd4e200808808bedfee5f",
+        "section Rationale": "h1:864f86c002f08391da6b734d2bebb8d406cea4683514c1d12d3ff82dcb78d631",
+        "step Otherwise": "h1:c87347cfd2465b4b801baf8ec0ad8f121a5f0b3a44f6fa51334a302d3c155b60",
+        "step Provided": "h1:c69f398124cd712cf8f20937bf5c943589fdd1de04a9340d64c13148a1df3a2c",
+        "step Then": "h1:d5858bbe8c5d49cd476e7b9e96d91349b54a0c6d0f63c35bcf6ea51948a49e4e",
+        "step When": "h1:b9bee1492b2bc621774687df09dfced62f000393c631fda4f7b84b9c00c97d36"
+      },
+      "baseline": {
+        "heading": "h1:19a62fd55c9685ddec448301832ef566cdfab2102e2b9d22ebca1387a6b8bfac",
+        "row h1:10fe40cdb7a9728cc49eb70a37fb8899c51be147bb6b25a44f91b7947dbd4ce3": "h1:7b72822468f7ba4c40b16a3916662450204dc463380b463ec5ba2355a53048d4",
+        "row h1:5e65065dc154ade8b17e964081706caa5be9b2e874c245897ce4645a8a9a30f3": "h1:1b4c2e0283d826a1817765c9beba7cf1d904f554be55b356673c7f5fefad8dfe",
+        "row h1:69342bd4a09e5be95b564303ccaba4b935d6bc21f607985fdc4040cdfe8da611": "h1:194aaa69f2119e933f7baf4c4e10e4902af21de659455139a4a55bb5aea5995f",
+        "row h1:953704f900dfda15d65462284bec6274d225144ad04e8ca3fb774decc2787769": "h1:27a6cd8867466153144a332c6446bfb76698dc80e0478482c809a9508d1f28e7",
+        "row h1:9d2be83bedf1c5785e325bc097af2fc8381547eb7d4337b3c50a3887e1ddc065": "h1:ac87833d8364a31057f1fb061152a574834a0bf5d02ca7eec88adfb5cae37fa4",
+        "row h1:e1b2bca1ad8cf6d099126664a0db61e70dceade170dd02df032d32d1499bacac": "h1:9ec6f5b3957a531590d5aa2428aa19824b9e8df9c27c5bbdee99b894eb5862f2",
+        "row h1:f9fa4a2ed7159b61410608319f79bc36c055ba799d59fd0237ada5872b586257": "h1:cd853cd488ac9df9ef1eee8a7e9a75e48b195d5d59ddd4e200808808bedfee5f",
+        "section Rationale": "h1:864f86c002f08391da6b734d2bebb8d406cea4683514c1d12d3ff82dcb78d631",
+        "step Otherwise": "h1:c87347cfd2465b4b801baf8ec0ad8f121a5f0b3a44f6fa51334a302d3c155b60",
+        "step Provided": "h1:c69f398124cd712cf8f20937bf5c943589fdd1de04a9340d64c13148a1df3a2c",
+        "step Then": "h1:d5858bbe8c5d49cd476e7b9e96d91349b54a0c6d0f63c35bcf6ea51948a49e4e",
+        "step When": "h1:b9bee1492b2bc621774687df09dfced62f000393c631fda4f7b84b9c00c97d36"
+      },
+      "with": [
+        {
+          "id": "system.cli.verification",
+          "now": {
+            "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          },
+          "baseline": {
+            "body": "h1:b632fb8cdc3d15e022f1273a6ba67828a874898e776a3d426d576e4993f0dbd9",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          }
+        }
+      ]
+    },
+    {
+      "id": "baseline.diff.order",
+      "now": {
+        "heading": "h1:fdad325b099a3148480c0c9b69abeb16428db72704099dfa625e4338e4ad0997",
+        "row h1:27016f31a79d8e46caeed7b48f7e3f0b138632892b8ef2c2ba2297b8426f31bd": "h1:c564702b9db155aa6ec0557f0d8db9a61c6963ad37661b09b43aca6a6ec9c98b",
+        "row h1:449052c2d499f7a97d177df090a03cd8780ae673762db2bdf908cdaf0505d6d9": "h1:42c9cbcdb5d7c7e37edc22325744e869460d6c425fface1657229a7454138066",
+        "row h1:54a1a4b8e1d86c73798e6b1fddb3c7d45daf94120f4fbde0b2185a741a76c0ea": "h1:329c6c7254a3a5efc6b4cdcdd3d153ce50f4b7eb331b1433bf95bf634ec7ef1e",
+        "row h1:d9f497a9ddf0ebd2da37da483deaaa099adaa6be19f33a4d93f0129962ae7805": "h1:e9d14bad91176a3d33bdcad4712c2b34eaf03d6f607f27845021da8ed65f247e",
+        "row h1:e3e0d600857ad94cbb3b62291f4bd38734af4229183794467758d955c05ef0af": "h1:2632acd946f912e59891c3b75be0bbf074507990fd25ac05e6c8280099e58cd1",
+        "step Then": "h1:e4c5f5cab9b652d14d38b7d6a49de4e24770d31a5a857d0ee5737e68d2a590d2",
+        "step When": "h1:9a1426c7ce635d04ee38928bb98b030c93a60f6f05164cf9f1d93d2b24a24949"
+      },
+      "baseline": {
+        "heading": "h1:fdad325b099a3148480c0c9b69abeb16428db72704099dfa625e4338e4ad0997",
+        "row h1:27016f31a79d8e46caeed7b48f7e3f0b138632892b8ef2c2ba2297b8426f31bd": "h1:c564702b9db155aa6ec0557f0d8db9a61c6963ad37661b09b43aca6a6ec9c98b",
+        "row h1:449052c2d499f7a97d177df090a03cd8780ae673762db2bdf908cdaf0505d6d9": "h1:42c9cbcdb5d7c7e37edc22325744e869460d6c425fface1657229a7454138066",
+        "row h1:54a1a4b8e1d86c73798e6b1fddb3c7d45daf94120f4fbde0b2185a741a76c0ea": "h1:329c6c7254a3a5efc6b4cdcdd3d153ce50f4b7eb331b1433bf95bf634ec7ef1e",
+        "row h1:d9f497a9ddf0ebd2da37da483deaaa099adaa6be19f33a4d93f0129962ae7805": "h1:e9d14bad91176a3d33bdcad4712c2b34eaf03d6f607f27845021da8ed65f247e",
+        "row h1:e3e0d600857ad94cbb3b62291f4bd38734af4229183794467758d955c05ef0af": "h1:2632acd946f912e59891c3b75be0bbf074507990fd25ac05e6c8280099e58cd1",
+        "step Then": "h1:e4c5f5cab9b652d14d38b7d6a49de4e24770d31a5a857d0ee5737e68d2a590d2",
+        "step When": "h1:9a1426c7ce635d04ee38928bb98b030c93a60f6f05164cf9f1d93d2b24a24949"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "baseline.diff.undecided",
+      "now": {
+        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:52628bd471bbac62fefc2b3cb012e41aadd85a1686800fd9cf583f9aa4b250f6",
+        "row h1:347ad0f351642a5eda1a3e7a014f1eff40c9a4479b3a161da62fc64c66695ed6": "h1:75be591e7926b401fc7fa07eed6a77288ca8de613859e8c142edc00ad578efd3",
+        "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:67ef0cd5e80b5efcd19aba5c731f74553e8ce0573a57c7ec92534b82ce6d2a49",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:9359a5917780300a2069761a78f5fb881f29af489c2b41d0d3688fb835f29cde",
+        "row h1:82f3f67a6101b7253527d5155d8b5d4d2de62f738c9d4924d26d0d29378d28b5": "h1:f0d5431c21d5ddd1aeff35e1ac743cae14329b292d316bae0f5df84f40cd8e1b",
+        "row h1:8fb4d889a1f5a6c10622a62bf1d6154f3f38973d0b2ca235463fbd0aac7ccc24": "h1:8464db663ed8ab7cd4e839bceed751b101c43fc7ae9e7c61a0cd08bacb1094db",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:2f9fe4585375e1f4d3769bd1c3ff946aebdab1c21c8c91aae49050d53c4297d8",
+        "section Rationale": "h1:b31ecc41b89f62d940c32b6319755a48123cdeda729341997990551c6069fa87",
+        "step Otherwise": "h1:770a58eaa49a268a676fe450528b2b6b81919ffbe72968a0224ece870959f4f5",
+        "step Provided": "h1:4c64cba0ca1cb4c5c15b7a5e174d66bf1bfd6c0ad25093b3f843c98ef4530f3d",
+        "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
+        "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
+      },
+      "baseline": {
+        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:62bdeaa3cc0bc4306fd414f69f68010aa7415a37698e5885aa4c238be59d5076",
+        "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:67ef0cd5e80b5efcd19aba5c731f74553e8ce0573a57c7ec92534b82ce6d2a49",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:9359a5917780300a2069761a78f5fb881f29af489c2b41d0d3688fb835f29cde",
+        "row h1:82f3f67a6101b7253527d5155d8b5d4d2de62f738c9d4924d26d0d29378d28b5": "h1:f0d5431c21d5ddd1aeff35e1ac743cae14329b292d316bae0f5df84f40cd8e1b",
+        "row h1:8fb4d889a1f5a6c10622a62bf1d6154f3f38973d0b2ca235463fbd0aac7ccc24": "h1:3e3f2038918e8c304c4811e862e8edb55af2fc9dfaf0dc6597f4b0a8ccfaab01",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:234e2389bcd55af0158f8567dea51145e0d66e851ec7be6bd7dd0a599b6536bb",
+        "section Rationale": "h1:b31ecc41b89f62d940c32b6319755a48123cdeda729341997990551c6069fa87",
+        "step Otherwise": "h1:770a58eaa49a268a676fe450528b2b6b81919ffbe72968a0224ece870959f4f5",
+        "step Provided": "h1:69c932294909191d9e5981557b6088a41cb1f47d0487ceff1b64d1bfe3823812",
+        "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
+        "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        },
+        {
+          "id": "system.undecided-element",
+          "now": {
+            "field Definition": "h1:fb271e4103f48d9c9e724a8f809b551da1a596aa089e3b8c1c7b53b93074ef18"
+          },
+          "baseline": {}
+        }
+      ]
+    },
+    {
+      "id": "coherence.verify.order",
+      "now": {
+        "heading": "h1:6e53ae0e95253a5fb907aa130c818350229f46f3c3a568e98dac01fa029fa19a",
+        "row h1:1cd6da74e73fbacad92b935764529f895aa6723e4d96cfd78f855fcfe325bf58": "h1:9d29b71ecbabac4550d1b08c6d501ba705df81a2f4e69d8ab555bfc31f0f3263",
+        "row h1:5e3d4c8d80cc2caaa91a0c33d997174d7181e362c5ad065939d19190a9536fa4": "h1:47ecce41735c7ee1c06741acaa9c3fa19507c0b4d4f32d86b1cd95fdc93782cd",
+        "row h1:783b1826e682abf63d57b1f25259e7744e80f684ee734736dff72670a1bd5eb9": "h1:cd226a3a8154096a380734e44e7d76beb3e41283e051520fff2e1e0793663f78",
+        "row h1:c75df92f00cea4f75be225a7a6cedc32dc1ab975d7cf90ead30e80d25fdb7f51": "h1:c9f393efc7e08b6b0a36bf659dcef77973cd73d5964e10037fdfe86219896ea4",
+        "step Then": "h1:a9ca543684118b123819d1bbe59c8a3192d9a81feb8c3c044b141cdf2f912bed",
+        "step When": "h1:1a9115a1060a9f3f36dfb047e4b8a9a22f291d6fdbc4c6ddd38e2e1d14dfcece"
+      },
+      "baseline": {
+        "heading": "h1:6e53ae0e95253a5fb907aa130c818350229f46f3c3a568e98dac01fa029fa19a",
+        "row h1:1cd6da74e73fbacad92b935764529f895aa6723e4d96cfd78f855fcfe325bf58": "h1:9d29b71ecbabac4550d1b08c6d501ba705df81a2f4e69d8ab555bfc31f0f3263",
+        "row h1:5e3d4c8d80cc2caaa91a0c33d997174d7181e362c5ad065939d19190a9536fa4": "h1:47ecce41735c7ee1c06741acaa9c3fa19507c0b4d4f32d86b1cd95fdc93782cd",
+        "row h1:783b1826e682abf63d57b1f25259e7744e80f684ee734736dff72670a1bd5eb9": "h1:cd226a3a8154096a380734e44e7d76beb3e41283e051520fff2e1e0793663f78",
+        "row h1:c75df92f00cea4f75be225a7a6cedc32dc1ab975d7cf90ead30e80d25fdb7f51": "h1:c9f393efc7e08b6b0a36bf659dcef77973cd73d5964e10037fdfe86219896ea4",
+        "step Then": "h1:a9ca543684118b123819d1bbe59c8a3192d9a81feb8c3c044b141cdf2f912bed",
+        "step When": "h1:1a9115a1060a9f3f36dfb047e4b8a9a22f291d6fdbc4c6ddd38e2e1d14dfcece"
+      },
+      "with": [
+        {
+          "id": "system.cli.verification",
+          "now": {
+            "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          },
+          "baseline": {
+            "body": "h1:b632fb8cdc3d15e022f1273a6ba67828a874898e776a3d426d576e4993f0dbd9",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          }
+        }
+      ]
+    },
+    {
+      "id": "coherence.verify.output",
+      "now": {
+        "heading": "h1:90faf0761e462aad427c5ac82fd6d9fd46953f56a3beac0a34b02d7b75f00f48",
+        "row h1:0e8bb237a8209ff70342aa111a584112d9b1889c87c6312436d0117588974415": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:4d026473ec852bfbd8c085f8ec03b61f9f8c2b0b6cc5a35d65e15488b587356a": "h1:f438e81a7645403c66e84895bad63f73c5fd3a28e1a0ac34b04e8eceda505b49",
+        "row h1:7a328cde20c447b7259641f54d95021e7d196424c096fca6c0ac55b8cb788b06": "h1:d521e8aaa4b64581b655d21e3c67615cde45e7ece68f6f5eaa74b7feb421b97f",
+        "row h1:e83e798717af1e11613a6fc27bd3ae5db48e02d942b19476e72a9f70c8ec2cd8": "h1:fd58a543d846ef4a413119e7b9adf3765e28d7940baec624c06f0ac8fa5e915a",
+        "step Given": "h1:ce544c8237985b3cd44628a255d5d6135682a7f4ef2dd64590cc4208b4d7e720",
+        "step Otherwise": "h1:b378bdaf751a7c276c2334855181a9fd5a80732387562e9e20864825bc592397",
+        "step Provided": "h1:2970036abf2c0b2e480d5b4e13553cbd5d5183f1a2ef4daa83e27b52d3a82674",
+        "step Then": "h1:862cb5621782748be26887ec1a94d018abc7918b002f1837b4af11e750d85ed7",
+        "step When": "h1:747d372eca4103e013cc5bf9f89e03931c5b12417bfa0685882785653f2c7bdc"
+      },
+      "baseline": {
+        "heading": "h1:90faf0761e462aad427c5ac82fd6d9fd46953f56a3beac0a34b02d7b75f00f48",
+        "row h1:0e8bb237a8209ff70342aa111a584112d9b1889c87c6312436d0117588974415": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:4d026473ec852bfbd8c085f8ec03b61f9f8c2b0b6cc5a35d65e15488b587356a": "h1:f438e81a7645403c66e84895bad63f73c5fd3a28e1a0ac34b04e8eceda505b49",
+        "row h1:7a328cde20c447b7259641f54d95021e7d196424c096fca6c0ac55b8cb788b06": "h1:d521e8aaa4b64581b655d21e3c67615cde45e7ece68f6f5eaa74b7feb421b97f",
+        "row h1:e83e798717af1e11613a6fc27bd3ae5db48e02d942b19476e72a9f70c8ec2cd8": "h1:fd58a543d846ef4a413119e7b9adf3765e28d7940baec624c06f0ac8fa5e915a",
+        "step Given": "h1:ce544c8237985b3cd44628a255d5d6135682a7f4ef2dd64590cc4208b4d7e720",
+        "step Otherwise": "h1:b378bdaf751a7c276c2334855181a9fd5a80732387562e9e20864825bc592397",
+        "step Provided": "h1:2970036abf2c0b2e480d5b4e13553cbd5d5183f1a2ef4daa83e27b52d3a82674",
+        "step Then": "h1:862cb5621782748be26887ec1a94d018abc7918b002f1837b4af11e750d85ed7",
+        "step When": "h1:747d372eca4103e013cc5bf9f89e03931c5b12417bfa0685882785653f2c7bdc"
+      },
+      "with": [
+        {
+          "id": "system.cli.verification",
+          "now": {
+            "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          },
+          "baseline": {
+            "body": "h1:b632fb8cdc3d15e022f1273a6ba67828a874898e776a3d426d576e4993f0dbd9",
+            "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+          }
+        }
+      ]
+    },
+    {
+      "id": "coherence.verify.undecided",
+      "now": {
+        "heading": "h1:9e94723083d1b043fe24f5e9d60f4346f6294521dcfbddb18a0c37899626bdc7",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:885ad4a79a6e59d50a0da41e593cc4b80869cc7e3a230b6be6146cbcecb93fe6",
+        "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:d5b6d20685b326fb9415d60cbd9079dc809a8684f49ff7c5df41f72cb76e7286",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:0a68a165b4ebb43d3ed58cda896a92fc5126416c7cf31a8431336a299158c982",
+        "row h1:82f3f67a6101b7253527d5155d8b5d4d2de62f738c9d4924d26d0d29378d28b5": "h1:27c2ad22d5d54008bb4e767d993f23aba14958f9757398c198c82d3a63ff9ac8",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:7d46f985a2f4e30076c02ea6e9ce63a850998e3624466aea1db1a8396b696887",
+        "row h1:c274462eaf97248a53bfc1252b0f78624f9bb356fc50a16a96880a766fdbefac": "h1:80cc19683a4f7222aa85d9c82d208fc332e67993225f1b3cc0273fb632036eae",
+        "row h1:fc1e1da13902286979b70bd5369d5a9ad0a06ef496d954938b8e6259a6d2888e": "h1:fa29dbfb943d26b192a85ad0f60037dccb2def07c37557f36f67939eec7a38cd",
+        "section Rationale": "h1:13348529261a41078889d4675cb36a4772710b6f40f8aee2d30605b1707c343f",
+        "step Otherwise": "h1:3196d0ea7826294fcf35dd1d430de1929fd0c69c54ed1e379c5594b66592191e",
+        "step Provided": "h1:4c64cba0ca1cb4c5c15b7a5e174d66bf1bfd6c0ad25093b3f843c98ef4530f3d",
+        "step Then": "h1:f303b96803327eb30c2684eebc418bfb4234a861da0e884b124840c9e4afeaac",
+        "step When": "h1:0d746ebbfa019f615a8c847e1a4d406aa4bec4f2fe920c7c1dce1c8f3c4bd7d3"
+      },
+      "baseline": {
+        "heading": "h1:9e94723083d1b043fe24f5e9d60f4346f6294521dcfbddb18a0c37899626bdc7",
+        "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:7880035f9b8ae6f0a865e865586e9aadbf43b3b8542556aa2e28857d6a67dd83",
+        "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:d5b6d20685b326fb9415d60cbd9079dc809a8684f49ff7c5df41f72cb76e7286",
+        "row h1:76fbb496153ca4d424e391337c8582988d472fc38d8d075225bb6883ead13ac6": "h1:0a68a165b4ebb43d3ed58cda896a92fc5126416c7cf31a8431336a299158c982",
+        "row h1:82f3f67a6101b7253527d5155d8b5d4d2de62f738c9d4924d26d0d29378d28b5": "h1:27c2ad22d5d54008bb4e767d993f23aba14958f9757398c198c82d3a63ff9ac8",
+        "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:c1af769ea0c1eeffafd9fc2133255e1325636e6b05b065580da9abead3ae1ddc",
+        "row h1:c274462eaf97248a53bfc1252b0f78624f9bb356fc50a16a96880a766fdbefac": "h1:5598b00bd30e29b888f795c4ee3ba777d0b1e25b70166c74ea3916934af8e5b0",
+        "row h1:fc1e1da13902286979b70bd5369d5a9ad0a06ef496d954938b8e6259a6d2888e": "h1:fa29dbfb943d26b192a85ad0f60037dccb2def07c37557f36f67939eec7a38cd",
+        "section Rationale": "h1:13348529261a41078889d4675cb36a4772710b6f40f8aee2d30605b1707c343f",
+        "step Otherwise": "h1:3196d0ea7826294fcf35dd1d430de1929fd0c69c54ed1e379c5594b66592191e",
+        "step Provided": "h1:69c932294909191d9e5981557b6088a41cb1f47d0487ceff1b64d1bfe3823812",
+        "step Then": "h1:f303b96803327eb30c2684eebc418bfb4234a861da0e884b124840c9e4afeaac",
+        "step When": "h1:0d746ebbfa019f615a8c847e1a4d406aa4bec4f2fe920c7c1dce1c8f3c4bd7d3"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        },
+        {
+          "id": "system.undecided-element",
+          "now": {
+            "field Definition": "h1:fb271e4103f48d9c9e724a8f809b551da1a596aa089e3b8c1c7b53b93074ef18"
+          },
+          "baseline": {}
+        }
+      ]
+    },
+    {
+      "id": "install.init.skeleton",
+      "now": {
+        "heading": "h1:2a6454c329aefb4239a773e26a86ce876362a9acd8ed20ccca95fb94356f123f",
+        "row h1:5f4dcab1c45f0424652afc9e0f991ce31d8cc63c2a7124a1cb69419dbc519be1": "h1:ec6f5ee63ca2c2d137e03b4bc598784f33a53c5e34a6ff8b05573a499cfab339",
+        "row h1:a56d395f1ace993225b19dd9ee07aa509ff3f16a58e1b8d774345bc24eeb15d6": "h1:19d14a3c958988cd2f14bf98249e7d647acec2d93fd9cdd2b9feed4040246ffd",
+        "row h1:c239e565171c3e5351e972049863a3e6c41af6b9da67864d1fcf6b8c3ba42fd4": "h1:122287858669446bfbbd9e19ad97f39d97ce3c0b009f08163e866c757c9e612b",
+        "section Rationale": "h1:6e23027008fbe6238f161df1e8b328864c94c4fc9e8b750af71ee0bb27f837b5",
+        "step Then": "h1:31c7eb797773ef86437c27889e04932263c1f29a7a4ee1ac52c74c48880d03d4",
+        "step When": "h1:f18669a293bfa47f67b7cff0778ea4fd7f62a1f6b9fd1573882ce402143f7ac5"
+      },
+      "baseline": {
+        "heading": "h1:2a6454c329aefb4239a773e26a86ce876362a9acd8ed20ccca95fb94356f123f",
+        "row h1:5f4dcab1c45f0424652afc9e0f991ce31d8cc63c2a7124a1cb69419dbc519be1": "h1:ec6f5ee63ca2c2d137e03b4bc598784f33a53c5e34a6ff8b05573a499cfab339",
+        "row h1:a56d395f1ace993225b19dd9ee07aa509ff3f16a58e1b8d774345bc24eeb15d6": "h1:19d14a3c958988cd2f14bf98249e7d647acec2d93fd9cdd2b9feed4040246ffd",
+        "row h1:c239e565171c3e5351e972049863a3e6c41af6b9da67864d1fcf6b8c3ba42fd4": "h1:122287858669446bfbbd9e19ad97f39d97ce3c0b009f08163e866c757c9e612b",
+        "section Rationale": "h1:6e23027008fbe6238f161df1e8b328864c94c4fc9e8b750af71ee0bb27f837b5",
+        "step Then": "h1:31c7eb797773ef86437c27889e04932263c1f29a7a4ee1ac52c74c48880d03d4",
+        "step When": "h1:f18669a293bfa47f67b7cff0778ea4fd7f62a1f6b9fd1573882ce402143f7ac5"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lint.examples.row-repeated",
+      "now": {
+        "heading": "h1:6c75994aaf967c155a31e5b7e3eeed6d877b2d49024dc70b922372c2fc170d04",
+        "row h1:07d87c83712761dc3605216a0cad9959a158b392b15de691a27bc5ebb73f0d38": "h1:d22635714a0a6d89c39103bea86dff7097a982acc92f9f026328f5494c0477c7",
+        "row h1:2e87f32cdbec496358641264a61fd3f38b7641b18acbb8f99f8a72c290a4f6a3": "h1:7492d2e9578583c8e2336e76ff09e3f37466be4c13ca52e0b703f9a4e860301d",
+        "row h1:53c3c9725b52c4eb6d4eb29d8e38bc44b61bafe424835049663e05f104552eec": "h1:752c3deb54fb975c721d0fe4febf7db50a539d07fe3ae52aadb71bff3b5c0a71",
+        "row h1:64a49cd4b66deba6183e5c32a408cfe7b7e19987fd578aafb16806318a7a19b3": "h1:eb576f9c5dac68ad992878a7fe563cdbbc1c93c6ced369b9938736f4a49df24b",
+        "row h1:6d20b92acb8d1508c08646ca1da979b8423d3c3ef6ac8bb2f4ea76a4a3d5543c": "h1:c941c47b1b757512645c0432585bb42edd097d34eee14328516f42b03c13456d",
+        "row h1:db576f89bf6be37815689518550c3dde4ba1a7ae627d54dfdba9e2b3ed027696": "h1:b24f7887fdf70e342be7bacca39f8cd9408e219b0a11464c9e9296fb3cd7f5d6",
+        "section Rationale": "h1:1865f69de6dddfa6448635f6de595783d5d941d5de79104e7e042faa00e3a683",
+        "step Otherwise": "h1:ad04f0129cc217e46de6811920c8069aaf47a148876b2323490b5d4298b7d80c",
+        "step Provided": "h1:5583e60c28b4d18c7d61ab3f4622bdb5533e17ef49a28a2c3e19e6b2c7cb5bf2",
+        "step Then": "h1:2d96d446fcef7da4cc2bb243105f0b737629a4b32cc878638529f4f205ea47af",
+        "step When": "h1:87da3f8eca52369e440e23daca4eafbffd2155074afd274175a2227d2ae19c9c"
+      },
+      "baseline": {
+        "heading": "h1:6c75994aaf967c155a31e5b7e3eeed6d877b2d49024dc70b922372c2fc170d04",
+        "row h1:07d87c83712761dc3605216a0cad9959a158b392b15de691a27bc5ebb73f0d38": "h1:d22635714a0a6d89c39103bea86dff7097a982acc92f9f026328f5494c0477c7",
+        "row h1:2e87f32cdbec496358641264a61fd3f38b7641b18acbb8f99f8a72c290a4f6a3": "h1:7492d2e9578583c8e2336e76ff09e3f37466be4c13ca52e0b703f9a4e860301d",
+        "row h1:53c3c9725b52c4eb6d4eb29d8e38bc44b61bafe424835049663e05f104552eec": "h1:752c3deb54fb975c721d0fe4febf7db50a539d07fe3ae52aadb71bff3b5c0a71",
+        "row h1:64a49cd4b66deba6183e5c32a408cfe7b7e19987fd578aafb16806318a7a19b3": "h1:eb576f9c5dac68ad992878a7fe563cdbbc1c93c6ced369b9938736f4a49df24b",
+        "row h1:6d20b92acb8d1508c08646ca1da979b8423d3c3ef6ac8bb2f4ea76a4a3d5543c": "h1:c941c47b1b757512645c0432585bb42edd097d34eee14328516f42b03c13456d",
+        "row h1:db576f89bf6be37815689518550c3dde4ba1a7ae627d54dfdba9e2b3ed027696": "h1:b24f7887fdf70e342be7bacca39f8cd9408e219b0a11464c9e9296fb3cd7f5d6",
+        "section Rationale": "h1:1865f69de6dddfa6448635f6de595783d5d941d5de79104e7e042faa00e3a683",
+        "step Otherwise": "h1:ad04f0129cc217e46de6811920c8069aaf47a148876b2323490b5d4298b7d80c",
+        "step Provided": "h1:5583e60c28b4d18c7d61ab3f4622bdb5533e17ef49a28a2c3e19e6b2c7cb5bf2",
+        "step Then": "h1:2d96d446fcef7da4cc2bb243105f0b737629a4b32cc878638529f4f205ea47af",
+        "step When": "h1:87da3f8eca52369e440e23daca4eafbffd2155074afd274175a2227d2ae19c9c"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lint.glossary.defined",
+      "now": {
+        "heading": "h1:1cf7ef80fdc26482b884e59c387ea5e3867ecdb04915401338e5e1e0b532006d",
+        "row h1:1331b1de5f94d039da4817c333a53237df337c7365c7fb864a5fe15ee483de54": "h1:f91261ba865fbef8e12e468eaa8a292659bef3eb6e28579ed0ecbd04202a7777",
+        "row h1:7e6fed3732758a16300d86ae90b96a3ea85f6e271943b01eeb74615b0e26f8e8": "h1:33e706e703f618c27c0225393fa37abe42ba95b9d80b0ad3a756c857fcbfc9ab",
+        "row h1:a37f83dd19a2161b29b7a4f7bfbe1d923168fbb28b3a28f108dbfddbab25a038": "h1:9efeb8f4a9a7cb82af7b69020817245fa084bf4866b32c53a5bc11d6495d343f",
+        "row h1:c318592edd9a0ded0b57991be184cc06bdcb316d5cc076833465a9e6ae2c47c6": "h1:21087e54bbedff34cf48b5ab232d39cd3aec580716d14b2a73329057c03f070b",
+        "step Otherwise": "h1:04847475abf17f5d878a0c79fd1d6485505ef8d28b51ea4fd0cce33eaeb3e432",
+        "step Provided": "h1:82f86eb8d6419ea7d9a1b3e77d40b9550c45dfde350714e0190b5da8f3594703",
+        "step Then": "h1:c1936f6a0412a09613dac09b7898b65cd012b716fe8ffb94b9ce49f7308e56f0",
+        "step When": "h1:7221ada088a03e37e2de8f0874e5e6745400e0581cd3e08a0d66902d6ee00a8a"
+      },
+      "baseline": {
+        "heading": "h1:1cf7ef80fdc26482b884e59c387ea5e3867ecdb04915401338e5e1e0b532006d",
+        "row h1:1331b1de5f94d039da4817c333a53237df337c7365c7fb864a5fe15ee483de54": "h1:f91261ba865fbef8e12e468eaa8a292659bef3eb6e28579ed0ecbd04202a7777",
+        "row h1:7e6fed3732758a16300d86ae90b96a3ea85f6e271943b01eeb74615b0e26f8e8": "h1:33e706e703f618c27c0225393fa37abe42ba95b9d80b0ad3a756c857fcbfc9ab",
+        "row h1:a37f83dd19a2161b29b7a4f7bfbe1d923168fbb28b3a28f108dbfddbab25a038": "h1:9efeb8f4a9a7cb82af7b69020817245fa084bf4866b32c53a5bc11d6495d343f",
+        "row h1:c318592edd9a0ded0b57991be184cc06bdcb316d5cc076833465a9e6ae2c47c6": "h1:21087e54bbedff34cf48b5ab232d39cd3aec580716d14b2a73329057c03f070b",
+        "step Otherwise": "h1:04847475abf17f5d878a0c79fd1d6485505ef8d28b51ea4fd0cce33eaeb3e432",
+        "step Provided": "h1:82f86eb8d6419ea7d9a1b3e77d40b9550c45dfde350714e0190b5da8f3594703",
+        "step Then": "h1:c1936f6a0412a09613dac09b7898b65cd012b716fe8ffb94b9ce49f7308e56f0",
+        "step When": "h1:7221ada088a03e37e2de8f0874e5e6745400e0581cd3e08a0d66902d6ee00a8a"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lint.glossary.open",
+      "now": {
+        "heading": "h1:37521b015c1945e80f1acb345d134ae5e3ef72318b9432c6091eac969b23ab71",
+        "row h1:1f0f71fcb03e6182e8671b76461bf37f8fea4445106b376fadaaab490ebd6a2a": "h1:1fb329e42eeeeee0b78f60efb44e3a0afdf7d1ce049bbd840d37924593070e96",
+        "row h1:42c3cfb03c7b13b9bfa6c7101443f7a87133ba7bba34ca53f1250cc156c59485": "h1:4aa08a1db24d71ed4dcba244218298472b6e9172ffe34473e7a2d45c52b51a6d",
+        "row h1:4504dca17a1b5ac02c8dfed07d2877953719cbe38c80a1755a47393928352805": "h1:b190cf128d7da0862eefe4cede6e58f5ad8a2aea663b9e0a53c7c72917a103e3",
+        "row h1:997b410de59b8469f81d4583c18d15b3fcbc5af1aca88bc0f9e11036699a5a87": "h1:c4f7e32b1e0ed64a351b5f286d11141e0bba6bface1ce262d75a89d564ea9474",
+        "step Otherwise": "h1:f989ce013c8074f531e54bec25750e0df6b1856cab1349b39a64dad234fd1da3",
+        "step Provided": "h1:0095d270589ffbaff072596411c93fa67c43e5c4aa3837cfda94a1ee49eabcb0",
+        "step Then": "h1:c91b8034c6fb978e094115685b2cd197bc1ba96a17a65efdbf8943195ed5eac1",
+        "step When": "h1:26a636c8579ac3cf5e593974bb28ec2c3e156de5e67cb99e71149fc08c7d9392"
+      },
+      "baseline": {
+        "heading": "h1:37521b015c1945e80f1acb345d134ae5e3ef72318b9432c6091eac969b23ab71",
+        "row h1:1f0f71fcb03e6182e8671b76461bf37f8fea4445106b376fadaaab490ebd6a2a": "h1:1fb329e42eeeeee0b78f60efb44e3a0afdf7d1ce049bbd840d37924593070e96",
+        "row h1:42c3cfb03c7b13b9bfa6c7101443f7a87133ba7bba34ca53f1250cc156c59485": "h1:4aa08a1db24d71ed4dcba244218298472b6e9172ffe34473e7a2d45c52b51a6d",
+        "row h1:4504dca17a1b5ac02c8dfed07d2877953719cbe38c80a1755a47393928352805": "h1:b190cf128d7da0862eefe4cede6e58f5ad8a2aea663b9e0a53c7c72917a103e3",
+        "row h1:997b410de59b8469f81d4583c18d15b3fcbc5af1aca88bc0f9e11036699a5a87": "h1:c4f7e32b1e0ed64a351b5f286d11141e0bba6bface1ce262d75a89d564ea9474",
+        "step Otherwise": "h1:f989ce013c8074f531e54bec25750e0df6b1856cab1349b39a64dad234fd1da3",
+        "step Provided": "h1:0095d270589ffbaff072596411c93fa67c43e5c4aa3837cfda94a1ee49eabcb0",
+        "step Then": "h1:c91b8034c6fb978e094115685b2cd197bc1ba96a17a65efdbf8943195ed5eac1",
+        "step When": "h1:26a636c8579ac3cf5e593974bb28ec2c3e156de5e67cb99e71149fc08c7d9392"
+      },
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lint.undecided.cell",
+      "now": {},
+      "baseline": {
+        "heading": "h1:e75451aadb221312987188c98d8c43e5ac5ce4bcb032796cea7e93dd9b81fbe6",
+        "row h1:05833c57a755c382ed26ed9d4818529d34f1c8b6f5fcb177e0e0f7a10911fa22": "h1:0245bb513b980fd6cfd458f1c077fade28fddce7c35e533a8d4cac97fd2dd625",
+        "row h1:05c7ef428804a95e3b5d2a27226b3cb7dfe83743eec18d59c9dabd9c528e01c5": "h1:65871b2027de6496c8be261c73ae398bd60df2131065a55b33997d0a3662e215",
+        "row h1:70f10690f14fd149ffc801188c49ac9966bb38e16bfb982f12552ea7f95672c5": "h1:c7fa11ace25c3ee25dab5102482c192345904e1bc3194965d5a5ccb9d6d0ec6e",
+        "row h1:8ebd5e43ebfc66ddc83ecf1143a3ce287f8081fe898d343d5bc3edd4b617e049": "h1:7a712aa48142264354d8adb1320e8575400f06171f65ffecb17a772f7530751f",
+        "row h1:bea16aa7223e8c474a415cc2e91e7e5d63891d5afba58c9a9b88a013ef0daaa7": "h1:db53c836d6be3f034ab5ea1cbb722ceb59e64e83353e47ecdf5023a6d30e62df",
+        "step Otherwise": "h1:f8b9d7a5962490cadaad072f39b101832cd65771f7763d9160b1645e8b38fed9",
+        "step Provided": "h1:05dd6ccddd547c303344d9604148e607b1ab6bd7c8bc573ff9da5a241b188d52",
+        "step Then": "h1:eca8a5949926ec492e68449f9c2be492f7afbe88d99f5c8413e08160fd93dea9",
+        "step When": "h1:b02f715f7f5231f58f88670b5f8c19734db11abe64e52855985568f938ea1a31"
+      }
+    },
+    {
+      "id": "lint.undecided.field",
+      "now": {},
+      "baseline": {
+        "heading": "h1:c3867e664eab626b7f4d569a867d2c04ce99a7c120d4bb0a5cf089a65c591888",
+        "row h1:3a5d4454c2f337e8d4d800fa94eb729874762f1b2256d05db53f60fb4e5f1844": "h1:78801a5618a8e179974b39e971fd41e3d83f95eed3521224d5db0a6eaa88f5ea",
+        "row h1:ac4be14dab183bdd4c62ce6e5d15847552e925149d64eaa9404dc763937c90d7": "h1:5c80256426ae5acc4ea59da4f9f6737c44c7ebb3142556f463fe7c4e51239098",
+        "row h1:afc18dd655ab6b5bb70e563767f86286acb104119e1f263e623cb3129e86b342": "h1:240376104fd622cb38a1bc2d56a89d78099fcbff588b6fc1d5bad806ade9e9ea",
+        "row h1:b93a1645040a046f4da6b53cc1078f3319bfa2543005e52c2228aee1cb5bc1bb": "h1:f181f02b1f6cf5935d5732fd4baab95cb0d54b02fdd0b5009399f5172408e684",
+        "row h1:cf2af24fa8d21da79456702736245f2de66918fc7ec7043eafe66de788d5d29f": "h1:ce2f6bef0bc1ec148b7570068b24e49b8321a7ef121219ec6a42958c4288051d",
+        "row h1:fb8dcedca407683e4690df7ea6510d3afcb1168815b968be4bba23ba0eedc7db": "h1:b9d7d69c62ab79d2df62194a78595146c9ffd7e875882b35cc11922478840144",
+        "step Otherwise": "h1:a3bfdc8d22a4203f68fdfc7ddb05dd388f234c3d1f5d450fbc876b2f718a73b6",
+        "step Provided": "h1:0a27223434af7437473b5c4c04c6e2ad0c91ac991bff94597f168af5dd6dccb3",
+        "step Then": "h1:99c1d58218d32c251daf5a9250899cc8ee24681083947dc5364cfee3e3dfbe42",
+        "step When": "h1:42f49e7a1aab60d1b41e007475072154169f0367be12d6daf8ded53687e5c31b"
+      }
+    },
+    {
+      "id": "lint.undecided.place",
+      "now": {
+        "heading": "h1:52bfb2e1e8f5468163d9f8638cc00201a9bc866946c97436ad8765ec806f2b22",
+        "row h1:08b540ad8a9db1cc6d7d82deabe1bca108cdb1681db83165c51585506548e357": "h1:b9b3688db26f37304238c68b7aeea7e69e862c42a2beb7981ac8f67a896276e0",
+        "row h1:098975a59a74af6c98c229cc3eceb37541976484060eecbe0c57998b4835ca32": "h1:511dda94820eda18c952cd1df9364600bcf9d87c74d5efb5834e251ba76baab9",
+        "row h1:13c89b75407c61f8fe62b404bc069388f1f7db77653a990dae771052a69b03d7": "h1:a95193715044fbf96c9628d93db63e407e0928a6200eb8c1afcf6f562324d05c",
+        "row h1:1ea0e39884026f6063fbce0e1ac9bd64f009fdbb1d83c9a593796c412a5bd7a7": "h1:fea4168f6599c3deda73a3819656da0d95c6d2907c10f994bece01e0232f67c9",
+        "row h1:30b185ccfac49285ed05d642b8ee1bf03a7e74c0a34c2a3576f26b8ed7c89a01": "h1:0e5ab3be58486afb8bcd9bdd588b21a6fd4ef6658383018d5475f54f655e20c9",
+        "row h1:3b5b5348e72355077d8e9eafb74e40266ab7a57e195030313a217b27a29020b0": "h1:d3bcc9aba1732fcd755d918d73b94c9c0565b999058176a698c070173196ef4c",
+        "row h1:4e48bfd9ce1a3f4298ab135464f5739c48abb55f8ceb7eb0b5a0ca9863e5ed7d": "h1:9fa2ada5fefd23b47ba7bb2322bf203ccb116dfd123ca4b6922ebc833b40f413",
+        "row h1:4fc958d309cd8e8e7954173b1c3807d83082a8e81f6570c992f0fab216df53d9": "h1:9ce5c46fa617f2936ceb641e6044f3db3e3721a5f634175389a293d1b0048cc3",
+        "row h1:60b2f8320798a0d8a2464a402c74115c478b80a04471675b9b8f36b8d5fe1d71": "h1:491c8a4fe9cbaa0a3dcdc7b4deb42bf4429bc48cede1511bda24101ea92624d6",
+        "row h1:6764e327c07877c447391f5676e4eb1c79752c0bf4404572c585080c55e82838": "h1:0d0c93e750acfbc8c196aeb8cb8ef8bf31d6c7e5a0205258f0acd2cb04b20efe",
+        "row h1:9d5e9b3a0fe895f459ebee343c2d371b510cf237a815d02cadd18c868bb0d8de": "h1:a74eeb02cd8d749f74ff1d6976aab311a50e9ccae71e116e95442ab238800266",
+        "row h1:abd1ef117595ab2f67b768cf95f40061460d02fa6bd67c9a0ff0dfce55567167": "h1:f3e7ec67a5f18614c2416f52a6c928712db03de77992ffb38f4d661c99bd0327",
+        "row h1:b24a0fd55c1e44308e1a670ea8667893b57789c906ed7079ebe0b9f57fd32312": "h1:e92e5604378f45ebcc88094502d6fea4d757ece4962459f7e4e3c8d67ec7b2c7",
+        "row h1:c09692ca0ca6bdef06a05ec186bb8bd1b3e651f8440cce39605102e389f47c92": "h1:a2a01fbca3a71e5892e36ce078749e1547547653845a580ac4d774782e7b10da",
+        "row h1:cb776a2aed54225fd4bd6fac3bae6cbb008745362d84697a67f63c96f1f4cab3": "h1:c3471412e5324fdf279071dd86451f5de63fa9f692f666b9da280282e0adbe1a",
+        "row h1:cd7e127773330c5c492f3b2fed1b302d2702b6ab360d6a9f1d035c1b2eb2c9da": "h1:914cf5c308af38fe2cc2867c861f28307c177941166b7b2c142eee44091d2ec6",
+        "row h1:d39af3b4c7772eeb84d8edc3094cb27a44b30de3361ca47463c6c92eba1f18c3": "h1:f9efd7edeedc97df2acd8bc4f80df800e51f31bf43d797ecc5ee49f0ad12cea7",
+        "row h1:e5d6b440cae074ea3be2fd47414c0fcd0ad3a8e9824f89a7f4dbad1567d89cca": "h1:b6fa366ff0e0d7df187f49936cc6bd65629b5f6a9bbb4db7d805602c400122e7",
+        "row h1:e9ef80a412e602abd2da149d994ffef343926d865af0e1054787fe74431ea760": "h1:3694e7e145c889eaf63e43f448f224285fbc20264914266b65237a2eef204280",
+        "row h1:fd88ad77189553d4fe833997bd3ccd45b656ff9ea7b04dd2d956e934f70e96f1": "h1:21848ce3475de50be045407442dc82a5b62485347bafc32183004df255e662af",
+        "step Otherwise": "h1:78dc401467723c5ee46d0db0e0339617fa678880a6138abfbfa96b2cdf7c21f0",
+        "step Provided": "h1:dd952c11acc890d3259a4799895b85554be39258eefec92ae7722b53de311b27",
+        "step Then": "h1:c894ff3ee148a14e4a672ad2c1aa907181a7b553955613e80e8fcf4485ecd392",
+        "step When": "h1:1f6d566f4ea956f81de5d4251d83947cf3c9ca0972444d07f4a563193175643f"
+      },
+      "baseline": {},
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "lint.undecided.section",
+      "now": {},
+      "baseline": {
+        "heading": "h1:4621145cd74c11f652adf693bffe444711ae6d1ad1211d83b151cf486c800b7f",
+        "row h1:1606404e0a39db70e9aae9f18e3f98b9d26190fb95d1e7e569b119b72956fcaa": "h1:a6be7679239428b196ee0eaae46d367d71af4378a358defc125f71a9c1ce2079",
+        "row h1:31d6e71c023cb763d13db82d24d6cf4fbbae044f46e081541aa47db99e76f97e": "h1:d8c3f127f57a169bb2c837c7358b1b30f4f0986a7bd2d154b99f95e2d00da758",
+        "row h1:581105c75b377174b3e5af324249bb5aabca99617458376366431b0c0803e1ec": "h1:d3738180c3349b19c47068df724ccbb7c566667551b1d677f28e600bf9974dc9",
+        "row h1:5a9eda6ef11c5b6c9266449f90d7f2573dbdadb56753a4c3e50c0b2822def0db": "h1:100d34209c9ee95636b3a4b47cac2c43fdb6be6b0c110f5cfc747cc04ae06889",
+        "step Otherwise": "h1:ad67098f442144a9c17791988adb65221acadca98dd09d72b2caf033ab6f191c",
+        "step Provided": "h1:8f8d979cfb4e32e01552f78cf6cd2a6a4756b39002123903ada16e73759ff4b2",
+        "step Then": "h1:6b664dea669c4c1c8d58cc67784205bdeccea58ff7bb3b8bdc2d25f4cfc07783",
+        "step When": "h1:94b422ca54643d0593fe5b2cac0f2cf3a3afbf02c1b2e676b5f4b7094f572c94"
+      }
+    },
+    {
+      "id": "lint.undecided.token",
+      "now": {},
+      "baseline": {
+        "heading": "h1:460dc11b9c87523d7d6c54f887cc3ee2ff9eaa117ac3a54a36f9b43f280d90b5",
+        "row h1:007eb65230da35941b77948c55d2ec58a16604c287ff26506a55ccbd87d46b82": "h1:a041a8a8ca81a93e353fcd9f635614be5cfc140b7091d59077bbe828ae3be5ab",
+        "row h1:3894a637278ca7b41f0bbb80d07376dbc6ab5a953432e44d57cb0ce2b3f1683f": "h1:e3e619ab331f0a7cb615cfd414ce94e38202b402ae6ea304dbfc04bc1abe7192",
+        "row h1:6031a9b802410d0310c738c503e55a274360fbddf396c3e2b1a30069b77046bc": "h1:e4f1bf1dc4ce3f9279c33babbdbd29a36af35da5a73c951e0c1cdf0cd6a85df6",
+        "row h1:731ed3fd739b97d8c8c6dd59ebe5471198e27709891044d153d13fe9086de6fb": "h1:dfcd066b85c56746dda038d392a9fa5e10b57722763846d9c06c2b986895a616",
+        "row h1:b074032d75386ee4e1652f55eb3d862d5c6759836ad54ec5e59ba1cb1b55e714": "h1:be8eb6d3e9e8b30d4887ac1f26eac9c4d5a17da6e09d1253ba7ae95194525acd",
+        "step Otherwise": "h1:9abf3e33fdfe69de11dbdfaf05492f0155d95dcbd3dc86158289d83a3563df87",
+        "step Provided": "h1:c79882d7f607148e4f318174b0dfff48641a53932cc36e6ba7a0b35dc3daf57b",
+        "step Then": "h1:9e1a662546e7be083f20e1926ba22acea6366c386ebff8b5a804028f812c466b",
+        "step When": "h1:02769e93b2085edbc7c12cf2bc89c3f6953e96ebb862e4fd932448f0968ef7d6"
+      }
+    },
+    {
+      "id": "system.cli.verification",
+      "now": {
+        "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
+        "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+      },
+      "baseline": {
+        "body": "h1:b632fb8cdc3d15e022f1273a6ba67828a874898e776a3d426d576e4993f0dbd9",
+        "heading": "h1:4183b7793fd28ba47ea9e79e7697f2915da218567e6657a158b51bd14bce91cd"
+      }
+    },
+    {
+      "id": "system.undecided",
+      "now": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:06be3f2d231bc4d7ba0893df393c1e2619214ecb62cbf891e1ecf8e0b7d03a31"
+      },
+      "baseline": {
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:06be3f2d231bc4d7ba0893df393c1e2619214ecb62cbf891e1ecf8e0b7d03a31"
+      }
+    },
+    {
+      "id": "system.undecided-element",
+      "now": {
+        "field Aliases": "h1:374295a690f33553386270e159f02315bee2ef1f820b778bc56142001dbc1f4e",
+        "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
+        "field Definition": "h1:fb271e4103f48d9c9e724a8f809b551da1a596aa089e3b8c1c7b53b93074ef18",
+        "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
+        "heading": "h1:803c460dfca3c581d8c660de79373301db1dbd46ad5c12cef3f6f581ef7f3842"
+      },
+      "baseline": {},
+      "with": [
+        {
+          "id": "system.undecided",
+          "now": {
+            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+          },
+          "baseline": {
+            "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
+          }
+        }
+      ]
+    }
+  ],
+  "judgements": [
+    {
+      "id": "baseline.run.writes",
+      "reason": "untouched: the amendment changes which elements count as undecided and how lint reports undecided places, not which files diff, pack, manifest, impact, judge or verify write or leave alone",
+      "parts": {
+        "heading": "h1:3d25d2a9536d9cddd44366a40df777b71f0f5383def0a2b6223d37511fded345",
+        "section Property": "h1:0101c3acefa540bfda643e587bfa79163ed606518974c8a6a5a8fbc7ab252232",
+        "section Ranges over": "h1:383c70385ae62d1c0a1170d2e6a012d814227e3d85ca7b90d3bc6713d0b65ddf",
+        "section Rationale": "h1:9099ea22ad913d5fcbac510ed5cd2c12625dfa397c359d4385db12197a7dbf25"
+      }
+    },
+    {
+      "id": "coherence.run.writes",
+      "reason": "untouched: the amendment changes which elements count as undecided and how lint reports undecided places, not which files diff, pack, manifest, impact, judge or verify write or leave alone",
+      "parts": {
+        "heading": "h1:f718946e116b052da3ff43a5f16b173570ca6dc32d464b3734e62efd6fb0aedf",
+        "section Property": "h1:58290c157352677d7eee298fbf95f857591312d5cf424488169c78317bbe02ff",
+        "section Ranges over": "h1:b3ba98dde78af78ba35e49353729429b10aa5e8dde8bda566177a489ec474dfd",
+        "section Rationale": "h1:699c689c696bc59ac2acb81eccea982c300fcdac8dc527752c008434ff4fb38a"
+      }
+    },
+    {
+      "id": "install.init.keeps",
+      "reason": "untouched: init writes the same skeleton, and its sections stay undecided under the reworded definition; nothing about which files init, update or version write changes",
+      "parts": {
+        "heading": "h1:de87b1e3b01ce29fdb9b56da7599c5fda0e5d7a6817ef331154da510f8951211",
+        "section Property": "h1:a9dee47d75ae29452bebe0b701cfa696cc96a6fed20910a15a2a6339a407cdcb",
+        "section Ranges over": "h1:ec1e2df5e9e74e7ebebd55cb1b7075b3ca87d58aa0b536fec5afcfd316da5ee2",
+        "section Rationale": "h1:5921f26376536728c1409f7e909fa4c7ee70738cd83936d015398577e3876983"
+      }
+    },
+    {
+      "id": "install.update.keeps",
+      "reason": "untouched: init writes the same skeleton, and its sections stay undecided under the reworded definition; nothing about which files init, update or version write changes",
+      "parts": {
+        "heading": "h1:4dc4000f3bc49aab00970fbc78c04a76e249e96b3d47dbbdff6247e91fd8767c",
+        "section Property": "h1:ecacb1e361dcb678e2ee045196de9ecbc6973343667dbedb15a5e5b8559b79e1",
+        "section Ranges over": "h1:034937ecf08414a6f4b8200ccafe0a7553437bc9eb08e826c9671fc854575ec9",
+        "section Rationale": "h1:8a4532091c101dbec89305c5cbfb7c79a5869763c57e1414ba40095817dd3cc3"
+      }
+    },
+    {
+      "id": "install.version.reads-only",
+      "reason": "untouched: init writes the same skeleton, and its sections stay undecided under the reworded definition; nothing about which files init, update or version write changes",
+      "parts": {
+        "heading": "h1:472dc25692045c10ffe451193b005275208b2260f92ba52bf1d760c9092cab53",
+        "section Property": "h1:c9cb3acd6c3b85d169d2dfa655e6d6c78cde1075a98bce64c469308e9c58b3c8",
+        "section Ranges over": "h1:fc28887b132d1d91b480618622d821209fd6e8171a3176abfff4a8f930674d30",
+        "section Rationale": "h1:a43be87f46a3d7d8d9bbd9adfaacbdca9dc69f3cf26f1320270d006a95fb0426"
+      }
+    },
+    {
+      "id": "lint.examples.cells",
+      "reason": "untouched: it asks only whether every cell holds a value, and a `?` cell still holds one; the added exclusion of literals and backtick references concerns words of a rule block, not cells",
+      "parts": {
+        "heading": "h1:297692a06cfc578fbf6e0dab4d1fe0756943af3ce243c5e516501e77425ce7bc",
+        "row h1:1e62fa4872ea928522d425bad756f7a936238cda2308ce929c9c7d6d1309e3f5": "h1:a3d86f89dc7c68364c8d1aed9eb1238e101468aef7c7fe2ba42af0a59ffb4cf2",
+        "row h1:352443c5faa8d92868ff4d86260785b066f6d9aff5a0b24fb5daf83d3bb7aaa1": "h1:42a9cf8da14b9ffee149194042a97d66ff77288f0dc20d434dd358ada2fa3006",
+        "row h1:8b282a7a6592dd79e96d42ebc913e6dfc4924a5f544d2da9d26a0fa5f599aba0": "h1:94108e9cd84f1ced582056a49e20e51ff463619de71e67e9f0381a64a8f617d7",
+        "row h1:b9373c8079159a096bd350d2add25110d126f9e21b0b4a5b7895b977d074711f": "h1:cfb364a493fad14612a988122fac6541ccbb3ab6347675dc9ab41106bbb5dd09",
+        "row h1:e200a4cfcafa46dd2f8df39874188dd0a11baa3a0c7b50532f3e62016c3cc4b7": "h1:76f278917336832ca601b56439e93632a4e5d37be067386c9b1dfbacda71c55a",
+        "step Otherwise": "h1:174c3da0ac436ada4429138c599d15e343d6e86cf31a5a6422471559fd28916f",
+        "step Provided": "h1:cc66715bf721a6a2e2daf94fabaa3f2747b1666c6312e02b653522aa12879eb8",
+        "step Then": "h1:88ee59c916905fe1e00974593b786872aa7155439d30e592ae2814e09cd13ab3",
+        "step When": "h1:bd29c0540204c58e614db699392248887ad2be395714da332f8accad29ac6887"
+      }
+    },
+    {
+      "id": "lint.structure.field-known",
+      "reason": "untouched: it reads a field's key, never its value; lint.undecided.place reads the value just as the removed lint.undecided.field did",
+      "parts": {
+        "heading": "h1:964c69b98cdfb075e710fb750df2d8867bf963da9359267ef43258c432004515",
+        "row h1:69606b4d1b73bc479404a207c414cc44be7c5fcbb4396b77e8bc7507cbd35d29": "h1:8b3d332abe69f152821e8f7efc550ec17cef22f72c7fe89c440146d24835ba44",
+        "row h1:872b5ae7df2922efc1731c783a322002681d3020f2db8d427ddfd95d8f35120c": "h1:3ba6dd023c98d241c6fac1a4133136630978f4665c7999f219d9ab8125124cad",
+        "row h1:9182ef9992db78e24537c2a458ab0f6bc93569e2aad069f5e79909b97b029f27": "h1:ad7e48eb1ca606a23d29fc952cd58a69e485b3d90e15496e697520ea93d7a032",
+        "row h1:c38f54d6232fff94b18e3c8240e7cbadfba4f61eec70488466592218c10a13bb": "h1:2bb2189e8afd15058efabb4de018ab1946764e38ecb4728840d660b8f1ee35db",
+        "row h1:e17dfc50a683ab947a16695679f609f6f12781b446d17a0d939eade902cf2354": "h1:d6b38d5d786b4286da54efb21b48d3db5deda7477c9575fe36c03e3248360ba3",
+        "row h1:f43476d83faf5198b165f0f9900182b757efdf08710fd8125a49d85cb8d628d8": "h1:d61f08d7b79049c3b58f21779e4a41a9c09f1de210d4f85f5ebf7d3ded5f5d88",
+        "step Otherwise": "h1:c7359ca73463be95176a22198fe615c27b1b93f3b60a079309bf98368626879e",
+        "step Provided": "h1:326534f33a710a54da0b9b68856ce04da97537c3ee6309988b7d6e10a0b936d5",
+        "step Then": "h1:ff7a760bee581f830fbf6219bdd0a145e4d30f5461f97ae1718489581d3a7ec7",
+        "step When": "h1:039dc8df8412883f291c3cc8ba3f6f0db7ff034f5786e45f2b37ab9fc8729aca"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "kind": "gap",
+      "elements": [
+        "system.undecided",
+        "baseline.diff.undecided",
+        "coherence.verify.undecided"
+      ],
+      "text": "The system-level definition of undecided now excludes `?` inside 'literals and backtick references', but 'backtick reference' is defined only in the lint capability's glossary (lint.backtick-reference) and 'literal' in no glossary. The definition does not mark either, so baseline and coherence, which decide through [undecided element], depend on a meaning the system level does not hold, and a change to lint.backtick-reference would not reach system.undecided as a dependency.",
+      "status": "open"
+    }
+  ]
+}

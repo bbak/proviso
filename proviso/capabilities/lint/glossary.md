@@ -8,15 +8,6 @@
 - Status: defined
 - Aliases: findings
 
-## <a id="lint.backtick-reference"></a> backtick reference
-
-- Definition: A name in backticks inside a rule block or a "Builds on"
-  field, referring to a contract element or a parameter, such as
-  `` `findings.anchor-misplaced` ``.
-- Contact: Bruno Baketarić
-- Status: defined
-- Aliases: backtick references
-
 ## <a id="lint.error"></a> error
 
 - Definition: A finding that the spec tree must not keep: a violation of

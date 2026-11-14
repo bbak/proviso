@@ -97,7 +97,7 @@ Otherwise `verify` reports "undecided" for <element>
 | a rule with `Then      ?` | no | "undecided" for the rule | an undecided place |
 | a rule marking a term whose Status is `open` | no | "undecided" for the rule | its meaning is not decided |
 | a feature with `- Contact: ?`, unchanged since the manifest | no | "undecided" for the feature | the whole tree, not only what the amendment touched |
-| a glossary entry whose Status is `open`, with Definition `?` and a Question, marked by no rule | no (an undecided place) | "undecided" for the glossary entry | an open term is undecided itself, whether a rule marks it or not |
+| a glossary entry whose Status is `open`, with Definition `?` and a Question, marked by no rule | no | "undecided" for the glossary entry | an open term is undecided itself, whether a rule marks it or not |
 
 ## <a id="coherence.verify.unjudged"></a> Rule: A candidate without a judgement is unjudged
 

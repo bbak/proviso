@@ -213,7 +213,7 @@ Otherwise nothing is listed because of <element>
 | `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
-## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
+## <a id="baseline.diff.undecided"></a> Rule: An undecided element is not to be built
 
 ### Rationale
 
