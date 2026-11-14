@@ -146,7 +146,7 @@ Otherwise `verify` reports "stale" for <element>
 | `lint.run.exit`, changed through `lint.step`, while `lint.guard`, which it also marks, has its Definition reworded after the check | no (what it depends on) | "stale" | a further element now reaches it |
 | `lint.run.exit`, changed through `lint.step`, whose Definition in the baseline is changed by a merge of the mainline | no (what it depends on) | "stale" | the change that reaches it is another |
 | `lint.run.exit`, changed, marking `lint.step`, whose Definition is reworded after the check | no (what it depends on) | "stale" | |
-| `lint.run.exit`, changed through `lint.step`, while `system.ref.commonmark`, defining `lint.step`, gets a new `Contact` after the check | yes | nothing reported for `lint.run.exit` | a new contact passes nothing on; `system.ref.commonmark`, touched only after the check, is stale itself |
+| `lint.run.exit`, changed through `lint.step`, whose Deviations changed, while `system.ref.commonmark`, which defines `lint.step`, gets a new `Contact` after the check | yes | nothing reported for `lint.run.exit` | a new contact passes nothing on; `system.ref.commonmark`, touched only after the check, is stale itself |
 
 ## <a id="coherence.verify.open"></a> Rule: A finding neither resolved nor dismissed is open
 

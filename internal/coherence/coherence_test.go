@@ -291,14 +291,21 @@ func rested(c *Coherence) map[string]string {
 // nil for none.
 func judgeEdit(t *testing.T, edit, after func(map[string]string)) (*Coherence, []string) {
 	t.Helper()
-	before := baselinetest.Files(baselinetest.ImpactTree)
+	return judgeEditOn(t, baselinetest.ImpactTree, edit, after)
+}
+
+// judgeEditOn is judgeEdit on the baseline tree that start builds.
+func judgeEditOn(t *testing.T, start, edit, after func(map[string]string)) (*Coherence, []string) {
+	t.Helper()
+	before := baselinetest.Files(start)
 	base, _ := baseline.Parse(baseline.Write(before))
 	derive := func(edits ...func(map[string]string)) ([]*baseline.Entry, []Candidate, []lint.Element) {
-		now := baselinetest.Files(baselinetest.EditTree(func(m map[string]string) {
+		now := baselinetest.Files(func(m map[string]string) {
+			start(m)
 			for _, e := range edits {
 				e(m)
 			}
-		}))
+		})
 		entries := baseline.Through(baseline.Compare(now, base), now, before)
 		cands, _ := Impact(entries, now, before)
 		return entries, cands, now
@@ -365,6 +372,35 @@ func TestJudgeRecordsWhatTouchedRestsOn(t *testing.T) {
 	}
 	if fmt.Sprint(stale) != "[system.thing]" {
 		t.Errorf("stale after a new contact: %v", stale)
+	}
+
+	// The thing marks std, defined by system.ref.std: std's Deviations
+	// change, and the reference only in its Contact. What is changed through
+	// std rests on std, not on the reference, and a new contact after the
+	// check leaves it as checked.
+	marksStd := func(m map[string]string) {
+		baselinetest.ImpactTree(m)
+		baselinetest.Replace(m, "glossary.md", "- Definition: A thing.", "- Definition: A thing of [std].")
+		baselinetest.Replace(m, "glossary.md", "- Defined by: [Std](references.md#system.ref.std)\n", "- Defined by: [Std](references.md#system.ref.std)\n- Deviations: none.\n")
+	}
+	refContact := func(from, to string) func(map[string]string) {
+		return func(m map[string]string) {
+			baselinetest.Replace(m, "references.md", "- Contact: "+from, "- Contact: "+to)
+		}
+	}
+	c, stale = judgeEditOn(t, marksStd, func(m map[string]string) {
+		baselinetest.Replace(m, "glossary.md", "- Deviations: none.", "- Deviations: few.")
+		refContact("Ann", "Bo")(m)
+	}, refContact("Bo", "Cy"))
+	got = rested(c)
+	if want := "system.std now [field Defined by field Deviations] baseline [field Defined by field Deviations]"; got["c.f.r"] != want || got["system.thing"] != want {
+		t.Errorf("rested %v", got)
+	}
+	if _, ok := got["system.std"]; ok {
+		t.Errorf("std rests on a reference that changed only in its Contact: %v", got)
+	}
+	if fmt.Sprint(stale) != "[system.ref.std]" {
+		t.Errorf("stale after a new contact of the reference: %v", stale)
 	}
 
 	// A removed member: c.g.c rests on it, recorded in the baseline only.
