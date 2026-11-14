@@ -43,10 +43,10 @@ Otherwise → cli.help.argument
 
 | arguments | provided | outcome | why |
 | --- | --- | --- | --- |
-| none, built as release `0.1.0` | yes | "proviso 0.1.0" and "model 0", exit status 0 | |
-| none, built locally after release `0.1.0` | yes | "proviso 0.1.1-dev" and "model 0", exit status 0 | |
-| none, built with no version given | yes | "proviso dev" and "model 0", exit status 0 | |
-| none, in a repository root whose skills are stale | yes | "proviso 0.1.0" and "model 0", exit status 0 | warnings change neither the output nor the exit status |
+| none, built as release `0.1.0` | yes | "proviso 0.1.0" and "model 1", exit status 0 | |
+| none, built locally after release `0.1.0` | yes | "proviso 0.1.1-dev" and "model 1", exit status 0 | |
+| none, built with no version given | yes | "proviso dev" and "model 1", exit status 0 | |
+| none, in a repository root whose skills are stale | yes | "proviso 0.1.0" and "model 1", exit status 0 | warnings change neither the output nor the exit status |
 | `--json` | no | handed over | |
 | `0.1.0` | no | handed over | |
 
@@ -283,9 +283,10 @@ Otherwise → install.version.manifest-other
 
 | line | provided | outcome | why |
 | --- | --- | --- | --- |
-| `model 0` | yes | no line | |
+| `model 1` | yes | no line | `model_version` |
+| `model 0` | yes | no line | `oldest_model_version` |
 | `model 0`, ending in a carriage return and a line feed | yes | no line | the line ending is not part of the line |
-| `model 1` | no | handed over | |
+| `model 2` | no | handed over | |
 | empty | no | handed over | |
 | `model 00` | no | handed over | `model_version` is written without a leading zero |
 | `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
@@ -303,8 +304,8 @@ Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.su
 
 | line | provided | outcome | why |
 | --- | --- | --- | --- |
-| `model 1` | yes | the tree needs model 1, this proviso reads model 0 | |
-| `model 12` | yes | the tree needs model 12, this proviso reads model 0 | |
+| `model 2` | yes | the tree needs model 2, this proviso reads model 0 to 1 | |
+| `model 12` | yes | the tree needs model 12, this proviso reads model 0 to 1 | |
 | empty | no | names no model version | |
 | `model` | no | names no model version | |
 | `model one` | no | names no model version | |

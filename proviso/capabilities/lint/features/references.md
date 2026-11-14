@@ -19,7 +19,9 @@ and parameters first, then the system's.
 
 Inside a rule block, a backtick is always a reference and `"…"` always
 a literal, so that every backtick resolves and a literal holds anything
-without a false alarm. A reference is qualified from its top-level
+without a false alarm. A "Builds on" field is read the same way for its
+code spans, as a "Represents" field is for its term marks; its other
+text says nothing. A reference is qualified from its top-level
 element, never shortened to what is unique today, since a new element
 would then break references that resolved before.
 
@@ -215,7 +217,7 @@ Otherwise lint reports the [error] `findings.hand-over-cycle` at the [heading] o
 ## <a id="lint.references.reference"></a> Rule: A backtick reference resolves
 
 ```guarded
-When      lint reads the [backtick reference] <reference> in a [rule block] of the capability <capability>
+When      lint reads the [backtick reference] <reference> in a [rule block], or in a "Builds on" [field] of a [contract element], of <capability>, a capability or the system
 Provided  the first segment of <reference> names a [top-level element] or a [parameter] of <capability> or of the system
   And     each further segment names a [member] of the one before
 Then      the [backtick reference] refers to that [element]
@@ -233,6 +235,9 @@ Otherwise lint reports the [error] `findings.reference-unresolved` at <reference
 | `findings.anchor-missing` | lint | no (further segment) | error | no such kind |
 | `exit-status` | lint | no (first segment) | error | not qualified from its top-level element |
 | `lint.cli.lint` | lint | no (first segment) | error | an identifier, not a name |
+| `findings`, in the "Builds on" field of `lint.cli.report` | lint | yes | that contract | read as in a rule block |
+| `manifest_file`, in the "Builds on" field of a system contract element | the system | yes | the contract | |
+| `findings`, in the "Builds on" field of a system contract element | the system | no (first segment) | error | the system does not see a capability's contracts |
 
 ## <a id="lint.references.reference-ambiguous"></a> Rule: A contract or parameter name names one element
 

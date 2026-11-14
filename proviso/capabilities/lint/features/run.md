@@ -118,9 +118,10 @@ Otherwise → lint.run.model-other
 | root | provided | outcome | why |
 | --- | --- | --- | --- |
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
-| `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | `oldest_model_version` and `model_version` are both 0 |
+| `repo/proviso/`, its `manifest.sum` starting with `model 1` | yes | the tree is checked | `model_version` |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | `oldest_model_version`, read as it was written |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
-| `repo/proviso/`, its `manifest.sum` starting with `model 1` | no | handed over | a notation this lint does not know |
+| `repo/proviso/`, its `manifest.sum` starting with `model 2` | no | handed over | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
 | `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
@@ -140,8 +141,8 @@ Otherwise lint writes to "stderr" that `manifest_file` names no model version
 
 | line | provided | outcome | why |
 | --- | --- | --- | --- |
-| `model 1` | yes | the tree needs model 1, lint reads model 0; exit status 2 | |
-| `model 12` | yes | the tree needs model 12, lint reads model 0; exit status 2 | |
+| `model 2` | yes | the tree needs model 2, lint reads model 0 to 1; exit status 2 | |
+| `model 12` | yes | the tree needs model 12, lint reads model 0 to 1; exit status 2 | |
 | empty | no | names no model version; exit status 2 | |
 | `model` | no | names no model version; exit status 2 | |
 | `model one` | no | names no model version; exit status 2 | |
