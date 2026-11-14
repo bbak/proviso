@@ -195,7 +195,7 @@ func TestBaselineDiffSince(t *testing.T) {
 				d.only(t, "cart.add.limit:changed", "okf-get:removed", "okf-get.input:removed", "cart.okf-get:added", "cart.okf-get.input:added")
 				checkSinceRevision(t, d, b7c8, true)
 			})
-			t.Run("row9 a1b2, whose manifest.sum names another model version", func(t *testing.T) {
+			t.Run("row9 a1b2, whose manifest.sum names a model version lint does not read", func(t *testing.T) {
 				t.Parallel()
 				r, _ := accepted(t, diffTree())
 				path := filepath.Join(r.root(), "manifest.sum")
