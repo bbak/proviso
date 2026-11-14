@@ -1,6 +1,6 @@
 // Package stamp reads the version stamps of installed skills and agent
 // definitions, and tells which model version the Proviso version a stamp
-// names reads.
+// names writes.
 package stamp
 
 import (
@@ -178,7 +178,7 @@ func cmpInt(a, b int) int {
 	return 0
 }
 
-// Model returns the model version the Proviso version stamp reads, as
+// Model returns the model version the Proviso version stamp writes, as
 // install.version.model looks it up in model_releases for a binary of the
 // Proviso version own, and whether it finds one.
 func Model(stamp, own string) (int, bool) {
