@@ -23,6 +23,7 @@ func TestSystemCliInit(t *testing.T) {
 	want := "written .claude/agents/proviso-checker.md\n" +
 		"written .claude/agents/proviso-coder.md\n" +
 		"written .claude/agents/proviso-mutator.md\n" +
+		"written .claude/agents/proviso-simplifier.md\n" +
 		"written .claude/agents/proviso-tester.md\n" +
 		"written .claude/skills/proviso-accept/SKILL.md\n" +
 		"written .claude/skills/proviso-build/SKILL.md\n" +
@@ -32,6 +33,7 @@ func TestSystemCliInit(t *testing.T) {
 		"written .claude/skills/proviso-mutate/SKILL.md\n" +
 		"written .claude/skills/proviso-recover/SKILL.md\n" +
 		"written .claude/skills/proviso-rehome/SKILL.md\n" +
+		"written .claude/skills/proviso-simplify/SKILL.md\n" +
 		"written .proviso/build.md\n" +
 		"written .proviso/coder.md\n" +
 		"written .proviso/tester.md\n" +
@@ -73,9 +75,9 @@ func TestSystemCliInit(t *testing.T) {
 // the one that brings a request into the spec tree, the one that recovers
 // the spec tree of an existing system, the one that gives elements that
 // moved, or whose identifiers name no place, the identifiers of their place,
-// the one that measures with mutants how many slips the tests catch and the
-// one that answers questions about the system from the spec tree are
-// written, and are no empty files.
+// the one that measures with mutants how many slips the tests catch, the one
+// that answers questions about the system from the spec tree and the one that
+// proposes simplifications of the spec tree are written, and are no empty files.
 // Their wording, and that of the stubs, is the kit's.
 func TestInstallInstalledFiles(t *testing.T) {
 	t.Parallel()
@@ -91,6 +93,7 @@ func TestInstallInstalledFiles(t *testing.T) {
 		".claude/skills/proviso-mutate/SKILL.md",
 		".claude/skills/proviso-recover/SKILL.md",
 		".claude/skills/proviso-rehome/SKILL.md",
+		".claude/skills/proviso-simplify/SKILL.md",
 	}
 	for _, p := range append(skills, ".proviso/build.md") {
 		o.says(t, "written", p)
@@ -161,6 +164,7 @@ func TestInstallInitAgents(t *testing.T) {
 		{"row2 the coding agent's definition, stamped with init's Proviso version", ".claude/agents/proviso-coder.md", "proviso-coder", ".proviso/coder.md"},
 		{"row3 the checking agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-checker.md", "proviso-checker", ""},
 		{"row4 the mutating agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-mutator.md", "proviso-mutator", ""},
+		{"row5 the simplifying agent's definition, stamped with init's Proviso version, and no engineers' notes", ".claude/agents/proviso-simplifier.md", "proviso-simplifier", ""},
 	}
 	definitions := make([]string, len(rows))
 	for i, row := range rows {
@@ -283,6 +287,7 @@ func TestInstallInitSkills(t *testing.T) {
 		{"row6 the skill that gives elements that moved, or whose identifiers name no place, the identifiers of their place, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-rehome/SKILL.md", "proviso-rehome", false},
 		{"row7 the skill that measures with mutants how many slips the tests catch, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-mutate/SKILL.md", "proviso-mutate", false},
 		{"row8 the skill that answers questions about the system from the spec tree, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-explain/SKILL.md", "proviso-explain", false},
+		{"row9 the skill that proposes simplifications of the spec tree, and no writing guide, stamped with init's Proviso version", ".claude/skills/proviso-simplify/SKILL.md", "proviso-simplify", false},
 	}
 	var writers []string
 	for _, row := range rows {
@@ -294,6 +299,7 @@ func TestInstallInitSkills(t *testing.T) {
 		".claude/agents/proviso-checker.md",
 		".claude/agents/proviso-coder.md",
 		".claude/agents/proviso-mutator.md",
+		".claude/agents/proviso-simplifier.md",
 		".claude/agents/proviso-tester.md",
 	}
 	for _, row := range rows {
