@@ -128,6 +128,7 @@ baseline while the branch's own text stays the same.
 ```guarded
 When      `verify` compares the [element] <element>, a [touched element] or a judged [candidate], with what `coherence_file` records for it
 Provided  the [fingerprints] of the [element parts] of <element> now, and for a [touched element] also in the [baseline], are the ones recorded
+  And     for a [touched element], the [elements] and [fingerprints] `judge` would record for it from what it depends on are the ones recorded
 Then      nothing is reported as "stale" for <element>
   And     everything else stays as it was
 Otherwise `verify` reports "stale" for <element>
@@ -141,6 +142,10 @@ Otherwise `verify` reports "stale" for <element>
 | `lint.run.exit`, touched, its baseline changed by a merge of the mainline | no | "stale" | |
 | `lint.run.root`, touched only after the check | no | "stale" | the check never read it |
 | `lint.examples.cells`, judged, its Examples row edited by a merge of the mainline | no | "stale" | |
+| `lint.run.exit`, changed through `lint.step`, whose Definition is reworded again after the check | no (what it depends on) | "stale" | its meaning changed again, though its text did not |
+| `lint.run.exit`, changed through `lint.step`, while `lint.guard`, which it also marks, is reworded after the check | no (what it depends on) | "stale" | a further element now reaches it |
+| `lint.run.exit`, changed, marking `lint.step`, whose Definition is reworded after the check | no (what it depends on) | "stale" | |
+| `lint.run.exit`, changed through `lint.step`, while `system.ref.commonmark`, defining `lint.step`, gets a new `Contact` after the check | yes | nothing reported | a new contact passes nothing on |
 
 ## <a id="coherence.verify.open"></a> Rule: A finding neither resolved nor dismissed is open
 
