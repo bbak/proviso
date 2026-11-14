@@ -642,8 +642,7 @@ properties:
 - `kind` says what is wrong: the element diff lists elements but no
   coherence check is recorded (`missing`); a check or an amendment note
   is left beside a tree the manifest records (`leftover`); an element
-  holds an undecided place, or marks an open term in its rule block
-  (`undecided`); a
+  is an undecided element (`undecided`); a
   candidate has no judgement (`unjudged`); an element changed since the
   check covered it (`stale`); a finding is neither resolved nor
   dismissed (`open`).

@@ -218,11 +218,20 @@
 
 - Definition: Marked `?` as the first word of a field value, of an
   Examples cell or of a section body, or as a word of its own in a rule
-  block. A word is what whitespace separates, so a note after the mark,
+  block, outside literals and backtick references. A word is what whitespace separates, so a note after the mark,
   as in `? (ask Treasury)`, leaves the place undecided. Nothing is
   specified there yet.
 - Contact: Bruno Baketarić
 - Status: defined
+
+## <a id="system.undecided-element"></a> undecided element
+
+- Definition: An element that holds an [undecided] place, or whose rule
+  block marks a term whose Status is `open`. Nothing is to be built from
+  it yet.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: undecided elements
 
 ## <a id="system.anchor"></a> anchor
 
