@@ -21,38 +21,3 @@ rule or a contract element's member, has parts of its own.
 | each step of the rule block | its keyword | `step <keyword>`, such as `step Provided` |
 | each row of the Examples table | its placeholder values | `row <fingerprint of the values>` |
 | everything else the element holds, such as a contract element's prose and blocks or a parameter's table | none: one per element | `body` |
-
-## <a id="baseline.dependencies"></a> dependencies
-
-- Configurable: no
-- Rationale: these are the links the notation makes explicit; a link
-  only prose makes, such as a definition naming another term without a
-  mark, is left to the coherence check. A contract element depends on
-  each term it represents, never the reverse: its shape leaves the
-  term's meaning as it is, and a rule that relies on the shape refers to
-  the element itself. A rule depends on every member of a contract
-  element it refers to, a member added later included, and one removed
-  by an amendment, since a changed member can affect any such rule:
-  coarse on purpose, at the cost of rules listed that only the added or
-  removed member touches. A contract element that builds on another,
-  such as a member made of another contract's members and one more,
-  depends on it as a rule does on what it refers to, so that a change of
-  the other reaches every rule referring to the first; only the field
-  `Builds on` says so, as prose names elements in passing too. A
-  glossary entry depends on the terms its
-  definition or deviations mark, and two entries may each mark the
-  other, as a glossary's definitions often lean on each other; an entry
-  that marks its own term depends on nothing through that mark.
-
-Which element depends on which: when the meaning of the second changes,
-so does the meaning of the first.
-
-| element | depends on |
-| --- | --- |
-| a rule | every glossary entry whose term its rule block marks |
-| a rule | every contract element and parameter its rule block refers to, and every member of such a contract element, one removed from it included |
-| a rule | the rule its hand-over names |
-| a contract element | every glossary entry whose term its field `Represents` marks |
-| a contract element | every contract element and parameter its field `Builds on` refers to, and every member of such a contract element, one removed from it included |
-| a glossary entry | the reference its field `Defined by` links to |
-| a glossary entry | every other glossary entry whose term its field `Definition` or `Deviations` marks |

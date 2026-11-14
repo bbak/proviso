@@ -301,19 +301,20 @@ func hasNote(t *tree.Tree) bool {
 }
 
 // checkStart derives what judge and verify start from: the element diff
-// against the baseline, the baseline and the candidates. It writes to
-// stderr why it could not.
-func checkStart(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, baseline.Baseline, []coherence.Candidate, bool) {
+// against the baseline, the baseline, the candidates and the elements of
+// the tree the former texts came from, nil where none was needed. It
+// writes to stderr why it could not.
+func checkStart(cmd string, t *tree.Tree, res *lint.Result, stderr io.Writer) ([]*baseline.Entry, baseline.Baseline, []coherence.Candidate, []lint.Element, bool) {
 	entries, _, formerElements, ok := elementDiff(cmd, t, res, "", stderr)
 	if !ok {
-		return nil, nil, nil, false
+		return nil, nil, nil, nil, false
 	}
 	base := baseline.Baseline{}
 	if data, ok := t.Manifest(); ok {
 		base, _ = baseline.Parse(data) // elementDiff refused it if it was damaged
 	}
 	candidates, _ := coherence.Impact(entries, res.Elements, formerElements)
-	return entries, base, candidates, true
+	return entries, base, candidates, formerElements, true
 }
 
 // readCoherence reads coherence_file, if the spec root holds one,
@@ -352,7 +353,7 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso judge: the input is no check_result: %v\n", err)
 		return exitErrors
 	}
-	entries, base, candidates, ok := checkStart("judge", t, res, stderr)
+	entries, base, candidates, formerElements, ok := checkStart("judge", t, res, stderr)
 	if !ok {
 		return exitCantRun
 	}
@@ -360,7 +361,7 @@ func judgeRun(t *tree.Tree, res *lint.Result, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "proviso judge: there is no amendment to judge: the spec tree is as the manifest records it")
 		return exitErrors
 	}
-	after, err := coherence.Judge(before, in, entries, candidates, res.Elements, base)
+	after, err := coherence.Judge(before, in, entries, candidates, res.Elements, formerElements, base)
 	if err != nil {
 		fmt.Fprintf(stderr, "proviso judge: %v; nothing is recorded\n", err)
 		return exitErrors
@@ -379,11 +380,11 @@ func verifyRun(t *tree.Tree, res *lint.Result, asJSON bool, stdout, stderr io.Wr
 	if !ok {
 		return exitCantRun
 	}
-	entries, base, candidates, ok := checkStart("verify", t, res, stderr)
+	entries, base, candidates, formerElements, ok := checkStart("verify", t, res, stderr)
 	if !ok {
 		return exitCantRun
 	}
-	problems := coherence.Verify(c, hasNote(t), entries, candidates, res.Elements, base)
+	problems := coherence.Verify(c, hasNote(t), entries, candidates, res.Elements, formerElements, base)
 	if !emit("verify", stdout, stderr, func(w io.Writer) error {
 		if asJSON {
 			return report.VerifyJSON(w, reportRoot(t.Root), problems)

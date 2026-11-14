@@ -27,8 +27,20 @@ type Coherence struct {
 	Findings   []Finding `json:"findings"`
 }
 
-// Covered is a touched element as the coherence check covered it.
+// Covered is a touched element as the coherence check covered it, with
+// the listed elements its meaning rests on, as coherence.judge.touched
+// records them.
 type Covered struct {
+	ID       string            `json:"id"`
+	Now      map[string]string `json:"now"`
+	Baseline map[string]string `json:"baseline"`
+	With     []Rested          `json:"with,omitempty"`
+}
+
+// Rested is a listed element a touched element depends on, with the
+// fingerprints of its parts that pass a changed meaning on, now and in
+// the baseline.
+type Rested struct {
 	ID       string            `json:"id"`
 	Now      map[string]string `json:"now"`
 	Baseline map[string]string `json:"baseline"`
@@ -127,6 +139,11 @@ func (c *Coherence) valid() error {
 	for _, t := range c.Touched {
 		if t.ID == "" || !fps(t.Now) || !fps(t.Baseline) {
 			return fmt.Errorf("the touched element %q is not recorded as judge records it", t.ID)
+		}
+		for _, w := range t.With {
+			if w.ID == "" || !fps(w.Now) || !fps(w.Baseline) {
+				return fmt.Errorf("the touched element %q is not recorded as judge records it", t.ID)
+			}
 		}
 	}
 	for _, j := range c.Judgements {
@@ -369,8 +386,9 @@ func fingerprints(e *lint.Element) map[string]string {
 // finding is no check: every touched element keeps what was recorded for
 // it before, and one recorded for none stays so, following
 // coherence.judge.touched. It returns why it refuses the check result, if
-// it does; the caller then records nothing.
-func Judge(before *Coherence, in *CheckResult, entries []*baseline.Entry, candidates []Candidate, now []lint.Element, base baseline.Baseline) (*Coherence, error) {
+// it does; the caller then records nothing. former is the tree the removed
+// elements stood in, as for baseline.Through.
+func Judge(before *Coherence, in *CheckResult, entries []*baseline.Entry, candidates []Candidate, now, former []lint.Element, base baseline.Baseline) (*Coherence, error) {
 	if before == nil {
 		before = &Coherence{}
 	}
@@ -421,9 +439,13 @@ func Judge(before *Coherence, in *CheckResult, entries []*baseline.Entry, candid
 		covered[t.ID] = t
 	}
 	c := &Coherence{Touched: []Covered{}, Judgements: []Judged{}, Findings: findings}
+	var rests map[string][]Rested
+	if !closes {
+		rests = restsOn(entries, now, former, base)
+	}
 	for _, e := range entries {
 		if !closes {
-			c.Touched = append(c.Touched, Covered{ID: e.ID, Now: fingerprints(e.Element), Baseline: recorded(base, e.ID)})
+			c.Touched = append(c.Touched, Covered{ID: e.ID, Now: fingerprints(e.Element), Baseline: recorded(base, e.ID), With: rests[e.ID]})
 		} else if t, ok := covered[e.ID]; ok {
 			c.Touched = append(c.Touched, t)
 		}
@@ -437,6 +459,72 @@ func Judge(before *Coherence, in *CheckResult, entries []*baseline.Entry, candid
 		c.Findings = []Finding{}
 	}
 	return c, nil
+}
+
+// restsOn returns, for every touched element not removed, the elements it
+// rests on, following coherence.judge.touched: every other element the
+// element diff lists as added, changed or removed that it depends on,
+// directly or through other elements, and that has a changed part passing
+// its meaning on, ordered by identifier. Each holds the fingerprints of its
+// parts that pass a changed meaning on, now and in the baseline: none now
+// for a removed one, none in the baseline for an added one.
+func restsOn(entries []*baseline.Entry, now, former []lint.Element, base baseline.Baseline) map[string][]Rested {
+	deps := baseline.Dependencies(entries, now, former)
+	formerByID := baseline.ByID(former)
+	passed := func(typ string, fps map[string]string) map[string]string {
+		m := map[string]string{}
+		for k, v := range fps {
+			if dependents, _ := baseline.Effects(typ, k); dependents {
+				m[k] = v
+			}
+		}
+		return m
+	}
+	// The listed elements that pass a changed meaning on, as they are
+	// recorded; a removed one's type is read from the tree it stood in.
+	passing := map[string]Rested{}
+	for _, e := range entries {
+		version := e.Element
+		if version == nil {
+			version = formerByID[e.ID]
+		}
+		if e.Change != baseline.ChangedThrough && version != nil && baseline.Passes(e, version) {
+			passing[e.ID] = Rested{ID: e.ID, Now: passed(version.Type, fingerprints(e.Element)), Baseline: passed(version.Type, base[e.ID])}
+		}
+	}
+	out := map[string][]Rested{}
+	for _, e := range entries {
+		if e.Element == nil {
+			continue
+		}
+		seen := map[string]bool{e.ID: true}
+		queue := []string{e.ID}
+		var rests []Rested
+		for len(queue) > 0 {
+			id := queue[0]
+			queue = queue[1:]
+			for _, d := range deps[id] {
+				if seen[d] {
+					continue
+				}
+				seen[d] = true
+				queue = append(queue, d)
+				if r, ok := passing[d]; ok {
+					rests = append(rests, r)
+				}
+			}
+		}
+		slices.SortFunc(rests, func(a, b Rested) int { return cmp.Compare(a.ID, b.ID) })
+		if len(rests) > 0 {
+			out[e.ID] = rests
+		}
+	}
+	return out
+}
+
+// sameRested reports whether two records of an element rested on agree.
+func sameRested(a, b Rested) bool {
+	return a.ID == b.ID && maps.Equal(a.Now, b.Now) && maps.Equal(a.Baseline, b.Baseline)
 }
 
 // recorded returns what the baseline records for an element, a copy, and
@@ -475,8 +563,9 @@ type Problem struct {
 // note says whether the spec root holds an amendment_note; beside an
 // unchanged tree, it is left over as a coherence file is. A check missing
 // or left over is compared with nothing, but the tree is still taken for
-// undecided places.
-func Verify(c *Coherence, note bool, entries []*baseline.Entry, candidates []Candidate, now []lint.Element, base baseline.Baseline) []Problem {
+// undecided places. former is the tree the removed elements stood in, as
+// for baseline.Through.
+func Verify(c *Coherence, note bool, entries []*baseline.Entry, candidates []Candidate, now, former []lint.Element, base baseline.Baseline) []Problem {
 	out := undecided(now)
 	switch {
 	case len(entries) == 0 && (c != nil || note):
@@ -485,7 +574,7 @@ func Verify(c *Coherence, note bool, entries []*baseline.Entry, candidates []Can
 	case c == nil:
 		out = append(out, Problem{Kind: Missing})
 	default:
-		out = append(out, compare(c, entries, candidates, base)...)
+		out = append(out, compare(c, entries, candidates, restsOn(entries, now, former, base), base)...)
 	}
 	slices.SortFunc(out, func(a, b Problem) int {
 		return cmp.Or(
@@ -512,8 +601,9 @@ func undecided(now []lint.Element) []Problem {
 
 // compare returns what the recorded check c leaves to do for the element
 // diff and the candidates: elements stale, candidates unjudged or stale,
-// and findings open.
-func compare(c *Coherence, entries []*baseline.Entry, candidates []Candidate, base baseline.Baseline) []Problem {
+// and findings open. rests holds what judge would record for each touched
+// element from what it depends on.
+func compare(c *Coherence, entries []*baseline.Entry, candidates []Candidate, rests map[string][]Rested, base baseline.Baseline) []Problem {
 	var out []Problem
 	covered := map[string]Covered{}
 	for _, t := range c.Touched {
@@ -521,7 +611,7 @@ func compare(c *Coherence, entries []*baseline.Entry, candidates []Candidate, ba
 	}
 	for _, e := range entries {
 		t, ok := covered[e.ID]
-		if !ok || !maps.Equal(t.Now, fingerprints(e.Element)) || !maps.Equal(t.Baseline, recorded(base, e.ID)) {
+		if !ok || !maps.Equal(t.Now, fingerprints(e.Element)) || !maps.Equal(t.Baseline, recorded(base, e.ID)) || !slices.EqualFunc(t.With, rests[e.ID], sameRested) {
 			out = append(out, Problem{Kind: Stale, Element: e.ID})
 		}
 	}
