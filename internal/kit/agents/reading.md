@@ -39,7 +39,9 @@ Read the elements this way:
   "everything else stays as it was".
 - `[term]` means exactly its glossary entry: the capability's glossary
   first, then the system's. `` `name` `` is a contract element or
-  parameter. `"…"` is a literal value. `<name>` is a placeholder, varied
+  parameter. A contract element's field `Builds on` names the contract
+  elements and parameters it builds on: it has their shape as part of
+  its own, as its prose says. `"…"` is a literal value. `<name>` is a placeholder, varied
   by the rule's Examples table.
 - Every Examples row is a case: placeholder columns are inputs,
   `outcome` is the expectation, `provided` says whether the guard holds.

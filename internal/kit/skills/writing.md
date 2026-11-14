@@ -177,6 +177,13 @@ text lines up, then its Examples table.
   Mermaid shows structure only, never a sequence or a state. A system
   whose only interface is a screen contracts a seam below it, such as an
   application API, for the tests to call.
+- **A contract element built on another,** such as a result holding the
+  members of a summary and one more, names it in its field `Builds on`,
+  as a rule block refers to it: `` - Builds on: `concept-summary` ``.
+  Its prose may say so too, but only the field makes a change of the
+  other reach the rules that refer to this one. Name every contract
+  element or parameter whose shape it takes over, never one it only
+  mentions.
 - **A reference** in `references.md` names an external standard with
   `Version`, `Link` and `Contact`; a term the standard defines has
   `Defined by` instead of `Definition`, and `Deviations` where the
