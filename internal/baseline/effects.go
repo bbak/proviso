@@ -131,6 +131,42 @@ func dependsOn(elements []lint.Element, removed map[string][]string) map[string]
 	return deps
 }
 
+// Passes reports whether a listed element, read as version, has a changed
+// part that passes its changed meaning on to its dependents.
+func Passes(e *Entry, version *lint.Element) bool {
+	for _, p := range ChangedParts(e, version) {
+		if passes, _ := Effects(version.Type, p); passes {
+			return true
+		}
+	}
+	return false
+}
+
+// removedMembers returns, by the contract element that held them, the
+// members the entries list as removed; formerElem holds the elements of
+// the tree they stood in.
+func removedMembers(byID map[string]*Entry, formerElem map[string]*lint.Element) map[string][]string {
+	removed := map[string][]string{}
+	for id, e := range byID {
+		if fe := formerElem[id]; e.Change == Removed && fe != nil && fe.Parent != "" {
+			removed[fe.Parent] = append(removed[fe.Parent], id)
+		}
+	}
+	return removed
+}
+
+// Dependencies is the parameter dependencies for the tree as it stands
+// now: the identifiers of the elements each element depends on, a member
+// the entries list as removed included. former is the tree the removed
+// elements stood in, as for Through.
+func Dependencies(entries []*Entry, now, former []lint.Element) map[string][]string {
+	byID := map[string]*Entry{}
+	for _, e := range entries {
+		byID[e.ID] = e
+	}
+	return dependsOn(now, removedMembers(byID, ByID(former)))
+}
+
 // throughDependencies lists every element that depends on a changed
 // meaning, and is not listed otherwise, as changed through a dependency,
 // naming, from each listed element whose changed part passes its meaning
@@ -138,17 +174,8 @@ func dependsOn(elements []lint.Element, removed map[string][]string) map[string]
 // chain, and of equally short ones the first. former is the tree the
 // removed elements stood in, which tells the members among them.
 func throughDependencies(elements, former []lint.Element, byID map[string]*Entry) {
-	formerElem := map[string]*lint.Element{}
-	for i := range former {
-		formerElem[former[i].ID] = &former[i]
-	}
-	removed := map[string][]string{}
-	for id, e := range byID {
-		if fe := formerElem[id]; e.Change == Removed && fe != nil && fe.Parent != "" {
-			removed[fe.Parent] = append(removed[fe.Parent], id)
-		}
-	}
-	deps := dependsOn(elements, removed)
+	formerElem := ByID(former)
+	deps := dependsOn(elements, removedMembers(byID, formerElem))
 	dependents := map[string][]string{}
 	for id, ds := range deps {
 		for _, d := range ds {
@@ -171,12 +198,9 @@ func throughDependencies(elements, former []lint.Element, byID map[string]*Entry
 		if version == nil {
 			continue
 		}
-		for _, p := range ChangedParts(e, version) {
-			if passes, _ := Effects(version.Type, p); passes {
-				seeds[id] = true
-				queue = append(queue, id)
-				break
-			}
+		if Passes(e, version) {
+			seeds[id] = true
+			queue = append(queue, id)
 		}
 	}
 	slices.Sort(queue)
