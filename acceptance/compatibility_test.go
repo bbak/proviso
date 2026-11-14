@@ -9,7 +9,10 @@ package acceptance
 // tree's files are copied into proviso/ as they are. The manifest of
 // model-0 was computed by the manifest oracle (manifestFor) from the plain
 // tree, whose parts' texts part_kinds fixes alone; it is never rewritten, so
-// that a later change of the reading shows as a failure here.
+// that a later change of the reading shows as a failure here. model-1 is
+// model-0 with the contract element cart.cli.report, whose field Builds on
+// model 1 added; its manifest holds model-0's lines and the fingerprints of
+// report's parts, its field's text taken as written, with its backticks.
 
 import (
 	"io/fs"

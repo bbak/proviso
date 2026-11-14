@@ -204,12 +204,12 @@ func TestBaselineDiffSince(t *testing.T) {
 					t.Fatal(err)
 				}
 				_, rest, _ := strings.Cut(string(intact), "\n")
-				if err := os.WriteFile(path, []byte("model 1\n"+rest), 0o644); err != nil {
+				if err := os.WriteFile(path, []byte("model 2\n"+rest), 0o644); err != nil {
 					t.Fatal(err)
 				}
 				r.set(diffTree().apply(xThen))
 				if l := execLint(t, r.dir); l.exit == 0 {
-					t.Fatalf("want lint to refuse the tree whose manifest names model 1, got exit status 0")
+					t.Fatalf("want lint to refuse the tree whose manifest names model 2, got exit status 0")
 				}
 				a1b2 := r.commit("round 1, the manifest of another model version")
 				// The manifest in the spec root of this model version again,

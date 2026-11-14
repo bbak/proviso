@@ -899,7 +899,7 @@ func manifestFor(parts []mpart) string {
 		lines = append(lines, p.id+"\t"+p.part+"\t"+fp(p.text))
 	}
 	sort.Strings(lines)
-	return "model 0\n" + strings.Join(lines, "\n") + "\n"
+	return "model " + modelVersion + "\n" + strings.Join(lines, "\n") + "\n"
 }
 
 var (
@@ -920,8 +920,8 @@ func checkManifestFormat(t *testing.T, content string) {
 		t.Errorf("system.manifest-file: holds a carriage return")
 	}
 	lines := strings.Split(strings.TrimSuffix(content, "\n"), "\n")
-	if lines[0] != "model 0" {
-		t.Errorf("system.manifest-file: first line %q, want %q", lines[0], "model 0")
+	if lines[0] != "model "+modelVersion {
+		t.Errorf("system.manifest-file: first line %q, want %q", lines[0], "model "+modelVersion)
 	}
 	for i, l := range lines[1:] {
 		f := strings.Split(l, "\t")

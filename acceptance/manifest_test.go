@@ -28,8 +28,8 @@ func TestSystemManifestFile(t *testing.T) {
 	t.Run("a tree of every element type, in the format", func(t *testing.T) {
 		t.Parallel()
 		m := manifestOf(t, richTree())
-		if !strings.HasPrefix(m, "model 0\n") {
-			t.Errorf("want the first line %q, got %q", "model 0", strings.SplitN(m, "\n", 2)[0])
+		if !strings.HasPrefix(m, "model "+modelVersion+"\n") {
+			t.Errorf("want the first line %q, got %q", "model "+modelVersion, strings.SplitN(m, "\n", 2)[0])
 		}
 	})
 }

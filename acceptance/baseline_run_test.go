@@ -59,7 +59,7 @@ func TestBaselineRunLint(t *testing.T) {
 		for _, cmd := range []string{"manifest", "diff", "pack", "pack --element"} {
 			t.Run(cmd, func(t *testing.T) {
 				t.Parallel()
-				dir := plainTree().with(manifestPath, "model 1\n").write(t)
+				dir := plainTree().with(manifestPath, "model 2\n").write(t)
 				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
 					t.Errorf("want exit status 2, got %d", r.exit)
 				}
@@ -78,7 +78,7 @@ func TestBaselineRunLint(t *testing.T) {
 				r.commit("round 1")
 				// HEAD~1 holds a tree lint accepts; only the manifest in
 				// the spec root names another model version.
-				if err := os.WriteFile(filepath.Join(r.root(), "manifest.sum"), []byte("model 1\n"), 0o644); err != nil {
+				if err := os.WriteFile(filepath.Join(r.root(), "manifest.sum"), []byte("model 2\n"), 0o644); err != nil {
 					t.Fatal(err)
 				}
 				since(t, r, cmd, "HEAD~1").stopped(t)
@@ -175,7 +175,7 @@ func runsOnlyWhereLintAccepts(t *testing.T, cmds ...string) {
 			// lint.run.model stops lint, and with it the command.
 			t.Run("derived: a manifest of another model version", func(t *testing.T) {
 				t.Parallel()
-				dir := plainTree().with(manifestPath, "model 1\n").write(t)
+				dir := plainTree().with(manifestPath, "model 2\n").write(t)
 				if r := baseRun(t, cmd, dir, dir, filepath.Join(dir, "proviso")); r.exit != 2 {
 					t.Errorf("want exit status 2, got %d", r.exit)
 				}
@@ -249,7 +249,7 @@ func writesOver(t *testing.T, cmds ...string) {
 			return r
 		}},
 		{"manifest, a manifest of another model version", "manifest", func(t *testing.T) *repo {
-			return newRepo(t, diffTree().with(manifestPath, "model 1\n"))
+			return newRepo(t, diffTree().with(manifestPath, "model 2\n"))
 		}},
 		{"manifest, written, with a coherence file", "manifest", func(t *testing.T) *repo {
 			r, _ := accepted(t, diffTree())

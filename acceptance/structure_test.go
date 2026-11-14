@@ -142,17 +142,23 @@ func TestLintStructureFieldKnown(t *testing.T) {
 	source := baseline().edit(glossaryPath, "- Status: defined\n", "- Status: defined\n- Source: Maria Keller\n")
 	owner := baseline().edit(featurePath, "- Contact: Dana Reyes\n", "- Contact: Dana Reyes\n- Owner: Search team\n")
 	lower := baseline().edit(featurePath, "- Contact: Dana Reyes\n", "- Contact: Dana Reyes\n- contact: Dana Reyes\n")
+	buildsOnEntry := withContracts().edit(glossaryPath, "- Status: defined\n", "- Status: defined\n- Builds on: ´findings´\n")
 	onCapability := baseline().edit(capPath, "# <a id=\"cart\"></a> Cart\n", "# <a id=\"cart\"></a> Cart\n\n- Contact: Dana Reyes\n")
 	rows(t, "field-unknown", []row{
 		{name: "row1 Contact on a feature", tree: baseline(), holds: true},
 		{name: "row2 Represents on a contract element", tree: baseline().with("proviso/capabilities/cart/contracts/api.md",
 			"# API\n\n## <a id=\"cart.order\"></a> order\n\n- Represents: [item]\n\nWhat a buyer orders.\n"), holds: true},
-		{name: "row3 Source on a glossary entry", tree: source,
+		{name: "row3 Builds on on a contract element", tree: withContracts().with("proviso/capabilities/cart/contracts/api.md",
+			"# API\n\n## <a id=\"cart.order\"></a> order\n\n- Builds on: ´findings´\n\nWhat a buyer orders.\n"), holds: true},
+		{name: "row4 Source on a glossary entry", tree: source,
 			file: glossaryPath, lines: lines(source.line(glossaryPath, "- Source:"))},
-		{name: "row4 Owner on a feature", tree: owner,
+		{name: "row5 Owner on a feature", tree: owner,
 			file: featurePath, lines: lines(owner.line(featurePath, "- Owner:"))},
-		{name: "row5 keys are matched exactly", tree: lower,
+		{name: "row6 keys are matched exactly", tree: lower,
 			file: featurePath, lines: lines(lower.line(featurePath, "- contact:"))},
+		// lint.field-names lists Builds on for a contract element only.
+		{name: "derived: Builds on on a glossary entry", tree: buildsOnEntry,
+			file: glossaryPath, lines: lines(buildsOnEntry.line(glossaryPath, "- Builds on:"))},
 		{name: "derived: a capability has no fields", tree: onCapability,
 			file: capPath, lines: lines(onCapability.line(capPath, "- Contact:"))},
 		{name: "derived: lists further down are prose", tree: baseline().edit(featurePath, "Buyers put goods into the cart.\n",
