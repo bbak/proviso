@@ -444,7 +444,7 @@ func TestCoherenceJudgeTouched(t *testing.T) {
 		r.set(amended(throughTree(), iLimitThen, iItemDef, tItemDefAgain))
 		r.verify().has(t, "stale cart.add.limit")
 	})
-	t.Run("row5 no judgements and no findings, lint.run.exit changed through lint.step, which is defined by system.ref.commonmark, changed only in its Contact", func(t *testing.T) {
+	t.Run("row5 no judgements and no findings, lint.run.exit changed through lint.step, whose Deviations changed, while system.ref.commonmark, which defines lint.step, changed only in its Contact", func(t *testing.T) {
 		t.Parallel()
 		// lint.step stands for cart.label, whose Deviations changed.
 		r := throughCovered(t, tLabelDev, tRefContact)
