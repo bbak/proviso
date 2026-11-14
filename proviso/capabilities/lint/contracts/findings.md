@@ -196,6 +196,10 @@ A chain of hand-overs that returns to a rule it has passed.
 
 A backtick reference that names no contract element or parameter.
 
+### <a id="lint.findings.builds-on-empty"></a> builds-on-empty
+
+A "Builds on" field that holds no backtick reference.
+
 ### <a id="lint.findings.reference-ambiguous"></a> reference-ambiguous
 
 A contract or parameter name that names more than one visible element.

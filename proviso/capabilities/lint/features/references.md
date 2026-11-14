@@ -239,6 +239,32 @@ Otherwise lint reports the [error] `findings.reference-unresolved` at <reference
 | `manifest_file`, in the "Builds on" field of a system contract element | the system | yes | the contract | |
 | `findings`, in the "Builds on" field of a system contract element | the system | no (first segment) | error | the system does not see a capability's contracts |
 
+## <a id="lint.references.builds-on"></a> Rule: A "Builds on" field names what its element builds on
+
+### Rationale
+
+Only this field says what a contract element builds on, so a field
+written in prose alone would leave out the very dependency its author
+meant to declare, without a sign of it. An undecided field is asked
+about as every field is.
+
+```guarded
+When      lint reads the "Builds on" [field] <field> of a [contract element]
+Provided  <field> holds at least one [backtick reference], or the first word of its value is "?"
+Then      lint reports nothing about <field> being empty
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.builds-on-empty` at <field>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| field | provided | outcome | why |
+| --- | --- | --- | --- |
+| `` - Builds on: `findings` `` | yes | nothing reported | |
+| `` - Builds on: `findings`, for its members `` | yes | nothing reported | the other text is prose |
+| `- Builds on: ?` | yes | nothing reported | asked about as an undecided field |
+| `- Builds on: the report` | no | error | prose alone declares nothing |
+| `- Builds on: [finding]` | no | error | a term mark is no backtick reference |
+
 ## <a id="lint.references.reference-ambiguous"></a> Rule: A contract or parameter name names one element
 
 ```guarded
