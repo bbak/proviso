@@ -78,6 +78,7 @@ func TestSystemCliUpdate(t *testing.T) {
 		want := "skipped .claude/agents/proviso-checker.md\n" +
 			"updated .claude/agents/proviso-coder.md\n" +
 			"skipped .claude/agents/proviso-mutator.md\n" +
+			"skipped .claude/agents/proviso-simplifier.md\n" +
 			"skipped .claude/agents/proviso-tester.md\n" +
 			"skipped .claude/skills/proviso-accept/SKILL.md\n" +
 			"skipped .claude/skills/proviso-build/SKILL.md\n" +
@@ -86,7 +87,8 @@ func TestSystemCliUpdate(t *testing.T) {
 			"skipped .claude/skills/proviso-integrate/SKILL.md\n" +
 			"skipped .claude/skills/proviso-mutate/SKILL.md\n" +
 			"skipped .claude/skills/proviso-recover/SKILL.md\n" +
-			"skipped .claude/skills/proviso-rehome/SKILL.md\n"
+			"skipped .claude/skills/proviso-rehome/SKILL.md\n" +
+			"skipped .claude/skills/proviso-simplify/SKILL.md\n"
 		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != want {
 			t.Errorf("system.cli.update: want stdout\n%s\ngot\n%s", want, got)
 		}

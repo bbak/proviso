@@ -5,7 +5,7 @@
 - Configurable: no
 - Rationale: a repository needs the start of a spec tree and its
   settings, the definitions of the implementing agents, the checking
-  agent and the mutating agent, and the skills for the first agent host, Claude Code, and a
+  agent, the mutating agent and the simplifying agent, and the skills for the first agent host, Claude Code, and a
   place for the engineers' notes to the implementing agents and the
   skills; the checking agent gets no notes, so that nothing steers its
   judgement. Nothing more is installed until it is needed. The agent
@@ -25,7 +25,9 @@
   notes, as nothing yet needs them. Answering an engineer's question
   about the system from the tree is the engineer's too, at any time, so
   its skill is installed with the others; it starts no agent of its
-  own.
+  own. Proposing simplifications of the tree is the engineer's too,
+  outside any amendment, so its skill is installed with the others; the
+  simplifying agent gets no notes, so that nothing steers what it finds.
 
 The paths are relative to the directory `init` runs in, with `/` as the
 separator.
@@ -35,6 +37,7 @@ separator.
 | `.claude/agents/proviso-checker.md` | the kit's agent definition of the checking agent |
 | `.claude/agents/proviso-coder.md` | the kit's agent definition of the coding agent |
 | `.claude/agents/proviso-mutator.md` | the kit's agent definition of the mutating agent |
+| `.claude/agents/proviso-simplifier.md` | the kit's agent definition of the simplifying agent |
 | `.claude/agents/proviso-tester.md` | the kit's agent definition of the testing agent |
 | `.claude/skills/proviso-accept/SKILL.md` | the kit's skill that accepts an amendment |
 | `.claude/skills/proviso-build/SKILL.md` | the kit's skill that builds an amendment |
@@ -44,6 +47,7 @@ separator.
 | `.claude/skills/proviso-mutate/SKILL.md` | the kit's skill that measures with mutants how many slips the tests catch |
 | `.claude/skills/proviso-recover/SKILL.md` | the kit's skill that recovers the spec tree of an existing system |
 | `.claude/skills/proviso-rehome/SKILL.md` | the kit's skill that gives elements that moved, or whose identifiers name no place, the identifiers of their place |
+| `.claude/skills/proviso-simplify/SKILL.md` | the kit's skill that proposes simplifications of the spec tree |
 | `.proviso/build.md` | the kit's stub for the engineers' notes to the skills |
 | `.proviso/coder.md` | the kit's stub for the engineers' notes to the coding agent |
 | `.proviso/tester.md` | the kit's stub for the engineers' notes to the testing agent |
