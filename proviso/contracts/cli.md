@@ -974,8 +974,8 @@ enum: [0, 2]
 ## <a id="system.cli.version"></a> version
 
 The command `proviso version`, run anywhere; it takes no argument. On
-standard output it writes two lines, the Proviso version and the model
-version:
+standard output it writes two lines, the Proviso version and the
+`model_version` it writes:
 
 ```text
 proviso 0.1.0

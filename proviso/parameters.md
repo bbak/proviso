@@ -27,13 +27,13 @@ every model version from it to `model_version`, and writes only
 ## <a id="system.model-releases"></a> model_releases
 
 - Configurable: no
-- Rationale: a binary knows its own model version only; the first
-  release of each model version lets it tell which model an older
-  release reads, and the table grows with the model, not with every
+- Rationale: a binary knows only the model versions it reads; the
+  first release of each model version lets it tell which model an
+  older release writes, and the table grows with the model, not with every
   release.
 
-Each row holds from its first release up to the next row's first
-release; the last row holds for every later release. Versions are
+Each row names the model version its releases write, and holds from
+its first release up to the next row's first release; the last row holds for every later release. Versions are
 release versions, without a leading `v`.
 
 | model_version | first release |

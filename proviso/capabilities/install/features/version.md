@@ -4,8 +4,8 @@
 
 ## Goal
 
-`version` names the Proviso version of the binary and the model version
-it reads, and, in the root of a git repository, says which installed
+`version` names the Proviso version of the binary and the
+`model_version` it writes, and, in the root of a git repository, says which installed
 skill or agent and which part of the spec tree does not fit them.
 
 ## Rationale
@@ -13,7 +13,9 @@ skill or agent and which part of the spec tree does not fit them.
 Proviso has two versions: its own, which follows semantic versioning,
 and the model version, a whole number that changes with every change to
 the notation. An engineer who upgrades the binary needs both, and needs
-to know what was installed by another version.
+to know what was installed by another version. The model versions a
+binary reads, from `oldest_model_version` on, are named only where a
+tree's manifest names one outside them.
 
 Standard output carries the two lines and nothing else, wherever
 `version` runs, so that a script or a skill reads them without
@@ -267,8 +269,8 @@ Otherwise → install.version.manifest-model
 ### Rationale
 
 `version` judges the manifest's first line by the same rule as `lint`,
-so that the two agree on whether the model version a tree needs is the
-one the binary reads.
+so that the two agree on whether the model version a tree needs is one
+the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
