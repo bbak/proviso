@@ -66,7 +66,7 @@ a dependency, whose meaning changed while its text did not.
 | the section `Goal` of a capability or a feature | no | scope |
 | any other part, such as a field `Contact` or a section `Rationale` | no | none |
 
-## <a id="baseline.dependencies"></a> dependencies
+## <a id="system.element-dependencies"></a> dependencies
 
 - Configurable: no
 - Rationale: these are the links the notation makes explicit; a link

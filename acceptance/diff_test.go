@@ -1004,12 +1004,12 @@ func TestFixtureSlip(t *testing.T) {
 	check(t, proseSlipTree()).clean(t)
 }
 
-// TestBaselineDependencies checks the row of baseline.dependencies a contract
+// TestSystemElementDependencies checks the row of system.element-dependencies a contract
 // element's field Builds on gives, through the element diff: the contract
 // element depends on every contract element and parameter the field refers
 // to, and on every member of such a contract element, one removed from it
 // included, never the reverse.
-func TestBaselineDependencies(t *testing.T) {
+func TestSystemElementDependencies(t *testing.T) {
 	t.Parallel()
 	diffOf := func(t *testing.T, base tree, cs ...change) diffOutcome {
 		t.Helper()

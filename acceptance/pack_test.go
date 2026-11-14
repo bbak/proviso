@@ -337,7 +337,7 @@ func TestBaselinePackChain(t *testing.T) {
 		t.Parallel()
 		// cart.pay.slip refers to cart.api.slip, which builds on
 		// cart.api.line, with its member cart.api.line.count, representing
-		// [item] (baseline.dependencies).
+		// [item] (system.element-dependencies).
 		o, _, _ := packFrom(t, withSlip(packTree(), slipMD),
 			change{payPath, "Then      the shop gives the slip of <order>", "Then      the shop hands the slip of <order> to the buyer"})
 		o.exactly(t, "Amendment", "cart.pay.slip")
