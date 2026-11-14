@@ -31,6 +31,8 @@ line. Proviso is those mechanics.
 - Showing an element of a spec tree by the identifier or name a
   reader meets, and answering an engineer's questions about the system
   from the tree, through a skill.
+- Proposing where a spec tree could say the same more simply, or where
+  its behaviour could be simpler, through a skill.
 - A command line that names its commands and refuses what it does not
   know.
 - Installing and updating the files a repository needs beside its code:

@@ -129,6 +129,7 @@ Then      <definition> is the [kit]'s definition of that agent, with the [kit]'s
 | `.claude/agents/proviso-coder.md` | the coding agent's definition, named `proviso-coder`, with the same reading guide in it, stamped with `init`'s Proviso version |
 | `.claude/agents/proviso-checker.md` | the checking agent's definition, named `proviso-checker`, with the same reading guide in it, stamped with `init`'s Proviso version, and no engineers' notes |
 | `.claude/agents/proviso-mutator.md` | the mutating agent's definition, named `proviso-mutator`, with the same reading guide in it, stamped with `init`'s Proviso version, and no engineers' notes |
+| `.claude/agents/proviso-simplifier.md` | the simplifying agent's definition, named `proviso-simplifier`, with the same reading guide in it, stamped with `init`'s Proviso version, and no engineers' notes |
 
 ## <a id="install.init.skills"></a> Rule: A skill is installed complete
 
@@ -159,6 +160,7 @@ Then      <skill> is the [kit]'s [skill] of that name, with the [kit]'s writing 
 | `.claude/skills/proviso-rehome/SKILL.md` | the skill that gives elements that moved, or whose identifiers name no place, the identifiers of their place, named `proviso-rehome`, and no writing guide, stamped with `init`'s Proviso version | it edits the spec tree only through `rehome` |
 | `.claude/skills/proviso-mutate/SKILL.md` | the skill that measures with mutants how many slips the tests catch, named `proviso-mutate`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
 | `.claude/skills/proviso-explain/SKILL.md` | the skill that answers questions about the system from the spec tree, named `proviso-explain`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
+| `.claude/skills/proviso-simplify/SKILL.md` | the skill that proposes simplifications of the spec tree, named `proviso-simplify`, and no writing guide, stamped with `init`'s Proviso version | it never edits the spec tree |
 
 ## <a id="install.init.exit"></a> Rule: The exit status tells whether every installed file is in place
 
