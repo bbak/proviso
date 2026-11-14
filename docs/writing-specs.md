@@ -123,6 +123,8 @@ flowchart TD
   R -- hands over to --> R
   K -- has member --> K
   K -- Represents --> G
+  K -- Builds on --> K
+  K -- Builds on --> P
   G -- Defined by --> Ref
 ```
 
@@ -374,6 +376,15 @@ rules refer to it qualified from the top: `` `customer.id` ``. A
 contract states shape only; behaviour, such as when a member is present,
 stays in rules. `- Represents: [term]` links a contract element to the
 glossary terms that carry its meaning.
+
+`` - Builds on: `concept-summary` `` says that a contract element takes
+over another's shape, such as a search hit that holds the members of a
+summary and one more. Every rule that refers to the element then changes
+in meaning when what it builds on changes, so `diff` and `impact` lead
+the check to it. Only the field says so: prose that names the other
+element, however clearly, links nothing. Name each contract element or
+parameter whose shape the element takes over, never one it only
+mentions; a field with no name in backticks is an error.
 
 - **One authority per aspect:** prose says what an element means, a
   block its shape, never both.
