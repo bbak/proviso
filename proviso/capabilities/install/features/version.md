@@ -5,8 +5,9 @@
 ## Goal
 
 `version` names the Proviso version of the binary and the
-`model_version` it writes, and, in the root of a git repository, says which installed
-skill or agent and which part of the spec tree does not fit them.
+`model_version` it writes, and, in the root of a git repository, says
+which installed skill or agent does not fit the binary, and whether the
+spec tree is of a model version the binary reads.
 
 ## Rationale
 
@@ -183,9 +184,9 @@ Otherwise `version` writes no line about <file>
 
 | file | stamp | version | provided | outcome | why |
 | --- | --- | --- | --- | --- | --- |
-| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.2.0` | yes | named, installed by 0.1.0, which reads model 0 | |
+| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.2.0` | yes | named, installed by 0.1.0, which writes model 0 | |
 | `.claude/agents/proviso-tester.md` | `dev` | `0.2.0` | yes | named, installed by dev, no model | |
-| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.1.1-dev` | yes | named, installed by 0.1.0, which reads model 0 | a local build is another version |
+| `.claude/agents/proviso-tester.md` | `0.1.0` | `0.1.1-dev` | yes | named, installed by 0.1.0, which writes model 0 | a local build is another version |
 | `.claude/agents/proviso-tester.md` | `0.1.0+build.5` | `0.1.0` | yes | named, installed by 0.1.0+build.5, no model | another build, though semantic versioning ranks them alike |
 | `.claude/agents/proviso-tester.md` | `0.3.0` | `0.2.0` | yes | named, installed by 0.3.0, no model | a later release may read a model this binary does not know |
 | `.claude/agents/proviso-tester.md` | `0.2.0` | `0.2.0` | no | no line | |

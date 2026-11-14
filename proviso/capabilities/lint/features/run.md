@@ -125,7 +125,7 @@ Otherwise → lint.run.model-other
 | `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0`, a carriage return and `foo` | no | handed over | a lone carriage return belongs to the line |
 
-## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree of another version needs
+## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree it does not read needs
 
 ```guarded
 When      lint finds that the first line <line> of `manifest_file` does not name a model version from `oldest_model_version` to `model_version`

@@ -173,13 +173,13 @@ as at an acceptance, names the binary's own model version.
 
 ### Property
 
-Every spec tree written in a model version from `oldest_model_version`
-to `model_version`, and the `manifest_file` written with it, are read
-under `model_version` with the same elements, the same element parts
-and the same fingerprints as under the model version they were written
-in, and lint reports no error in such a tree that it did not report
-under that version. A change of the notation that breaks this raises
-`oldest_model_version` to the new `model_version`.
+Every spec tree accepted by a release of a model version from
+`oldest_model_version` to `model_version`, and the `manifest_file`
+written with it, are read by the binary with the same elements, the
+same element parts and the same fingerprints as by that release, and
+lint reports no error in such a tree that that release did not report.
+A change that breaks this is a change of the notation: it raises
+`model_version`, and `oldest_model_version` to the new `model_version`.
 
 ## <a id="system.build-version"></a> Only a release gives the binary a release version
 
