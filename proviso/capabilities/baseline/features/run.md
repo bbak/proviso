@@ -38,5 +38,5 @@ Otherwise the command writes to "stderr" what `lint` would write as text
 | `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | an identifier that names no place is an ask, which `rehome` repairs later |
 | `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
 | `other/`, with no spec root up to the file system's root | no | exit status 2 | |
-| `repo/`, its `manifest.sum` naming another model version | no | exit status 2 | lint refuses a tree of another model version |
+| `repo/`, its `manifest.sum` naming a model version lint does not read | no | exit status 2 | lint refuses a tree of a model version it does not read |
 | `repo/`, the same, `diff` or `pack` run with `--since HEAD~1` | no | exit status 2 | comparing with a revision still needs a tree lint accepts |

@@ -262,7 +262,7 @@ Otherwise → install.version.manifest-model
 | `manifest.sum`, a folder | yes | named as unreadable | |
 | `manifest.sum`, a readable file | no | handed over | |
 
-## <a id="install.version.manifest-model"></a> Rule: A spec tree of another model version is named
+## <a id="install.version.manifest-model"></a> Rule: A spec tree of a model version the binary does not read is named
 
 ### Rationale
 
@@ -272,7 +272,7 @@ one the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
-Provided  <line>, without its [line ending], names `model_version`
+Provided  <line>, without its [line ending], names a model version from `oldest_model_version` to `model_version`
 Then      `version` writes no line about the [spec tree]
   And     everything else stays as it was
 Otherwise → install.version.manifest-other
@@ -290,9 +290,9 @@ Otherwise → install.version.manifest-other
 ## <a id="install.version.manifest-other"></a> Rule: The model version the spec tree needs is named
 
 ```guarded
-When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name `model_version`
+When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name a model version from `oldest_model_version` to `model_version`
 Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
-Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and `model_version` as the one it reads
+Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and the model versions it reads, from `oldest_model_version` to `model_version`, as one number where both are the same
   And     everything else stays as it was
 Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.sum" names no model version
   And     everything else stays as it was

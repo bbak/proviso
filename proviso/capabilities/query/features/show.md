@@ -30,8 +30,8 @@ one capability reads.
 an amendment is being written, when lint may still find errors in it.
 It finds and reads the tree as lint does, and refuses it where lint
 could not read it, since a tree read in part would make elements look
-missing, and one of another model version would be misread without any
-sign of it.
+missing, and one of a model version it does not read would be misread
+without any sign of it.
 
 The result names the file and line where an element stands, and the
 element it belongs to, rather than offering an option to show more: the
@@ -65,7 +65,7 @@ Otherwise `show` writes to "stderr" one line saying that `show` needs `show.quer
 When      someone runs `show`, with arguments it takes, in the directory <directory>
 Provided  `lint`, run in <directory>, would find a [spec root]
   And     would read every file of its [spec tree] that `tree_layout` lists
-  And     would find that its `manifest_file`, where it holds one, names `model_version`
+  And     would find that its `manifest_file`, where it holds one, names a model version `lint` reads
 Then      `show` works on that [spec tree], whatever `lint` would report about it
   And     nothing of what `lint` would write is written
 Otherwise `show` writes to "stderr" what `lint` would write
