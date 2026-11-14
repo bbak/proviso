@@ -147,8 +147,9 @@ existing system one capability per amendment; and `proviso-rehome`,
 which gives elements that moved, or whose identifiers name no place,
 the identifiers of their place, outside any amendment; and
 `proviso-mutate`, which measures with mutants how many slips the tests
-catch; and `proviso-explain`, which answers questions about the system
-from the tree. A skill runs Proviso's commands for every mechanical
+catch; `proviso-explain`, which answers questions about the system
+from the tree; and `proviso-simplify`, which proposes where the tree
+could say the same more simply. A skill runs Proviso's commands for every mechanical
 step and starts the agents. The skills that write decisions into the
 tree share a **writing guide**: how to write it for the agents that build from it.
 

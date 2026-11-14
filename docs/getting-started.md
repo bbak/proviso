@@ -44,8 +44,8 @@ it wrote and what it left alone. It never replaces a file that exists.
 | --- | --- |
 | `proviso/system.md` | the start of the spec tree: the system, with six sections to decide |
 | `proviso/.gitattributes`, `proviso/.markdownlint.jsonc` | settings that keep the tree on line feeds and markdownlint content with the notation |
-| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/`, `proviso-recover/`, `proviso-rehome/`, `proviso-mutate/`, `proviso-explain/` | the skills that bring a request into the tree, build, check and accept an amendment, recover the tree of an existing system, rehome elements that moved or whose identifiers name no place, measure with mutants how many slips the tests catch, and answer questions about the system from the tree |
-| `.claude/agents/proviso-tester.md`, `proviso-coder.md`, `proviso-checker.md`, `proviso-mutator.md` | the testing, coding, checking and mutating agents |
+| `.claude/skills/proviso-integrate/`, `proviso-build/`, `proviso-check/`, `proviso-accept/`, `proviso-recover/`, `proviso-rehome/`, `proviso-mutate/`, `proviso-explain/`, `proviso-simplify/` | the skills that bring a request into the tree, build, check and accept an amendment, recover the tree of an existing system, rehome elements that moved or whose identifiers name no place, measure with mutants how many slips the tests catch, answer questions about the system from the tree, and propose simplifications of the tree |
+| `.claude/agents/proviso-tester.md`, `proviso-coder.md`, `proviso-checker.md`, `proviso-mutator.md`, `proviso-simplifier.md` | the testing, coding, checking, mutating and simplifying agents |
 | `.proviso/build.md`, `tester.md`, `coder.md` | your notes to the skills and the implementing agents |
 
 Commit all of it. The installed skills and agents are shared by the team

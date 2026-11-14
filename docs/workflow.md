@@ -273,6 +273,21 @@ where the tree does not decide a case, offering to bring it in with
 `proviso-integrate`. It edits nothing, and works on any branch, also in
 the middle of an amendment.
 
+## Simplify: `proviso-simplify`
+
+Every finding a check brings is settled by adding to the tree, and each
+addition makes sense on its own; over time the tree says some things in
+several places, decides finer and finer cases one by one, or keeps a
+promise in a Rationale that no rule holds. Ask Claude Code to simplify
+the tree, or one capability of it, between amendments. A fresh agent
+reads only the tree and proposes, each with the elements it touches,
+what stays as it is, what it costs, such as tests renamed, and its
+kind: the same meaning said more simply, for you to decide, or a
+simpler behaviour, for the business to decide. The skill checks each
+against the tree and brings them to you one at a time; what you take
+goes to `proviso-integrate` as an amendment of its own. It edits
+nothing itself.
+
 ## Edits outside the skills
 
 The tree can be edited by hand, and an amendment need not be built by
