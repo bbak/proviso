@@ -56,15 +56,22 @@ func covered(t *testing.T, cs ...change) *repo {
 // same files.
 func mergedMainline(t *testing.T, cs []change, mainline []change) *repo {
 	t.Helper()
-	r, _ := accepted(t, impactTree())
+	return mergedMainlineOn(t, impactTree(), cs, mainline)
+}
+
+// mergedMainlineOn is mergedMainline, with base accepted in place of the
+// impact tree.
+func mergedMainlineOn(t *testing.T, base tree, cs []change, mainline []change) *repo {
+	t.Helper()
+	r, _ := accepted(t, base)
 	r.git("checkout", "-q", "-b", "feature")
-	feature := amended(impactTree(), cs...)
+	feature := amended(base, cs...)
 	r.set(feature)
 	r.judgeAll(nil)
 	r.commit("feature, with its check")
 	r.git("checkout", "-q", "main")
-	r.tr = impactTree()
-	r.set(amended(impactTree(), mainline...))
+	r.tr = base
+	r.set(amended(base, mainline...))
 	r.manifest()
 	r.commit("accept on the mainline")
 	r.git("checkout", "-q", "feature")
@@ -402,6 +409,54 @@ func TestCoherenceVerifyStale(t *testing.T) {
 		t.Parallel()
 		r := mergedMainline(t, []change{iLimitThen}, []change{iFullRow})
 		r.verify().only(t, "stale cart.add.full")
+	})
+	// Rows 6 to 10 run on the through tree (see through_trees_test.go).
+	t.Run("row6 changed through lint.step, whose Definition is reworded again after the check", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iItemDef)
+		r.verify().only(t)
+		r.set(amended(throughTree(), iItemDef, tItemDefAgain))
+		// cart.item, and every other element that depends on it, is stale
+		// too.
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("row7 changed through lint.step, while lint.guard, which it also marks, has its Definition reworded after the check", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iItemDef)
+		r.set(amended(throughTree(), iItemDef, tShelfMiddle))
+		o := r.verify()
+		o.has(t, "stale cart.add.limit")
+		// cart.shelf is touched only after the check (row4).
+		o.has(t, "stale cart.shelf")
+	})
+	t.Run("row8 changed through lint.step, whose Definition in the baseline is changed by a merge of the mainline", func(t *testing.T) {
+		t.Parallel()
+		// The branch rewords the first and the last line of shelf's
+		// Definition; the mainline accepts the last alone, so the branch's
+		// own text stays the same, and shelf stays changed.
+		r := mergedMainlineOn(t, throughTree(), []change{tShelfFirst, tShelfLast}, []change{tShelfLast})
+		// cart.shelf is stale itself, its baseline changed (row3).
+		r.verify().only(t, "stale cart.add.limit", "stale cart.shelf")
+	})
+	t.Run("row9 changed, marking lint.step, whose Definition is reworded after the check", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iLimitThen)
+		r.set(amended(throughTree(), iLimitThen, iItemDef))
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("derived: row9, the Definition changed at the check already", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iLimitThen, iItemDef)
+		r.verify().only(t)
+		r.set(amended(throughTree(), iLimitThen, iItemDef, tItemDefAgain))
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("row10 changed through lint.step, while system.ref.commonmark, defining lint.step, gets a new Contact after the check", func(t *testing.T) {
+		t.Parallel()
+		// lint.step stands for cart.label, defined by CommonMark.
+		r := throughCovered(t, tLabelDev)
+		r.set(amended(throughTree(), tLabelDev, tRefContact))
+		r.verify().only(t, "stale system.ref.commonmark")
 	})
 }
 
