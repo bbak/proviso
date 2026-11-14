@@ -143,9 +143,10 @@ Otherwise `verify` reports "stale" for <element>
 | `lint.run.root`, touched only after the check | no | "stale" | the check never read it |
 | `lint.examples.cells`, judged, its Examples row edited by a merge of the mainline | no | "stale" | |
 | `lint.run.exit`, changed through `lint.step`, whose Definition is reworded again after the check | no (what it depends on) | "stale" | its meaning changed again, though its text did not |
-| `lint.run.exit`, changed through `lint.step`, while `lint.guard`, which it also marks, is reworded after the check | no (what it depends on) | "stale" | a further element now reaches it |
+| `lint.run.exit`, changed through `lint.step`, while `lint.guard`, which it also marks, has its Definition reworded after the check | no (what it depends on) | "stale" | a further element now reaches it |
+| `lint.run.exit`, changed through `lint.step`, whose Definition in the baseline is changed by a merge of the mainline | no (what it depends on) | "stale" | the change that reaches it is another |
 | `lint.run.exit`, changed, marking `lint.step`, whose Definition is reworded after the check | no (what it depends on) | "stale" | |
-| `lint.run.exit`, changed through `lint.step`, while `system.ref.commonmark`, defining `lint.step`, gets a new `Contact` after the check | yes | nothing reported | a new contact passes nothing on |
+| `lint.run.exit`, changed through `lint.step`, while `system.ref.commonmark`, defining `lint.step`, gets a new `Contact` after the check | yes | nothing reported for `lint.run.exit` | a new contact passes nothing on; `system.ref.commonmark`, touched only after the check, is stale itself |
 
 ## <a id="coherence.verify.open"></a> Rule: A finding neither resolved nor dismissed is open
 

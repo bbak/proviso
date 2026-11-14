@@ -178,7 +178,7 @@ read, as far as their change passes anything on.
 When      `judge` records the input <input> in `coherence_file`
 Provided  <input> closes no [finding]
 Then      every [touched element] is recorded with the [fingerprints] of its [element parts] now and in the [baseline]
-  And     with every other [element] listed as added, changed or removed that it depends on by `dependencies`, directly or through other [elements], and that has a changed [element part] `change_effects` gives "dependents" for, each with the [fingerprints] of its [element parts] `change_effects` gives "dependents" for, now, or in the [baseline] for one removed
+  And     a [touched element] not removed is recorded with every other [element] listed as added, changed or removed that it depends on by `dependencies`, directly or through other [elements], and that has a changed [element part] `change_effects` gives "dependents" for, each with the [fingerprints] of its [element parts] `change_effects` gives "dependents" for, now and in the [baseline], now only for one added and in the [baseline] only for one removed
   And     the check covers every [touched element] as it stands
 Otherwise every [touched element] keeps what `coherence_file` recorded for it before, and one recorded for none stays so
   And     an edit of a [touched element] since the last check is left for the next check to read
@@ -191,6 +191,7 @@ Otherwise every [touched element] keeps what `coherence_file` recorded for it be
 | no judgements and no findings, `lint.run.exit` changed through `lint.step`, whose Definition changed | yes | `lint.run.exit` recorded as it is now, with `lint.step` and the fingerprint of its Definition | |
 | no judgements and no findings, `lint.run.exit` changed, marking `lint.step`, whose Definition changed | yes | `lint.run.exit` recorded with `lint.step` too | a changed element rests on what it marks as well |
 | no judgements and no findings, `lint.run.exit` changed through `lint.step`, which is defined by `system.ref.commonmark`, changed only in its `Contact` | yes | `lint.run.exit` recorded with `lint.step`, not with `system.ref.commonmark` | a new contact passes nothing on |
+| no judgements and no findings, `lint.run.exit` removed, having marked `lint.step`, whose Definition changed | yes | `lint.run.exit` recorded without what it depended on | a removed element has no meaning left to change |
 | `f1` resolved, `lint.run.exit` edited since the last run | no | `lint.run.exit` keeps what was recorded before | the edit was read by no agent |
 | `f2` dismissed | no | every touched element keeps what was recorded before | |
 
