@@ -17,6 +17,7 @@ import (
 	"regexp"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -25,6 +26,31 @@ import (
 
 // modelVersion is model_version.
 const modelVersion = "0"
+
+// oldestModelVersion is oldest_model_version.
+const oldestModelVersion = "0"
+
+// readModelVersions are the model versions a binary reads, from
+// oldest_model_version to model_version.
+func readModelVersions() []string {
+	oldest, _ := strconv.Atoi(oldestModelVersion)
+	newest, _ := strconv.Atoi(modelVersion)
+	var vs []string
+	for v := oldest; v <= newest; v++ {
+		vs = append(vs, strconv.Itoa(v))
+	}
+	return vs
+}
+
+// namesReadVersions tells whether nums, the numbers a line names, name the
+// model versions read, from oldest_model_version to model_version, as one
+// number where both are the same.
+func namesReadVersions(nums []string) bool {
+	if oldestModelVersion == modelVersion {
+		return count(nums, modelVersion) == 1
+	}
+	return count(nums, oldestModelVersion) > 0 && count(nums, modelVersion) > 0
+}
 
 // stampedFiles are the agent definitions and skills installed_files names, in
 // the byte order of their paths.

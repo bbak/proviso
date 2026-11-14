@@ -341,6 +341,13 @@ func TestInstallVersionManifestModel(t *testing.T) {
 			r.version("dev").reports(t, expect{manifest: !row.holds})
 		})
 	}
+	for _, v := range readModelVersions() {
+		t.Run("derived: model "+v+", from oldest_model_version to model_version", func(t *testing.T) {
+			t.Parallel()
+			r := versionRepo(t, installedAs("dev").with("proviso/manifest.sum", "model "+v+"\n"))
+			r.version("dev").reports(t, expect{})
+		})
+	}
 	t.Run("derived: only the first line counts", func(t *testing.T) {
 		t.Parallel()
 		r := versionRepo(t, installedAs("dev").with("proviso/manifest.sum", "model 0\nnot a manifest line\n<<<<<<< HEAD\n"))
@@ -373,8 +380,8 @@ func TestInstallVersionManifestOther(t *testing.T) {
 			o.reports(t, expect{manifest: true})
 			nums := numbers(o.manifestLine(), "manifest.sum")
 			if row.needs != "" {
-				if count(nums, row.needs) == 0 || count(nums, modelVersion) == 0 {
-					t.Errorf("install.version.manifest-other: want the line to name model %s as the one the tree needs and model %s as the one this proviso reads: %q", row.needs, modelVersion, o.manifestLine())
+				if count(nums, row.needs) == 0 || !namesReadVersions(nums) {
+					t.Errorf("install.version.manifest-other: want the line to name model %s as the one the tree needs and the model versions this proviso reads, from %s to %s, as one number where both are the same: %q", row.needs, oldestModelVersion, modelVersion, o.manifestLine())
 				}
 				return
 			}
