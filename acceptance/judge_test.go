@@ -421,7 +421,67 @@ func TestCoherenceJudgeTouched(t *testing.T) {
 		}
 		r.verify().lacks(t, "stale cart.add.limit")
 	})
-	t.Run("row3 f1 resolved, lint.run.exit edited since the last run", func(t *testing.T) {
+	// Rows 3 to 6 run on the through tree (see through_trees_test.go): what
+	// a run records of what a touched element depends on shows through
+	// verify, once what it depends on is edited after the run.
+	t.Run("row3 no judgements and no findings, lint.run.exit changed through lint.step, whose Definition changed", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iItemDef)
+		r.verify().only(t)
+		// Only with the fingerprints of the parts that pass a change on: a
+		// new Contact of item leaves cart.add.limit as the check read it.
+		r.set(amended(throughTree(), iItemDef, tItemContact))
+		r.verify().only(t, "stale cart.item")
+		// With the fingerprint of item's Definition: the Definition reworded
+		// again reaches cart.add.limit.
+		r.set(amended(throughTree(), iItemDef, tItemDefAgain))
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("row4 no judgements and no findings, lint.run.exit changed, marking lint.step, whose Definition changed", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, iLimitThen, iItemDef)
+		r.verify().only(t)
+		r.set(amended(throughTree(), iLimitThen, iItemDef, tItemDefAgain))
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("row5 no judgements and no findings, lint.run.exit changed through lint.step, which is defined by system.ref.commonmark, changed only in its Contact", func(t *testing.T) {
+		t.Parallel()
+		// lint.step stands for cart.label, whose Deviations changed.
+		r := throughCovered(t, tLabelDev, tRefContact)
+		r.verify().only(t)
+		// Not recorded with CommonMark: another Contact still leaves
+		// cart.add.limit as the check read it, and CommonMark, touched
+		// itself, is stale.
+		r.set(amended(throughTree(), tLabelDev, tRefContact, tRefContactAgain))
+		r.verify().only(t, "stale system.ref.commonmark")
+	})
+	t.Run("row6 no judgements and no findings, lint.run.exit removed, having marked lint.step, whose Definition changed", func(t *testing.T) {
+		t.Parallel()
+		r := throughCovered(t, removeLimit(), iItemDef)
+		r.verify().only(t)
+		r.set(amended(throughTree(), removeLimit(), iItemDef, tItemDefAgain))
+		o := r.verify()
+		o.lacks(t, "stale cart.add.limit")
+		o.has(t, "stale cart.item")
+	})
+	t.Run("derived: what it depends on through another element", func(t *testing.T) {
+		t.Parallel()
+		// A new Version of CommonMark reaches cart.add.limit through label.
+		r := throughCovered(t, tRefVersion)
+		r.verify().only(t)
+		r.set(amended(throughTree(), tRefVersion, tRefVersionAgain))
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("derived: a closing run keeps what was recorded of what it depends on", func(t *testing.T) {
+		t.Parallel()
+		r := throughRepo(t, iItemDef)
+		r.judgeAll(nil, gap("A gap."))
+		r.set(amended(throughTree(), iItemDef, tItemDefAgain))
+		r.verify().has(t, "stale cart.add.limit")
+		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
+		r.verify().has(t, "stale cart.add.limit")
+	})
+	t.Run("row7 f1 resolved, lint.run.exit edited since the last run", func(t *testing.T) {
 		t.Parallel()
 		r := checkedThenEdited(t, gap("A gap."))
 		r.judgeOK(checkResult{Findings: []findingIn{resolved("f1")}})
@@ -429,7 +489,7 @@ func TestCoherenceJudgeTouched(t *testing.T) {
 		o.has(t, "stale cart.add.limit")
 		o.lacks(t, "open f1")
 	})
-	t.Run("row4 f2 dismissed", func(t *testing.T) {
+	t.Run("row8 f2 dismissed", func(t *testing.T) {
 		t.Parallel()
 		r := checkedThenEdited(t, gap("The first gap."), gap("The second gap."))
 		r.judgeOK(checkResult{Findings: []findingIn{dismissed("f2", "decided in system.git")}})
