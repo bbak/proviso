@@ -106,6 +106,7 @@ var severities = map[string]string{
 	"hand-over-cycle":              "error",
 	"reference-unresolved":         "error",
 	"reference-ambiguous":          "error",
+	"builds-on-empty":              "error",
 	"field-unknown":                "error",
 	"field-missing":                "error",
 	"field-repeated":               "error",

@@ -181,9 +181,9 @@ func TestQueryShowTree(t *testing.T) {
 		sameAsLint(t, o, execLint(t, dir, "--json"))
 		o.refused(t, "query.show.tree", "x.md")
 	})
-	t.Run("row8 its manifest.sum starting with model 1", func(t *testing.T) {
+	t.Run("row8 its manifest.sum starting with model 2", func(t *testing.T) {
 		t.Parallel()
-		dir := tr.with("proviso/manifest.sum", "model 1\n").write(t)
+		dir := tr.with("proviso/manifest.sum", "model 2\n").write(t)
 		o := showIn(t, dir, dir, "--json", "system")
 		sameAsLint(t, o, execLint(t, dir, "--json"))
 	})
@@ -529,7 +529,7 @@ func TestQueryReadOnly(t *testing.T) {
 	})
 	t.Run("a tree lint cannot read", func(t *testing.T) {
 		t.Parallel()
-		dir := tr.with("proviso/manifest.sum", "model 1\n").write(t)
+		dir := tr.with("proviso/manifest.sum", "model 2\n").write(t)
 		showIn(t, dir, dir, "system", "--json")
 	})
 }

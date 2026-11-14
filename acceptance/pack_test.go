@@ -333,6 +333,23 @@ func TestBaselinePackChain(t *testing.T) {
 		o.exactly(t, "Amendment", "cart.api.line.count", "cart.pay.lines", "cart.pay.order")
 		o.exactly(t, "Context", "cart.api.line", "cart.item")
 	})
+	t.Run("derived: a contract element brings what its field Builds on refers to", func(t *testing.T) {
+		t.Parallel()
+		// cart.pay.slip refers to cart.api.slip, which builds on
+		// cart.api.line, with its member cart.api.line.count, representing
+		// [item] (baseline.dependencies).
+		o, _, _ := packFrom(t, withSlip(packTree(), slipMD),
+			change{payPath, "Then      the shop gives the slip of <order>", "Then      the shop hands the slip of <order> to the buyer"})
+		o.exactly(t, "Amendment", "cart.pay.slip")
+		o.exactly(t, "Context", "cart.api.slip", "cart.api.line", "cart.api.line.count", "cart.item")
+	})
+	t.Run("derived: a contract element naming another only in its prose brings nothing of it", func(t *testing.T) {
+		t.Parallel()
+		o, _, _ := packFrom(t, withSlip(packTree(), proseSlipMD),
+			change{payPath, "Then      the shop gives the slip of <order>", "Then      the shop hands the slip of <order> to the buyer"})
+		o.exactly(t, "Amendment", "cart.pay.slip")
+		o.exactly(t, "Context", "cart.api.slip")
+	})
 	t.Run("row7 a rule handing over, named by --element", func(t *testing.T) {
 		t.Parallel()
 		// baseline.diff.added: cart.add.spoken, as in row1.
