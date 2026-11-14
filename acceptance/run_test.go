@@ -826,7 +826,10 @@ func TestLintRunModelOther(t *testing.T) {
 					}
 				} else if count(nums, modelVersion) > 1 {
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed: %q", row.line, modelVersion, r.stderr)
-				} else if row.not != "" && count(nums, row.not) > 0 && count(nums, modelVersion) > 0 {
+				} else if row.not != "" && count(nums, row.not) > count(readModelVersions(), row.not) && count(nums, modelVersion) > 0 {
+					// A number lint reads may stand on the line once, as an
+					// end of the range lint reads; only once more is it named
+					// as needed.
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed and %s as read: %q", row.line, row.not, modelVersion, r.stderr)
 				}
 			}
