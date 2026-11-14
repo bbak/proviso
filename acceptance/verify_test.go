@@ -451,7 +451,7 @@ func TestCoherenceVerifyStale(t *testing.T) {
 		r.set(amended(throughTree(), iLimitThen, iItemDef, tItemDefAgain))
 		r.verify().has(t, "stale cart.add.limit")
 	})
-	t.Run("row10 changed through lint.step, while system.ref.commonmark, defining lint.step, gets a new Contact after the check", func(t *testing.T) {
+	t.Run("row10 changed through lint.step, whose Deviations changed, while system.ref.commonmark, which defines lint.step, gets a new Contact after the check", func(t *testing.T) {
 		t.Parallel()
 		// lint.step stands for cart.label, defined by CommonMark.
 		r := throughCovered(t, tLabelDev)
