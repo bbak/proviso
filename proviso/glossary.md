@@ -370,6 +370,17 @@
 - Contact: Bruno Baketarić
 - Status: defined
 
+## <a id="system.simplifying-agent"></a> simplifying agent
+
+- Definition: The agent that reads the spec tree, and nothing beside it,
+  and proposes where it could say the same more simply or where its
+  behaviour could be simpler, for the engineer to decide, kept apart
+  from how the tree came to be: it sees no code, tests, notes or
+  history.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: simplifying agents
+
 ## <a id="system.line-ending"></a> line ending
 
 - Definition: The end of a line in a file Proviso reads: a line feed, or
