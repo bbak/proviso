@@ -101,7 +101,7 @@ func TestRowKey(t *testing.T) {
 func TestManifest(t *testing.T) {
 	els := baselinetest.Files(nil)
 	m := Write(els)
-	if !strings.HasPrefix(string(m), "model 0\n") || !strings.HasSuffix(string(m), "\n") {
+	if !strings.HasPrefix(string(m), "model 1\n") || !strings.HasSuffix(string(m), "\n") {
 		t.Fatalf("%q", m)
 	}
 	lines := strings.Split(strings.TrimSuffix(string(m), "\n"), "\n")[1:]
@@ -133,7 +133,7 @@ func TestManifest(t *testing.T) {
 }
 
 func TestCheckModel(t *testing.T) {
-	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 0\r\nx": true, "model 0\r": false, "model 0\rfoo\n": false, "model 1\r\r\n": false, "model 1\n": false, "": false, "model 0 \n": false, "model\n": false, "model 00\n": false} {
+	for in, ok := range map[string]bool{"model 0\nx": true, "model 0": true, "model 0\r\nx": true, "model 0\r": false, "model 0\rfoo\n": false, "model 1\r\r\n": false, "model 1\n": true, "model 2\n": false, "": false, "model 0 \n": false, "model\n": false, "model 00\n": false} {
 		if err := CheckModel([]byte(in)); (err == nil) != ok {
 			t.Errorf("%q: %v", in, err)
 		}

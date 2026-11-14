@@ -10,7 +10,7 @@ import (
 
 // Version is the parameter model_version: the version of the Proviso
 // Model this binary writes, and the newest it reads.
-const Version = 0
+const Version = 1
 
 // Oldest is the parameter oldest_model_version: the oldest version of the
 // Proviso Model this binary reads. It reads every version from Oldest to
@@ -46,4 +46,5 @@ type Release struct {
 // next row's; the last row holds for every later release.
 var Releases = []Release{
 	{0, "0.1.0"},
+	{1, "0.7.0"},
 }
