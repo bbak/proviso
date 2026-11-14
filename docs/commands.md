@@ -97,8 +97,13 @@ proviso version
 ```
 
 Prints two lines: Proviso's own version, which follows semantic
-versioning, and the version of the Proviso Model it reads, a whole
-number.
+versioning, and the version of the Proviso Model it writes, a whole
+number. It also reads every older model version from the oldest it
+still supports: a change that only adds to the notation raises the
+model version, and a tree accepted under an older one reads as it did,
+without a migration. The first acceptance with a newer release writes
+the manifest under its model version, after which older releases refuse
+the tree.
 
 ```text
 proviso 0.1.0
@@ -112,9 +117,10 @@ latest release, such as `0.1.1-dev`; a build given no version says
 Run in the root of a git repository, it also checks what `init`
 installed there, and warns on standard error about every skill or agent
 that is missing, carries no version stamp or more than one, or was
-installed by another version, naming the model version that one reads
+installed by another version, naming the model version that one writes
 where it can tell; and about a `proviso/manifest.sum` that is missing,
-cannot be read, or records another model version or none. Silence means
+cannot be read, or records a model version it does not read, or none,
+naming the model versions it reads. Silence means
 everything fits. Anywhere else it prints a hint instead. It never
 changes a file.
 
@@ -141,7 +147,7 @@ another capability. It never writes the tree.
 | --- | --- |
 | 0 | no error |
 | 1 | at least one error |
-| 2 | lint could not run: no spec root was found, a file of the tree cannot be read (a folder where the layout lists a file counts), or the manifest records another model version or none |
+| 2 | lint could not run: no spec root was found, a file of the tree cannot be read (a folder where the layout lists a file counts), or the manifest records a model version lint does not read, or none |
 
 Specified in the features of [lint](https://github.com/bbak/proviso/tree/main/proviso/capabilities/lint/features).
 
