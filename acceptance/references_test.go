@@ -618,12 +618,83 @@ func TestLintReferencesReference(t *testing.T) {
 		{name: "derived: a system-level parameter", tree: withThenAnd(baseline().with("proviso/parameters.md",
 			"# Parameters\n\n## <a id=\"system.currency\"></a> currency\n\n- Value: EUR\n- Configurable: no\n- Rationale: the shop sells in one country.\n"),
 			"the shop logs ´currency´"), holds: true},
+		// Rows 8 to 10: a "Builds on" field, read as a rule block is.
+		{name: "row8 findings, in the Builds on field of a capability's contract element", tree: capBuildsOn("´findings´"), holds: true},
+		{name: "row9 manifest_file, in the Builds on field of a system contract element", tree: sysBuildsOn("´manifest_file´"), holds: true},
+		badBuildsOn("row10 findings, in the Builds on field of a system contract element: the system does not see a capability's contracts", sysBuildsOn("´findings´"), sysFilesPath),
+		{name: "derived: a member, in the Builds on field of a capability's contract element", tree: capBuildsOn("´findings.anchor-misplaced´"), holds: true},
+		{name: "derived: a system contract element, in the Builds on field of a capability's contract element", tree: capBuildsOn("´manifest_file´"), holds: true},
+		badBuildsOn("derived: no such contract element, in a Builds on field", capBuildsOn("´nosuch´"), capReportPath),
+		badBuildsOn("derived: the second of two code spans in a Builds on field resolving to nothing", capBuildsOn("´findings´ and ´nosuch´"), capReportPath),
 	})
 	t.Run("rows1-3 resolve without other findings", func(t *testing.T) {
 		t.Parallel()
 		for _, r := range []string{"findings.anchor-misplaced", "lint.exit-status", "max_quantity"} {
 			check(t, ref(r)).clean(t)
 		}
+	})
+	t.Run("rows8-9 resolve without other findings", func(t *testing.T) {
+		t.Parallel()
+		check(t, capBuildsOn("´findings´")).clean(t)
+		check(t, sysBuildsOn("´manifest_file´")).clean(t)
+	})
+}
+
+// The trees of a "Builds on" field: capReportPath holds the cart's contract
+// element report, sysFilesPath the system's contract elements manifest_file
+// and lock; capBuildsOn and sysBuildsOn give report and lock the field
+// "- Builds on: " and value.
+const (
+	capReportPath = "proviso/capabilities/cart/contracts/report.md"
+	sysFilesPath  = "proviso/contracts/files.md"
+)
+
+const sysFilesMD = `# Files
+
+## <a id="system.manifest-file"></a> manifest_file
+
+The file that records the tree.
+`
+
+func capBuildsOn(value string) tree {
+	return withContracts().with(
+		sysFilesPath, sysFilesMD,
+		capReportPath, "# Report\n\n## <a id=\"cart.report\"></a> report\n\n- Builds on: "+value+"\n\nWhat the shop writes.\n",
+	)
+}
+
+func sysBuildsOn(value string) tree {
+	return withContracts().with(sysFilesPath, sysFilesMD+"\n## <a id=\"system.lock\"></a> lock\n\n- Builds on: "+value+"\n\nThe file that locks the tree.\n")
+}
+
+// badBuildsOn is the row whose tree tr reports reference-unresolved on the
+// line of the "Builds on" field in path.
+func badBuildsOn(name string, tr tree, path string) row {
+	return row{name: name, tree: tr, file: path, lines: lines(tr.line(path, "- Builds on:"))}
+}
+
+func TestLintReferencesBuildsOn(t *testing.T) {
+	t.Parallel()
+	rows(t, "builds-on-empty", []row{
+		{name: "row1 a backtick reference", tree: capBuildsOn("´findings´"), holds: true},
+		{name: "row2 a backtick reference and prose", tree: capBuildsOn("´findings´, for its members"), holds: true},
+		{name: "row3 ?, asked about as an undecided field", tree: capBuildsOn("?"), holds: true},
+		badBuildsOn("row4 prose alone declares nothing", capBuildsOn("the report"), capReportPath),
+		badBuildsOn("row5 a term mark is no backtick reference", capBuildsOn("[item]"), capReportPath),
+		{name: "derived: a backtick reference after prose", tree: capBuildsOn("the ´findings´"), holds: true},
+		badBuildsOn("derived: prose alone, in a system contract element", sysBuildsOn("the manifest"), sysFilesPath),
+		{name: "derived: no Builds on field", tree: withContracts(), holds: true},
+	})
+	t.Run("rows1-2 without other findings", func(t *testing.T) {
+		t.Parallel()
+		check(t, capBuildsOn("´findings´")).clean(t)
+		check(t, capBuildsOn("´findings´, for its members")).clean(t)
+	})
+	t.Run("row3 asked about as an undecided field", func(t *testing.T) {
+		t.Parallel()
+		tr := capBuildsOn("?")
+		o := checkGoesOn(t, tr)
+		o.has(t, "undecided", capReportPath, tr.line(capReportPath, "- Builds on:"))
 	})
 }
 

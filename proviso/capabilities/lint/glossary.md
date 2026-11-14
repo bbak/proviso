@@ -10,8 +10,9 @@
 
 ## <a id="lint.backtick-reference"></a> backtick reference
 
-- Definition: A name in backticks inside a rule block, referring to a
-  contract element or a parameter, such as `` `findings.anchor-misplaced` ``.
+- Definition: A name in backticks inside a rule block or a "Builds on"
+  field, referring to a contract element or a parameter, such as
+  `` `findings.anchor-misplaced` ``.
 - Contact: Bruno Baketarić
 - Status: defined
 - Aliases: backtick references

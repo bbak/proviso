@@ -1,6 +1,8 @@
 package lint
 
 import (
+	"fmt"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -597,5 +599,55 @@ func TestIdentifierHome(t *testing.T) {
 				t.Errorf("got  %v\nwant %v", got, c.want)
 			}
 		})
+	}
+}
+
+func TestBuildsOn(t *testing.T) {
+	// A contract element at line 3 of the file, its field list on line 5.
+	contract := func(cap bool, field string) map[string]string {
+		m := base()
+		body := "# Report\n\n## <a id=\"x.report\"></a> report\n\n" + field + "\n\nThe report.\n"
+		if cap {
+			m["capabilities/c/contracts/report.md"] = strings.Replace(body, "x.report", "c.report", 1)
+		} else {
+			m["contracts/report.md"] = strings.Replace(body, "x.report", "system.report", 1)
+		}
+		return m
+	}
+	cases := []struct {
+		name  string
+		cap   bool
+		field string
+		want  []string
+	}{
+		{"a reference", true, "- Builds on: `lint`", nil},
+		{"a member, with prose", true, "- Builds on: `lint.exit-status`, for its status", nil},
+		{"undecided", true, "- Builds on: ? (ask)", []string{"undecided@capabilities/c/contracts/report.md:5"}},
+		{"prose only", true, "- Builds on: the report", []string{"builds-on-empty@capabilities/c/contracts/report.md:5"}},
+		{"a term mark", true, "- Builds on: [finding]", []string{"builds-on-empty@capabilities/c/contracts/report.md:5"}},
+		{"unresolved", true, "- Builds on: `lint.nope`", []string{"reference-unresolved@capabilities/c/contracts/report.md:5"}},
+		{"system sees no capability", false, "- Builds on: `lint`", []string{"reference-unresolved@contracts/report.md:5"}},
+		{"system sees itself", false, "- Builds on: `report`", nil},
+	}
+	for _, c := range cases {
+		if got := kinds(lintFiles(contract(c.cap, c.field))); !slices.Equal(got, c.want) {
+			t.Errorf("%s: %v, want %v", c.name, got, c.want)
+		}
+	}
+	m := contract(true, "- Builds on: `lint`, `lint.exit-status`, `lint`")
+	t2 := &tree.Tree{Root: "proviso"}
+	for _, rel := range slices.Sorted(maps.Keys(m)) {
+		k, cp := tree.Classify(rel)
+		t2.Files = append(t2.Files, &tree.File{Rel: rel, Kind: k, Cap: cp, Data: []byte(m[rel])})
+	}
+	t2.CapFolders = []tree.CapFolder{{Rel: "capabilities/c", HasCapability: true}}
+	got := "no c.report"
+	for _, e := range Check(t2).Elements {
+		if e.ID == "c.report" {
+			got = fmt.Sprint(e.BuildsOn)
+		}
+	}
+	if got != "[{lint c.cli.lint} {lint.exit-status c.cli.lint.exit-status}]" {
+		t.Errorf("builds on: %v", got)
 	}
 }

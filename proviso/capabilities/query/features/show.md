@@ -82,7 +82,7 @@ Otherwise `show` writes to "stderr" what `lint` would write
 | `other/`, with no spec root up to the file system's root | no (spec root) | exit status 2 | |
 | `repo/`, its `glossary.md` without read permission | no (read) | exit status 2, naming `glossary.md` | a tree read in part makes elements look missing |
 | `repo/`, its tree holding `x.md`, a symbolic link to another feature | no (read) | exit status 2, naming `x.md` | |
-| `repo/`, its `manifest.sum` starting with `model 1` | no (model version) | exit status 2 | another notation is misread |
+| `repo/`, its `manifest.sum` starting with `model 2` | no (model version) | exit status 2 | another notation is misread |
 
 ## <a id="query.show.in"></a> Rule: A capability narrows what show looks among
 

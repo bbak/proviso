@@ -81,10 +81,10 @@ func TestLintRunRoot(t *testing.T) {
 			t.Errorf("want exit status 2 naming a.md of the nearest tree, got %d\nstderr: %s", o.json.exit, o.json.stderr)
 		}
 	})
-	t.Run("derived: the nearest tree's manifest names model 1, the outer one model 0", func(t *testing.T) {
+	t.Run("derived: the nearest tree's manifest names model 2, the outer one model 0", func(t *testing.T) {
 		t.Parallel()
 		tr := baseline().with("proviso/manifest.sum", "model 0\n")
-		for k, v := range baseline().with("proviso/manifest.sum", "model 1\n").prefixed("a") {
+		for k, v := range baseline().with("proviso/manifest.sum", "model 2\n").prefixed("a") {
 			tr[k] = v
 		}
 		dir := tr.write(t)
@@ -310,9 +310,9 @@ func TestLintRunUnreadable(t *testing.T) {
 	// lint reads the whole tree before it checks the model version: an
 	// unreadable file stops the run, and is named, even where the manifest
 	// names another model version.
-	t.Run("derived: a.md not valid UTF-8, and manifest.sum starting with model 1", func(t *testing.T) {
+	t.Run("derived: a.md not valid UTF-8, and manifest.sum starting with model 2", func(t *testing.T) {
 		t.Parallel()
-		dir := marked.with(aPath, invalid, "proviso/manifest.sum", "model 1\n").write(t)
+		dir := marked.with(aPath, invalid, "proviso/manifest.sum", "model 2\n").write(t)
 		stoppedIn(t, lintIn(t, dir, dir, nil), dir, "a.md")
 	})
 	t.Run("derived: manifest.sum a folder, and a.md not valid UTF-8", func(t *testing.T) {
@@ -657,7 +657,7 @@ func TestLintRunExit(t *testing.T) {
 	}{
 		{"derived: no spec root, not checked", tree{"proviso/glossary.md": glossaryMD}},
 		{"derived: an unreadable file, not checked", baseline().with("proviso/capabilities/cart/features/a.md", "\xff\xfe\n")},
-		{"derived: another model version, not checked", baseline().with("proviso/manifest.sum", "model 1\n")},
+		{"derived: another model version, not checked", baseline().with("proviso/manifest.sum", "model 2\n")},
 	}
 	for _, c := range notChecked {
 		t.Run(c.name, func(t *testing.T) {
@@ -717,11 +717,15 @@ func TestLintRunModel(t *testing.T) {
 		t.Parallel()
 		check(t, baseline()).clean(t)
 	})
-	t.Run("row2 manifest.sum starting with model 0", func(t *testing.T) {
+	t.Run("row2 manifest.sum starting with model 1", func(t *testing.T) {
+		t.Parallel()
+		check(t, baseline().with("proviso/manifest.sum", "model 1\n")).clean(t)
+	})
+	t.Run("row3 manifest.sum starting with model 0", func(t *testing.T) {
 		t.Parallel()
 		check(t, baseline().with("proviso/manifest.sum", "model 0\n")).clean(t)
 	})
-	t.Run("row3 manifest.sum starting with model 0 and a carriage return", func(t *testing.T) {
+	t.Run("row4 manifest.sum starting with model 0 and a carriage return", func(t *testing.T) {
 		t.Parallel()
 		// The model check passes; the line ending is line-ending's to
 		// report, and nothing else.
@@ -732,19 +736,19 @@ func TestLintRunModel(t *testing.T) {
 		}
 	})
 	// Handed over to lint.run.model-other, which stops with exit status 2.
-	t.Run("row4 manifest.sum starting with model 1", func(t *testing.T) {
+	t.Run("row5 manifest.sum starting with model 2", func(t *testing.T) {
 		t.Parallel()
-		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n")))
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 2\n")))
 	})
-	t.Run("row5 manifest.sum empty", func(t *testing.T) {
+	t.Run("row6 manifest.sum empty", func(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "")))
 	})
-	t.Run("row6 manifest.sum starting with model 00", func(t *testing.T) {
+	t.Run("row7 manifest.sum starting with model 00", func(t *testing.T) {
 		t.Parallel()
 		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 00\n")))
 	})
-	t.Run("row7 manifest.sum starting with model 0, a carriage return and foo", func(t *testing.T) {
+	t.Run("row8 manifest.sum starting with model 0, a carriage return and foo", func(t *testing.T) {
 		t.Parallel()
 		// A lone carriage return belongs to the line, so the line is no
 		// model 0; handed over, lint stops before it reports line-ending.
@@ -781,9 +785,9 @@ func TestLintRunModel(t *testing.T) {
 	})
 	// The model version a tree needs is checked before the tree: a tree
 	// with an error gives exit status 2, not 1, and no report.
-	t.Run("derived: model 1 and a tree with an error", func(t *testing.T) {
+	t.Run("derived: model 2 and a tree with an error", func(t *testing.T) {
 		t.Parallel()
-		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 1\n", "proviso/notes.md", "# Notes\n")))
+		stopped(t, check(t, baseline().with("proviso/manifest.sum", "model 2\n", "proviso/notes.md", "# Notes\n")))
 	})
 }
 
@@ -794,7 +798,7 @@ func TestLintRunModelOther(t *testing.T) {
 		needs      string // the model version the tree needs, "" where none is named
 		not        string // a number the line holds that must not be named as needed
 	}{
-		{"row1 model 1", "model 1", "1", ""},
+		{"row1 model 2", "model 2", "2", ""},
 		{"row2 model 12", "model 12", "12", ""},
 		{"row3 empty", "", "", ""},
 		{"row4 model", "model", "", ""},
@@ -822,7 +826,10 @@ func TestLintRunModelOther(t *testing.T) {
 					}
 				} else if count(nums, modelVersion) > 1 {
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed: %q", row.line, modelVersion, r.stderr)
-				} else if row.not != "" && count(nums, row.not) > 0 && count(nums, modelVersion) > 0 {
+				} else if row.not != "" && count(nums, row.not) > count(readModelVersions(), row.not) && count(nums, modelVersion) > 0 {
+					// A number lint reads may stand on the line once, as an
+					// end of the range lint reads; only once more is it named
+					// as needed.
 					t.Errorf("lint.run.model-other: %q names no model version, but stderr names model %s as needed and %s as read: %q", row.line, row.not, modelVersion, r.stderr)
 				}
 			}

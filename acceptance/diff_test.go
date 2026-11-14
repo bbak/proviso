@@ -578,6 +578,27 @@ var (
 	amountAdded  = change{apiPath, "How many pieces the line holds.\n", "How many pieces the line holds.\n\n### <a id=\"cart.api.line.amount\"></a> amount\n\nWhat the line costs.\n"}
 )
 
+// The slip trees: the impact tree with the contract element cart.api.slip,
+// which the rule cart.pay.slip refers to. In slipTree, cart.api.slip builds
+// on cart.api.line by its field Builds on; in proseSlipTree it names
+// ´line´ only in its prose. lineBody is a new line in the body of
+// cart.api.line.
+const (
+	slipMD      = "\n## <a id=\"cart.api.slip\"></a> slip\n\n- Builds on: ´line´\n\nWhat a buyer gets for a paid order.\n"
+	proseSlipMD = "\n## <a id=\"cart.api.slip\"></a> slip\n\nWhat a buyer gets for a paid order, each ´line´ on it.\n"
+)
+
+var lineBody = change{apiPath, "A line of an order.\n", "A line of an order.\nOne per product.\n"}
+
+func withSlip(tr tree, contract string) tree {
+	return tr.appendTo(apiPath, contract).appendTo(payPath, "\n"+ruleMD("cart.pay.slip", "A paid order gets a slip",
+		"When      a buyer asks for the ´slip´ of the order <order>\nThen      the shop gives the slip of <order>\n  And     nothing else changes",
+		"| order | outcome |\n| --- | --- |\n| the first order | given |"))
+}
+
+func slipTree() tree      { return withSlip(impactTree(), slipMD) }
+func proseSlipTree() tree { return withSlip(impactTree(), proseSlipMD) }
+
 // The trees of the rows of baseline.diff.dependency in which glossary
 // entries mark each other's terms in their Definition or Deviations.
 
@@ -809,7 +830,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.thematic-break"), "system.line-ending")
 		checkThrough(t, o.elem(t, "cart.x.line"), "system.line-ending > cart.thematic-break")
 	})
-	t.Run("row14 a Definition reworded, while another entry holds it escaped in its Definition", func(t *testing.T) {
+	t.Run("row15 a Definition reworded, while another entry holds it escaped in its Definition", func(t *testing.T) {
 		t.Parallel()
 		// system.line-ending: system.line-ending, marked by cart.x.end;
 		// install.version-stamp: cart.receipt-line, holding \[line ending],
@@ -818,7 +839,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o.only(t, "system.line-ending:changed", "cart.x.end:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.end"), "system.line-ending")
 	})
-	t.Run("row15 a Definition reworded, while another entry marks it in its Definition", func(t *testing.T) {
+	t.Run("row14 a Definition reworded, while another entry marks it in its Definition", func(t *testing.T) {
 		t.Parallel()
 		// system.line-ending: system.line-ending; install.version-stamp:
 		// cart.receipt-line, marked by cart.x.print.
@@ -862,7 +883,27 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.api.line"), "system.price")
 		checkThrough(t, o.elem(t, "cart.pay.order"), "system.price > cart.api.line")
 	})
-	t.Run("row19 a Definition reworded, while another entry marks it and a rule marks both", func(t *testing.T) {
+	t.Run("row19 a new line in a contract element's body, while another refers to it in its field Builds on", func(t *testing.T) {
+		t.Parallel()
+		// system.manifest-file: cart.api.line, referred to by cart.pay.order;
+		// lint.cli.report: cart.api.slip, building on it; the rule
+		// referring to report: cart.pay.slip.
+		o := diffOf(t, slipTree(), lineBody)
+		o.only(t, "cart.api.line:changed", "cart.pay.order:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.api.line")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.api.line > cart.api.slip")
+	})
+	t.Run("row20 a new line in a contract element's body, while another names it only in its prose", func(t *testing.T) {
+		t.Parallel()
+		// As row19, cart.api.slip naming ´line´ in its body, without a
+		// field Builds on.
+		o := diffOf(t, proseSlipTree(), lineBody)
+		o.only(t, "cart.api.line:changed", "cart.pay.order:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.order"), "cart.api.line")
+	})
+	t.Run("row21 a Definition reworded, while another entry marks it and a rule marks both", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item; lint.guard: cart.shelf; the rule:
 		// cart.x.stock, reached by cart.item directly and through cart.shelf.
@@ -872,7 +913,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.shelf"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.x.stock"), "cart.item")
 	})
-	t.Run("row20 a Definition reworded, while two entries mark it and a rule marks both of them but not it", func(t *testing.T) {
+	t.Run("row22 a Definition reworded, while two entries mark it and a rule marks both of them but not it", func(t *testing.T) {
 		t.Parallel()
 		// system.line-ending: system.line-ending; system.heading:
 		// cart.thematic-break, in its Deviations; install.version-stamp:
@@ -882,7 +923,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 			"cart.x.line:changed-through", "cart.x.print:changed-through")
 		checkThrough(t, o.elem(t, "cart.x.print"), "system.line-ending > cart.receipt-line")
 	})
-	t.Run("row21 a Definition reworded, while it marks its own term", func(t *testing.T) {
+	t.Run("row23 a Definition reworded, while it marks its own term", func(t *testing.T) {
 		t.Parallel()
 		// lint.step: cart.item, marked by cart.add.limit and cart.add.empty.
 		o := diffOf(t, selfTree(), itemSelfDefinition)
@@ -890,7 +931,7 @@ func TestBaselineDiffDependency(t *testing.T) {
 		checkThrough(t, o.elem(t, "cart.add.limit"), "cart.item")
 		checkThrough(t, o.elem(t, "cart.add.empty"), "cart.item")
 	})
-	t.Run("row22 a parameter's Rationale reworded only", func(t *testing.T) {
+	t.Run("row24 a parameter's Rationale reworded only", func(t *testing.T) {
 		t.Parallel()
 		// system.change-effects: cart.max-quantity, referred to by cart.add.limit.
 		diffOf(t, diffTree(), change{paramsPath, "- Rationale: a shelf holds ten pieces.", "- Rationale: a shelf holds no more than ten pieces."}).only(t, "cart.max-quantity:changed")
@@ -954,6 +995,75 @@ func TestBaselineDiffDependency(t *testing.T) {
 		o := diffOf(t, tr, countRemoved, linesToLine)
 		o.only(t, "cart.api.line.count:removed", "cart.pay.lines:changed", "cart.pay.order:changed-through", "cart.pay.ask:changed-through")
 		checkThrough(t, o.elem(t, "cart.pay.ask"), "cart.api.line.count > cart.pay.order")
+	})
+}
+
+func TestFixtureSlip(t *testing.T) {
+	t.Parallel()
+	check(t, slipTree()).clean(t)
+	check(t, proseSlipTree()).clean(t)
+}
+
+// TestBaselineDependencies checks the row of baseline.dependencies a contract
+// element's field Builds on gives, through the element diff: the contract
+// element depends on every contract element and parameter the field refers
+// to, and on every member of such a contract element, one removed from it
+// included, never the reverse.
+func TestBaselineDependencies(t *testing.T) {
+	t.Parallel()
+	diffOf := func(t *testing.T, base tree, cs ...change) diffOutcome {
+		t.Helper()
+		r, _ := accepted(t, base)
+		r.set(amended(base, cs...))
+		return r.diff()
+	}
+	t.Run("derived: a member of the contract element built on changed", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, slipTree(), iCountBody)
+		o.only(t, "cart.api.line.count:changed", "cart.pay.lines:changed-through", "cart.pay.order:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.api.line.count")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.api.line.count > cart.api.slip")
+	})
+	t.Run("derived: a member of the contract element built on added", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, slipTree(), amountAdded)
+		o.only(t, "cart.api.line.amount:added", "cart.pay.order:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.api.line.amount")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.api.line.amount > cart.api.slip")
+	})
+	t.Run("derived: a member of the contract element built on removed, while the element stays", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, slipTree(), countRemoved, linesToLine)
+		o.only(t, "cart.api.line.count:removed", "cart.pay.lines:changed", "cart.pay.order:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.api.line.count")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.api.line.count > cart.api.slip")
+	})
+	t.Run("derived: a parameter built on, with a new value", func(t *testing.T) {
+		t.Parallel()
+		tr := withSlip(impactTree(), "\n## <a id=\"cart.api.slip\"></a> slip\n\n- Builds on: ´max_quantity´\n\nWhat a buyer gets for a paid order.\n")
+		o := diffOf(t, tr, iParamValue)
+		o.only(t, "cart.max-quantity:changed", "cart.add.limit:changed-through", "cart.pay.cap:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.max-quantity")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.max-quantity > cart.api.slip")
+	})
+	t.Run("derived: the contract element built on changed through the term it represents", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, slipTree(), iItemDef)
+		o.only(t, "cart.item:changed", "cart.api.line:changed-through", "cart.add.limit:changed-through",
+			"cart.pay.total:changed-through", "cart.pay.order:changed-through",
+			"cart.api.slip:changed-through", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.api.slip"), "cart.item > cart.api.line")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.item > cart.api.line > cart.api.slip")
+	})
+	t.Run("derived: never the reverse: the contract element that builds on another changed", func(t *testing.T) {
+		t.Parallel()
+		o := diffOf(t, slipTree(), change{apiPath, "What a buyer gets for a paid order.\n", "What a buyer gets for a paid order.\nOne per order.\n"})
+		o.only(t, "cart.api.slip:changed", "cart.pay.slip:changed-through")
+		checkThrough(t, o.elem(t, "cart.pay.slip"), "cart.api.slip")
 	})
 }
 

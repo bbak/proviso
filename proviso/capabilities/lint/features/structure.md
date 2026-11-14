@@ -160,6 +160,7 @@ Otherwise lint reports the [error] `findings.field-unknown` at <field>
 | --- | --- | --- | --- | --- |
 | `- Contact: Bruno Baketarić` | feature | yes | read | |
 | `- Represents: [finding]` | contract element | yes | read | |
+| `` - Builds on: `findings` `` | contract element | yes | read | |
 | `- Source: Maria Keller` | glossary entry | no | error | left out on purpose: traceability is deferred |
 | `- Owner: Search team` | feature | no | error | the tree names contacts, not owners |
 | `- contact: Bruno Baketarić` | feature | no | error | keys are matched exactly |

@@ -36,5 +36,5 @@
 | glossary entry | Definition, Defined by, Deviations, Contact, Status, Aliases, Question | Contact, Status |
 | parameter | Value, Unit, Configurable, Rationale | Configurable, Rationale |
 | reference | Version, Link, Contact | Version, Link, Contact |
-| contract element | Represents | none |
+| contract element | Represents, Builds on | none |
 | system, capability, rule, invariant, constraint | none | none |

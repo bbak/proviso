@@ -179,6 +179,9 @@ When the engineer names a capability to recover:
   above: features and their rules, Examples from the tests and the code,
   glossary, parameters, invariants, constraints, and contracts for every
   interface a rule refers to, at the seam the system's tests can call.
+  Where the code builds one shape from another, such as a type that
+  embeds another or a schema that refers to one, the contract element
+  names the other in `Builds on`.
 - **Write its questions.**
 
 Before you commit:
@@ -219,7 +222,7 @@ Once every capability is recovered, one more amendment states at system
 level what crosses them: a notion one capability's rules rely on and
 another defines, such as a state one reports and another keeps;
 invariants several capabilities state alike; contracts more than one
-refers to. Write it, check it and have it accepted like the others.
+refers to, and `Builds on` in every contract element built on one. Write it, check it and have it accepted like the others.
 
 ## 6. Check a recovered capability against the code
 

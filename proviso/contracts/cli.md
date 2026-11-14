@@ -979,7 +979,7 @@ standard output it writes two lines, the Proviso version and the
 
 ```text
 proviso 0.1.0
-model 0
+model 1
 ```
 
 With an argument, it refuses it as every command refuses an argument it

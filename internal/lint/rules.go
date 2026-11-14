@@ -365,6 +365,33 @@ func (l *linter) checkCycles(rules []*rule) {
 	}
 }
 
+// buildsOn resolves the backtick references in the Builds on fields of the
+// contract element e, as lint.references.reference reads those of a rule
+// block, and returns them, each once, in the order they are written. A
+// Builds on field that holds none and is not undecided is reported, as
+// lint.references.builds-on says.
+func (l *linter) buildsOn(e *element) []Ref {
+	var out []Ref
+	for _, f := range e.fields {
+		if f.key != "Builds on" {
+			continue
+		}
+		p := Pos{e.file.path, f.line}
+		spans := guarded.FieldCodes(f.value)
+		if len(spans) == 0 && firstWord(f.value) != "?" {
+			l.report(Error, "builds-on-empty", p, "the Builds on of %q holds no backtick reference", e.id)
+		}
+		for _, sp := range spans {
+			if t := l.resolveReference(e.cap, sp.Value); t == nil {
+				l.report(Error, "reference-unresolved", p, "`%s` names no visible contract element or parameter", sp.Value).col = sp.Start
+			} else if ref := (Ref{sp.Value, t.id}); !slices.Contains(out, ref) {
+				out = append(out, ref)
+			}
+		}
+	}
+	return out
+}
+
 // fieldMarks resolves the term marks in the fields of e with the given
 // keys, reporting each that names no visible glossary entry, and returns
 // the identifiers of the entries they mark, each once, in the order of

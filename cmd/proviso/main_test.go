@@ -113,7 +113,7 @@ func TestReportRoot(t *testing.T) {
 }
 
 func TestModelVersion(t *testing.T) {
-	for manifest, status := range map[string]int{"model 0\n": 0, "model 1\n": 2, "": 2, "model 0\r\n": 1, "model 0\n\xff\n": 2} {
+	for manifest, status := range map[string]int{"model 0\n": 0, "model 1\n": 0, "model 2\n": 2, "": 2, "model 0\r\n": 1, "model 0\n\xff\n": 2} {
 		inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": manifest})
 		var out, errOut bytes.Buffer
 		if got := run([]string{"lint", "--json"}, &out, &errOut); got != status || status == 2 && (out.Len() > 0 || errOut.Len() == 0) {
@@ -136,7 +136,7 @@ func TestBaselineCommands(t *testing.T) {
 		t.Fatalf("manifest: %d %q %q", status, out, errOut)
 	}
 	data, err := os.ReadFile(filepath.Join("proviso", "manifest.sum"))
-	if err != nil || !strings.HasPrefix(string(data), "model 0\nsystem\theading\th1:") {
+	if err != nil || !strings.HasPrefix(string(data), "model 1\nsystem\theading\th1:") {
 		t.Fatalf("%q %v", data, err)
 	}
 	if status, out, _ := call("diff"); status != 0 || out != "" {
@@ -344,10 +344,10 @@ func TestPackElementCommand(t *testing.T) {
 		t.Errorf("no such element: %d %q %q", status, out, errOut)
 	}
 	// lint.run.model: lint, which precedes it, checks the first line.
-	if err := os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 1\n"), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join("proviso", "manifest.sum"), []byte("model 2\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if status, out, errOut := call("pack", "--element", "system"); status != 2 || out != "" || !strings.Contains(errOut, "model version 1") {
+	if status, out, errOut := call("pack", "--element", "system"); status != 2 || out != "" || !strings.Contains(errOut, "model version 2") {
 		t.Errorf("another model version: %d %q %q", status, out, errOut)
 	}
 }
@@ -716,7 +716,7 @@ func TestVersionCommand(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			inRepo(t, c.files)
 			var out, errOut bytes.Buffer
-			if status := run([]string{"version"}, &out, &errOut); status != 0 || out.String() != "proviso 0.2.0\nmodel 0\n" {
+			if status := run([]string{"version"}, &out, &errOut); status != 0 || out.String() != "proviso 0.2.0\nmodel 1\n" {
 				t.Fatalf("status %d, stdout %q", status, out.String())
 			}
 			lines := strings.Split(strings.TrimSuffix(errOut.String(), "\n"), "\n")

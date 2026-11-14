@@ -31,6 +31,7 @@ selects nothing.
 
 Expected skips:
 
-- `TestInstallVersionModel/row2…` to `row5…`: the rows assume a second
+- `TestInstallVersionModel/row3…` to `row5…`: the rows assume a second
   row of `model_releases`, "1 from 0.3.0", which no binary holds; the
-  unit tests of `internal/stamp` cover them.
+  unit tests of `internal/stamp` and the test's analogues on the
+  binary's own table cover them.

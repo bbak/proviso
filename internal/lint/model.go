@@ -41,7 +41,7 @@ var fieldNames = map[string]struct{ all, required []string }{
 	tGlossary:  {[]string{"Definition", "Defined by", "Deviations", "Contact", "Status", "Aliases", "Question"}, []string{"Contact", "Status"}},
 	tParameter: {[]string{"Value", "Unit", "Configurable", "Rationale"}, []string{"Configurable", "Rationale"}},
 	tReference: {[]string{"Version", "Link", "Contact"}, []string{"Version", "Link", "Contact"}},
-	tContract:  {[]string{"Represents"}, nil},
+	tContract:  {[]string{"Represents", "Builds on"}, nil},
 }
 
 type file struct {
@@ -85,6 +85,7 @@ type element struct {
 	definedBy  string   // the reference its Defined by links to
 	refs       []Ref    // the backtick references of its rule block
 	represents []string // the glossary entries its Represents marks
+	buildsOn   []Ref    // the backtick references of its Builds on
 	leansOn    []string // the glossary entries its Definition and Deviations mark
 }
 

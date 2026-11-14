@@ -110,6 +110,9 @@ func dependsOn(elements []lint.Element, removed map[string][]string) map[string]
 			}
 		case tContract:
 			d = append(d, e.Represents...)
+			for _, r := range e.BuildsOn {
+				d = withMembers(r.ID, d)
+			}
 		case tGlossary:
 			if e.DefinedBy != "" {
 				d = append(d, e.DefinedBy)

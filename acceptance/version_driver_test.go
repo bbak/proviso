@@ -25,7 +25,7 @@ import (
 )
 
 // modelVersion is model_version.
-const modelVersion = "0"
+const modelVersion = "1"
 
 // oldestModelVersion is oldest_model_version.
 const oldestModelVersion = "0"
@@ -374,8 +374,12 @@ func staleLine(t *testing.T, line, file, stamp, v, model string) {
 	if model != "" && count(nums, model) == 0 {
 		t.Errorf("install.version.stale: the line about %s does not name model %s, the model version of %s: %q", file, model, stamp, line)
 	}
-	if model == "" && count(nums, modelVersion) != 0 {
-		t.Errorf("install.version.stale: the line about %s names a model version, but %s has none this binary can know: %q", file, stamp, line)
+	if model == "" {
+		for _, m := range readModelVersions() {
+			if count(nums, m) != 0 {
+				t.Errorf("install.version.stale: the line about %s names model %s, but %s has no model version this binary can know: %q", file, m, stamp, line)
+			}
+		}
 	}
 }
 

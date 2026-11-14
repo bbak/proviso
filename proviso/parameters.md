@@ -2,7 +2,7 @@
 
 ## <a id="system.model-version"></a> model_version
 
-- Value: 0
+- Value: 1
 - Configurable: no
 - Rationale: a whole number counts the changes of the notation; which
   trees a binary still reads is for `oldest_model_version` to say, not
@@ -39,6 +39,7 @@ release versions, without a leading `v`.
 | model_version | first release |
 | --- | --- |
 | 0 | 0.1.0 |
+| 1 | 0.7.0 |
 
 ## <a id="system.change-effects"></a> change_effects
 

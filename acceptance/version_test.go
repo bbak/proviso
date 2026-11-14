@@ -7,8 +7,8 @@ package acceptance
 // on standard error by reports.
 //
 // model_releases is not configurable, and the binary holds the table as it
-// is: 0 from 0.1.0. Rows that assume another table are skipped and checked
-// by an analogue on the real table.
+// is: 0 from 0.1.0, 1 from 0.7.0. Rows that assume another table are
+// skipped and checked by an analogue on the real table.
 
 import (
 	"os"
@@ -24,12 +24,12 @@ const buildSkill = ".claude/skills/proviso-build/SKILL.md"
 // fits.
 func TestSystemCliVersion(t *testing.T) {
 	t.Parallel()
-	t.Run("example: proviso 0.1.0 and model 0", func(t *testing.T) {
+	t.Run("example: proviso 0.1.0 and model 1", func(t *testing.T) {
 		t.Parallel()
 		dir := filepath.Join(t.TempDir(), "notes")
 		tree{"todo.md": "# To do\n"}.writeTo(t, dir, false)
 		o := versionIn(t, "0.1.0", dir, dir, nil)
-		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != "proviso 0.1.0\nmodel 0\n" {
+		if got := strings.ReplaceAll(o.stdout, "\r\n", "\n"); got != "proviso 0.1.0\nmodel 1\n" {
 			t.Errorf("system.cli.version: want the example's two lines, got %q", got)
 		}
 	})
@@ -325,12 +325,13 @@ func TestInstallVersionManifestModel(t *testing.T) {
 		name, content string
 		holds         bool
 	}{
-		{"row1 model 0", "model 0\n", true},
-		{"row2 model 0, ending in a carriage return and a line feed", "model 0\r\n", true},
-		{"row3 model 1", "model 1\n", false},
-		{"row4 empty", "", false},
-		{"row5 model 00", "model 00\n", false},
-		{"row6 model 0, a carriage return and foo", "model 0\rfoo\n", false},
+		{"row1 model 1", "model 1\n", true},
+		{"row2 model 0", "model 0\n", true},
+		{"row3 model 0, ending in a carriage return and a line feed", "model 0\r\n", true},
+		{"row4 model 2", "model 2\n", false},
+		{"row5 empty", "", false},
+		{"row6 model 00", "model 00\n", false},
+		{"row7 model 0, a carriage return and foo", "model 0\rfoo\n", false},
 		{"derived: model 0 as the last line, without a line ending", "model 0", true},
 	}
 	for _, row := range rows {
@@ -362,7 +363,7 @@ func TestInstallVersionManifestOther(t *testing.T) {
 		needs      string // the model version the tree needs, "" where none is named
 		not        string // a number the line holds that must not be named as needed
 	}{
-		{"row1 model 1", "model 1", "1", ""},
+		{"row1 model 2", "model 2", "2", ""},
 		{"row2 model 12", "model 12", "12", ""},
 		{"row3 empty", "", "", ""},
 		{"row4 model", "model", "", ""},
@@ -657,10 +658,10 @@ func TestInstallVersionModel(t *testing.T) {
 	rows := []struct {
 		name, version, stamp string
 		model                string // "" for no model
-		table                bool   // whether the row's model_releases is the binary's
+		table                bool   // whether the binary's model_releases gives the row's outcome too
 	}{
 		{"row1 0 from 0.1.0, 0.2.0, 0.1.0", "0.2.0", "0.1.0", "0", true},
-		{"row2 0 from 0.1.0, 1 from 0.3.0, 0.4.0, 0.2.5", "0.4.0", "0.2.5", "0", false},
+		{"row2 0 from 0.1.0, 1 from 0.3.0, 0.4.0, 0.2.5", "0.4.0", "0.2.5", "0", true},
 		{"row3 0 from 0.1.0, 1 from 0.3.0, 0.4.0, 0.3.0", "0.4.0", "0.3.0", "1", false},
 		{"row4 0 from 0.1.0, 1 from 0.3.0, 0.3.1-dev, 0.3.0", "0.3.1-dev", "0.3.0", "1", false},
 		{"row5 0 from 0.1.0, 1 from 0.3.0, dev, 0.4.2", "dev", "0.4.2", "1", false},
@@ -670,18 +671,23 @@ func TestInstallVersionModel(t *testing.T) {
 		{"row9 0 from 0.1.0, 0.2.0, 0.3.0", "0.2.0", "0.3.0", "", true},
 		{"row10 0 from 0.1.0, 0.1.1-dev, 0.1.1", "0.1.1-dev", "0.1.1", "", true},
 		{"row11 0 from 0.1.0, 0.2.0, 0.0.9", "0.2.0", "0.0.9", "", true},
-		// Analogues on the binary's table, 0 from 0.1.0.
-		{"derived: 0 from 0.1.0, 0.4.0, 0.2.5: the row holds until the next one", "0.4.0", "0.2.5", "0", true},
-		{"derived: 0 from 0.1.0, 0.1.1-dev, 0.1.0: a local build after 0.1.0 is newer than 0.1.0", "0.1.1-dev", "0.1.0", "0", true},
-		{"derived: 0 from 0.1.0, dev, 0.4.2: the last row holds for every later release", "dev", "0.4.2", "0", true},
-		{"derived: 0 from 0.1.0, dev, 0.1.0: the first release is its row's own", "dev", "0.1.0", "0", true},
-		{"derived: 0 from 0.1.0, 0.2.0, 0.2.0-rc.1: a pre-release is no release", "0.2.0", "0.2.0-rc.1", "", true},
+		// Analogues on the binary's table, 0 from 0.1.0, 1 from 0.7.0.
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.8.0, 0.6.5: the row holds until the next one", "0.8.0", "0.6.5", "0", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.8.0, 0.7.0: a row's first release is its own", "0.8.0", "0.7.0", "1", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.7.1-dev, 0.7.0: a local build after 0.7.0 is newer than 0.7.0", "0.7.1-dev", "0.7.0", "1", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, dev, 0.9.2: the last row holds for every later release", "dev", "0.9.2", "1", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.1.1-dev, 0.1.0: a local build after 0.1.0 is newer than 0.1.0", "0.1.1-dev", "0.1.0", "0", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, dev, 0.4.2: the first row holds until the next one", "dev", "0.4.2", "0", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, dev, 0.1.0: the first release is its row's own", "dev", "0.1.0", "0", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.8.0, 0.8.0-rc.1: a pre-release is no release", "0.8.0", "0.8.0-rc.1", "", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.2.0, 0.2.0-rc.1: a pre-release is no release", "0.2.0", "0.2.0-rc.1", "", true},
+		{"derived: 0 from 0.1.0, 1 from 0.7.0, 0.8.0, 0.9.0: a later release may read a model this binary does not know", "0.8.0", "0.9.0", "", true},
 	}
 	for _, row := range rows {
 		t.Run(row.name, func(t *testing.T) {
 			t.Parallel()
 			if !row.table {
-				t.Skip("model_releases is not configurable: the binary holds 0 from 0.1.0 only; see the derived analogue")
+				t.Skip("model_releases is not configurable: the binary holds 0 from 0.1.0, 1 from 0.7.0; see the derived analogue")
 			}
 			r := versionRepo(t, installedAs(row.version).with(tester, stampedAs(tester, row.stamp)))
 			if l, ok := r.version(row.version).reports(t, expect{files: []string{tester}})[tester]; ok {

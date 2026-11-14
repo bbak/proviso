@@ -19,7 +19,9 @@ and parameters first, then the system's.
 
 Inside a rule block, a backtick is always a reference and `"…"` always
 a literal, so that every backtick resolves and a literal holds anything
-without a false alarm. A reference is qualified from its top-level
+without a false alarm. A "Builds on" field is read the same way for its
+code spans, as a "Represents" field is for its term marks; its other
+text says nothing. A reference is qualified from its top-level
 element, never shortened to what is unique today, since a new element
 would then break references that resolved before.
 
@@ -215,7 +217,7 @@ Otherwise lint reports the [error] `findings.hand-over-cycle` at the [heading] o
 ## <a id="lint.references.reference"></a> Rule: A backtick reference resolves
 
 ```guarded
-When      lint reads the [backtick reference] <reference> in a [rule block] of the capability <capability>
+When      lint reads the [backtick reference] <reference> in a [rule block], or in a "Builds on" [field] of a [contract element], of <capability>, a capability or the system
 Provided  the first segment of <reference> names a [top-level element] or a [parameter] of <capability> or of the system
   And     each further segment names a [member] of the one before
 Then      the [backtick reference] refers to that [element]
@@ -233,6 +235,35 @@ Otherwise lint reports the [error] `findings.reference-unresolved` at <reference
 | `findings.anchor-missing` | lint | no (further segment) | error | no such kind |
 | `exit-status` | lint | no (first segment) | error | not qualified from its top-level element |
 | `lint.cli.lint` | lint | no (first segment) | error | an identifier, not a name |
+| `findings`, in the "Builds on" field of `lint.cli.report` | lint | yes | that contract | read as in a rule block |
+| `manifest_file`, in the "Builds on" field of a system contract element | the system | yes | the contract | |
+| `findings`, in the "Builds on" field of a system contract element | the system | no (first segment) | error | the system does not see a capability's contracts |
+
+## <a id="lint.references.builds-on"></a> Rule: A "Builds on" field names what its element builds on
+
+### Rationale
+
+Only this field says what a contract element builds on, so a field
+written in prose alone would leave out the very dependency its author
+meant to declare, without a sign of it. An undecided field is asked
+about as every field is.
+
+```guarded
+When      lint reads the "Builds on" [field] <field> of a [contract element]
+Provided  <field> holds at least one [backtick reference], or the first word of its value is "?"
+Then      lint reports nothing about <field> being empty
+  And     lint goes on with the rest of the [spec tree]
+Otherwise lint reports the [error] `findings.builds-on-empty` at <field>
+  And     lint goes on with the rest of the [spec tree]
+```
+
+| field | provided | outcome | why |
+| --- | --- | --- | --- |
+| `` - Builds on: `findings` `` | yes | nothing reported | |
+| `` - Builds on: `findings`, for its members `` | yes | nothing reported | the other text is prose |
+| `- Builds on: ?` | yes | nothing reported | asked about as an undecided field |
+| `- Builds on: the report` | no | error | prose alone declares nothing |
+| `- Builds on: [finding]` | no | error | a term mark is no backtick reference |
 
 ## <a id="lint.references.reference-ambiguous"></a> Rule: A contract or parameter name names one element
 
