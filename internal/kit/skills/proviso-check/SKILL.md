@@ -93,6 +93,28 @@ what it says, and your recommendation. The engineer either lets it go,
 or makes it a finding: record it with `proviso judge` as
 `{"findings": [{"kind": "<kind>", "elements": ["<identifier>"], "text": "<text>"}]}`.
 
+A `missed` finding, or a point the checker could not judge because it
+lies in a capability it may not read, says that `diff`, `impact` and
+`pack` did not lead the check to an element that the amendment may
+affect. Before you bring it, find out why, from the tree, and say which
+of these it is:
+
+- **The tree states no link the notation can follow,** such as a
+  contract element whose prose names another but whose `Builds on`
+  does not: recommend the edit that states it, so that the next check
+  is led there. Only then look for other elements tied the same way,
+  searching for that one pattern, and name them with the finding, so
+  that the engineer decides on all of them at once.
+- **The tree states the link, and Proviso did not follow it:** a gap in
+  Proviso itself. Say so, with the elements and the link, so that the
+  engineer can report it; do not work around it.
+- **There is no link:** the point rests on a guess, such as an
+  identifier in an Examples row that only stands for one; recommend
+  letting it go, and why.
+
+Read what you need to tell them apart, and no more: `proviso show` for
+an element the point names, not a sweep of the tree.
+
 Then run `proviso verify --json`. For every `open` finding, one at a time:
 what it says, the elements it names, the checker's recommendation, and
 your own recommendation with the reason. If it repeats a finding
