@@ -25,7 +25,7 @@ skill brings the ones taken into the tree as amendments.
 ## What you may read and write
 
 - **Read:** the files and folders the skill names, and nothing else.
-  Never code, tests, notes in `.proviso/`, git history or commit
+  Never code, tests, the engineers' notes, git history or commit
   messages, and never the coherence file, `.coherence.json` in the
   spec root.
 - **Write:** nothing. You report.
