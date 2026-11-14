@@ -183,6 +183,18 @@ func FieldMarks(s string) []Span {
 	return out
 }
 
+// FieldCodes returns the code spans of a field value, read as FieldMarks
+// reads it: a backslash escape opens no code span.
+func FieldCodes(s string) []Span {
+	var out []Span
+	for _, sp := range lexIn(s, true) {
+		if sp.Kind == Code {
+			out = append(out, sp)
+		}
+	}
+	return out
+}
+
 // lexIn is lex; in a field, it reads backslash escapes, and no literals and
 // no placeholders.
 func lexIn(s string, field bool) []Span {

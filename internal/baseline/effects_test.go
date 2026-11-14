@@ -208,3 +208,42 @@ func TestDefinitionMarks(t *testing.T) {
 		t.Errorf("a deviation marking a term:\n%v\nwant\n%v", got, want)
 	}
 }
+
+func TestBuildsOn(t *testing.T) {
+	// A contract element depends on what its field Builds on refers to,
+	// and on every member of it; prose names nothing.
+	builds := func(field string) func(map[string]string) {
+		return func(m map[string]string) {
+			m["contracts/api.md"] += "\n## <a id=\"system.wrap\"></a> wrap\n\n" + field + "\n\nThe wrap.\n"
+			baselinetest.Replace(m, "capabilities/c/features/g.md", "`p` is set to <x>", "`wrap` is set to <x>")
+		}
+	}
+	for _, c := range []struct {
+		field, edit, want string
+	}{
+		{"- Builds on: `p`", "p", "map[c.g.b:[[system.p system.wrap]] system.p:changed system.wrap:[[system.p]]]"},
+		{"- Builds on: `api`", "code", "map[c.g.b:[[system.api.code system.wrap]] c.g.c:[[system.api.code]] system.api.code:changed system.wrap:[[system.api.code]]]"},
+		{"- Builds on: `api`, much as p", "p", "map[system.p:changed]"},
+	} {
+		before := baselinetest.Files(baselinetest.EditTree(builds(c.field)))
+		base, _ := Parse(Write(before))
+		now := baselinetest.Files(baselinetest.EditTree(func(m map[string]string) {
+			builds(c.field)(m)
+			if c.edit == "p" {
+				baselinetest.Replace(m, "parameters.md", "- Value: 1", "- Value: 2")
+			} else {
+				baselinetest.Replace(m, "contracts/api.md", "A code.", "A new code.")
+			}
+		}))
+		got := map[string]string{}
+		for _, e := range Through(Compare(now, base), now, before) {
+			got[e.ID] = e.Change
+			if e.Change == ChangedThrough {
+				got[e.ID] = fmt.Sprint(e.Through)
+			}
+		}
+		if fmt.Sprint(got) != c.want {
+			t.Errorf("%s, %s: %v\nwant %s", c.field, c.edit, got, c.want)
+		}
+	}
+}

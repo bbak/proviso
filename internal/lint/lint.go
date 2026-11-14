@@ -80,6 +80,7 @@ func Check(t *tree.Tree) *Result {
 		}
 		if e.typ == tContract {
 			e.represents = l.fieldMarks(e, "Represents")
+			e.buildsOn = l.buildsOn(e)
 		}
 	}
 	l.checkAmbiguity()
