@@ -59,6 +59,15 @@
 - Status: defined
 - Aliases: identifiers
 
+## <a id="system.home-segment"></a> home segment
+
+- Definition: A first segment of an [identifier], up to its first ".",
+  that is "system" or the first segment of the [identifier] of a
+  capability of the spec tree.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: home segments
+
 ## <a id="system.well-formed"></a> well-formed
 
 - Definition: An identifier is well-formed if it consists of one or more

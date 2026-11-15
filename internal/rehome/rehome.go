@@ -45,10 +45,10 @@ type Collision struct {
 
 // Plan returns the renames of upkeep.rehome.home and upkeep.rehome.place,
 // ordered by their old identifier, compared byte by byte: an identifier
-// whose first segment is "system" or a capability's identifier, but not
-// its element's identifier home, gets that home for its first segment; an
-// identifier whose first segment names no place gets its home put in
-// front.
+// whose first segment is a home segment ("system" or the first segment
+// of a capability's identifier), but not its element's identifier home,
+// gets that home for its first segment; an identifier whose first segment
+// names no place gets its home put in front.
 func Plan(elements []lint.Element) []Rename {
 	// The identifier home of a capability's folder is the capability's
 	// identifier, not the folder's name.
@@ -57,7 +57,8 @@ func Plan(elements []lint.Element) []Rename {
 	for _, e := range elements {
 		if e.Type == lint.TypeCapability {
 			homes[e.Cap] = e.ID
-			places[e.ID] = true
+			first, _, _ := strings.Cut(e.ID, ".")
+			places[first] = true
 		}
 	}
 	var renames []Rename

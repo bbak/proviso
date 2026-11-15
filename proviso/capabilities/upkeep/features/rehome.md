@@ -128,7 +128,7 @@ Otherwise → upkeep.rehome.place
 
 ```guarded
 When      `rehome` plans the renames of the [spec tree], and reads the [identifier] <id> of the [element] <element>, its first segment not the [identifier home] of <element>
-Provided  the first segment of <id>, up to its first ".", is "system" or the [identifier] of a capability
+Provided  the first segment of <id> is a [home segment]
 Then      `rehome` plans to rename <id> to the [identifier home] of <element>, followed by what follows the first segment of <id>
   And     every place `rehome_references` lists that holds <id> is planned to hold the new [identifier]
 Otherwise `rehome` plans to rename <id> to the [identifier home] of <element>, followed by "." and <id>

@@ -163,7 +163,7 @@ too, so that one mistake is reported once.
 
 ```guarded
 When      lint reads the [identifier] <id> of an [element]
-Provided  <id> is not [well-formed], or is the [identifier] of the system, or the capability whose folder holds the [element] has no [well-formed] [identifier], or the first segment of <id>, up to its first ".", is "system" or the first segment of the [identifier] of a capability of the [spec tree]
+Provided  <id> is not [well-formed], or is the [identifier] of the system, or the capability whose folder holds the [element] has no [well-formed] [identifier], or the first segment of <id> is a [home segment]
 Then      lint reports nothing about the first segment of <id>
   And     lint goes on with the rest of the [spec tree]
 Otherwise lint reports the [ask] `findings.identifier-unhomed` at <id>
