@@ -651,3 +651,42 @@ func TestBuildsOn(t *testing.T) {
 		t.Errorf("builds on: %v", got)
 	}
 }
+
+// An undecided element holds an undecided place, or its rule block marks an
+// open term; a mark of an open term anywhere else counts for nothing.
+func TestUndecidedElement(t *testing.T) {
+	m := base()
+	m["capabilities/c/glossary.md"] += "\n## <a id=\"c.daily-limit\"></a> daily limit\n\n- Definition: ?\n- Contact: Ann\n- Status: open\n- Question: What does it apply to?\n" +
+		"\n## <a id=\"c.uses\"></a> payout\n\n- Definition: What leaves within the [daily limit].\n- Contact: ?\n- Status: defined\n"
+	m["capabilities/c/contracts/cli.md"] += "\n## <a id=\"c.cli.limit\"></a> limit_value\n\n- Represents: [daily limit]\n\nThe value.\n"
+	m["capabilities/c/features/f.md"] += "\n## <a id=\"c.f.mark\"></a> Rule: Mark\n\n```guarded\nWhen      lint reads <id>\nThen      lint applies the [daily limit]\n  And     nothing else changes\n```\n\n| id | outcome |\n| --- | --- |\n| a | x |\n" +
+		"\n## <a id=\"c.f.literal\"></a> Rule: Literal\n\n```guarded\nWhen      lint reads <id>\nProvided  <id> is \"a ? b\"\nThen      lint reports nothing\n  And     nothing else changes\nOtherwise lint reports nothing else\n  And     nothing else changes\n```\n\n| id | provided | outcome |\n| --- | --- | --- |\n| a | yes | x |\n| b | no | y |\n" +
+		"\n## <a id=\"c.f.cells\"></a> Rule: Cells\n\n```guarded\nWhen      lint reads <id> and <x>\nThen      lint reports <x>\n  And     nothing else changes\n```\n\n| id | x | outcome |\n| --- | --- | --- |\n| ? | ? | x |\n"
+	tr := &tree.Tree{Root: "proviso"}
+	for _, rel := range slices.Sorted(maps.Keys(m)) {
+		k, cp := tree.Classify(rel)
+		tr.Files = append(tr.Files, &tree.File{Rel: rel, Kind: k, Cap: cp, Data: []byte(m[rel])})
+	}
+	tr.CapFolders = []tree.CapFolder{{Rel: "capabilities/c", HasCapability: true}}
+	r := Check(tr)
+	for _, f := range r.Findings {
+		if f.Severity == Error {
+			t.Fatalf("error: %v", f)
+		}
+	}
+	got := map[string][]int{}
+	for _, e := range r.Elements {
+		for _, p := range e.Undecided {
+			got[e.ID] = append(got[e.ID], p.Line)
+		}
+	}
+	want := map[string][]int{
+		"c.daily-limit": {12},
+		"c.uses":        {20},
+		"c.f.mark":      {38},
+		"c.f.cells":     {72},
+	}
+	if !maps.EqualFunc(got, want, slices.Equal) {
+		t.Errorf("undecided lines: %v, want %v", got, want)
+	}
+}
