@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 )
@@ -567,6 +568,67 @@ func TestCliHelpArgument(t *testing.T) {
 					stdin = "{}"
 				}
 				misused(t, provisoIn(t, dir, dir, stdin, cmd, "--bogus"), cmd, "--bogus")
+			})
+		}
+	})
+
+	t.Run("derived: a command refuses an option only another command's contract defines", func(t *testing.T) {
+		t.Parallel()
+		// The options each command's own contract element defines as
+		// members, as the contracts give them.
+		own := map[string][]string{
+			"lint":   {"--json"},
+			"diff":   {"--json", "--since"},
+			"impact": {"--json"},
+			"pack":   {"--json", "--since", "--element"},
+			"verify": {"--json"},
+			"rehome": {"--write", "--json", "--mentions", "--rename"},
+			"show":   {"--in", "--json"},
+		}
+		// A value that would do for each option that takes one, so that
+		// only whether the command takes the option decides.
+		value := map[string]string{
+			"--since":   "HEAD~1",
+			"--element": "cart.add.limit",
+			"--in":      "cart",
+			"--rename":  "cart.item=system.goods",
+		}
+		all := append(append([]string(nil), options...), "--mentions")
+		for _, cmd := range commands {
+			t.Run(cmd, func(t *testing.T) {
+				t.Parallel()
+				var dir string
+				if cmd == "init" || cmd == "update" {
+					dir = freshRepo(t, "repo", false).dir
+				} else {
+					dir = sinceAccepted(t).dir
+				}
+				stdin := ""
+				if cmd == "judge" {
+					stdin = "{}"
+				}
+				// The runs of one command share its folder, so they run one
+				// after the other: each is refused, and provisoIn checks that
+				// it wrote nothing.
+				for _, opt := range all {
+					if slices.Contains(own[cmd], opt) {
+						continue
+					}
+					args := []string{cmd}
+					if cmd == "show" {
+						args = append(args, "cart.add.limit")
+					}
+					args = append(args, opt)
+					if v, ok := value[opt]; ok {
+						args = append(args, v)
+					}
+					if opt == "--mentions" {
+						args = append(args, "--write")
+					}
+					t.Run(opt, func(t *testing.T) {
+						misused(t, provisoIn(t, dir, dir, stdin, args...), cmd, opt)
+					})
+				}
 			})
 		}
 	})
