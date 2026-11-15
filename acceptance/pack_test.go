@@ -609,11 +609,15 @@ func TestSystemCliPackText(t *testing.T) {
 
 func TestBaselinePackOutput(t *testing.T) {
 	t.Parallel()
+	// exit0 checks the exit status of both runs, and that each wrote its
+	// form of the pack to stdout and nothing else.
 	exit0 := func(t *testing.T, o packOutcome) {
 		t.Helper()
 		if o.json.exit != 0 || o.text.exit != 0 {
 			t.Errorf("want exit status 0, got %d with --json, %d without", o.json.exit, o.text.exit)
 		}
+		onlyJSON(t, "baseline.pack.output", o.json.stdout)
+		onlyPackText(t, o)
 	}
 	t.Run("row1 one changed rule, --json", func(t *testing.T) {
 		t.Parallel()
