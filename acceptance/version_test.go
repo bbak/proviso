@@ -177,6 +177,16 @@ func TestInstallVersionRepository(t *testing.T) {
 		tree{".git": "gitdir: elsewhere\n"}.writeTo(t, dir, false)
 		versionIn(t, "dev", dir, dir, nil).reports(t, expect{none: true, manifest: true})
 	})
+	t.Run("derived: repo/, its .git folder marked hidden", func(t *testing.T) {
+		t.Parallel()
+		// A repository root holds an entry named .git, whatever its
+		// attributes, as install.init.repository's row 3 says for init.
+		r := freshRepo(t, "repo", true)
+		if err := markHidden(filepath.Join(r.dir, ".git")); err != nil {
+			t.Skipf("cannot mark .git hidden: %v", err)
+		}
+		r.version("dev").reports(t, expect{none: true, manifest: true})
+	})
 }
 
 func TestInstallVersionKit(t *testing.T) {

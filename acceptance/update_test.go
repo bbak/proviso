@@ -557,6 +557,19 @@ func TestInstallUpdateRepository(t *testing.T) {
 		o.exits(t, 0)
 		o.all(t, "updated")
 	})
+	t.Run("derived: repo/, its .git folder marked hidden", func(t *testing.T) {
+		t.Parallel()
+		// A repository root holds an entry named .git, whatever its
+		// attributes, as install.init.repository's row 3 says for init.
+		r := freshRepo(t, "repo", true)
+		if err := markHidden(filepath.Join(r.dir, ".git")); err != nil {
+			t.Skipf("cannot mark .git hidden: %v", err)
+		}
+		installedAs("0.1.0").writeTo(t, r.dir, false)
+		o := r.update("0.2.0")
+		o.exits(t, 0)
+		o.all(t, "updated")
+	})
 }
 
 func TestInstallUpdateStamp(t *testing.T) {
