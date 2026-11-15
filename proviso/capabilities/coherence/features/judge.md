@@ -32,7 +32,7 @@ lint has found no error; one it cannot read stops it, as
 ## <a id="coherence.judge.input"></a> Rule: Judge reads a check result
 
 ```guarded
-When      someone runs `judge`, with arguments it takes, giving it the input <input> on "stdin"
+When      `judge`, working on the [spec tree] `lint` would check, reads the input <input> on "stdin"
 Provided  <input> is a `check_result`
 Then      `judge` reads the [judgements] and [findings] of <input>
   And     nothing goes to "stdout"

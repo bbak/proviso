@@ -25,4 +25,5 @@ Where `lint`, run in the same directory, would exit with
 `lint.exit-status` 0, the run works on the [spec tree] `lint` would
 check, and nothing of what `lint` would write is written. Otherwise the
 run writes to "stderr" what `lint` would write as text, exits with 2 as
-its command's `exit-status` defines, and writes nothing to "stdout".
+its command's `exit-status` defines, writes nothing to "stdout", and
+changes nothing under the [spec root].
