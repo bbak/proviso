@@ -214,15 +214,33 @@
 - Status: defined
 - Aliases: parameters
 
+## <a id="lint.backtick-reference"></a> backtick reference
+
+- Definition: A name in backticks inside a rule block or a "Builds on"
+  field, referring to a contract element or a parameter, such as
+  `` `findings.anchor-misplaced` ``.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: backtick references
+
 ## <a id="system.undecided"></a> undecided
 
 - Definition: Marked `?` as the first word of a field value, of an
   Examples cell or of a section body, or as a word of its own in a rule
-  block. A word is what whitespace separates, so a note after the mark,
+  block, outside a value in `"…"` and [backtick references]. A word is what whitespace separates, so a note after the mark,
   as in `? (ask Treasury)`, leaves the place undecided. Nothing is
   specified there yet.
 - Contact: Bruno Baketarić
 - Status: defined
+
+## <a id="system.undecided-element"></a> undecided element
+
+- Definition: An element that holds an [undecided] place, or whose rule
+  block marks a term whose Status is `open`. Nothing is to be built from
+  it yet.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: undecided elements
 
 ## <a id="system.anchor"></a> anchor
 

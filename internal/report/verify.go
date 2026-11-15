@@ -58,7 +58,7 @@ func message(p coherence.Problem) string {
 	case coherence.Leftover:
 		return "a coherence check or an amendment note is left, but the spec tree is as the manifest records it; remove .coherence.json and .amendment.md"
 	case coherence.Undecided:
-		return p.Element + " holds an undecided place or marks an open term; lint lists where"
+		return p.Element + " is an undecided element: it holds an undecided place, or its rule block marks an open term; lint lists where"
 	case coherence.Unjudged:
 		return p.Element + " is a candidate without a judgement"
 	case coherence.Stale:

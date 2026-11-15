@@ -4,65 +4,33 @@ package acceptance
 
 import "testing"
 
-func TestLintUndecidedField(t *testing.T) {
+// TestLintUndecidedPlace holds the rows of lint.undecided.place: a field
+// value, an Examples cell, a section body and a word of a rule block.
+func TestLintUndecidedPlace(t *testing.T) {
 	t.Parallel()
+	// Fields.
 	contactRow := func(name, value string) row {
 		tr := baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact:"+value)
 		return row{name: name, tree: tr, file: featurePath, lines: lines(3)}
 	}
 	open := withEntry("- Definition: ?\n" + contact + "- Status: open\n" + question)
-	rows(t, "undecided", []row{
-		{name: "row1 Contact: Dana Reyes", tree: baseline(), holds: true},
-		{name: "row3 an open entry's definition", tree: open, file: glossaryPath, lines: lines(open.line(glossaryPath, "- Definition: ?"))},
-		contactRow("row4 Contact: ?", " ?"),
-		contactRow("row5 a note after the mark", " ? (Cash Operations or Treasury)"),
-		contactRow("row6 surrounding whitespace does not matter", "   ?   "),
-		{name: "derived: a word is what whitespace separates", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?(Treasury)"), holds: true},
-	})
-	t.Run("row2 a question mark ending a sentence", func(t *testing.T) {
-		t.Parallel()
-		o := checkGoesOn(t, open)
-		o.lacks(t, "undecided", glossaryPath, open.line(glossaryPath, "- Question:"))
-	})
-}
-
-func TestLintUndecidedCell(t *testing.T) {
-	t.Parallel()
+	// Examples cells.
 	cell := func(value string) tree {
 		return baseline().edit(featurePath, "| 11 | apple | no | refused |", "| 11 | apple | no | "+value+" |")
 	}
-	at := func(tr tree) []int { return lines(tr.line(featurePath, "| 11 | apple |")) }
-	q, note := cell("?"), cell("? depends on the limit")
-	rows(t, "undecided", []row{
-		{name: "row1 error", tree: cell("error"), holds: true},
-		{name: "row2 a value shown in a code span", tree: cell("´?´"), holds: true},
-		{name: "row3 an outcome nobody has decided", tree: q, file: featurePath, lines: at(q)},
-		{name: "row4 a note after the mark", tree: note, file: featurePath, lines: at(note)},
-		{name: "row5 ?? is not the mark", tree: cell("??"), holds: true},
-	})
-}
-
-func TestLintUndecidedSection(t *testing.T) {
-	t.Parallel()
+	atCell := func(tr tree) []int { return lines(tr.line(featurePath, "| 11 | apple |")) }
+	cellQ, cellNote := cell("?"), cell("? depends on the limit")
+	// Section bodies.
 	body := func(text string) tree {
 		return baseline().edit(featurePath, "Buyers put goods into the cart.", text)
 	}
 	// The section: its heading and its body.
-	at := func(tr tree) []int {
+	atSection := func(tr tree) []int {
 		h := tr.line(featurePath, "## Goal")
 		return lines(h, h+2)
 	}
-	q, note := body("?"), body("? to be agreed with the business")
-	rows(t, "undecided", []row{
-		{name: "row1 prose", tree: body("Proviso keeps one specification of a system true."), holds: true},
-		{name: "row2 a real question in prose", tree: body("Why lowercase? Because links on some hosts differ."), holds: true},
-		{name: "row3 a skeleton's section", tree: q, file: featurePath, lines: at(q)},
-		{name: "row4 a note after the mark", tree: note, file: featurePath, lines: at(note)},
-	})
-}
-
-func TestLintUndecidedToken(t *testing.T) {
-	t.Parallel()
+	bodyQ, bodyNote := body("?"), body("? to be agreed with the business")
+	// Words of a rule block.
 	literal := withRule(`When      a buyer enters the code <value>
 Provided  <value> is "yes", "no", "no (<part>)" or "?"
 Then      the shop accepts <value>
@@ -79,12 +47,32 @@ Otherwise the cart refuses <count> pieces
   And     nothing else changes`, "| count | provided | outcome |\n| --- | --- | --- |\n| 1 | yes | added |\n| 99 | no | refused |\n").
 		appendTo(glossaryPath, "\n## <a id=\"cart.team-limit\"></a> team limit\n\n- Definition: The most a team may order.\n- Contact: Dana Reyes\n- Status: defined\n")
 	rows(t, "undecided", []row{
-		{name: "row1 Then lint reads <file>", tree: baseline(), holds: true},
-		{name: "row3 an outcome nobody has decided", tree: then, file: xPath, lines: lines(then.line(xPath, "Then      ?"))},
-		{name: "row4 what else happens is undecided", tree: and, file: xPath, lines: lines(and.line(xPath, "  And     ?"))},
-		{name: "row5 the comparison itself is open", tree: comparison, file: xPath, lines: lines(comparison.line(xPath, "<count> ?"))},
+		{name: "row1 the field Contact: Dana Reyes", tree: baseline(), holds: true},
+		{name: "row3 the field Definition: ?", tree: open, file: glossaryPath, lines: lines(open.line(glossaryPath, "- Definition: ?"))},
+		contactRow("row4 the field Contact: ?", " ?"),
+		contactRow("row5 a note after the mark leaves the value undecided", " ? (Cash Operations or Treasury)"),
+		contactRow("row6 surrounding whitespace does not matter", "   ?   "),
+		{name: "row7 the cell error", tree: cell("error"), holds: true},
+		{name: "row8 a value shown in a code span", tree: cell("´?´"), holds: true},
+		{name: "row9 the cell ?", tree: cellQ, file: featurePath, lines: atCell(cellQ)},
+		{name: "row10 the cell with a note after the mark", tree: cellNote, file: featurePath, lines: atCell(cellNote)},
+		{name: "row11 the cell ?? is not the mark", tree: cell("??"), holds: true},
+		{name: "row12 the body prose", tree: body("Proviso keeps one specification of a system true."), holds: true},
+		{name: "row13 a real question in prose", tree: body("Why lowercase? Because links on some hosts differ."), holds: true},
+		{name: "row14 the body ?", tree: bodyQ, file: featurePath, lines: atSection(bodyQ)},
+		{name: "row15 the body with a note after the mark", tree: bodyNote, file: featurePath, lines: atSection(bodyNote)},
+		{name: "row16 the words of Then lint reads <file>", tree: baseline(), holds: true},
+		{name: "row18 the ? of Then ?", tree: then, file: xPath, lines: lines(then.line(xPath, "Then      ?"))},
+		{name: "row19 the ? of And ?", tree: and, file: xPath, lines: lines(and.line(xPath, "  And     ?"))},
+		{name: "row20 the comparison itself is open", tree: comparison, file: xPath, lines: lines(comparison.line(xPath, "<count> ?"))},
+		{name: "derived: a word is what whitespace separates", tree: baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?(Treasury)"), holds: true},
 	})
-	t.Run("row2 a ? inside a literal is a value", func(t *testing.T) {
+	t.Run("row2 a question mark ending a sentence", func(t *testing.T) {
+		t.Parallel()
+		o := checkGoesOn(t, open)
+		o.lacks(t, "undecided", glossaryPath, open.line(glossaryPath, "- Question:"))
+	})
+	t.Run("row17 a ? inside a literal is a value", func(t *testing.T) {
 		t.Parallel()
 		checkGoesOn(t, literal).lacks(t, "undecided", xPath, literal.line(xPath, "Provided"))
 	})

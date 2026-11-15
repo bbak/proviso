@@ -213,7 +213,7 @@ Otherwise nothing is listed because of <element>
 | `lint.step`, its Definition reworded, while it marks itself in its Definition | yes | every rule marking it listed, through `lint.step` | an entry marking its own term depends on nothing through that mark |
 | `system.change-effects`, its Rationale reworded only | no | nothing listed because of it | a reworded rationale cannot alter behaviour |
 
-## <a id="baseline.diff.undecided"></a> Rule: An element with an undecided place is not to be built
+## <a id="baseline.diff.undecided"></a> Rule: An undecided element is not to be built
 
 ### Rationale
 
@@ -225,22 +225,23 @@ built around it is accepted unnoticed.
 
 ```guarded
 When      `diff` lists the [element] <element> as added, changed or changed through a dependency
-Provided  <element> holds no [undecided] place
-  And     <element> marks no [term] whose [field] "Status" is "open" in its [rule block]
+Provided  <element> is no [undecided element]
 Then      <element> is to be built
   And     everything else stays as it was
-Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place or a mark of an open [term], once
+Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place, or a mark of an open [term] in its [rule block], once
   And     everything else stays as it was
 ```
 
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
 | a rule with every step decided | yes | to be built | |
-| a rule with `Then      ?` | no (an undecided place) | not to be built, naming the `Then` step | |
-| a rule marking a term whose Status is `open` | no (an open term) | not to be built, naming the mark | its meaning is not decided |
+| a rule with `Then      ?` | no | not to be built, naming the `Then` step | an undecided place |
+| a rule marking a term whose Status is `open` | no | not to be built, naming the mark | its meaning is not decided |
 | a contract element whose "Represents" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
 | a glossary entry whose "Definition" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
-| a rule with `?` in two cells of one Examples row | no (an undecided place) | not to be built, naming that row's line once | a place is named by its line |
+| a rule with `?` in two cells of one Examples row | no | not to be built, naming that row's line once | a place is named by its line |
+| a rule with `Provided  <x> is "a ? b"` | yes | to be built | a `?` inside a literal is a value |
+| a glossary entry with `- Contact: ?`, whose "Definition" field marks a term whose Status is `open` | no | not to be built, naming the `Contact` field only | only a rule block's marks count |
 
 ## <a id="baseline.diff.former"></a> Rule: Former text comes from the revision that wrote the manifest
 

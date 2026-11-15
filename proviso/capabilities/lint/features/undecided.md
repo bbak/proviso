@@ -16,81 +16,39 @@ expected, and an author must be able to lint the tree while asking. A
 `?` counts only where the structure puts it, so a real question in prose, a `?` in a code span or
 a rule about `?` raises no false alarm.
 
-## <a id="lint.undecided.field"></a> Rule: An undecided field is reported
+## <a id="lint.undecided.place"></a> Rule: An undecided place is reported
 
 ```guarded
-When      lint reads the [field] <field>
-Provided  the first word of the value of <field> is not "?"
-Then      lint reports nothing about <field> being [undecided]
+When      lint reads a place <place> where an [undecided] mark can stand: the value of a [field], a cell of an [Examples table], the body of a [section], or a word of a [rule block]
+Provided  <place> is not [undecided]
+Then      lint reports nothing about <place> being [undecided]
   And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [ask] `findings.undecided` at <field>
+Otherwise lint reports the [ask] `findings.undecided` at <place>, or at the [section] for the body of one
   And     lint goes on with the rest of the [spec tree]
 ```
 
-| field | provided | outcome | why |
+| place | provided | outcome | why |
 | --- | --- | --- | --- |
-| `- Contact: Bruno Baketarić` | yes | nothing reported | |
-| `- Question: What does the daily limit apply to?` | yes | nothing reported | a question mark ending a sentence |
-| `- Definition: ?` | no | ask | an open entry's definition |
-| `- Contact: ?` | no | ask | |
-| `- Contact: ? (Cash Operations or Treasury)` | no | ask | a note after the mark leaves the value undecided |
-| `- Contact:   ?   ` | no | ask | surrounding whitespace does not matter |
-
-## <a id="lint.undecided.cell"></a> Rule: An undecided Examples cell is reported
-
-```guarded
-When      lint reads the cell <cell> of an [Examples table]
-Provided  the first word of <cell> is not "?"
-Then      lint reports nothing about <cell> being [undecided]
-  And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [ask] `findings.undecided` at <cell>
-  And     lint goes on with the rest of the [spec tree]
-```
-
-| cell | provided | outcome | why |
-| --- | --- | --- | --- |
-| `error` | yes | nothing reported | |
-| `` `?` `` | yes | nothing reported | a value shown in a code span |
-| `?` | no | ask | an outcome nobody has decided |
-| `? depends on the limit` | no | ask | a note after the mark |
-| `??` | yes | nothing reported | not the mark |
-
-## <a id="lint.undecided.section"></a> Rule: An undecided section is reported
-
-```guarded
-When      lint reads the body <body> of a [section]
-Provided  the first word of <body> is not "?"
-Then      lint reports nothing about the [section] being [undecided]
-  And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [ask] `findings.undecided` at the [section]
-  And     lint goes on with the rest of the [spec tree]
-```
-
-| body | provided | outcome | why |
-| --- | --- | --- | --- |
-| Proviso keeps one specification of a system true … | yes | nothing reported | |
-| Why lowercase? Because links on some hosts … | yes | nothing reported | a real question in prose |
-| `?` | no | ask | a skeleton's section, as `proviso init` writes it |
-| `? to be agreed with the business` | no | ask | a note after the mark |
-
-## <a id="lint.undecided.token"></a> Rule: An undecided part of a rule block is reported
-
-```guarded
-When      lint reads the line <line> of a [rule block]
-Provided  <line> holds no "?" standing as a word of its own, outside literals and [backtick references]
-Then      lint reports nothing about <line> being [undecided]
-  And     lint goes on with the rest of the [spec tree]
-Otherwise lint reports the [ask] `findings.undecided` at each such "?"
-  And     lint goes on with the rest of the [spec tree]
-```
-
-| line | provided | outcome | why |
-| --- | --- | --- | --- |
-| `Then      lint reads <file>` | yes | nothing reported | |
-| `Provided  <value> is "yes", "no", "no (<part>)" or "?"` | yes | nothing reported | a `?` inside a literal is a value |
-| `Then      ?` | no | ask | an outcome nobody has decided |
-| `  And     ?` | no | ask | what else happens is undecided |
-| `Provided  <count> ? the [team limit]` | no | ask | the comparison itself is open |
+| the field `- Contact: Bruno Baketarić` | yes | nothing reported | |
+| the field `- Question: What does the daily limit apply to?` | yes | nothing reported | a question mark ending a sentence |
+| the field `- Definition: ?` | no | ask at the field | an open entry's definition |
+| the field `- Contact: ?` | no | ask at the field | |
+| the field `- Contact: ? (Cash Operations or Treasury)` | no | ask at the field | a note after the mark leaves the value undecided |
+| the field `- Contact:   ?   ` | no | ask at the field | surrounding whitespace does not matter |
+| the cell `error` | yes | nothing reported | |
+| the cell `` `?` `` | yes | nothing reported | a value shown in a code span |
+| the cell `?` | no | ask at the cell | an outcome nobody has decided |
+| the cell `? depends on the limit` | no | ask at the cell | a note after the mark |
+| the cell `??` | yes | nothing reported | not the mark |
+| the body "Proviso keeps one specification of a system true …" | yes | nothing reported | |
+| the body "Why lowercase? Because links on some hosts …" | yes | nothing reported | a real question in prose |
+| the body `?` | no | ask at the section | a skeleton's section, as `proviso init` writes it |
+| the body `? to be agreed with the business` | no | ask at the section | a note after the mark |
+| the words of `Then      lint reads <file>` | yes | nothing reported | |
+| the words of `Provided  <value> is "yes", "no", "no (<part>)" or "?"` | yes | nothing reported | a `?` inside a literal is a value |
+| the `?` of `Then      ?` | no | ask at the `?` | an outcome nobody has decided |
+| the `?` of `  And     ?` | no | ask at the `?` | what else happens is undecided |
+| the `?` of `Provided  <count> ? the [team limit]` | no | ask at the `?` | the comparison itself is open |
 
 ## <a id="lint.undecided.term"></a> Rule: A rule using an open term is reported
 
