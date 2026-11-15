@@ -234,8 +234,10 @@ Given     `pack` has assembled the [context pack] <pack>
 When      `pack` writes it, run with the options <options>
 Provided  <options> include `pack.json`
 Then      `pack` writes the `context_pack` of <pack> to "stdout"
+  And     nothing else goes to "stdout"
   And     `pack` exits with `pack.exit-status` 0
 Otherwise `pack` writes <pack> to "stdout" as `pack_text`
+  And     nothing else goes to "stdout"
   And     `pack` exits with `pack.exit-status` 0
 ```
 

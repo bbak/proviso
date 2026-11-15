@@ -152,8 +152,10 @@ Given     `show` has taken the [elements] <elements>
 When      `show` writes them, run with the options <options>
 Provided  <options> include `show.json`
 Then      `show` writes the `element_view` of <elements> to "stdout"
+  And     nothing else goes to "stdout"
   And     `show` exits with `show.exit-status` 0
 Otherwise `show` writes <elements> to "stdout" as `show_text`
+  And     nothing else goes to "stdout"
   And     `show` exits with `show.exit-status` 0
 ```
 
