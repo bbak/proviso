@@ -92,8 +92,8 @@ assistants bring along; without it, the skill checks by reading.
 
 ## Status
 
-Proviso has been validated only on command-line applications written in
-Go, with Claude Code and primarily Claude Opus 5.5.
+Proviso has been validated only on command-line applications and an MCP
+server, all written in Go, with Claude Code and primarily Claude Opus 5.5.
 
 ## Documentation
 

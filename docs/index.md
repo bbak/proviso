@@ -134,9 +134,10 @@ first agent host they run on.
 
 ## Limits
 
-Proviso has been validated only on command-line applications written in
-Go. How it works for systems in other languages, or for systems heavy in
-user interface or business logic, is untested so far.
+Proviso has been validated only on command-line applications and an MCP
+server, all written in Go. How it works for systems in other languages,
+or for systems heavy in user interface or business logic, is untested so
+far.
 
 The skills and agent definitions were developed with Claude and used
 only in Claude Code, primarily with Claude Opus 5.5 as the model. How
