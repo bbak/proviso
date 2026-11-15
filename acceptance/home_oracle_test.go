@@ -30,18 +30,26 @@ func capabilityIDs(tr tree) map[string]string {
 	return out
 }
 
+// homeSegments gives the [home segment]s of tr (system.home-segment): system
+// and the first segment, up to its first ".", of the identifier of every
+// capability of tr, well-formed or not.
+func homeSegments(tr tree) map[string]bool {
+	out := map[string]bool{"system": true}
+	for _, id := range capabilityIDs(tr) {
+		if id != "" {
+			first, _, _ := strings.Cut(id, ".")
+			out[first] = true
+		}
+	}
+	return out
+}
+
 // unhomed gives the identifiers of tr at which lint.identifiers.home reports
 // findings.identifier-unhomed, each with its file, in the order of
 // treeElements.
 func unhomed(tr tree) [][2]string {
 	caps := capabilityIDs(tr)
-	places := map[string]bool{"system": true}
-	for _, id := range caps {
-		if wellFormed.MatchString(id) {
-			first, _, _ := strings.Cut(id, ".")
-			places[first] = true
-		}
-	}
+	homes := homeSegments(tr)
 	systemID := ""
 	for _, e := range treeElements(tree{systemPath: tr[systemPath]}) {
 		systemID = e[0]
@@ -57,7 +65,7 @@ func unhomed(tr tree) [][2]string {
 			continue
 		}
 		first, _, _ := strings.Cut(id, ".")
-		if !places[first] {
+		if !homes[first] {
 			out = append(out, e)
 		}
 	}

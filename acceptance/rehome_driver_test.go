@@ -511,14 +511,11 @@ func identifierHome(tr tree, p string) string {
 // homeRenames gives the renames upkeep.rehome.home and upkeep.rehome.place
 // plan for tr, ordered by their old identifier: every element whose first
 // segment is not its identifier home, renamed to its home followed by what
-// follows the first segment where that segment names a place, system or the
-// identifier of a capability, and followed by "." and the whole identifier
-// where it names none.
+// follows the first segment where that segment is a [home segment]
+// (homeSegments), and followed by "." and the whole identifier where it is
+// none.
 func homeRenames(tr tree) []planRename {
-	places := map[string]bool{"system": true}
-	for _, id := range capabilityIDs(tr) {
-		places[id] = true
-	}
+	places := homeSegments(tr)
 	var out []planRename
 	for _, e := range treeElements(tr) {
 		id, home := e[0], identifierHome(tr, e[1])

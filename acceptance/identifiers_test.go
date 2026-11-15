@@ -212,3 +212,58 @@ func TestLintIdentifiersHome(t *testing.T) {
 		}
 	})
 }
+
+// TestSystemHomeSegment checks the term home segment through lint: the first
+// segment of an identifier, up to its first ".", is one where it is system or
+// the first segment of a capability's identifier, even of one that is not
+// well-formed, and a segment is compared whole. Every case compares the
+// findings identifier-unhomed with the oracle unhomed, which builds on
+// homeSegments.
+func TestSystemHomeSegment(t *testing.T) {
+	t.Parallel()
+	glossary := func(id string) string {
+		return `# Glossary
+
+## <a id="` + id + `"></a> shelf
+
+- Definition: Where goods stand.
+- Contact: Dana Reyes
+- Status: defined
+`
+	}
+	shop := baseline().edit(capPath, `id="cart"`, `id="cart.shop"`)
+	for _, c := range []struct {
+		name  string
+		tree  tree
+		id    string // a glossary entry of the system
+		homed bool
+	}{
+		{"derived: the first segment of a capability's identifier of several segments", shop.with(sysGlossaryPath, glossary("cart.shelf")), "cart.shelf", true},
+		{"derived: a later segment of a capability's identifier is none", shop.with(sysGlossaryPath, glossary("shop.shelf")), "shop.shelf", false},
+		{"derived: system", baseline().with(sysGlossaryPath, glossary("system.shelf")), "system.shelf", true},
+		{"derived: a capability's identifier of one segment", baseline().with(sysGlossaryPath, glossary("cart.shelf")), "cart.shelf", true},
+		{"derived: a segment that a capability's identifier only starts with is none", baseline().with(sysGlossaryPath, glossary("car.shelf")), "car.shelf", false},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			t.Parallel()
+			o := checkGoesOn(t, c.tree)
+			line := c.tree.line(sysGlossaryPath, `id="`+c.id+`"`)
+			if c.homed {
+				o.lacks(t, "identifier-unhomed", sysGlossaryPath, line)
+			} else {
+				o.has(t, "identifier-unhomed", sysGlossaryPath, line)
+			}
+			want := map[string]int{}
+			for _, u := range unhomed(c.tree) {
+				want[fmt.Sprintf("%s:%d", u[1], c.tree.line(u[1], `id="`+u[0]+`"`))]++
+			}
+			got := map[string]int{}
+			for _, f := range o.find("identifier-unhomed", "", nil) {
+				got[fmt.Sprintf("%s:%d", f.File, f.Line)]++
+			}
+			if fmt.Sprint(got) != fmt.Sprint(want) {
+				t.Errorf("system.home-segment: want identifier-unhomed at %v, got %v", want, got)
+			}
+		})
+	}
+}
