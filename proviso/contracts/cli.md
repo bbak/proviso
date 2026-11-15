@@ -986,8 +986,7 @@ does not take, and checks nothing. Without one, it writes to
 standard error, outside the root of a git repository, one line of hint.
 In the root it writes, first, either one line saying that
 no skill or agent is installed, or one line for each skill or agent
-that `installed_files` names and that is missing, holds more than one
-stamp, names no Proviso version or was installed by another version, in
+that `installed_files` names and that the rules of `version` report, in
 the byte order of their paths; then at most one line about the spec tree's manifest. In the
 root, nothing on standard error means everything fits. The wording of
 these lines is for people and not part of the contract.
