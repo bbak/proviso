@@ -80,7 +80,7 @@ alone would leave skills without the spec tree they work on. `init`
 sets a repository up.
 
 ```guarded
-When      `update` looks for the [agent definitions] and [skills] that `installed_files` names, below the root of a git repository <directory>
+When      `update` looks for the [agent definitions] and [skills] that `installed_files` names, below the [repository root] <directory>
 Provided  an entry exists below <directory> at the path of at least one of them
 Then      `update` takes each of them on its own, in the byte order of their paths
   And     `update` touches no other [installed file]

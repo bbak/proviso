@@ -72,7 +72,7 @@ Otherwise `version` writes to "stderr" one line saying that run in the root of a
 ## <a id="install.version.kit"></a> Rule: Version says when no skill or agent is installed
 
 ```guarded
-When      `version`, checking the root of a git repository <directory>, looks for the [agent definitions] and [skills] that `installed_files` names
+When      `version`, checking the [repository root] <directory>, looks for the [agent definitions] and [skills] that `installed_files` names
 Provided  an entry exists below <directory> at the path of at least one of them
 Then      `version` checks each of them on its own
   And     a line names each of them only where it does not fit
@@ -90,7 +90,7 @@ Otherwise `version` writes to "stderr" one line saying that no [skill] or [agent
 ## <a id="install.version.missing"></a> Rule: A skill or agent that is missing is named
 
 ```guarded
-Given     `version` checks the root of a git repository, where an entry exists at the path of at least one [agent definition] or [skill] that `installed_files` names
+Given     `version` checks a [repository root], where an entry exists at the path of at least one [agent definition] or [skill] that `installed_files` names
 When      `version` checks the [agent definition] or [skill] <file>
 Provided  no entry exists at the path of <file>
 Then      `version` writes to "stderr" one line naming <file> as not installed
@@ -236,7 +236,7 @@ written; before `init`, or before the first acceptance, there is none,
 and `version` says so rather than stay silent.
 
 ```guarded
-When      `version` checks "proviso/manifest.sum" below the root of a git repository <directory>
+When      `version` checks "proviso/manifest.sum" below the [repository root] <directory>
 Provided  no entry exists at that path below <directory>
 Then      `version` writes to "stderr" one line saying that "proviso/manifest.sum" does not exist, so no model version is recorded for the [spec tree]
   And     `version` checks nothing else of the [spec tree]
