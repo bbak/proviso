@@ -22,10 +22,10 @@ nobody notices is what Proviso exists to prevent.
 ## <a id="baseline.diff.baseline"></a> Rule: Without a manifest, the baseline is empty
 
 ```guarded
-When      someone runs `diff` without `diff.since`, and it works on the [spec tree] of the [spec root] <root>
+When      `diff`, `impact`, `pack`, `judge` or `verify`, run without `diff.since` or `pack.since`, derives the [element diff] of the [spec tree] of the [spec root] <root>
 Provided  <root> holds `manifest_file`
 Then      the [baseline] is what `manifest_file` records
-  And     `diff` compares the [spec tree] with it
+  And     the command compares the [spec tree] with it
 Otherwise the [baseline] is empty
   And     every [element] of the [spec tree] is added
 ```
@@ -100,7 +100,7 @@ Otherwise the command writes to "stderr" that `manifest_file` cannot be read, na
 ## <a id="baseline.diff.added"></a> Rule: An element the baseline does not hold is added
 
 ```guarded
-When      `diff` compares the [element] <element> of the [spec tree] with the [baseline]
+When      `diff`, `impact`, `pack`, `judge` or `verify`, deriving the [element diff], compares the [element] <element> of the [spec tree] with the [baseline]
 Provided  the [baseline] holds no [element part] of an [element] with the [identifier] of <element>
 Then      <element> is listed as added, in full
   And     everything else stays as it was
@@ -116,7 +116,7 @@ Otherwise → baseline.diff.changed
 ## <a id="baseline.diff.changed"></a> Rule: An element whose parts differ is changed
 
 ```guarded
-When      `diff` compares the [element] <element>, whose [identifier] the [baseline] holds, with the [baseline]
+When      `diff`, `impact`, `pack`, `judge` or `verify`, deriving the [element diff], compares the [element] <element>, whose [identifier] the [baseline] holds, with the [baseline]
 Provided  an [element part] of <element> is missing from the [baseline], or differs from it in its [fingerprint], or the [baseline] holds an [element part] of <element> that the [spec tree] no longer has
 Then      <element> is listed as changed, in full, naming each such [element part] as added, changed or removed
   And     the [former text] of each changed or removed [element part] is listed with it
@@ -138,7 +138,7 @@ Otherwise <element> is not listed as changed
 ## <a id="baseline.diff.removed"></a> Rule: An element the tree no longer has is removed
 
 ```guarded
-When      `diff` finds the [identifier] <id> in the [baseline]
+When      `diff`, `impact`, `pack`, `judge` or `verify`, deriving the [element diff], finds the [identifier] <id> in the [baseline]
 Provided  the [spec tree] has an [element] with the [identifier] <id>
 Then      that [element] is compared with the [baseline]
   And     everything else stays as it was
@@ -169,7 +169,7 @@ and naming every chain grows beyond any reader, since glossary entries
 may mark each other's terms, in circles too, and eight entries marking
 each other gave over two hundred thousand chains in one diff, and
 thousands to a single element. Of
-equally short chains the first is named, so that `diff` names the same
+equally short chains the first is named, so that the command names the same
 chain every time.
 Which elements depend on what is read from the tree as it stands: one
 that stopped depending on something was edited, and is listed anyway. A
@@ -178,7 +178,7 @@ referred to a contract element above it relied on it, and still refers
 to that contract element.
 
 ```guarded
-When      `diff` takes the [element] <element>, whose meaning changed
+When      `diff`, `impact`, `pack`, `judge` or `verify`, deriving the [element diff], takes the [element] <element>, whose meaning changed
 Provided  `change_effects` gives "dependents" for a changed [element part] of <element>, or <element> depends on an [element] whose meaning changed, whether or not the [element diff] lists <element> as changed
 Then      every [element] that depends on <element> by `dependencies`, and is not listed as added, changed or removed, is listed as changed through a dependency, naming, for each [element] listed as added, changed or removed whose changed [element part] `change_effects` gives "dependents" for and from which a chain of [identifiers] reaches it, the shortest such chain, from that [element] to the one it depends on directly, and of equally short ones the first, compared by their first [identifier], then by their second, and so on, each byte by byte
   And     every [element] listed so is taken in turn, and every [element] once
@@ -224,7 +224,7 @@ tree, and no amendment is accepted while it stays open, so nothing
 built around it is accepted unnoticed.
 
 ```guarded
-When      `diff` lists the [element] <element> as added, changed or changed through a dependency
+When      `diff`, `impact`, `pack`, `judge` or `verify`, deriving the [element diff], lists the [element] <element> as added, changed or changed through a dependency
 Provided  <element> is no [undecided element]
 Then      <element> is to be built
   And     everything else stays as it was
