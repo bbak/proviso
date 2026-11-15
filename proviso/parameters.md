@@ -173,6 +173,8 @@ folder stays as it was.
 
 | command | may change |
 | --- | --- |
+| `help` | nothing |
+| `version` | nothing |
 | `lint` | nothing |
 | `show` | nothing |
 | `diff` | nothing |
@@ -181,4 +183,4 @@ folder stays as it was.
 | `verify` | nothing |
 | `manifest` | `manifest.sum`, and `.coherence.json` and `.amendment.md`, each with everything in it, after a run that wrote `manifest.sum` |
 | `judge` | `.coherence.json`, after a run that exits with 0 |
-| `rehome` | after a run with `--write` that exits with 0: `manifest.sum`, the identifiers renamed in the places `rehome_references` lists, and the identifier mentions `--mentions` names |
+| `rehome` | after a run with `rehome.write` that exits with 0: `manifest.sum`, and the files of the spec tree that held an identifier it renamed, each changed only where that identifier stood |

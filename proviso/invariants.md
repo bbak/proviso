@@ -37,12 +37,13 @@ query that changed what it reads would change the answer; a command
 that records, such as `manifest` or `judge`, may change only its
 record, and `rehome` only what it renames, so that no step mixes in a
 change it is not for. Git is only read, so a run never moves a branch
-or touches the index.
+or touches the index. `init` and `update` install files into the
+directory they run in, and their own invariants say what they keep.
 
 ### Ranges over
 
-Every run of `lint`, `show`, `manifest`, `diff`, `pack`, `impact`,
-`judge`, `verify` and `rehome`, whatever it finds and however it ends.
+Every run of a command `command_writes` lists, whatever it finds and
+however it ends.
 
 ### Property
 
