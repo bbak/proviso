@@ -82,8 +82,10 @@ Documentation: https://github.com/bbak/proviso/blob/main/docs/commands.md
 const helpHint = `"proviso help" shows the help page`
 
 // commandOptions is, for every command of cli.help.command, the options
-// it takes; "--since" takes a revision after it, "--element" an
-// identifier, "--in" a capability, "--rename" an old and a new identifier.
+// it takes: those the members of its own contract element define, as
+// cli.help.argument reads them; "--since" takes a revision after it,
+// "--element" an identifier, "--in" a capability, "--rename" an old and a
+// new identifier.
 var commandOptions = map[string][]string{
 	"init":     nil,
 	"update":   nil,
