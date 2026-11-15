@@ -673,14 +673,14 @@ func checkReadOnly(t *testing.T, before, after map[string]string) {
 	t.Helper()
 	for p, v := range before {
 		if w, ok := after[p]; !ok {
-			t.Errorf("lint.run.read-only: %s was removed", p)
+			t.Errorf("system.tree-writes: %s was removed", p)
 		} else if v != w {
-			t.Errorf("lint.run.read-only: %s changed", p)
+			t.Errorf("system.tree-writes: %s changed", p)
 		}
 	}
 	for p := range after {
 		if _, ok := before[p]; !ok {
-			t.Errorf("lint.run.read-only: %s was created", p)
+			t.Errorf("system.tree-writes: %s was created", p)
 		}
 	}
 }

@@ -1,11 +1,11 @@
 package acceptance
 
 // The capability query: proviso/capabilities/query/, the feature query.show,
-// the invariant query.read-only, the term query.element-parent and the
+// the invariant system.tree-writes, the term query.element-parent and the
 // contracts system.cli.show, show_text and element_view. The Examples rows
 // name elements of Proviso's own tree; showTree (show_driver_test.go) holds
 // one that stands in for each. Every run goes through showIn, which checks
-// query.read-only and the shape of element_view.
+// system.tree-writes and the shape of element_view.
 
 import (
 	"os"
@@ -503,41 +503,6 @@ It is needed.
 			o.elementsAre(t, nw, dir, c.el)
 		})
 	}
-}
-
-// TestQueryReadOnly checks query.read-only over runs of show that end in
-// every way: showIn compares every spec root below the test's directory
-// before and after the run.
-func TestQueryReadOnly(t *testing.T) {
-	t.Parallel()
-	tr := showTree()
-	for _, c := range []struct {
-		name string
-		args []string
-	}{
-		{"found, as element_view", []string{"cart.add.limit", "--json"}},
-		{"found, as show_text", []string{"finding"}},
-		{"none found", []string{"nosuch"}},
-		{"no query", nil},
-		{"a capability the tree does not hold", []string{"system", "--in", "nosuch"}},
-		{"an argument show does not take", []string{"system", "--write"}},
-	} {
-		t.Run(c.name, func(t *testing.T) {
-			t.Parallel()
-			show(t, tr, c.args...)
-		})
-	}
-	t.Run("in an accepted repository in the middle of an amendment", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, tr)
-		r.set(tr.edit(glossaryPath, "A product placed in the cart.", "A product put into the cart."))
-		showIn(t, r.dir, r.dir, "cart.item", "--json")
-	})
-	t.Run("a tree lint cannot read", func(t *testing.T) {
-		t.Parallel()
-		dir := tr.with("proviso/manifest.sum", "model 2\n").write(t)
-		showIn(t, dir, dir, "system", "--json")
-	})
 }
 
 // TestSystemCliShow checks the contract system.cli.show: run anywhere inside

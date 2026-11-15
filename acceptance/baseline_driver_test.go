@@ -3,7 +3,7 @@ package acceptance
 // The driver of the baseline capability: git repositories for test trees,
 // runs of `proviso manifest` and `proviso diff` with what holds for every run
 // (the contracts' shapes, the order, the exit status and the invariant
-// baseline.run.writes), and an oracle for manifest_file computed from the
+// system.tree-writes), and an oracle for manifest_file computed from the
 // contract alone.
 
 import (
@@ -61,7 +61,7 @@ func execProvisoWith(t *testing.T, cwd string, stdin io.Reader, args ...string) 
 }
 
 // ---------------------------------------------------------------------------
-// The invariants baseline.run.writes and coherence.run.writes
+// The invariant system.tree-writes
 
 // snapshotAll records every entry below base, the git repository's .git
 // folder included: folders, file contents and link targets, without
@@ -97,12 +97,12 @@ func snapshotAll(t *testing.T, base string) map[string]string {
 	return snap
 }
 
-// checkWrites checks the invariant rule, baseline.run.writes or
-// coherence.run.writes: everything below base is as it was, except the
-// entries allowed, if not empty, and everything in them (manifest.sum,
-// .coherence.json and .amendment.md after a run of `manifest` that wrote
-// manifest.sum, by baseline.run.writes; .coherence.json after a run of
-// `judge` that exited with 0, by coherence.run.writes).
+// checkWrites checks the invariant rule, such as system.tree-writes:
+// everything below base is as it was, except the entries allowed, if not
+// empty, and everything in them (what command_writes lists for the run's
+// command: manifest.sum, .coherence.json and .amendment.md after a run of
+// `manifest` that wrote manifest.sum; .coherence.json after a run of `judge`
+// that exited with 0).
 func checkWrites(t *testing.T, rule string, before, after map[string]string, allowed ...string) {
 	t.Helper()
 	// An entry allowed may be a folder, such as an amendment note, whose
@@ -179,7 +179,7 @@ func manifestIn(t *testing.T, base, cwd, root string, prepare func() func()) run
 			}
 		}
 	}
-	checkWrites(t, "baseline.run.writes", before, after, allowed...)
+	checkWrites(t, "system.tree-writes", before, after, allowed...)
 	if r.exit != 0 && r.exit != 2 {
 		t.Fatalf("system.cli.manifest.exit-status: %d is not 0 or 2\nstderr: %s", r.exit, r.stderr)
 	}
@@ -282,7 +282,7 @@ func runDiff(t *testing.T, text bool, base, cwd, root string, args ...string) di
 		o.text = &r
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, "baseline.run.writes", before, after, "")
+	checkWrites(t, "system.tree-writes", before, after, "")
 	if o.text != nil && o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}
