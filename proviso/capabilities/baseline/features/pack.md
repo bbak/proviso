@@ -148,11 +148,11 @@ Otherwise nothing is taken for "Frames" because of <element>
 
 | element | provided | outcome | why |
 | --- | --- | --- | --- |
-| `lint.run.exit`, its `Then` step changed | yes | `lint`, `lint.run`, `lint.run.read-only` and the system's constraints taken | |
-| `baseline.former-text`, its Definition changed | yes | `baseline`, `baseline.run.writes` and the system's constraints taken | no feature holds a glossary entry of the capability |
-| `system.git`, its Property changed | yes | the system's constraints taken | no feature or capability holds it |
+| `lint.run.exit`, its `Then` step changed | yes | `lint`, `lint.run`, and the system's invariants and constraints taken | |
+| `baseline.former-text`, its Definition changed | yes | `baseline` and the system's invariants and constraints taken | no feature holds a glossary entry of the capability |
+| `system.git`, its Property changed | yes | the system's invariants and constraints taken | no feature or capability holds it |
 | `lint.run.root`, removed | no | nothing taken because of it | what was built for it is retired, not built |
-| `lint.run.exit`, named by `--element` | yes | `lint`, `lint.run`, `lint.run.read-only` and the system's constraints taken | a named element is read as an added one |
+| `lint.run.exit`, named by `--element` | yes | `lint`, `lint.run`, and the system's invariants and constraints taken | a named element is read as an added one |
 
 ## <a id="baseline.pack.chain"></a> Rule: The context follows the reading chain to its end
 

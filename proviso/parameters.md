@@ -183,4 +183,4 @@ folder stays as it was.
 | `verify` | nothing |
 | `manifest` | `manifest.sum`, and `.coherence.json` and `.amendment.md`, each with everything in it, after a run that wrote `manifest.sum` |
 | `judge` | `.coherence.json`, after a run that exits with 0 |
-| `rehome` | after a run with `rehome.write` that exits with 0: `manifest.sum`, and the files of the spec tree that held an identifier it renamed, each changed only where that identifier stood |
+| `rehome` | after a run with `rehome.write` that exits with 0: `manifest.sum`, and the places of the spec tree its rules rename, nothing else of their files |
