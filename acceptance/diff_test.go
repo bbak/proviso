@@ -1178,6 +1178,35 @@ const trolleyEntry = `
 - Status: defined
 `
 
+// literalRule is a rule whose guard holds a ? inside a literal.
+const literalRule = `
+## <a id="cart.x.code"></a> Rule: A buyer enters a code
+
+´´´guarded
+When      a buyer enters the code <x>
+Provided  <x> is "a ? b"
+Then      the shop accepts <x>
+  And     nothing else changes
+Otherwise the shop rejects <x>
+  And     nothing else changes
+´´´
+
+| x | provided | outcome |
+| --- | --- | --- |
+| a b | yes | accepted |
+| c | no | rejected |
+`
+
+// wagonEntry is the glossary entry wagon, with an undecided Contact and a
+// Definition that marks the term basket.
+const wagonEntry = `
+## <a id="cart.wagon"></a> wagon
+
+- Definition: A [basket] with a handle.
+- Contact: ?
+- Status: defined
+`
+
 func TestBaselineDiffUndecided(t *testing.T) {
 	t.Parallel()
 	tr := undecidedTree()
@@ -1234,6 +1263,27 @@ func TestBaselineDiffUndecided(t *testing.T) {
 	t.Run("row6 a rule with ? in two cells of one Examples row", func(t *testing.T) {
 		t.Parallel()
 		undecided(t, "cart.x.bag", place{xPath, tr.line(xPath, "| apple | ? | ? |")})
+	})
+	// Rows 7 and 8 share one tree: the undecided tree with a rule whose guard
+	// holds a ? inside a literal, and a glossary entry with Contact: ? whose
+	// Definition marks the open term basket.
+	lt := undecidedTree().appendTo(xPath, literalRule).appendTo(glossaryPath, wagonEntry)
+	ldir := lt.write(t)
+	lo := diffIn(t, ldir, ldir, filepath.Join(ldir, "proviso"))
+	t.Run("row7 a rule with a ? inside a literal", func(t *testing.T) {
+		t.Parallel()
+		e := lo.elem(t, "cart.x.code")
+		if len(e.Undecided) != 0 {
+			t.Errorf("want cart.x.code to be built, naming no undecided place, got %v", e.Undecided)
+		}
+	})
+	t.Run("row8 a glossary entry with Contact: ?, whose Definition marks an open term", func(t *testing.T) {
+		t.Parallel()
+		e := lo.elem(t, "cart.wagon")
+		want := place{glossaryPath, lt.line(glossaryPath, "- Contact: ?")}
+		if len(e.Undecided) != 1 || e.Undecided[0] != want {
+			t.Errorf("want cart.wagon to name only the Contact field %v, got %v", want, e.Undecided)
+		}
 	})
 	t.Run("derived: a rule marking an open term twice in one line", func(t *testing.T) {
 		t.Parallel()
