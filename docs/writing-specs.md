@@ -473,8 +473,9 @@ document beside the tree has not arrived in it.
 
 **Undecided** is `?`, where structure puts it: the first word of a
 field value, an Examples cell or a section body, or a word of its own in
-a rule block. A note after it, as in `- Contact: ? (Treasury or Cash
-Operations)`, keeps it undecided. Nothing is specified there yet, so the
+a rule block, outside a literal such as `"a ? b"` and a backtick
+reference, where `?` is a value. A note after it, as in `- Contact: ?
+(Treasury or Cash Operations)`, keeps it undecided. Nothing is specified there yet, so the
 element is not built, and no amendment is accepted while any element of
 the tree holds one. An open glossary entry counts too, since its
 Definition is `?`. Only `?` counts: no `TBD` or other alias. The tree
