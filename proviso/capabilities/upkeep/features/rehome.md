@@ -314,24 +314,3 @@ Otherwise `rehome` exits with `rehome.exit-status` 1
 | none | yes | 0 | |
 | none, and no renames | yes | 0 | a tree whose identifiers all name their identifier home |
 | one | no | 1 | |
-
-## <a id="upkeep.rehome.writes"></a> Invariant: Rehome changes nothing but the renamed identifiers and the manifest
-
-### Rationale
-
-`rehome` renames; any other change would mix a meaning into a step that
-must change none. Git is only read, so a run never moves a branch or
-touches the index.
-
-### Ranges over
-
-Every run of `rehome`, however it ends.
-
-### Property
-
-Every file and folder under the [spec root] is byte for byte and entry
-for entry as it was before the run, except, after a run with
-`rehome.write` that exits with 0, `manifest.sum`, the identifiers
-renamed in the places `rehome_references` lists, and the
-[identifier mentions] `rehome.mentions` names. The git repository
-holding the [spec root] is as it was before the run.

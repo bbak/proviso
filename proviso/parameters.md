@@ -160,3 +160,25 @@ leave a name that is no longer composed.
 | 2 | each run of spaces and tabs within the name, a line break within a field included, becomes one space |
 | 3 | each character becomes its simple lower-case form |
 | 4 | the name is brought into Unicode's composed form, NFC |
+
+## <a id="system.command-writes"></a> command_writes
+
+- Configurable: no
+- Rationale: a command that changed more than it is for would mix a
+  change into a step that must not make it; one row per command says
+  what each may change, so that a new command has one row to add.
+
+What each command may change under the spec root; every other file and
+folder stays as it was.
+
+| command | may change |
+| --- | --- |
+| `lint` | nothing |
+| `show` | nothing |
+| `diff` | nothing |
+| `pack` | nothing |
+| `impact` | nothing |
+| `verify` | nothing |
+| `manifest` | `manifest.sum`, and `.coherence.json` and `.amendment.md`, each with everything in it, after a run that wrote `manifest.sum` |
+| `judge` | `.coherence.json`, after a run that exits with 0 |
+| `rehome` | after a run with `--write` that exits with 0: `manifest.sum`, the identifiers renamed in the places `rehome_references` lists, and the identifier mentions `--mentions` names |
