@@ -20,7 +20,7 @@ written twice.
 
 ```guarded
 When      someone runs `init`, with arguments it takes, in the directory <directory>
-Provided  <directory> holds an entry named ".git"
+Provided  <directory> is a [repository root]
 Then      `init` takes every [installed file] that `installed_files` names, at its path below <directory>
   And     everything else stays as it was
 Otherwise `init` writes to "stderr" that <directory> is not the root of a git repository

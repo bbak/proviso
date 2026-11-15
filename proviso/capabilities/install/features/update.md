@@ -56,7 +56,7 @@ Otherwise `update` writes to "stderr" one line saying that only a release update
 
 ```guarded
 When      `update` turns to the directory <directory> it runs in
-Provided  <directory> holds an entry named ".git"
+Provided  <directory> is a [repository root]
 Then      `update` looks for the [agent definitions] and [skills] that `installed_files` names, at their paths below <directory>
   And     `update` looks for no repository above or below <directory>
 Otherwise `update` writes to "stderr" that <directory> is not the root of a git repository
@@ -80,7 +80,7 @@ alone would leave skills without the spec tree they work on. `init`
 sets a repository up.
 
 ```guarded
-When      `update` looks for the [agent definitions] and [skills] that `installed_files` names, below the root of a git repository <directory>
+When      `update` looks for the [agent definitions] and [skills] that `installed_files` names, below the [repository root] <directory>
 Provided  an entry exists below <directory> at the path of at least one of them
 Then      `update` takes each of them on its own, in the byte order of their paths
   And     `update` touches no other [installed file]
@@ -125,7 +125,7 @@ repository.
 ```guarded
 When      `update`, of the [Proviso version] <version>, takes the [agent definition] or [skill] <file>, an entry existing at its path, its [version stamp] naming <stamp>
 Provided  <file> can be read as a file whose frontmatter holds exactly one [version stamp]
-  And     <stamp> is <version>, compared as text, or a version of semantic versioning 2.0.0 newer than <version> by its precedence
+  And     <stamp> is <version>, compared as text, or a [semantic version] newer than <version> by its precedence
 Then      `update` leaves <file> as it is
   And     `update` writes to "stdout" the line naming <file> as skipped
   And     `update` writes to "stderr" one line naming <file> and <stamp> as newer than <version>, where <stamp> is not <version>

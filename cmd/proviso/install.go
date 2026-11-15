@@ -25,9 +25,7 @@ func initRun(stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso init: %v\n", err)
 		return exitCantRun
 	}
-	// Any entry named .git counts: a folder in a clone, a file in a
-	// worktree, whatever its attributes.
-	if _, err := os.Lstat(filepath.Join(wd, ".git")); err != nil {
+	if !isRepositoryRoot(wd) {
 		fmt.Fprintf(stderr, "proviso init: %s is not the root of a git repository\n", wd)
 		return exitCantRun
 	}
@@ -48,6 +46,14 @@ func initRun(stdout, stderr io.Writer) int {
 	return status
 }
 
+// isRepositoryRoot reports whether dir is a repository root: it holds an
+// entry named .git, whatever its type and attributes, a folder in a clone
+// or a file in a worktree. No other directory is looked at.
+func isRepositoryRoot(dir string) bool {
+	_, err := os.Lstat(filepath.Join(dir, ".git"))
+	return err == nil
+}
+
 // versionRun writes the Proviso version and the model version it writes
 // and then, in the root of a git repository, one line to stderr for each
 // installed skill or agent definition and for a spec tree that does not
@@ -56,12 +62,7 @@ func initRun(stdout, stderr io.Writer) int {
 func versionRun(stdout, stderr io.Writer) int {
 	fmt.Fprintf(stdout, "proviso %s\nmodel %d\n", version, model.Version)
 	wd, err := os.Getwd()
-	if err == nil {
-		// Any entry named .git counts, as for init; no other directory is
-		// looked at.
-		_, err = os.Lstat(filepath.Join(wd, ".git"))
-	}
-	if err != nil {
+	if err != nil || !isRepositoryRoot(wd) {
 		fmt.Fprintln(stderr, "proviso version: run in the root of a git repository, version checks the installed skills and agent definitions and the spec tree against its version")
 		return exitClean
 	}
