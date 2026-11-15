@@ -102,7 +102,7 @@ read as part of a name.
 
 ```guarded
 When      <command> reads the argument <argument>, after the arguments <before> and before the arguments <rest>
-Provided  <command> takes <argument>, as `lint.json`, `diff.json`, `diff.since`, `impact.json`, `pack.json`, `pack.since`, `pack.element`, `verify.json`, `rehome.write`, `rehome.json`, `rehome.mentions`, `rehome.rename`, `show.query`, `show.in` and `show.json` define
+Provided  <command> takes <argument>, as a [member] of its own [contract element], among `init`, `update`, `version`, `lint`, `manifest`, `diff`, `impact`, `pack`, `judge`, `verify`, `rehome`, `show` and `help`, defines it as an option or an argument
   And     <rest> start with a value that is not empty and does not start with "-", where <argument> is "--since", "--element", "--in" or "--rename"
   And     <before> hold neither "--since" nor "--element", where <argument> is "--since" or "--element", no "--in", where <argument> is "--in", and no `show.query`, where <argument> is one
   And     <before> or <rest> hold "--write", where <argument> is "--mentions"
