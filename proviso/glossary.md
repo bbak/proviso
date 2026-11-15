@@ -411,7 +411,7 @@
 
 ## <a id="system.model-line"></a> model line
 
-- Definition: A line that is, without its [line ending], `model`, a
+- Definition: A line that is, without its [line ending], "model", a
   space and a whole number in decimal digits without a leading zero.
   The model version it names is that number.
 - Contact: Bruno Baketarić
