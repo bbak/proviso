@@ -169,7 +169,7 @@ and naming every chain grows beyond any reader, since glossary entries
 may mark each other's terms, in circles too, and eight entries marking
 each other gave over two hundred thousand chains in one diff, and
 thousands to a single element. Of
-equally short chains the first is named, so that `diff` names the same
+equally short chains the first is named, so that the command names the same
 chain every time.
 Which elements depend on what is read from the tree as it stands: one
 that stopped depending on something was edited, and is listed anyway. A
