@@ -3,7 +3,7 @@ package acceptance
 // The driver of the feature upkeep.rehome: runs of `proviso rehome` with what
 // holds for every run (the contract rehome_plan, the exit status, the order,
 // the rules upkeep.rehome.exit and upkeep.rehome.collision as far as the plan
-// shows them, and the invariant upkeep.rehome.writes), and oracles of the
+// shows them, and the invariant system.tree-writes), and oracles of the
 // identifier home, the collisions and the identifier mentions, computed from
 // the test tree alone.
 
@@ -125,7 +125,7 @@ func rehomeWith(t *testing.T, base, cwd, root, input string, prepare func() func
 		}
 	}
 
-	// upkeep.rehome.writes
+	// system.tree-writes
 	rootRel := ""
 	if root != "" {
 		rel, _ := filepath.Rel(base, root)
@@ -134,7 +134,7 @@ func rehomeWith(t *testing.T, base, cwd, root, input string, prepare func() func
 	if write && r.exit == 0 && asJSON {
 		checkRenamedOnly(t, o.before, o.after, rootRel, o.plan.Renames)
 	} else if !(write && r.exit == 0) {
-		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
+		checkWrites(t, "system.tree-writes", o.before, o.after, "")
 	}
 	return o
 }
@@ -327,13 +327,13 @@ func renamedOnly(before, after string, renames []planRename) bool {
 	return before[bEnd:] == after[aEnd:]
 }
 
-// checkRenamedOnly checks upkeep.rehome.writes after a run with --write that
+// checkRenamedOnly checks system.tree-writes after a run with --write that
 // exited with 0: every entry is where it was, the git repository as it was,
 // and under the spec root rootRel nothing changed but manifest.sum and the
 // identifiers renamed.
 func checkRenamedOnly(t *testing.T, before, after map[string]string, rootRel string, renames []planRename) {
 	t.Helper()
-	const rule = "upkeep.rehome.writes"
+	const rule = "system.tree-writes"
 	for p, v := range before {
 		w, ok := after[p]
 		switch {

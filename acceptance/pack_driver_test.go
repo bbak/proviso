@@ -4,7 +4,7 @@ package acceptance
 // layout of pack_text, the shape of context_pack, the two agreeing with each
 // other and with the element diff, baseline.pack.contents, baseline.pack.once,
 // baseline.pack.order, the exit status and the invariant
-// baseline.run.writes), and runs with `--element`, with what holds for every
+// system.tree-writes), and runs with `--element`, with what holds for every
 // such run (baseline.pack.element where the element is found).
 
 import (
@@ -101,7 +101,7 @@ func packIn(t *testing.T, base, cwd, root string, args ...string) packOutcome {
 }
 
 // runPack runs `proviso pack --json` and `proviso pack` with args in cwd,
-// checks the exit status and baseline.run.writes, and, where both ran, reads
+// checks the exit status and system.tree-writes, and, where both ran, reads
 // and checks what they wrote as packIn says, but for the element diff. It
 // tells whether both ran.
 func runPack(t *testing.T, base, cwd, root string, args ...string) (packOutcome, bool) {
@@ -112,7 +112,7 @@ func runPack(t *testing.T, base, cwd, root string, args ...string) (packOutcome,
 		text: execProviso(t, cwd, append([]string{"pack"}, args...)...),
 	}
 	after := snapshotAll(t, base)
-	checkWrites(t, "baseline.run.writes", before, after, "")
+	checkWrites(t, "system.tree-writes", before, after, "")
 	if o.json.exit != o.text.exit {
 		t.Errorf("exit status %d with --json, %d without", o.json.exit, o.text.exit)
 	}

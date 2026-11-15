@@ -5,7 +5,7 @@ package acceptance
 // mention, and the contracts system.cli.rehome, system.cli.rehome-plan and
 // system.cli.mention-list (proviso/contracts/cli.md).
 // What holds for every run (the plan's shape and order, the exit status and
-// the invariant upkeep.rehome.writes) is checked by rehomeIn. Every tree is
+// the invariant system.tree-writes) is checked by rehomeIn. Every tree is
 // accepted in a git repository first, so that it is as its manifest records
 // it.
 
@@ -735,81 +735,6 @@ func TestUpkeepRehomeExit(t *testing.T) {
 		t.Parallel()
 		r, _ := accepted(t, takenRehomeTree())
 		r.rehome().exits(t, 1)
-	})
-}
-
-// TestUpkeepRehomeWrites checks the invariant upkeep.rehome.writes on runs
-// that end every way; rehomeIn checks it on every run.
-func TestUpkeepRehomeWrites(t *testing.T) {
-	t.Parallel()
-	t.Run("derived: without --write, nothing changes", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		o := r.rehome("--json")
-		o.exits(t, 0)
-		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
-	})
-	t.Run("derived: with --write and exit status 0, only the renamed identifiers and manifest.sum", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		o := r.rehome("--write", "--json")
-		o.exits(t, 0)
-		checkRenamedOnly(t, o.before, o.after, "proviso", mainRenames)
-		// The git repository is as it was.
-		for p, v := range o.before {
-			if strings.HasPrefix(p, ".git/") && o.after[p] != v {
-				t.Errorf("upkeep.rehome.writes: %s of the git repository changed", p)
-			}
-		}
-	})
-	t.Run("derived: with --write and exit status 1, nothing changes", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, takenRehomeTree())
-		o := r.rehome("--write", "--json")
-		o.exits(t, 1)
-		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
-	})
-	t.Run("derived: with --write and exit status 2, nothing changes", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		r.set(mainRehomeTree().with(coherencePath, "{}\n"))
-		o := r.rehome("--write", "--json")
-		o.exits(t, 2)
-		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
-	})
-	t.Run("derived: with --write --mentions and exit status 0, only the renamed identifiers, the mentions picked and manifest.sum", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mentionsTree())
-		o := r.rehomePicking(mentionList(mentionOn(featurePath, mentionLineB), mentionOn(cartQuestions, mentionLineG)), "--write", "--mentions", "--json")
-		o.exits(t, 0)
-		want := mentionsRehomed(mentionLineB, mentionLineG)
-		for p, v := range o.after {
-			if p == manifestPath || !strings.HasPrefix(p, "proviso/") || !strings.HasPrefix(v, "file: ") {
-				continue
-			}
-			if content, ok := want[p]; !ok || "file: "+content != v {
-				t.Errorf("upkeep.rehome.writes: %s is not as the renames and the mentions picked leave it", p)
-			}
-		}
-		for p, v := range o.before {
-			if strings.HasPrefix(p, ".git/") && o.after[p] != v {
-				t.Errorf("upkeep.rehome.writes: %s of the git repository changed", p)
-			}
-		}
-	})
-	t.Run("derived: with --write --mentions and exit status 1, nothing changes", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, takenRehomeTree())
-		o := r.rehomePicking(mentionList(), "--write", "--mentions", "--json")
-		o.exits(t, 1)
-		checkWrites(t, "upkeep.rehome.writes", o.before, o.after, "")
-	})
-	t.Run("derived: with --write, in the text form, only the renamed identifiers and manifest.sum", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		o := r.rehome("--write")
-		o.exits(t, 0)
-		checkRenamedOnly(t, o.before, o.after, "proviso", mainRenames)
 	})
 }
 
