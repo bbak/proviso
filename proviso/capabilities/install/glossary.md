@@ -41,10 +41,26 @@
 - Status: defined
 - Aliases: skills
 
+## <a id="install.semantic-version"></a> semantic version
+
+- Defined by: [Semantic Versioning, version numbers and their precedence](../../references.md#system.ref.semver)
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: semantic versions
+
+## <a id="install.repository-root"></a> repository root
+
+- Definition: A directory that holds an entry named ".git", whatever its
+  type and attributes: the root of a clone, with a `.git` folder, or of
+  a worktree, with a `.git` file.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: repository roots
+
 ## <a id="install.release-version"></a> release version
 
-- Definition: A version of Proviso in the form
-  `<major>.<minor>.<patch>` of semantic versioning, in plain numbers,
+- Definition: A [semantic version] of Proviso in the form
+  `<major>.<minor>.<patch>`, in plain numbers,
   without a leading `v` and without a pre-release or build part, such
   as `0.1.0`: the version a release carries, its git tag without the
   `v`.

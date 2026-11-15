@@ -25,9 +25,9 @@ error, and never changes the exit status: nothing has failed, and
 silence in the root of a repository means everything fits. The wording
 of those lines is for people; what each one names is specified.
 
-`version` finds the repository's root as `init` does, by the `.git`
-entry of the directory it runs in, and looks nowhere else, since it
-checks the paths `init` writes there. It only reports: refreshing the
+`version` checks only in the directory it runs in, when it is a
+repository root, and looks nowhere else, since it checks the paths
+`init` writes there. It only reports: refreshing the
 skills and agents it reports is the job of `update`.
 
 ## <a id="install.version.output"></a> Rule: Version names the Proviso version and the model version
@@ -55,7 +55,7 @@ Otherwise → cli.help.argument
 ```guarded
 Given     `version` has written its two lines
 When      `version`, run in the directory <directory>, turns to what is installed there
-Provided  <directory> holds an entry named ".git"
+Provided  <directory> is a [repository root]
 Then      `version` checks the [agent definitions] and [skills] that `installed_files` names, at their paths below <directory>, and `manifest_file` at "proviso/manifest.sum" below <directory>
   And     `version` looks for no repository above or below <directory>
 Otherwise `version` writes to "stderr" one line saying that run in the root of a git repository it checks the installed [skills] and [agent definitions] and the [spec tree] against its version
@@ -142,7 +142,7 @@ is.
 
 ```guarded
 When      `version` checks the [agent definition] or [skill] <file>, an entry existing at its path
-Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a version of semantic versioning 2.0.0 without a leading "v"
+Provided  <file> cannot be read as a file, or it has no frontmatter, or its frontmatter holds no [version stamp] whose version is "dev" or a [semantic version] without a leading "v"
 Then      `version` writes to "stderr" one line naming <file> as naming no [Proviso version]
   And     `version` checks nothing else of <file>
 Otherwise → install.version.stale
@@ -205,7 +205,7 @@ none, so neither is looked up.
 Given     `model_releases` holds the rows <rows>
 When      `version`, of the [Proviso version] <version>, looks up the model version of the [version stamp] <stamp>
 Provided  <stamp> is a [release version]
-  And     <stamp> is no newer than <version> by the precedence of semantic versioning, a <version> of "dev" being newer than every [release version]
+  And     <stamp> is no newer than <version> by the precedence of [semantic versions], a <version> of "dev" being newer than every [release version]
   And     <stamp> is no older than the first release of the first of <rows>
 Then      the model version is that of the last of <rows> whose first release is no newer than <stamp>
   And     `version` names it in the line about the file
