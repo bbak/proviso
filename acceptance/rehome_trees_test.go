@@ -1,7 +1,7 @@
 package acceptance
 
 // Test trees of the feature upkeep.rehome. Each follows the notation, so that
-// lint reports no error about it (upkeep.rehome.lint), and each is accepted,
+// lint reports no error about it (system.lint-gate), and each is accepted,
 // so that the tree is as its manifest records it (upkeep.rehome.baseline).
 // Backticks are written as ´ (see md).
 

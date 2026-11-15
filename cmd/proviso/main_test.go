@@ -220,7 +220,8 @@ func TestImpactDamagedManifest(t *testing.T) {
 }
 
 // baseline.diff.malformed and coherence.judge.input: judge and verify stop
-// on a damaged manifest as diff does, but judge reads its input first.
+// on a manifest damaged after its first line as diff does, but judge reads
+// its input first.
 func TestJudgeVerifyDamagedManifest(t *testing.T) {
 	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": "model 0\n<<<<<<< HEAD\n"})
 	call := func(input string, args ...string) (int, string, string) {
@@ -240,6 +241,18 @@ func TestJudgeVerifyDamagedManifest(t *testing.T) {
 	}
 	if _, err := os.Lstat(filepath.Join("proviso", ".coherence.json")); err == nil {
 		t.Error("judge recorded a check on a damaged manifest")
+	}
+}
+
+// system.lint-gate and coherence.judge.input: a manifest damaged in its
+// first line stops judge before it reads its input.
+func TestJudgeLintGateFirst(t *testing.T) {
+	inRepo(t, map[string]string{"proviso/system.md": system, "proviso/manifest.sum": "<<<<<<< HEAD\nmodel 0\n"})
+	stdin = strings.NewReader("not json")
+	defer func() { stdin = os.Stdin }()
+	var out, errOut bytes.Buffer
+	if status := run([]string{"judge"}, &out, &errOut); status != 2 || out.Len() != 0 || strings.Contains(errOut.String(), "no check_result") {
+		t.Errorf("%d %q %q", status, out.String(), errOut.String())
 	}
 }
 
@@ -525,7 +538,7 @@ func TestSince(t *testing.T) {
 			}
 		})
 	}
-	// baseline.run.lint: lint refuses a manifest of another model version,
+	// system.lint-gate: lint refuses a manifest of another model version,
 	// with --since too.
 	write("proviso/manifest.sum", "model 99\n")
 	var out, errOut bytes.Buffer

@@ -151,7 +151,10 @@ func TestCoherenceJudgeInput(t *testing.T) {
 
 	// The input is read before the element diff is derived, so input that
 	// is no check_result is refused even where manifest.sum cannot be read
-	// (baseline.diff.malformed).
+	// (baseline.diff.malformed). The conflict comes after the first line,
+	// which names the model version, so that lint still accepts the tree;
+	// input given where lint finds an error is checked by
+	// TestSystemLintGate ("judge, not JSON").
 	conflicted := func(t *testing.T, r *repo) {
 		t.Helper()
 		p := filepath.Join(r.root(), "manifest.sum")
@@ -164,7 +167,7 @@ func TestCoherenceJudgeInput(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	t.Run("row4 not JSON, with a merge conflict left in manifest.sum", func(t *testing.T) {
+	t.Run("row4 not JSON, with a merge conflict left in manifest.sum after its first line", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
 		conflicted(t, r)
@@ -175,7 +178,7 @@ func TestCoherenceJudgeInput(t *testing.T) {
 		// A check_result, given the same manifest.sum, reaches it.
 		refused(t, r.judgeRaw("{}"), 2)
 	})
-	t.Run("row4 not JSON, with a merge conflict left in manifest.sum, with a check recorded before", func(t *testing.T) {
+	t.Run("row4 not JSON, with a merge conflict left in manifest.sum after its first line, with a check recorded before", func(t *testing.T) {
 		t.Parallel()
 		r := amendedRepo(t, iLimitThen)
 		r.judgeOK(checkResult{Findings: []findingIn{gap("A gap.")}})

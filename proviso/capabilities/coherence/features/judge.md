@@ -32,7 +32,7 @@ lint has found no error; one it cannot read stops it, as
 ## <a id="coherence.judge.input"></a> Rule: Judge reads a check result
 
 ```guarded
-When      someone runs `judge`, with arguments it takes, giving it the input <input> on "stdin"
+When      `judge`, working on the [spec tree] `lint` would check, reads the input <input> on "stdin"
 Provided  <input> is a `check_result`
 Then      `judge` reads the [judgements] and [findings] of <input>
   And     nothing goes to "stdout"
@@ -46,7 +46,7 @@ Otherwise `judge` writes to "stderr" why <input> is no `check_result`
 | one judgement naming two elements, and one new finding | yes | read | |
 | no judgements and no findings | yes | read | an amendment without candidates still needs its check |
 | not JSON | no | exit status 1 | |
-| not JSON, with a merge conflict left in `manifest.sum` | no | exit status 1 | the input is read before the element diff is derived |
+| not JSON, with a merge conflict left in `manifest.sum` after its first line | no | exit status 1 | the input is read before the element diff is derived |
 | a finding with both a `kind` and an `id` | no | exit status 1 | it is new or it changes one, not both |
 | one element in two judgements | no | exit status 1 | which reason holds would be a guess |
 | a judgement and a finding with an `id` | no | exit status 1 | a check and a decision are recorded apart |

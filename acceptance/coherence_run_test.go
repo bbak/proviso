@@ -1,15 +1,11 @@
 package acceptance
 
-// Feature coherence.run: running the coherence commands `impact`, `judge`
-// and `verify`. Its rule and its invariant share their cases with those of
-// baseline.run (see baseline_run_test.go).
+// The invariant coherence.run.writes, over the runs of the coherence
+// commands `impact`, `judge` and `verify`. It shares its cases with
+// baseline.run.writes (see baseline_run_test.go); what lint's gate decides
+// for them is checked by TestSystemLintGate.
 
 import "testing"
-
-func TestCoherenceRunLint(t *testing.T) {
-	t.Parallel()
-	runsOnlyWhereLintAccepts(t, "impact", "judge", "verify")
-}
 
 // TestCoherenceRunWrites checks the invariant coherence.run.writes over runs
 // of `impact`, `judge` and `verify`, however they end: every file and folder

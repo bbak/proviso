@@ -68,60 +68,6 @@ func (o rehomeOutcome) listedOn(tr tree, p, l string) []planMention {
 	return out
 }
 
-func TestUpkeepRehomeLint(t *testing.T) {
-	t.Parallel()
-	t.Run("row1 repo/, its tree without findings", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		o := r.rehome("--json")
-		o.exits(t, 0)
-		o.planned(t, mainRehomeTree())
-	})
-	t.Run("row2 repo/, its tree with an ask only", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, undecidedTree())
-		o := r.rehome("--json")
-		o.exits(t, 0)
-		o.planned(t, undecidedTree())
-	})
-	t.Run("row3 repo/, its tree with the contract okf-get in the capability access", func(t *testing.T) {
-		t.Parallel()
-		// okf-get: the contracts of the place tree, which lint asks about.
-		r, _ := accepted(t, placeRehomeTree())
-		o := r.rehome("--json")
-		o.exits(t, 0)
-		o.renames(t, placeRenames)
-	})
-	t.Run("row4 repo/, its tree with an error, the error on stderr", func(t *testing.T) {
-		t.Parallel()
-		// notes.md is no file of the layout and no element: lint reports
-		// an error, while the tree is still as the manifest records it.
-		r, _ := accepted(t, mainRehomeTree())
-		r.set(mainRehomeTree().with("proviso/notes.md", "# Notes\n"))
-		o := r.rehome("--write", "--json")
-		o.exits(t, 2)
-		text := execLint(t, r.dir)
-		if text.exit != 1 || strings.TrimSpace(text.stdout) == "" {
-			t.Fatalf("want lint to report the error, got exit status %d\n%s%s", text.exit, text.stdout, text.stderr)
-		}
-		norm := func(s string) string { return strings.TrimSpace(strings.ReplaceAll(s, "\r\n", "\n")) }
-		if !strings.Contains(norm(o.stderr), norm(text.stdout)) {
-			t.Errorf("upkeep.rehome.lint: want stderr to hold what lint writes as text\n%s\ngot\n%s", text.stdout, o.stderr)
-		}
-	})
-	t.Run("row5 repo/, its tree with an unreadable file", func(t *testing.T) {
-		t.Parallel()
-		r, _ := accepted(t, mainRehomeTree())
-		r.set(mainRehomeTree().with("proviso/capabilities/cart/features/bad.md", "# <a id=\"cart.bad\"></a> Bad \xff\xfe\n\n- Contact: Dana Reyes\n"))
-		r.rehome("--write", "--json").exits(t, 2)
-	})
-	t.Run("row6 other/, with no spec root up to the file system's root", func(t *testing.T) {
-		t.Parallel()
-		dir := anywhere(t)
-		rehomeIn(t, dir, dir, "", nil, "--write", "--json").exits(t, 2)
-	})
-}
-
 func TestUpkeepRehomeBaseline(t *testing.T) {
 	t.Parallel()
 	t.Run("row1 repo/proviso/, its tree as manifest.sum records it", func(t *testing.T) {

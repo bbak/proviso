@@ -95,10 +95,9 @@ func run(args []string, stdout, stderr io.Writer) int {
 		// query.show.tree: whatever lint finds, show runs.
 		return showRun(t, res, o, stdout, stderr)
 	case "manifest", "diff", "impact", "pack", "judge", "verify", "rehome":
-		// baseline.run.lint for manifest, diff and pack, coherence.run.lint
-		// for impact, judge and verify, upkeep.rehome.lint for rehome: only
-		// where lint finds no error, and without writing what lint would
-		// write.
+		// system.lint-gate: only where lint finds no error, and without
+		// writing what lint would write; a refused run changes nothing
+		// under the spec root.
 		if lint.HasError(res.Findings) {
 			_ = report.Text(stderr, res.Findings)
 			return exitCantRun

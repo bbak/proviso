@@ -59,27 +59,6 @@ findings are, since one line, such as one Examples row, is one case.
 A list naming a mention the plan does not hold refuses the run, so
 that a stale or mistyped list never writes half of what was meant.
 
-## <a id="upkeep.rehome.lint"></a> Rule: Rehome runs only where lint finds no error
-
-```guarded
-When      someone runs `rehome`, with arguments it takes, in the directory <directory>
-Provided  `lint`, run in <directory>, would exit with `lint.exit-status` 0
-Then      `rehome` works on the [spec tree] that `lint` would check
-  And     nothing of what `lint` would write is written
-Otherwise `rehome` writes to "stderr" what `lint` would write as text
-  And     `rehome` exits with `rehome.exit-status` 2
-  And     nothing goes to "stdout", and nothing is written
-```
-
-| directory | provided | outcome | why |
-| --- | --- | --- | --- |
-| `repo/`, its tree without findings | yes | the command runs | |
-| `repo/`, its tree with an ask only | yes | the command runs | |
-| `repo/`, its tree with the contract `okf-get` in the capability `access` | yes | the command runs | an ask, the one `rehome` repairs |
-| `repo/`, its tree with an error | no | exit status 2, the error on stderr | |
-| `repo/`, its tree with an unreadable file | no | exit status 2 | lint could not run |
-| `other/`, with no spec root up to the file system's root | no | exit status 2 | |
-
 ## <a id="upkeep.rehome.baseline"></a> Rule: Rehome works only on a tree the manifest records
 
 ```guarded
@@ -318,7 +297,8 @@ Then      <renames> appear ordered by their old [identifier], compared byte by b
 A run that stops earlier, because lint finds an error, the tree is not
 as the manifest records it, the input of `--mentions` or a value of
 `--rename` cannot be taken, or a file cannot be opened for writing,
-writes no plan and exits with 2 by its own rule.
+writes no plan and exits with 2: by `system.lint-gate` for the first,
+by its own rule for the others.
 
 ```guarded
 When      `rehome` exits, having written the plan of its renames, with the collisions <collisions>

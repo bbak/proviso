@@ -293,7 +293,7 @@ func TestBaselineDiffSince(t *testing.T) {
 				r := &repo{t: t, dir: dir, tr: diffTree()}
 				since(t, r, cmd, "HEAD").stopped(t)
 			})
-			// baseline.run.lint, changed through the option: the tree as
+			// system.lint-gate, with the option: the tree as
 			// it stands now is checked first.
 			t.Run("derived: the tree as it stands now with a lint error", func(t *testing.T) {
 				t.Parallel()
