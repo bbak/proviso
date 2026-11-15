@@ -731,6 +731,15 @@ func TestInstallInitRepository(t *testing.T) {
 		o.exits(t, 2)
 		o.nothingWritten(t)
 	})
+	t.Run("derived: a .git file is enough, as an entry", func(t *testing.T) {
+		t.Parallel()
+		// A repository root holds an entry named .git, whatever its type.
+		dir := filepath.Join(t.TempDir(), "repo")
+		tree{".git": "gitdir: elsewhere\n"}.writeTo(t, dir, false)
+		o := initIn(t, dir, dir, nil)
+		o.exits(t, 0)
+		o.all(t, "written")
+	})
 }
 
 func TestInstallInitSkeleton(t *testing.T) {
