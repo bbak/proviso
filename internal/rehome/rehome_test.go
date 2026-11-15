@@ -85,6 +85,20 @@ func TestPlan(t *testing.T) {
 	}
 }
 
+// TestPlanHomeSegment: a home segment is the first segment of a
+// capability's identifier, so the place of a capability identified with
+// several segments is its first segment.
+func TestPlanHomeSegment(t *testing.T) {
+	els := []lint.Element{
+		{ID: "cash.withdrawal", Type: lint.TypeCapability, Cap: "w"},
+		{ID: "a", Type: lint.TypeCapability, Cap: "a"},
+		{ID: "cash.x", Cap: "a"},
+	}
+	if got := Plan(els); !slices.Contains(got, Rename{"cash.x", "a.x"}) {
+		t.Errorf("renames %v lack cash.x to a.x", got)
+	}
+}
+
 func TestCollisions(t *testing.T) {
 	_, els := load(t, func(f map[string]string) {
 		// system.ref.std is taken, and k.f.s and system.f.s both go to c.f.s.
