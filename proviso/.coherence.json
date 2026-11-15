@@ -135,6 +135,7 @@
       "id": "baseline.diff.undecided",
       "now": {
         "heading": "h1:933dec13356d7df22590550bcd347cb5340f88f8bc7e165d4554e7569a741ccb",
+        "row h1:182fc5abadd37af240cdf92fd1cee619712772733497e19637348cdc564ff754": "h1:d4583e6bdc7d5d630da1f638b347a201f7c75afa4f10e55b969ff0cb97a2b12a",
         "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:52628bd471bbac62fefc2b3cb012e41aadd85a1686800fd9cf583f9aa4b250f6",
         "row h1:347ad0f351642a5eda1a3e7a014f1eff40c9a4479b3a161da62fc64c66695ed6": "h1:75be591e7926b401fc7fa07eed6a77288ca8de613859e8c142edc00ad578efd3",
         "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:67ef0cd5e80b5efcd19aba5c731f74553e8ce0573a57c7ec92534b82ce6d2a49",
@@ -143,7 +144,7 @@
         "row h1:8fb4d889a1f5a6c10622a62bf1d6154f3f38973d0b2ca235463fbd0aac7ccc24": "h1:8464db663ed8ab7cd4e839bceed751b101c43fc7ae9e7c61a0cd08bacb1094db",
         "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:2f9fe4585375e1f4d3769bd1c3ff946aebdab1c21c8c91aae49050d53c4297d8",
         "section Rationale": "h1:b31ecc41b89f62d940c32b6319755a48123cdeda729341997990551c6069fa87",
-        "step Otherwise": "h1:770a58eaa49a268a676fe450528b2b6b81919ffbe72968a0224ece870959f4f5",
+        "step Otherwise": "h1:ab40f982c929b04ebfbbb9ee5e03ef20986829687e6e99c9eb4d299fa97c87d7",
         "step Provided": "h1:4c64cba0ca1cb4c5c15b7a5e174d66bf1bfd6c0ad25093b3f843c98ef4530f3d",
         "step Then": "h1:c6db635624e7fc464897c451f4009d49bfbf1a6308bf2e2beed0f6b3e7af9b0c",
         "step When": "h1:6099dc5c63d43d0328c69b96bcb5d774043275e2e6c4fc3729151531df48ff0a"
@@ -812,7 +813,8 @@
         "system.undecided-element"
       ],
       "text": "The Otherwise of baseline.diff.undecided names each line holding \"a mark of an open [term]\" with no limit to the rule block. `element_diff` (`undecided`) and the definition of [undecided element] count only marks in the element's rule block. No rule or Examples row says whether an undecided element that also marks an open term in a field, such as a glossary entry with `- Contact: ?` whose Definition marks an open term, has that field's line named.",
-      "status": "open"
+      "status": "resolved",
+      "reason": "edited in 5d3e314"
     }
   ]
 }
