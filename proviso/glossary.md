@@ -409,6 +409,15 @@
 - Status: defined
 - Aliases: line endings
 
+## <a id="system.model-line"></a> model line
+
+- Definition: A line that is, without its [line ending], `model`, a
+  space and a whole number in decimal digits without a leading zero.
+  The model version it names is that number.
+- Contact: Bruno Baketarić
+- Status: defined
+- Aliases: model lines
+
 ## <a id="system.regular-file"></a> regular file
 
 - Definition: An entry that holds a file's data itself and is no

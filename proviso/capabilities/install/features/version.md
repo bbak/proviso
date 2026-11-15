@@ -269,13 +269,13 @@ Otherwise → install.version.manifest-model
 
 ### Rationale
 
-`version` judges the manifest's first line by the same rule as `lint`,
+`version` judges the manifest's first line by the same term as `lint`,
 so that the two agree on whether the model version a tree needs is one
 the binary reads.
 
 ```guarded
 When      `version` reads the first line <line> of "proviso/manifest.sum"
-Provided  <line>, without its [line ending], names a model version from `oldest_model_version` to `model_version`
+Provided  <line> is a [model line] naming a model version from `oldest_model_version` to `model_version`
 Then      `version` writes no line about the [spec tree]
   And     everything else stays as it was
 Otherwise → install.version.manifest-other
@@ -294,9 +294,9 @@ Otherwise → install.version.manifest-other
 ## <a id="install.version.manifest-other"></a> Rule: The model version the spec tree needs is named
 
 ```guarded
-When      `version` finds that the first line <line> of "proviso/manifest.sum" does not name a model version from `oldest_model_version` to `model_version`
-Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
-Then      `version` writes to "stderr" one line naming that number as the model version the [spec tree] needs, and the model versions it reads, from `oldest_model_version` to `model_version`, as one number where both are the same
+When      `version` finds that the first line <line> of "proviso/manifest.sum" is no [model line] naming a model version from `oldest_model_version` to `model_version`
+Provided  <line> is a [model line]
+Then      `version` writes to "stderr" one line naming the model version <line> names as the one the [spec tree] needs, and the model versions it reads, from `oldest_model_version` to `model_version`, as one number where both are the same
   And     everything else stays as it was
 Otherwise `version` writes to "stderr" one line saying that "proviso/manifest.sum" names no model version
   And     everything else stays as it was
