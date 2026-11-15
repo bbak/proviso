@@ -223,7 +223,7 @@
 - Status: defined
 - Aliases: parameters
 
-## <a id="lint.backtick-reference"></a> backtick reference
+## <a id="system.backtick-reference"></a> backtick reference
 
 - Definition: A name in backticks inside a rule block or a "Builds on"
   field, referring to a contract element or a parameter, such as
