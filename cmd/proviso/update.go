@@ -27,9 +27,8 @@ func updateRun(stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "proviso update: %v\n", err)
 		return exitCantRun
 	}
-	// install.update.repository: any entry named .git counts, as for init;
-	// no other directory is looked at.
-	if _, err := os.Lstat(filepath.Join(wd, ".git")); err != nil {
+	// install.update.repository
+	if !isRepositoryRoot(wd) {
 		fmt.Fprintf(stderr, "proviso update: %s is not the root of a git repository\n", wd)
 		return exitCantRun
 	}
