@@ -228,7 +228,7 @@ When      `diff` lists the [element] <element> as added, changed or changed thro
 Provided  <element> is no [undecided element]
 Then      <element> is to be built
   And     everything else stays as it was
-Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place or a mark of an open [term], once
+Otherwise <element> is listed as not to be built, naming each line that holds an [undecided] place, or a mark of an open [term] in its [rule block], once
   And     everything else stays as it was
 ```
 
@@ -241,6 +241,7 @@ Otherwise <element> is listed as not to be built, naming each line that holds an
 | a glossary entry whose "Definition" field marks a term whose Status is `open` | yes | to be built | only a rule block's marks count |
 | a rule with `?` in two cells of one Examples row | no | not to be built, naming that row's line once | a place is named by its line |
 | a rule with `Provided  <x> is "a ? b"` | yes | to be built | a `?` inside a literal is a value |
+| a glossary entry with `- Contact: ?`, whose "Definition" field marks a term whose Status is `open` | no | not to be built, naming the `Contact` field only | only a rule block's marks count |
 
 ## <a id="baseline.diff.former"></a> Rule: Former text comes from the revision that wrote the manifest
 

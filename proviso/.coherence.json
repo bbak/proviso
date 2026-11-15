@@ -34,6 +34,17 @@
       },
       "with": [
         {
+          "id": "system.cli.element-diff",
+          "now": {
+            "body": "h1:7a6f0e564534bd4c766c8db9261996becb7071c6a04e24e6239bda4f20d08991",
+            "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+          },
+          "baseline": {
+            "body": "h1:227f2866ad3bb96781b3c887a92cefcc6ff6c9007d6935fb906ffdc8fd8d3344",
+            "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+          }
+        },
+        {
           "id": "system.cli.verification",
           "now": {
             "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
@@ -72,7 +83,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -81,9 +92,49 @@
       ]
     },
     {
+      "id": "baseline.diff.output",
+      "now": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      },
+      "baseline": {
+        "heading": "h1:61530616df2e7e00067d46012153f259d56b358fb6284e41d980d3506a482b85",
+        "row h1:888d6b7d9ca132c256689a4e6d3549b53f8c0b51e275197f2069e0c23c331bea": "h1:15dab88b7ff58364b305ee6f0484ecc51ae080f2d4a89ba901842bb2fd7470bf",
+        "row h1:931232137b8e498abc69b89f5714737e2c4e7c8609233af22c2ff87a0029cfb1": "h1:07c36fae8ee0ae36668684b4010716356bf7f0f0f311d2614e11893e45d59e8e",
+        "row h1:cf84717c284f1f31f0674b93d930b8b9549df3acee1f47dcf9e287e049232d84": "h1:376a6a57c91c06b77acbe0e2215ae6f1db02dca7e069800a3ce3c4b776c556e4",
+        "row h1:e82b8c15a09049f07a27cc46486a3ce246836459be3d1cce5553bae5e980ff4e": "h1:79cf230bfc20a763031c92be1cc32aa26aa84fb48bea764340aa2c4cd992b282",
+        "step Given": "h1:a1d375cd2700c3d946a45e045f22e3a4d373cfbe20ead33e1c85eb38c2545e9c",
+        "step Otherwise": "h1:66f6151918fa3252a9fb84e64142b0c94260549225033df6650be49f3467c8aa",
+        "step Provided": "h1:ce65f87e1e89d816296c9889d1eb12da99544be5b74848b5f98f22e97ec03a31",
+        "step Then": "h1:bc24661c868f1f430d775761ea2f4e2086b050063fa2fcc63472b4e91d836591",
+        "step When": "h1:0d43e9d44585650cdd844223ee3a6cd6550217334aa05ad7b0d1fd32a717e613"
+      },
+      "with": [
+        {
+          "id": "system.cli.element-diff",
+          "now": {
+            "body": "h1:7a6f0e564534bd4c766c8db9261996becb7071c6a04e24e6239bda4f20d08991",
+            "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+          },
+          "baseline": {
+            "body": "h1:227f2866ad3bb96781b3c887a92cefcc6ff6c9007d6935fb906ffdc8fd8d3344",
+            "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+          }
+        }
+      ]
+    },
+    {
       "id": "baseline.diff.undecided",
       "now": {
-        "heading": "h1:7883fa3c81c899af1d12f65511111fa38cde31985f3ce5dad3aea1fd7d38e3f1",
+        "heading": "h1:933dec13356d7df22590550bcd347cb5340f88f8bc7e165d4554e7569a741ccb",
         "row h1:18509a5ba0c343f860f6e6f6613122f26a5bbc496aada8a35f205765da8ff0ce": "h1:52628bd471bbac62fefc2b3cb012e41aadd85a1686800fd9cf583f9aa4b250f6",
         "row h1:347ad0f351642a5eda1a3e7a014f1eff40c9a4479b3a161da62fc64c66695ed6": "h1:75be591e7926b401fc7fa07eed6a77288ca8de613859e8c142edc00ad578efd3",
         "row h1:6c21626074d31af3939a5cebe2f9a7831b8c24aca73042bb9fa30afa2fe50796": "h1:67ef0cd5e80b5efcd19aba5c731f74553e8ce0573a57c7ec92534b82ce6d2a49",
@@ -115,7 +166,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -127,6 +178,82 @@
             "field Definition": "h1:fb271e4103f48d9c9e724a8f809b551da1a596aa089e3b8c1c7b53b93074ef18"
           },
           "baseline": {}
+        }
+      ]
+    },
+    {
+      "id": "baseline.pack.order",
+      "now": {
+        "heading": "h1:dbc84f4b13df0bac63f96e99c362007aaa0b9f8bd2686e2d142fc9651c73acfb",
+        "row h1:0a95d01a55b6cbf2921afd860f21caffbc12b7c0f7ad1e46ba2f55202321a988": "h1:2061e04ea54417bda55cdb3d21476e33d60b48b477ee0487a75f02534a70b99b",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:02d649470496824e508b9015548a19c9e796c0c109f4ff17356e105cb56ca229",
+        "row h1:a37525d76f6518c6d9a1b3cd58f1c1e8c37527ae6646756568f3820775c80327": "h1:9dc414777110720d4843203f068daf381af67e2bf90aa0be6b6ef9eea7486c3d",
+        "row h1:df3f7c4bdaba5e464d1bb46b7ba889c2f84bd1a1aa406c5d494cd02a42bdbe51": "h1:2ff236362c8b657dc55759b08620cccbd932c6874ceb432d3e89c131153dcfab",
+        "section Rationale": "h1:aab8bb95b5397b1542408339e13cef095a6bc7e206ce5c98c547f0310bdc8b72",
+        "step Then": "h1:5efa1852c4bfec4bf327940c0e78c0ecbf359a0b04cd78a06384884c27957ba0",
+        "step When": "h1:404c1245ee1eb68040ab51653c0a35ae18a60b5afb20daf7641889923f84f22a"
+      },
+      "baseline": {
+        "heading": "h1:dbc84f4b13df0bac63f96e99c362007aaa0b9f8bd2686e2d142fc9651c73acfb",
+        "row h1:0a95d01a55b6cbf2921afd860f21caffbc12b7c0f7ad1e46ba2f55202321a988": "h1:2061e04ea54417bda55cdb3d21476e33d60b48b477ee0487a75f02534a70b99b",
+        "row h1:8f4e40c159c1f2389b22cb9da9af9d976fdfc2443ffb744f251c9acded98d10f": "h1:02d649470496824e508b9015548a19c9e796c0c109f4ff17356e105cb56ca229",
+        "row h1:a37525d76f6518c6d9a1b3cd58f1c1e8c37527ae6646756568f3820775c80327": "h1:9dc414777110720d4843203f068daf381af67e2bf90aa0be6b6ef9eea7486c3d",
+        "row h1:df3f7c4bdaba5e464d1bb46b7ba889c2f84bd1a1aa406c5d494cd02a42bdbe51": "h1:2ff236362c8b657dc55759b08620cccbd932c6874ceb432d3e89c131153dcfab",
+        "section Rationale": "h1:aab8bb95b5397b1542408339e13cef095a6bc7e206ce5c98c547f0310bdc8b72",
+        "step Then": "h1:5efa1852c4bfec4bf327940c0e78c0ecbf359a0b04cd78a06384884c27957ba0",
+        "step When": "h1:404c1245ee1eb68040ab51653c0a35ae18a60b5afb20daf7641889923f84f22a"
+      },
+      "with": [
+        {
+          "id": "system.cli.pack-text",
+          "now": {
+            "body": "h1:7802479270cf1c4b77ece9f6f6e3b1f925905aa4ee96a64a40ea36d4b8da333e",
+            "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+          },
+          "baseline": {
+            "body": "h1:5d722132687bdf3f6e0d4ffb7c73053227033d5dd6865c4b658ad38ddfc29afc",
+            "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+          }
+        }
+      ]
+    },
+    {
+      "id": "baseline.pack.output",
+      "now": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:ca6aa0a94297efc1982769a8efa3c2404004a8b1135f786907949c54172e64a1": "h1:c49603dcd923c040d2a84e8579257c12c45e8566a7b3bab8a97908bd8f3cf9de",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      },
+      "baseline": {
+        "heading": "h1:381df3deaf36b6e123d61c39c81ffac411b6928ace3aeaf4a056d65a96511c53",
+        "row h1:c5416e394eaa862fd7a74c21fea8bbefc23e4521a76a8fa3b5cb4c0a80b39831": "h1:fddf8ec44fc5ae9a3fb51e304677c859d5c706b73f856b15a4c660189cd9429a",
+        "row h1:ca6aa0a94297efc1982769a8efa3c2404004a8b1135f786907949c54172e64a1": "h1:c49603dcd923c040d2a84e8579257c12c45e8566a7b3bab8a97908bd8f3cf9de",
+        "row h1:e7ce875fc92c4cd3e32ed78244c1477ed9d4eb8c3b622f9ba312f89bdd108eb4": "h1:af4917004df7138f0a3edd877445b46828ac30ed71df2f02a8eb62adcb9cec30",
+        "row h1:f61e7a4267e66655887390db2306a93569b379ea77f46fd84a797708914e49e5": "h1:b8d27f24155f3ff79e637587763470afe8574a3603ddc3b2a296d742ce0dedde",
+        "step Given": "h1:c0d7904c989d85e3ffb6c5c4cc605e9b7d450960c4ef3b048add50a12d8f5654",
+        "step Otherwise": "h1:dd37b474c5287f2f86b6d31e62dc05f70d4fb9d7a2ee042a7e9b6d318b0f9ee1",
+        "step Provided": "h1:bb6d5a40069c549de0f4cd2a667aee54c81d70b035f26a80575c866c671c0161",
+        "step Then": "h1:feae66f5c1b23371f101fbddf8fc66a305039ebb237ff5770c708596fdc9d73e",
+        "step When": "h1:fcbfa889162834fac79609338ab466f4192f1bf9bcc1fb48ffaa9a737af76e2a"
+      },
+      "with": [
+        {
+          "id": "system.cli.pack-text",
+          "now": {
+            "body": "h1:7802479270cf1c4b77ece9f6f6e3b1f925905aa4ee96a64a40ea36d4b8da333e",
+            "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+          },
+          "baseline": {
+            "body": "h1:5d722132687bdf3f6e0d4ffb7c73053227033d5dd6865c4b658ad38ddfc29afc",
+            "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+          }
         }
       ]
     },
@@ -214,7 +341,7 @@
         "row h1:82f3f67a6101b7253527d5155d8b5d4d2de62f738c9d4924d26d0d29378d28b5": "h1:27c2ad22d5d54008bb4e767d993f23aba14958f9757398c198c82d3a63ff9ac8",
         "row h1:b33d1cfb6c128fc053234b7131656bc71a38741c3d5801f4333b9720373bd711": "h1:7d46f985a2f4e30076c02ea6e9ce63a850998e3624466aea1db1a8396b696887",
         "row h1:c274462eaf97248a53bfc1252b0f78624f9bb356fc50a16a96880a766fdbefac": "h1:80cc19683a4f7222aa85d9c82d208fc332e67993225f1b3cc0273fb632036eae",
-        "row h1:fc1e1da13902286979b70bd5369d5a9ad0a06ef496d954938b8e6259a6d2888e": "h1:fa29dbfb943d26b192a85ad0f60037dccb2def07c37557f36f67939eec7a38cd",
+        "row h1:fc1e1da13902286979b70bd5369d5a9ad0a06ef496d954938b8e6259a6d2888e": "h1:6cc86272fbc5401a3bc7ade76acd3014ae4b6b6397f61d5f5aab407012b29e88",
         "section Rationale": "h1:13348529261a41078889d4675cb36a4772710b6f40f8aee2d30605b1707c343f",
         "step Otherwise": "h1:3196d0ea7826294fcf35dd1d430de1929fd0c69c54ed1e379c5594b66592191e",
         "step Provided": "h1:4c64cba0ca1cb4c5c15b7a5e174d66bf1bfd6c0ad25093b3f843c98ef4530f3d",
@@ -240,7 +367,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -279,7 +406,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -321,7 +448,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -357,7 +484,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -393,7 +520,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -468,7 +595,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -508,6 +635,28 @@
       }
     },
     {
+      "id": "system.cli.element-diff",
+      "now": {
+        "body": "h1:7a6f0e564534bd4c766c8db9261996becb7071c6a04e24e6239bda4f20d08991",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      },
+      "baseline": {
+        "body": "h1:227f2866ad3bb96781b3c887a92cefcc6ff6c9007d6935fb906ffdc8fd8d3344",
+        "heading": "h1:5cdd65d1b88b92521cf9475ba19f2089b41fecb6d8d64f247cc683ed15b06483"
+      }
+    },
+    {
+      "id": "system.cli.pack-text",
+      "now": {
+        "body": "h1:7802479270cf1c4b77ece9f6f6e3b1f925905aa4ee96a64a40ea36d4b8da333e",
+        "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+      },
+      "baseline": {
+        "body": "h1:5d722132687bdf3f6e0d4ffb7c73053227033d5dd6865c4b658ad38ddfc29afc",
+        "heading": "h1:819bce4ba4fda2765134ffbd0b59f74c610e5dbe53e6b4c846a4368981d16395"
+      }
+    },
+    {
       "id": "system.cli.verification",
       "now": {
         "body": "h1:015410d613dd46f993a22477ab44a8cabcc1eefdee024650c847119157a89d20",
@@ -522,7 +671,7 @@
       "id": "system.undecided",
       "now": {
         "field Contact": "h1:2cbb06e17d0c4900dd868e337d70b8b86cf4b33656e4ccb7143cfe85575af981",
-        "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c",
+        "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317",
         "field Status": "h1:c3657998722524e9f92fbe7832bd57777a3bbbb2c22eca3ca201ce5e0499947c",
         "heading": "h1:06be3f2d231bc4d7ba0893df393c1e2619214ecb62cbf891e1ecf8e0b7d03a31"
       },
@@ -547,7 +696,7 @@
         {
           "id": "system.undecided",
           "now": {
-            "field Definition": "h1:8355fa185b3909c5e4700a08783f057894755714fd238c8d350df0ec4fae466c"
+            "field Definition": "h1:330fce951b4be75d588fa3f9f296056fdb3fb18439e3c04a4d8554de6ac81317"
           },
           "baseline": {
             "field Definition": "h1:5141b436aaedb5a9d72874cd9c4babf49c15a8be249ac9505f438b74804d46ca"
@@ -651,6 +800,18 @@
         "coherence.verify.undecided"
       ],
       "text": "The system-level definition of undecided now excludes `?` inside 'literals and backtick references', but 'backtick reference' is defined only in the lint capability's glossary (lint.backtick-reference) and 'literal' in no glossary. The definition does not mark either, so baseline and coherence, which decide through [undecided element], depend on a meaning the system level does not hold, and a change to lint.backtick-reference would not reach system.undecided as a dependency.",
+      "status": "resolved",
+      "reason": "edited in 22b9f99"
+    },
+    {
+      "id": "f2",
+      "kind": "gap",
+      "elements": [
+        "baseline.diff.undecided",
+        "system.cli.element-diff",
+        "system.undecided-element"
+      ],
+      "text": "The Otherwise of baseline.diff.undecided names each line holding \"a mark of an open [term]\" with no limit to the rule block. `element_diff` (`undecided`) and the definition of [undecided element] count only marks in the element's rule block. No rule or Examples row says whether an undecided element that also marks an open term in a field, such as a glossary entry with `- Contact: ?` whose Definition marks an open term, has that field's line named.",
       "status": "open"
     }
   ]
