@@ -13,8 +13,9 @@ import (
 
 var modelLine = fmt.Sprintf("model %d", model.Version)
 
-// namedModel matches a first line that names a model version: "model", a
-// space and a whole number in decimal digits without a leading zero.
+// namedModel matches a model line, as system.model-line defines it, its
+// line ending left out: "model", a space and a whole number in decimal
+// digits without a leading zero.
 var namedModel = regexp.MustCompile(`^model (0|[1-9][0-9]*)$`)
 
 // FirstLine returns the first line of a manifest without its line ending,
@@ -31,7 +32,7 @@ func FirstLine(data []byte) string {
 }
 
 // NamedModel returns the model version the first line of a manifest names,
-// and whether it names one.
+// its line ending left out, and whether it is a model line.
 func NamedModel(line string) (string, bool) {
 	m := namedModel.FindStringSubmatch(line)
 	if m == nil {
@@ -40,9 +41,9 @@ func NamedModel(line string) (string, bool) {
 	return m[1], true
 }
 
-// CheckModel reports whether the first line of a manifest, its line
-// ending left out, names a model version this binary reads, from
-// oldest_model_version to model_version. It checks nothing else of the
+// CheckModel reports whether the first line of a manifest is a model line
+// naming a model version this binary reads, from oldest_model_version to
+// model_version. It checks nothing else of the
 // manifest.
 func CheckModel(data []byte) error {
 	v, ok := NamedModel(FirstLine(data))

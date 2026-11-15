@@ -725,7 +725,7 @@ func TestLintRunModel(t *testing.T) {
 		t.Parallel()
 		check(t, baseline().with("proviso/manifest.sum", "model 0\n")).clean(t)
 	})
-	t.Run("row4 manifest.sum starting with model 0 and a carriage return", func(t *testing.T) {
+	t.Run("row4 manifest.sum starting with model 0, a carriage return and a line feed", func(t *testing.T) {
 		t.Parallel()
 		// The model check passes; the line ending is line-ending's to
 		// report, and nothing else.

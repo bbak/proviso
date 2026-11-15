@@ -108,7 +108,7 @@ too.
 ```guarded
 Given     lint has read every file of its [spec tree] that `tree_layout` lists
 When      lint starts to check the [spec tree] of the [spec root] <root> it has found for the run
-Provided  <root> holds no `manifest_file`, or its first line, without its [line ending], names a model version from `oldest_model_version` to `model_version`
+Provided  <root> holds no `manifest_file`, or its first line is a [model line] naming a model version from `oldest_model_version` to `model_version`
 Then      lint checks the [spec tree]
   And     lint reports what it finds
   And     lint checks nothing of `manifest_file` beyond its first line but what it checks of every file it reads
@@ -120,7 +120,7 @@ Otherwise → lint.run.model-other
 | `repo/proviso/`, without `manifest.sum` | yes | the tree is checked | not accepted yet |
 | `repo/proviso/`, its `manifest.sum` starting with `model 1` | yes | the tree is checked | `model_version` |
 | `repo/proviso/`, its `manifest.sum` starting with `model 0` | yes | the tree is checked | `oldest_model_version`, read as it was written |
-| `repo/proviso/`, its `manifest.sum` starting with `model 0` and a carriage return | yes | the tree is checked | the line ending is `line-ending`'s to report |
+| `repo/proviso/`, its `manifest.sum` starting with `model 0`, a carriage return and a line feed | yes | the tree is checked | the line ending is `line-ending`'s to report |
 | `repo/proviso/`, its `manifest.sum` starting with `model 2` | no | handed over | a notation this lint does not know |
 | `repo/proviso/`, its `manifest.sum` empty | no | handed over | no version is named |
 | `repo/proviso/`, its `manifest.sum` starting with `model 00` | no | handed over | `model_version` is written without a leading zero |
@@ -129,9 +129,9 @@ Otherwise → lint.run.model-other
 ## <a id="lint.run.model-other"></a> Rule: Lint names the model version a tree it does not read needs
 
 ```guarded
-When      lint finds that the first line <line> of `manifest_file` does not name a model version from `oldest_model_version` to `model_version`
-Provided  <line>, without its [line ending], is "model", a space and a whole number in decimal digits without a leading zero
-Then      lint writes to "stderr" that number as the model version the [spec tree] needs, and the model versions lint reads, from `oldest_model_version` to `model_version`, as one number where both are the same
+When      lint finds that the first line <line> of `manifest_file` is no [model line] naming a model version from `oldest_model_version` to `model_version`
+Provided  <line> is a [model line]
+Then      lint writes to "stderr" the model version <line> names as the one the [spec tree] needs, and the model versions lint reads, from `oldest_model_version` to `model_version`, as one number where both are the same
   And     lint exits with `lint.exit-status` 2
   And     nothing goes to "stdout", not even an empty `report`
 Otherwise lint writes to "stderr" that `manifest_file` names no model version
