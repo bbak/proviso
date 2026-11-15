@@ -119,7 +119,7 @@ When      `show` looks for `show.query` <query> among the [elements] <elements>,
 Provided  at least one of <elements> has <query> as its [identifier], character by character, or as its name: as a [glossary entry], its name or an alias, compared as `name_comparison` says; as a [contract element] or a [parameter], its name, character by character, as a [rule] refers to it in backticks: a [member] after the name of the [contract element] holding it and a "."
 Then      `show` takes every such [element] once, with its [element type], or none where `tree_layout` gives none, the text of its [heading] after its [anchor], the file and line where its [heading] stands, and its [element parent], in the order the [spec tree] holds them: by the path of their file below the [spec root], compared byte by byte, then by where they stand in that file
   And     `show` goes on to write them
-Otherwise `show` writes to "stdout" an `element_view` without [elements], where it was run with `show.json`
+Otherwise `show` writes to "stdout" an `element_view` without [elements], and nothing else, where it was run with `show.json`
   And     `show` writes to "stderr" one line saying that <query> names no [element], within the capability `show.in` names where it names one, and nothing to "stdout", where it was run without `show.json`
   And     `show` exits with `show.exit-status` 1
 ```
@@ -152,8 +152,10 @@ Given     `show` has taken the [elements] <elements>
 When      `show` writes them, run with the options <options>
 Provided  <options> include `show.json`
 Then      `show` writes the `element_view` of <elements> to "stdout"
+  And     nothing else goes to "stdout"
   And     `show` exits with `show.exit-status` 0
 Otherwise `show` writes <elements> to "stdout" as `show_text`
+  And     nothing else goes to "stdout"
   And     `show` exits with `show.exit-status` 0
 ```
 

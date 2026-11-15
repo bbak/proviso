@@ -338,6 +338,10 @@ func TestCoherenceImpactOutput(t *testing.T) {
 	t.Parallel()
 	// That the text form is written for candidates, and nothing for none,
 	// is checked for every run as text (see runImpact).
+	// exit0 checks the exit status of every run, and that the run with
+	// --json wrote the impact_set to stdout and nothing else. The text form
+	// is no part of the contract, so what else it would hold cannot be told
+	// apart from the text of the candidates; with none, nothing is written.
 	exit0 := func(t *testing.T, o impactOutcome) {
 		t.Helper()
 		for _, r := range o.runs() {
@@ -345,6 +349,7 @@ func TestCoherenceImpactOutput(t *testing.T) {
 				t.Errorf("want exit status 0, got %d", r.exit)
 			}
 		}
+		onlyJSON(t, "coherence.impact.output", o.json.stdout)
 	}
 	t.Run("row1 two, --json", func(t *testing.T) {
 		t.Parallel()

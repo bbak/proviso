@@ -171,8 +171,10 @@ Given     `impact` has found the [candidates] <candidates>
 When      `impact` writes them, run with the options <options>
 Provided  <options> include `impact.json`
 Then      `impact` writes the `impact_set` of <candidates> to "stdout"
+  And     nothing else goes to "stdout"
   And     `impact` exits with `impact.exit-status` 0
 Otherwise `impact` writes <candidates> to "stdout" as text
+  And     nothing else goes to "stdout"
   And     `impact` exits with `impact.exit-status` 0
 ```
 

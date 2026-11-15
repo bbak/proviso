@@ -353,6 +353,7 @@ func TestQueryShowMatch(t *testing.T) {
 			t.Parallel()
 			o, _ := show(t, tr, append(c.args, "--json")...)
 			o.none(t)
+			onlyJSON(t, "query.show.match", o.stdout)
 			if o.stderr != "" {
 				t.Errorf("query.show.match: with --json, nothing goes to stderr, got %q", o.stderr)
 			}
@@ -403,6 +404,7 @@ func TestQueryShowOutput(t *testing.T) {
 			t.Fatalf("query.show.output: want exit status 0, got %d\nstderr: %s", o.exit, o.stderr)
 		}
 		o.elementsAre(t, tr, dir, sLimit)
+		onlyJSON(t, "query.show.output", o.stdout)
 	})
 	t.Run("row2 system, --json", func(t *testing.T) {
 		t.Parallel()
@@ -411,6 +413,7 @@ func TestQueryShowOutput(t *testing.T) {
 			t.Fatalf("query.show.output: want exit status 0, got %d\nstderr: %s", o.exit, o.stderr)
 		}
 		o.elementsAre(t, tr, dir, sSystem)
+		onlyJSON(t, "query.show.output", o.stdout)
 		if e := o.view.Elements[0]; e.Parent != nil {
 			t.Errorf("query.show.output: want a null parent, got %q", *e.Parent)
 		}
@@ -428,6 +431,9 @@ func TestQueryShowOutput(t *testing.T) {
 			dir := tr.write(t)
 			j := showIn(t, dir, dir, c.query, "--json")
 			j.elementsAre(t, tr, dir, c.want...)
+			onlyJSON(t, "query.show.output", j.stdout)
+			// isShowText compares the whole of stdout with show_text, so
+			// that nothing else may stand on it.
 			o := showIn(t, dir, dir, c.query)
 			if o.exit != 0 {
 				t.Fatalf("query.show.output: want exit status 0, got %d\nstderr: %s", o.exit, o.stderr)
