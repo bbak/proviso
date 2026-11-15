@@ -297,7 +297,8 @@ Then      <renames> appear ordered by their old [identifier], compared byte by b
 A run that stops earlier, because lint finds an error, the tree is not
 as the manifest records it, the input of `--mentions` or a value of
 `--rename` cannot be taken, or a file cannot be opened for writing,
-writes no plan and exits with 2 by its own rule.
+writes no plan and exits with 2: by `system.lint-gate` for the first,
+by its own rule for the others.
 
 ```guarded
 When      `rehome` exits, having written the plan of its renames, with the collisions <collisions>
