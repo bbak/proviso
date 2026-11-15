@@ -13,7 +13,7 @@ import (
 // showRun writes every element the query names, among those of the
 // capability --in names and of the system level where it names one
 // (query.show.in, query.show.match, query.show.output). It writes nothing
-// under the spec root (query.read-only).
+// under the spec root (system.tree-writes).
 func showRun(t *tree.Tree, res *lint.Result, o options, stdout, stderr io.Writer) int {
 	if o.in != "" && !query.HasCapability(t, o.in) {
 		fmt.Fprintf(stderr, "proviso show: the spec tree holds no capability %q\n", o.in)

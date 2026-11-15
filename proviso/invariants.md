@@ -27,3 +27,27 @@ check, and nothing of what `lint` would write is written. Otherwise the
 run writes to "stderr" what `lint` would write as text, exits with 2 as
 its command's `exit-status` defines, writes nothing to "stdout", and
 changes nothing under the [spec root].
+
+## <a id="system.tree-writes"></a> A command changes nothing but what it is for
+
+### Rationale
+
+A check that changed what it checks would hide what it found, and a
+query that changed what it reads would change the answer; a command
+that records, such as `manifest` or `judge`, may change only its
+record, and `rehome` only what it renames, so that no step mixes in a
+change it is not for. Git is only read, so a run never moves a branch
+or touches the index. `init` and `update` install files into the
+directory they run in, and their own invariants say what they keep.
+
+### Ranges over
+
+Every run of a command `command_writes` lists, whatever it finds and
+however it ends.
+
+### Property
+
+Every file and folder under the [spec root] is byte for byte and entry
+for entry as it was before the run, except what `command_writes` lists
+for the run's command. The git repository holding the [spec root] is as
+it was before the run.

@@ -1,7 +1,7 @@
 package acceptance
 
 // The driver of the capability query: runs of `proviso show` with what holds
-// for every run (the invariant query.read-only, the shapes of element_view
+// for every run (the invariant system.tree-writes, the shapes of element_view
 // and show_text, the exit status), the show tree, and an oracle for an
 // element as show writes it, computed from the tree alone.
 
@@ -103,7 +103,7 @@ type showOutcome struct {
 }
 
 // showIn runs `proviso show` with args in cwd, and checks what holds for
-// every run: query.read-only over every spec root below base, an exit status
+// every run: system.tree-writes over every spec root below base, an exit status
 // show.exit-status allows, nothing on stdout where it is 2, and, with
 // --json and an exit status of 0 or 1, an element_view on stdout and nothing
 // else.
@@ -112,7 +112,7 @@ func showIn(t *testing.T, base, cwd string, args ...string) showOutcome {
 	before := snapshot(t, base)
 	r := execProviso(t, cwd, append([]string{"show"}, args...)...)
 	after := snapshot(t, base)
-	checkWrites(t, "query.read-only", before, after)
+	checkWrites(t, "system.tree-writes", before, after)
 	o := showOutcome{run: r}
 	switch r.exit {
 	case 0, 1, 2:

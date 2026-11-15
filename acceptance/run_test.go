@@ -674,33 +674,6 @@ func TestLintRunExit(t *testing.T) {
 	}
 }
 
-// TestLintRunReadOnly checks the invariant lint.run.read-only over runs of
-// every kind: clean, with errors, with asks, unable to run. Every other test
-// checks it too, for each run it makes (see lintIn).
-func TestLintRunReadOnly(t *testing.T) {
-	t.Parallel()
-	trees := map[string]tree{
-		"clean":       baseline(),
-		"errors":      baseline().with("proviso/notes.md", "# Notes\n", "proviso/capabilities/billing/glossary.md", "# Glossary\n"),
-		"asks":        baseline().edit(featurePath, "- Contact: Dana Reyes", "- Contact: ?"),
-		"hidden":      baseline().with("proviso/.DS_Store", "\x00\x01", "proviso/.markdownlint.jsonc", "{}\n"),
-		"unreadable":  baseline().with("proviso/capabilities/cart/features/a.md", "\xff\xfe\n"),
-		"no root":     tree{"proviso/glossary.md": glossaryMD},
-		"many errors": withRule("But the shop\nWhen <provided>", "| x |\n| --- |\n"),
-	}
-	for name, tr := range trees {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-			dir := tr.write(t)
-			before := snapshot(t, dir)
-			lintIn(t, dir, dir, nil)
-			if name != "no root" && len(before) == 0 {
-				t.Errorf("snapshot of the spec root is empty")
-			}
-		})
-	}
-}
-
 func TestLintRunModel(t *testing.T) {
 	t.Parallel()
 	// stopped checks exit status 2 and that stderr says something; that

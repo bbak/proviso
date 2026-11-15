@@ -208,19 +208,3 @@ Otherwise lint exits with `lint.exit-status` 1
 | one ask | yes | 0 | an ask never fails a run |
 | one error | no | 1 | |
 | one error and one ask | no | 1 | the ask does not soften the error |
-
-## <a id="lint.run.read-only"></a> Invariant: Lint never writes the tree
-
-### Rationale
-
-Lint is a check. A check that changes what it checks hides what it
-found, and would make two runs on the same tree differ.
-
-### Ranges over
-
-Every run of `lint`, whatever it finds and however it ends.
-
-### Property
-
-Every file and folder under the [spec root] is byte for byte and entry
-for entry as it was before the run.
